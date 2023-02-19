@@ -1,0 +1,43 @@
+server:
+  shutdown: graceful # 서버 종료시 동작 정의
+  port: 8080 # 기본 포트 설정
+  error: # messagesource 로 exception 메시지를 관리하기 위해서
+    include-binding-errors: never
+    include-exception: false
+    include-message: never
+    include-stacktrace: never
+
+# profiles 설정
+spring:
+  profiles:
+    active:
+      - prod
+    group:
+      local:
+        - db-local
+      prod:
+        - db-prod
+    include:
+      - db
+      - security
+  # ResourceHandler 설정 (Static Resource Mapping)
+  web:
+    resources:
+      add-mappings: true
+  # MessageSource 설정
+  messages:
+    encoding: UTF-8
+    basename: messages/exceptions/exception
+
+# Actuator 설정
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+# P6spy 설정
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true

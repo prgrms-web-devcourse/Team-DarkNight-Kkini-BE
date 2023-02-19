@@ -1,0 +1,28 @@
+# jwt 설정
+jwt:
+  issuer: ${JWT_ISSUER}
+  secret-key: ${JWT_SECRET_KEY}
+  expiry-seconds: 3600
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-name: kakao
+            client-id: ${CLIENT_ID}
+            client-secret: ${CLIENT_SECRET}
+            scope:
+              - profile_nickname
+              - profile_image
+              - account_email
+            redirect-uri: ${REDIRECT_URI}
+            authorization-grant-type: authorization_code
+            client-authentication-method: POST
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
