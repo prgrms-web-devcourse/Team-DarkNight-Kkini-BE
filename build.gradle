@@ -1,12 +1,17 @@
+import org.hidetake.gradle.swagger.generator.GenerateSwaggerUI
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.7.8'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
-	id 'org.asciidoctor.convert' version '2.2.1'
+	id 'org.asciidoctor.jvm.convert' version '3.3.2'
+	id 'org.hidetake.swagger.generator' version '2.18.2'
+	id 'com.epages.restdocs-api-spec' version '0.16.2'
 }
 
 group = 'com.prgrms'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0'
 sourceCompatibility = '17'
 
 configurations {
@@ -23,24 +28,60 @@ ext {
 	set('snippetsDir', file("build/generated-snippets"))
 }
 
+swaggerSources {
+	sample {
+		setInputFile(file("${project.buildDir}/api-spec/openapi3.yaml"))
+	}
+}
+
+openapi3 {
+	setServer("http://localhost:8080") // Swagger 서버 설정
+	title = "restdocs-swagger API Documentation"
+	description = "Spring REST Docs with SwaggerUI."
+	version = "1.0.0"
+	format = "yaml"
+}
+
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	// Spring Boot Starter
+	// WEB
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	// Security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	testImplementation 'org.springframework.security:spring-security-test'
+	// DB
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	// Test & Config
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+	// Flyway
 	implementation 'org.flywaydb:flyway-core'
 	implementation 'org.flywaydb:flyway-mysql'
+	// Lombok
 	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.h2database:h2'
-	runtimeOnly 'com.mysql:mysql-connector-j'
-	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-	testImplementation 'org.springframework.security:spring-security-test'
+	annotationProcessor "org.projectlombok:lombok-mapstruct-binding:0.2.0" // lombok 에서 mapstruct binding 해주는 기능
+	//MySQL Driver
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	//H2 Driver
+	runtimeOnly 'com.h2database:h2'
+	// RestDocs API SPEC
+	testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.16.2'
+	// Swagger UI
+	swaggerUI 'org.webjars:swagger-ui:4.11.1'
+	// JWT
+	implementation 'com.auth0:java-jwt:4.2.1'
+	// MapStruct
+	implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+	// p6spy
+	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.1'
 }
+
 
 tasks.named('test') {
 	outputs.dir snippetsDir
@@ -50,4 +91,31 @@ tasks.named('test') {
 tasks.named('asciidoctor') {
 	inputs.dir snippetsDir
 	dependsOn test
+}
+
+asciidoctor.doFirst {
+	delete file('src/main/resources/static/docs')
+}
+
+tasks.withType(GenerateSwaggerUI).configureEach {
+	dependsOn 'openapi3'
+}
+
+tasks.register('copySwaggerUI', Copy) {
+	dependsOn 'generateSwaggerUISample'
+
+	def generateSwaggerUISampleTask = tasks.named('generateSwaggerUISample', GenerateSwaggerUI).get()
+
+	from("${generateSwaggerUISampleTask.outputDir}")
+	into("${project.buildDir}/resources/main/static/docs/api/.")
+}
+
+task copyDocument(type: Copy) {
+	dependsOn asciidoctor
+	from file("build/docs/asciidoc")
+	into file("src/main/resources/static/docs")
+}
+
+tasks.withType(BootJar).configureEach {
+	dependsOn 'copySwaggerUI'
 }
