@@ -3,12 +3,10 @@ package com.prgrms.mukvengers.domain.user.model;
 import static javax.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -20,12 +18,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@Where(clause = "deleted=false")
+@Where(clause = "deleted = false")
 @SQLDelete(sql = "UPDATE users SET deleted = true where id=?")
-@Table(name = "users")
-@Entity
 public class User extends BaseEntity {
 
 	public static final String DEFAULT_INTRODUCE = "자기소개를 작성해주세요";
@@ -36,40 +33,41 @@ public class User extends BaseEntity {
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 
-	@Size(max = 100)
+	@Column(nullable = false, length = 20)
 	private String nickname;
 
-	@Size(max = 255)
+	@Column(nullable = false, length = 255)
 	private String profileImgUrl;
 
-	@Size(max = 255)
+	@Column(nullable = false, length = 100)
 	private String introduction;
 
-	@Size(max = 255)
+	@Column(nullable = false)
 	private String provider;
 
-	@Size(max = 255)
+	@Column(nullable = false)
 	private String oauthId;
 
-	@PositiveOrZero
+	@Column(nullable = false)
 	private Double mannerScore;
 
-	@PositiveOrZero
+	@Column(nullable = false)
 	private Integer tasteScore;
 
-	@PositiveOrZero
+	@Column(nullable = false)
 	private Integer leaderCount;
 
-	@PositiveOrZero
+	@Column(nullable = false)
 	private Integer crewCount;
 
-	@PositiveOrZero
+	@Column(nullable = false)
 	private Integer reportedCount;
 
+	@Column(nullable = false)
 	private boolean enabled;
 
 	@Builder
-	public User(String nickname, String profileImgUrl, String provider, String oauthId) {
+	protected User(String nickname, String profileImgUrl, String provider, String oauthId) {
 		this.nickname = validateNickName(nickname);
 		this.profileImgUrl = validateProfileImgUrl(profileImgUrl);
 		this.provider = provider;

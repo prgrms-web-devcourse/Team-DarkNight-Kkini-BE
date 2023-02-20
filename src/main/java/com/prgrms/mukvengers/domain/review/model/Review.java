@@ -5,13 +5,12 @@ import static lombok.AccessLevel.*;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -24,11 +23,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@Where(clause = "deleted=false")
+@Where(clause = "deleted = false")
 @SQLDelete(sql = "UPDATE review SET deleted = true where id=?")
-@Entity
 public class Review extends BaseEntity {
 
 	@Id
@@ -47,22 +46,23 @@ public class Review extends BaseEntity {
 	@JoinColumn(name = "store_id", referencedColumnName = "id")
 	private Store store;
 
+	@Column(nullable = false)
 	private LocalDateTime promiseTime;
 
-	@Size(max = 100)
+	@Column(nullable = false, length = 20)
 	private String crewName;
 
-	@Size(max = 255)
+	@Column(nullable = false, length = 255)
 	private String content;
 
-	@PositiveOrZero
+	@Column(nullable = false)
 	private Integer mannerPoint;
 
-	@PositiveOrZero
+	@Column(nullable = false)
 	private Integer tastePoint;
 
 	@Builder
-	public Review(User reviewer, User reviewee, Store store, LocalDateTime promiseTime,
+	protected Review(User reviewer, User reviewee, Store store, LocalDateTime promiseTime,
 		String crewName, String content, Integer mannerPoint, Integer tastePoint) {
 		this.reviewer = reviewer;
 		this.reviewee = reviewee;

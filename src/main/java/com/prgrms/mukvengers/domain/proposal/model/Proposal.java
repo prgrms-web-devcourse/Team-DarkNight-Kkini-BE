@@ -1,20 +1,21 @@
-package com.prgrms.mukvengers.global.domain;
+package com.prgrms.mukvengers.domain.proposal.model;
 
 import static javax.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import com.prgrms.mukvengers.domain.crew.model.Crew;
+import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.global.common.domain.BaseEntity;
 import com.prgrms.mukvengers.global.utils.ValidateUtil;
 
@@ -22,11 +23,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@Entity
+@Where(clause = "deleted = false")
 @SQLDelete(sql = "UPDATE proposal SET deleted = true where id=?")
-@Where(clause = "deleted=false")
 public class Proposal extends BaseEntity {
 
 	private static final int CONTENT_MAX_SIZE = 100;
@@ -45,14 +46,14 @@ public class Proposal extends BaseEntity {
 	@JoinColumn(name = "crew_id")
 	private Crew crew;
 
-	@Lob
-	@Size(max = 100)
+	@Column(nullable = false, length = 100)
 	private String content;
 
+	@Column(nullable = false)
 	private boolean checked;
 
 	@Builder
-	public Proposal(User user, Crew crew, String content, boolean checked) {
+	protected Proposal(User user, Crew crew, String content, boolean checked) {
 		this.user = user;
 		this.crew = crew;
 		this.content = validationContent(content);

@@ -14,16 +14,17 @@ import javax.persistence.OneToOne;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-import com.prgrms.mukvengers.domain.Crew;
+import com.prgrms.mukvengers.domain.crew.model.Crew;
+import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.global.common.domain.BaseEntity;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = PROTECTED)
 @Entity
 @Getter
+@NoArgsConstructor(access = PROTECTED)
 @Where(clause = "deleted = false")
 @SQLDelete(sql = "UPDATE post set deleted = true where id=?")
 public class Post extends BaseEntity {
@@ -34,19 +35,20 @@ public class Post extends BaseEntity {
 	private Long id;
 
 	@OneToOne(fetch = LAZY)
-	@JoinColumn(name = "crew_id")
+	@JoinColumn(name = "crew_id", referencedColumnName = "id")
 	private Crew crew;
 
-	@Column(nullable = false)
-	private Long leaderId;
+	@OneToOne(fetch = LAZY)
+	@JoinColumn(name = "user_id", referencedColumnName = "id")
+	private User user;
 
 	@Column(nullable = false, length = 500)
 	private String content;
 
 	@Builder
-	private Post(Crew crew, Long leaderId, String content) {
+	protected Post(Crew crew, User user, String content) {
 		this.crew = crew;
-		this.leaderId = leaderId;
+		this.user = user;
 		this.content = content;
 	}
 }

@@ -19,23 +19,22 @@ import javax.persistence.OneToMany;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-import com.prgrms.mukvengers.domain.User;
 import com.prgrms.mukvengers.domain.post.model.Post;
+import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.global.common.domain.BaseEntity;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = PROTECTED)
 @Entity
 @Getter
+@NoArgsConstructor(access = PROTECTED)
 @Where(clause = "deleted = false")
 @SQLDelete(sql = "UPDATE comment set deleted = true where id=?")
 public class Comment extends BaseEntity {
 
 	@Id
-	@Column(name = "comment_id")
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 
@@ -47,7 +46,7 @@ public class Comment extends BaseEntity {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 500)
 	private String content;
 
 	@ManyToOne(fetch = LAZY)
@@ -58,7 +57,7 @@ public class Comment extends BaseEntity {
 	private List<Comment> subComment = new ArrayList<>();
 
 	@Builder
-	public Comment(Post post, User user, String content, Comment parentComment,
+	protected Comment(Post post, User user, String content, Comment parentComment,
 		List<Comment> subComment) {
 		this.post = post;
 		this.user = user;

@@ -68,7 +68,7 @@ public class Crew extends BaseEntity {
 	private Category category;
 
 	@Builder
-	public Crew(User user, Store store, String name, Point location, Integer capacity, Status status, String content,
+	protected Crew(User user, Store store, String name, Point location, Integer capacity, Status status, String content,
 		Category category) {
 		this.user = user;
 		this.store = store;
