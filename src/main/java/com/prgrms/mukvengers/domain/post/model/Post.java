@@ -30,7 +30,6 @@ import lombok.NoArgsConstructor;
 public class Post extends BaseEntity {
 
 	@Id
-	@Column(name = "post_id")
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 

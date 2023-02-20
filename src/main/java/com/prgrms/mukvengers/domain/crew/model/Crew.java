@@ -40,8 +40,8 @@ public class Crew extends BaseEntity {
 	private Long id;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "user_id", referencedColumnName = "id")
-	private User user;
+	@JoinColumn(name = "leader_id", referencedColumnName = "id")
+	private User leader;
 
 	@OneToOne(fetch = LAZY)
 	@JoinColumn(name = "store_id", referencedColumnName = "id")
@@ -68,9 +68,10 @@ public class Crew extends BaseEntity {
 	private Category category;
 
 	@Builder
-	protected Crew(User user, Store store, String name, Point location, Integer capacity, Status status, String content,
+	protected Crew(User leader, Store store, String name, Point location, Integer capacity, Status status,
+		String content,
 		Category category) {
-		this.user = user;
+		this.leader = leader;
 		this.store = store;
 		this.name = name;
 		this.location = location;

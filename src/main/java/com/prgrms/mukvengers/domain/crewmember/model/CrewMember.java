@@ -30,16 +30,15 @@ import lombok.NoArgsConstructor;
 public class CrewMember extends BaseEntity {
 
 	@Id
-	@Column(name = "crew_member_id")
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private User user;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "crew_id")
+	@JoinColumn(name = "crew_id", referencedColumnName = "id")
 	private Crew crew;
 
 	@Column(nullable = false)
