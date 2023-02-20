@@ -41,21 +41,21 @@ CREATE TABLE store
 
 CREATE TABLE crew
 (
-    id         bigint       NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    leader_id  bigint       NOT NULL,
-    store_id   bigint       NOT NULL,
-    name       varchar(20)  NOT NULL,
-    location   Point        NOT NULL,
-    capacity   int          NOT NULL DEFAULT 2,
-    status     varchar(255) NOT NULL,
-    content    varchar(255) NOT NULL,
-    category   varchar(255) NOT NULL,
-    created_at dateTime     NOT NULL DEFAULT now(),
-    updated_at dateTime     NOT NULL DEFAULT now(),
-    deleted    boolean      NOT NULL DEFAULT false,
+    id         bigint          NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    leader_id  bigint          NOT NULL,
+    store_id   bigint          NOT NULL,
+    name       varchar(20)     NOT NULL,
+    location   geometry(point) NOT NULL,
+    capacity   int             NOT NULL DEFAULT 2,
+    status     varchar(255)    NOT NULL,
+    content    varchar(255)    NOT NULL,
+    category   varchar(255)    NOT NULL,
+    created_at dateTime        NOT NULL DEFAULT now(),
+    updated_at dateTime        NOT NULL DEFAULT now(),
+    deleted    boolean         NOT NULL DEFAULT false,
 
-    FOREIGN KEY fk_crew_leader_id (leader_id) REFERENCES users (id),
-    FOREIGN KEY fk_crew_store_id (store_id)   REFERENCES store (id)
+    FOREIGN KEY (leader_id) REFERENCES users (id),
+    FOREIGN KEY (store_id) REFERENCES store (id)
 );
 
 CREATE TABLE proposal
@@ -69,8 +69,8 @@ CREATE TABLE proposal
     updated_at dateTime     NOT NULL DEFAULT now(),
     deleted    boolean      NOT NULL DEFAULT false,
 
-    FOREIGN KEY fk_proposal_user_id (user_id) REFERENCES users (id),
-    FOREIGN KEY fk_proposal_crew_id (crew_id) REFERENCES crew (id)
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (crew_id) REFERENCES crew (id)
 );
 
 CREATE TABLE crew_member
@@ -84,8 +84,8 @@ CREATE TABLE crew_member
     updated_at dateTime NOT NULL DEFAULT now(),
     deleted    boolean  NOT NULL DEFAULT false,
 
-    FOREIGN KEY fk_crew_member_user_id (user_id) REFERENCES users (id),
-    FOREIGN KEY fk_crew_member_crew_id (crew_id) REFERENCES crew (id)
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (crew_id) REFERENCES crew (id)
 );
 
 CREATE TABLE review
@@ -103,9 +103,9 @@ CREATE TABLE review
     updated_at   dateTime     NOT NULL DEFAULT now(),
     deleted      boolean      NOT NULL DEFAULT false,
 
-    FOREIGN KEY fk_review_reviewer (reviewer) REFERENCES users (id),
-    FOREIGN KEY fk_review_reviewee (reviewee) REFERENCES users (id),
-    FOREIGN KEY fk_review_store_id (store_id) REFERENCES store (id)
+    FOREIGN KEY (reviewer) REFERENCES users (id),
+    FOREIGN KEY (reviewee) REFERENCES users (id),
+    FOREIGN KEY (store_id) REFERENCES store (id)
 );
 
 CREATE TABLE post
@@ -118,8 +118,8 @@ CREATE TABLE post
     updated_at dateTime     NOT NULL DEFAULT now(),
     deleted    boolean      NOT NULL DEFAULT false,
 
-    FOREIGN KEY fk_post_leader_id (leader_id) REFERENCES users (id),
-    FOREIGN KEY fk_post_crew_id (crew_id)     REFERENCES crew (id)
+    FOREIGN KEY (leader_id) REFERENCES users (id),
+    FOREIGN KEY (crew_id) REFERENCES crew (id)
 );
 
 CREATE TABLE comment
@@ -133,8 +133,8 @@ CREATE TABLE comment
     updated_at dateTime     NOT NULL DEFAULT now(),
     deleted    boolean      NOT NULL DEFAULT false,
 
-    FOREIGN KEY fk_comment_leader_id (user_id)     REFERENCES users (id),
-    FOREIGN KEY fk_comment_post_id (post_id)       REFERENCES post (id),
-    FOREIGN KEY fk_comment_comment_id (comment_id) REFERENCES comment (id)
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (post_id) REFERENCES post (id),
+    FOREIGN KEY (comment_id) REFERENCES comment (id)
 );
 
