@@ -32,8 +32,7 @@ CREATE TABLE users
 CREATE TABLE store
 (
     id         bigint   NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    latitude   int      NOT NULL,
-    longitude  int      NOT NULL,
+    location   Point        NOT NULL,
     created_at dateTime NOT NULL DEFAULT now(),
     updated_at dateTime NOT NULL DEFAULT now(),
     deleted    boolean  NOT NULL DEFAULT false
