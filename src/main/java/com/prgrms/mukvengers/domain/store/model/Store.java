@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 public class Store extends BaseEntity {
 
 	@Id
-	@GeneratedValue(strategy = AUTO)
+	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 
 	@Column(nullable = false)

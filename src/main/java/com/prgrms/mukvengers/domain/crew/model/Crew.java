@@ -36,7 +36,7 @@ import lombok.NoArgsConstructor;
 public class Crew extends BaseEntity {
 
 	@Id
-	@GeneratedValue(strategy = AUTO)
+	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 
 	@ManyToOne(fetch = LAZY)
