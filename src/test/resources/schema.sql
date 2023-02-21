@@ -23,10 +23,12 @@ CREATE TABLE users
     leader_count    int          NOT NULL DEFAULT 0,
     crew_count      int          NOT NULL DEFAULT 0,
     reported_count  int          NOT NULL DEFAULT 0,
-    enabled         boolean      NOT NULL DEFAULT false,
+    enabled         tinyint      NOT NULL DEFAULT 0,
+    provider        varchar(10)  NOT NULL,
+    oauth_id        varchar(255) NOT NULL,
     created_at      dateTime     NOT NULL DEFAULT now(),
     updated_at      dateTime     NOT NULL DEFAULT now(),
-    deleted         boolean      NOT NULL DEFAULT false
+    deleted         tinyint      NULL     DEFAULT 0
 );
 
 CREATE TABLE store
@@ -35,7 +37,7 @@ CREATE TABLE store
     location   geometry(point) NOT NULL,
     created_at dateTime        NOT NULL DEFAULT now(),
     updated_at dateTime        NOT NULL DEFAULT now(),
-    deleted    boolean         NOT NULL DEFAULT false
+    deleted    tinyint         NOT NULL DEFAULT 0
 );
 
 CREATE TABLE crew
@@ -51,7 +53,7 @@ CREATE TABLE crew
     category   varchar(255)    NOT NULL,
     created_at dateTime        NOT NULL DEFAULT now(),
     updated_at dateTime        NOT NULL DEFAULT now(),
-    deleted    boolean         NOT NULL DEFAULT false,
+    deleted    tinyint         NOT NULL DEFAULT 0,
 
     FOREIGN KEY (leader_id) REFERENCES users (id),
     FOREIGN KEY (store_id) REFERENCES store (id)
@@ -63,10 +65,10 @@ CREATE TABLE proposal
     user_id    bigint       NOT NULL,
     crew_id    bigint       NOT NULL,
     content    varchar(100) NOT NULL,
-    checked    boolean      NOT NULL DEFAULT false,
+    checked    tinyint      NOT NULL DEFAULT 0,
     created_at dateTime     NOT NULL DEFAULT now(),
     updated_at dateTime     NOT NULL DEFAULT now(),
-    deleted    boolean      NOT NULL DEFAULT false,
+    deleted    tinyint      NOT NULL DEFAULT 0,
 
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (crew_id) REFERENCES crew (id)
@@ -77,11 +79,11 @@ CREATE TABLE crew_member
     id         bigint   NOT NULL PRIMARY KEY AUTO_INCREMENT,
     user_id    bigint   NOT NULL,
     crew_id    bigint   NOT NULL,
-    blocked    boolean  NOT NULL DEFAULT false,
-    ready      boolean  NOT NULL DEFAULT false,
+    blocked    tinyint  NOT NULL DEFAULT 0,
+    ready      tinyint  NOT NULL DEFAULT 0,
     created_at dateTime NOT NULL DEFAULT now(),
     updated_at dateTime NOT NULL DEFAULT now(),
-    deleted    boolean  NOT NULL DEFAULT false,
+    deleted    tinyint  NOT NULL DEFAULT 0,
 
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (crew_id) REFERENCES crew (id)
@@ -100,7 +102,7 @@ CREATE TABLE review
     taste_point  int          NULL,
     created_at   dateTime     NOT NULL DEFAULT now(),
     updated_at   dateTime     NOT NULL DEFAULT now(),
-    deleted      boolean      NOT NULL DEFAULT false,
+    deleted      tinyint      NOT NULL DEFAULT 0,
 
     FOREIGN KEY (reviewer) REFERENCES users (id),
     FOREIGN KEY (reviewee) REFERENCES users (id),
@@ -115,7 +117,7 @@ CREATE TABLE post
     content    varchar(500) NOT NULL,
     created_at dateTime     NOT NULL DEFAULT now(),
     updated_at dateTime     NOT NULL DEFAULT now(),
-    deleted    boolean      NOT NULL DEFAULT false,
+    deleted    tinyint      NOT NULL DEFAULT 0,
 
     FOREIGN KEY (leader_id) REFERENCES users (id),
     FOREIGN KEY (crew_id) REFERENCES crew (id)
@@ -130,7 +132,7 @@ CREATE TABLE comment
     content           varchar(255) NOT NULL,
     created_at        dateTime     NOT NULL DEFAULT now(),
     updated_at        dateTime     NOT NULL DEFAULT now(),
-    deleted           boolean      NOT NULL DEFAULT false,
+    deleted           tinyint      NOT NULL DEFAULT 0,
 
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (post_id) REFERENCES post (id),

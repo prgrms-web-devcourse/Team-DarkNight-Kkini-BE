@@ -2,9 +2,9 @@ package com.prgrms.mukvengers.global.exception;
 
 import static org.springframework.http.HttpStatus.*;
 
-import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -29,64 +29,67 @@ public class GlobalExceptionHandler {
 	private static final String EXCEPTION_REQUEST_URI = "[EXCEPTION] REQUEST_URI       -----> [{}]";
 	private static final String EXCEPTION_HTTP_METHOD_TYPE = "[EXCEPTION] HTTP_METHOD_TYPE  -----> [{}]";
 
+	@ExceptionHandler(ServiceException.class) // custom 에러
+	public ResponseEntity<ErrorResponse> handleServiceException(HttpServletRequest request, ServiceException e) {
+		ErrorCode errorCode = e.getErrorCode();
+		logService(request, e, errorCode);
+		return ResponseEntity
+			.status(errorCode.getStatus())
+			.body(ErrorResponse.of(errorCode));
+	}
+
 	@ResponseStatus(BAD_REQUEST)
-	@ExceptionHandler(MethodArgumentNotValidException.class)
+	@ExceptionHandler(MethodArgumentNotValidException.class) // Bean Validation(@Valid)
 	public ErrorResponse handleMethodArgumentNotValidException(HttpServletRequest request, BindException e) {
 		logDebug(request, e);
 		log.debug("[EXCEPTION] FIELD_ERROR       -----> [{}]", e.getFieldError());
-		return ErrorResponse.badRequest("잘못된 데이터입니다.", request.getRequestURI());
+		return ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE);
 	}
 
 	@ResponseStatus(BAD_REQUEST)
-	@ExceptionHandler(MissingRequestValueException.class)
+	@ExceptionHandler(MissingRequestValueException.class) // 요청 데이터로 들어와야할 인자 부족
 	public ErrorResponse handleMissingRequestValueException(HttpServletRequest request,
 		MissingRequestValueException e) {
 		logDebug(request, e);
-		return ErrorResponse.badRequest("데이터가 충분하지 않습니다.",request.getRequestURI());
+		return ErrorResponse.of(ErrorCode.MISSING_INPUT_VALUE);
 	}
 
 	@ResponseStatus(BAD_REQUEST)
-	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+	@ExceptionHandler(HttpRequestMethodNotSupportedException.class) // 해당 uri에 잘못된 HttpMethod
 	public ErrorResponse handleHttpRequestMethodNotSupportedException(HttpServletRequest request,
 		HttpRequestMethodNotSupportedException e) {
 		logDebug(request, e);
-		return ErrorResponse.badRequest("잘못된 요청입니다.", request.getRequestURI());
+		return ErrorResponse.of(ErrorCode.METHOD_NOT_ALLOWED);
 	}
 
 	@ResponseStatus(BAD_REQUEST)
-	@ExceptionHandler(NoHandlerFoundException.class)
+	@ExceptionHandler(NoHandlerFoundException.class) // 없는 api(uri)
 	public ErrorResponse handleNoHandlerFoundException(HttpServletRequest request, NoHandlerFoundException e) {
 		logDebug(request, e);
-		return ErrorResponse.badRequest("잘못된 uri 입니다.", request.getRequestURI());
+		return ErrorResponse.of(ErrorCode.NOT_EXIST_API);
 	}
 
 	@ResponseStatus(BAD_REQUEST)
-	@ExceptionHandler(ServiceException.class)
-	public ErrorResponse handleServiceException(HttpServletRequest request, ServiceException e) {
-		logDebug(request, e);
-		return ErrorResponse.badRequest(MessageUtil.getMessage(e.getMessage()), request.getRequestURI());
-	}
-
-	@ResponseStatus(BAD_REQUEST)
-	@ExceptionHandler(EntityNotFoundException.class) // JPA 오류
-	public ErrorResponse handleEntityNotFoundException(EntityNotFoundException e) {
-		logWarn(e);
-		return ErrorResponse.badRequest(e.getMessage(), null);
-	}
-
-	@ResponseStatus(BAD_REQUEST)
-	@ExceptionHandler(IllegalArgumentException.class) // 예상하지 못한 내부 로직 오류
+	@ExceptionHandler(IllegalArgumentException.class) // 메소드 validation 예외 상황
 	public ErrorResponse handleIllegalArgumentException(IllegalArgumentException e) {
 		logWarn(e);
-		return ErrorResponse.badRequest(e.getMessage(), null);
+		return ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE);
 	}
 
 	@ResponseStatus(INTERNAL_SERVER_ERROR)
 	@ExceptionHandler(Exception.class)
-	public ErrorResponse handleException(HttpServletRequest request, Exception e) {
+	public ErrorResponse handleException(Exception e) {
 		logError(e);
-		return ErrorResponse.of(INTERNAL_SERVER_ERROR, "서버 내부에서 에러가 발생하였습니다.",
-			request.getRequestURI(), null);
+		return ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
+	}
+
+	private void logService(HttpServletRequest request, ServiceException e, ErrorCode errorCode) {
+		log.debug(EXCEPTION_REQUEST_URI, request.getRequestURI());
+		log.debug(EXCEPTION_HTTP_METHOD_TYPE, request.getMethod());
+		log.debug(MessageUtil.getMessage(e.getMessageKey()));
+		log.info(errorCode.getCode());
+		log.warn(EXCEPTION_TYPE_FORMAT, e.getClass().getSimpleName());
+		log.warn(EXCEPTION_MESSAGE_FORMAT, e.getMessage());
 	}
 
 	private void logDebug(HttpServletRequest request, Exception e) {
