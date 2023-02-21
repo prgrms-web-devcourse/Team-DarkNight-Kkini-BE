@@ -72,7 +72,7 @@ class UserServiceTest extends ServiceTest {
 		}
 
 		@Test
-		@DisplayName("[성공] 사용자 정보를 삭제할 수 있다.")
+		@DisplayName("[성공] userId를 통해서 사용자 정보를 삭제할 수 있다.")
 		void deleteUserSuccessTest() {
 			assertDoesNotThrow(
 				() -> userService.deleteUser(savedUser.getId())

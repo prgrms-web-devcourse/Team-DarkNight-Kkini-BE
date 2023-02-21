@@ -76,7 +76,7 @@ class UserRepositoryTest extends RepositoryTest {
 	}
 
 	@Test
-	@DisplayName("[실패] 유저를 삭제할 수 있다.")
+	@DisplayName("[실패] 유효하지 않은 유저 ID로는 유저를 삭제할 수 없다.")
 	void deleteByIdfailTest() {
 		//given
 		Long UNSAVED_USER_ID = 0L;
