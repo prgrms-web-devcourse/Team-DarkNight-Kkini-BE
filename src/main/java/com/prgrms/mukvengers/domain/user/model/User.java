@@ -12,6 +12,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import com.prgrms.mukvengers.domain.user.dto.request.UpdateUserRequest;
 import com.prgrms.mukvengers.global.common.domain.BaseEntity;
 import com.prgrms.mukvengers.global.utils.ValidateUtil;
 
@@ -83,14 +84,28 @@ public class User extends BaseEntity {
 	}
 
 	private String validateNickName(String nickName) {
-		ValidateUtil.checkText(nickName, "유효하지 않은 닉네임");
+		ValidateUtil.checkText(nickName, "유효하지 않은 URL");
 		ValidateUtil.checkOverLength(nickName, 100, "최대 글자수를 초과했습니다.");
 		return nickName;
 	}
 
 	private String validateProfileImgUrl(String profileImgUrl) {
-		ValidateUtil.checkText(profileImgUrl, "유효하지 않은 이미지 URL");
+		ValidateUtil.checkText(profileImgUrl, "유효하지 않은 URL");
+		ValidateUtil.checkOverLength(profileImgUrl, 255, "최대 글자수를 초과했습니다.");
 		return profileImgUrl;
+	}
+
+	private String validateIntroduction(String introduction) {
+		ValidateUtil.checkText(introduction, "유효하지 않습니다.");
+		ValidateUtil.checkOverLength(introduction, 255, "최대 글자수를 초과했습니다.");
+		return introduction;
+	}
+
+	public User changeProfile(UpdateUserRequest updateUserRequest) {
+		this.nickname = validateNickName(updateUserRequest.nickName());
+		this.profileImgUrl = validateProfileImgUrl(updateUserRequest.profileImgUrl());
+		this.introduction = validateIntroduction(updateUserRequest.introduction());
+		return this;
 	}
 
 }
