@@ -31,11 +31,11 @@ CREATE TABLE users
 
 CREATE TABLE store
 (
-    id         bigint   NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    id         bigint          NOT NULL PRIMARY KEY AUTO_INCREMENT,
     location   geometry(point) NOT NULL,
-    created_at dateTime NOT NULL DEFAULT now(),
-    updated_at dateTime NOT NULL DEFAULT now(),
-    deleted    boolean  NOT NULL DEFAULT false
+    created_at dateTime        NOT NULL DEFAULT now(),
+    updated_at dateTime        NOT NULL DEFAULT now(),
+    deleted    boolean         NOT NULL DEFAULT false
 );
 
 CREATE TABLE crew
@@ -123,17 +123,17 @@ CREATE TABLE post
 
 CREATE TABLE comment
 (
-    id         bigint       NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    user_id    bigint       NOT NULL,
-    post_id    bigint       NOT NULL,
-    comment_id bigint       NULL,
-    content    varchar(255) NOT NULL,
-    created_at dateTime     NOT NULL DEFAULT now(),
-    updated_at dateTime     NOT NULL DEFAULT now(),
-    deleted    boolean      NOT NULL DEFAULT false,
+    id                bigint       NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    user_id           bigint       NOT NULL,
+    post_id           bigint       NOT NULL,
+    parent_comment_id bigint       NULL,
+    content           varchar(255) NOT NULL,
+    created_at        dateTime     NOT NULL DEFAULT now(),
+    updated_at        dateTime     NOT NULL DEFAULT now(),
+    deleted           boolean      NOT NULL DEFAULT false,
 
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (post_id) REFERENCES post (id),
-    FOREIGN KEY (comment_id) REFERENCES comment (id)
+    FOREIGN KEY (parent_comment_id) REFERENCES comment (id)
 );
 
