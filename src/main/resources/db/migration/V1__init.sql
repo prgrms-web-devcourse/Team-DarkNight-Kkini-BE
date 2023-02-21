@@ -24,6 +24,8 @@ CREATE TABLE users
     crew_count      int          NOT NULL DEFAULT 0,
     reported_count  int          NOT NULL DEFAULT 0,
     enabled         boolean      NOT NULL DEFAULT false,
+    provider        varchar(10)  NOT NULL,
+    oauth_id        varchar(255) NOT NULL,
     created_at      dateTime     NOT NULL DEFAULT now(),
     updated_at      dateTime     NOT NULL DEFAULT now(),
     deleted         boolean      NOT NULL DEFAULT false
@@ -117,7 +119,6 @@ CREATE TABLE post
     updated_at dateTime     NOT NULL DEFAULT now(),
     deleted    boolean      NOT NULL DEFAULT false,
 
-    FOREIGN KEY fk_post_leader_id (leader_id) REFERENCES users (id),
     FOREIGN KEY fk_post_crew_id (crew_id) REFERENCES crew (id)
 );
 
