@@ -40,12 +40,24 @@ public class Store extends BaseEntity {
 
 	@Builder
 	protected Store(Point location, String apiId) {
+		validatePosition(location);
+		validateLongitude(location);
+		validateLatitude(location);
+
 		this.location = location;
 		this.apiId = apiId;
 	}
 
 	public void validatePosition(Point location) {
 		notNull(location,"유효하지 않는 위치입니다.");
+	}
+
+	public void validateLongitude(Point location) {
+		isTrue(location.getX()>-180&&location.getX()<180,"유효하지 않는 경도 값입니다.");
+	}
+
+	public void validateLatitude(Point location) {
+		isTrue(location.getY()>-90&&location.getY()<90,"유효하지 않는 위도 값입니다.");
 	}
 
 	public void validateApiId(String apiId) {
