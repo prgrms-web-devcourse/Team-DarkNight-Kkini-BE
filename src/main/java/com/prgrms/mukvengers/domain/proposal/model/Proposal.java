@@ -60,7 +60,7 @@ public class Proposal extends BaseEntity {
 		this.checked = checked;
 	}
 
-	private String validationContent(String content) {
+	private String validateContent(String content) {
 		ValidateUtil.checkText(content, CONTENT_NOT_NULL);
 		ValidateUtil.checkOverLength(content, CONTENT_MAX_SIZE, CONTENT_MAX_SIZE_OVER_MESSAGE);
 		return content;
