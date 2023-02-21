@@ -56,7 +56,7 @@ public class Proposal extends BaseEntity {
 	protected Proposal(User user, Crew crew, String content, boolean checked) {
 		this.user = user;
 		this.crew = crew;
-		this.content = validationContent(content);
+		this.content = validateContent(content);
 		this.checked = checked;
 	}
 
