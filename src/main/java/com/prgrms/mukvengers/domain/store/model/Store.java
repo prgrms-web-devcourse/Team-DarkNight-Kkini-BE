@@ -43,6 +43,7 @@ public class Store extends BaseEntity {
 		validatePosition(location);
 		validateLongitude(location);
 		validateLatitude(location);
+		validateApiId(apiId);
 
 		this.location = location;
 		this.apiId = apiId;
@@ -53,14 +54,14 @@ public class Store extends BaseEntity {
 	}
 
 	public void validateLongitude(Point location) {
-		isTrue(location.getX()>-180&&location.getX()<180,"유효하지 않는 경도 값입니다.");
+		isTrue(location.getX()>=-180&&location.getX()<=180,"유효하지 않는 경도 값입니다.");
 	}
 
 	public void validateLatitude(Point location) {
-		isTrue(location.getY()>-90&&location.getY()<90,"유효하지 않는 위도 값입니다.");
+		isTrue(location.getY()>=-90&&location.getY()<=90,"유효하지 않는 위도 값입니다.");
 	}
 
 	public void validateApiId(String apiId) {
-		ValidateUtil.checkText(apiId,"유효하지 않는 가게 아이디 입니다.");
+		ValidateUtil.checkText(apiId,"유효하지 않는 가게 아이디입니다.");
 	}
 }
