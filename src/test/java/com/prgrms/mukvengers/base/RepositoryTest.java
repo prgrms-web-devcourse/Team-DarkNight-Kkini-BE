@@ -5,8 +5,8 @@ import org.springframework.context.annotation.Import;
 
 import com.prgrms.mukvengers.global.config.jpa.JpaConfig;
 
-@Import(JpaConfig.class)
 @DataJpaTest
+@Import(JpaConfig.class)
 public abstract class RepositoryTest {
 
 }

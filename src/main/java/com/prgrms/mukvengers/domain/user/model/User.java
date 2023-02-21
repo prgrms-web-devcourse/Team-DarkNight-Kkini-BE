@@ -84,7 +84,7 @@ public class User extends BaseEntity {
 	}
 
 	private String validateNickName(String nickName) {
-		ValidateUtil.checkText(nickName, "유효하지 않은 URL");
+		ValidateUtil.checkText(nickName, "유효하지 않은 닉네임");
 		ValidateUtil.checkOverLength(nickName, 100, "최대 글자수를 초과했습니다.");
 		return nickName;
 	}
@@ -96,7 +96,7 @@ public class User extends BaseEntity {
 	}
 
 	private String validateIntroduction(String introduction) {
-		ValidateUtil.checkText(introduction, "유효하지 않습니다.");
+		ValidateUtil.checkText(introduction, "유효하지 않는 자기소개");
 		ValidateUtil.checkOverLength(introduction, 255, "최대 글자수를 초과했습니다.");
 		return introduction;
 	}

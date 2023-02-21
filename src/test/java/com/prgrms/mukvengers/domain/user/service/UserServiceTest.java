@@ -51,8 +51,8 @@ class UserServiceTest extends ServiceTest {
 				.isEqualTo(userMapper.toSingleUserResponse(savedUser));
 		}
 
-		@DisplayName("[성공] 사용자의 프로필(닉네임, 프로필 이미지, 자기소개)를 한번에 수정할 수 있다.")
 		@Test
+		@DisplayName("[성공] 사용자의 프로필(닉네임, 프로필 이미지, 자기소개)를 한번에 수정할 수 있다.")
 		void updateUserProfileSuccessTest() {
 			//given
 			UpdateUserRequest request = new UpdateUserRequest("테스트2", "https://updateImg.jpg", "수정된 자기소개");
@@ -61,9 +61,9 @@ class UserServiceTest extends ServiceTest {
 			// then
 			assertThat(userProfile)
 				.hasFieldOrPropertyWithValue("id", savedUser.getId())
-				.hasFieldOrPropertyWithValue("nickname", "테스트2")
-				.hasFieldOrPropertyWithValue("profileImgUrl", "https://updateImg.jpg")
-				.hasFieldOrPropertyWithValue("introduction", "수정된 자기소개")
+				.hasFieldOrPropertyWithValue("nickname", request.nickName())
+				.hasFieldOrPropertyWithValue("profileImgUrl", request.profileImgUrl())
+				.hasFieldOrPropertyWithValue("introduction", request.introduction())
 				.hasFieldOrPropertyWithValue("leaderCount", 0)
 				.hasFieldOrPropertyWithValue("crewCount", 0)
 				.hasFieldOrPropertyWithValue("tasteScore", 0)
@@ -71,8 +71,8 @@ class UserServiceTest extends ServiceTest {
 			;
 		}
 
-		@DisplayName("[성공] 사용자 정보를 삭제할 수 있다.")
 		@Test
+		@DisplayName("[성공] 사용자 정보를 삭제할 수 있다.")
 		void deleteUserSuccessTest() {
 			assertDoesNotThrow(
 				() -> userService.deleteUser(savedUser.getId())
@@ -82,8 +82,8 @@ class UserServiceTest extends ServiceTest {
 				.isInstanceOf(UserNotFoundException.class);
 		}
 
-		@DisplayName("[실패] userId에 해당하는 사용자가 없으면 UserNotFoundException")
 		@Test
+		@DisplayName("[실패] userId에 해당하는 사용자가 없으면 UserNotFoundException")
 		void notFoundMatchUser() {
 			Long UNSAVED_USER_ID = 0L;
 			assertAll(
