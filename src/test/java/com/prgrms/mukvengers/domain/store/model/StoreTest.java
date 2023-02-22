@@ -8,68 +8,53 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 
-import com.prgrms.mukvengers.testutil.StoreObjectProvider;
+import com.prgrms.mukvengers.utils.StoreObjectProvider;
 
 class StoreTest {
-
-	private final GeometryFactory gf = new GeometryFactory();
-
-	private final double longitude = -147.4654321321;
-
-	private final double latitude = 35.75413579;
-
-	private final String apiId = "16618597";
 
 	@Test
 	@DisplayName("모든 필드가 유효하면 인스턴스 생성한다.")
 	void constructor_success() {
 
-		Point location = gf.createPoint(new Coordinate(longitude, latitude));
-
-		assertDoesNotThrow(() -> StoreObjectProvider.createStore(location, apiId));
-
+		assertDoesNotThrow(() -> StoreObjectProvider.createStore());
 	}
 
 	@ParameterizedTest
 	@NullSource
 	@DisplayName("Point값이 null일 경우 인스턴스 생성에 실패한다.")
-	void validatePosition(Point location) {
+	void validatePosition_fail(Point location) {
 
-		assertThrows(IllegalArgumentException.class, () -> StoreObjectProvider.createStore(location, apiId));
+		assertThrows(IllegalArgumentException.class, () -> StoreObjectProvider.createStore(location));
 	}
 
 	@ParameterizedTest
 	@ValueSource(doubles = {-191.45473, 195.245678, 242.7564, -242.3456})
 	@DisplayName("경도값이 유효하지 않으면 인스턴스 생성에 실패한다.")
-	void validateLongitude(double longitude) {
+	void validateLongitude_fail(double longitude) {
 
-		Point location = gf.createPoint(new Coordinate(longitude, latitude));
+		double latitude = 50;
 
-		assertThrows(IllegalArgumentException.class, () -> StoreObjectProvider.createStore(location, apiId));
+		assertThrows(IllegalArgumentException.class, () -> StoreObjectProvider.createStore(latitude, longitude));
 	}
 
 	@ParameterizedTest
 	@ValueSource(doubles = {-91.45473, 95.245678, 102.7564, -142.3456})
 	@DisplayName("위도값이 유효하지 않으면 인스턴스 생성에 실패한다.")
-	void validateLatitude(double latitude) {
+	void validateLatitude_fail(double latitude) {
 
-		Point location = gf.createPoint(new Coordinate(longitude, latitude));
+		double longitude = 50;
 
-		assertThrows(IllegalArgumentException.class, () -> StoreObjectProvider.createStore(location, apiId));
+		assertThrows(IllegalArgumentException.class, () -> StoreObjectProvider.createStore(latitude, longitude));
 	}
 
 	@ParameterizedTest
 	@NullAndEmptySource
 	@DisplayName("apiId값이 null이거나, 빈 문자열일 경우 인스턴스 생성에 실패한다.")
-	void validateApiId(String apiId) {
+	void validateApiId_fail(String mapStoreId) {
 
-		Point location = gf.createPoint(new Coordinate(longitude, latitude));
-
-		assertThrows(IllegalArgumentException.class, () -> StoreObjectProvider.createStore(location, apiId));
+		assertThrows(IllegalArgumentException.class, () -> StoreObjectProvider.createStore(mapStoreId));
 	}
 
 }
