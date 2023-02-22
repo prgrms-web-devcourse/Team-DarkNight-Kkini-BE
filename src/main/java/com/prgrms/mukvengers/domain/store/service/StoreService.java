@@ -22,7 +22,6 @@ public class StoreService {
 	public String create(CreateStoreRequest createStoreRequest) {
 
 		Store store = storeMapper.toStore(createStoreRequest);
-
 		Store save = storeRepository.save(store);
 
 		return save.getMapStoreId();

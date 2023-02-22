@@ -20,8 +20,6 @@ public interface StoreMapper {
 	@Named("pointMethod")
 	default Point mapPoint(CreateStoreRequest createStoreRequest) {
 
-		GeometryFactory gf = new GeometryFactory();
-
 		String pointWKT = String.format("POINT(%s %s)", createStoreRequest.latitude(),
 			createStoreRequest.longitude());
 

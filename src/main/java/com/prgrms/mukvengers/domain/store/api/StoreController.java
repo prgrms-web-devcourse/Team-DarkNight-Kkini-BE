@@ -19,8 +19,8 @@ import com.prgrms.mukvengers.domain.store.service.StoreService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/stores")
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/stores")
 public class StoreController {
 
 	private final StoreService storeService;
