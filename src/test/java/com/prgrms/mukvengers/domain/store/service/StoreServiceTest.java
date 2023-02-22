@@ -30,26 +30,22 @@ class StoreServiceTest extends ServiceTest {
 	@DisplayName("Store 저장에 성공한다.")
 	@Transactional
 	void create_success() {
-
+		//given
 		CreateStoreRequest createStoreRequest = StoreObjectProvider.getCreateStoreRequest();
-
 		GeometryFactory gf = new GeometryFactory();
-
 		double latitude = Double.parseDouble(createStoreRequest.latitude());
-
 		double longitude = Double.parseDouble(createStoreRequest.longitude());
-
 		Point location = gf.createPoint(new Coordinate(latitude, longitude));
 
+		//when
 		String mapStoreId = storeService.create(createStoreRequest);
 
+		//then
 		Optional<Store> optionalStore = storeRepository.findByMapStoreId(mapStoreId);
 
 		assertThat(storeRepository.count()).isNotZero();
-
 		assertThat(optionalStore).isPresent();
 		Store store = optionalStore.get();
-
 		assertThat(store)
 			.hasFieldOrPropertyWithValue("location", location)
 			.hasFieldOrPropertyWithValue("mapStoreId", createStoreRequest.mapStoreId());
