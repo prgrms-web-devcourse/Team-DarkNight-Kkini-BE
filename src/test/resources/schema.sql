@@ -33,11 +33,12 @@ CREATE TABLE users
 
 CREATE TABLE store
 (
-    id         bigint          NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    location   geometry(point) NOT NULL,
-    created_at dateTime        NOT NULL DEFAULT now(),
-    updated_at dateTime        NOT NULL DEFAULT now(),
-    deleted    tinyint         NOT NULL DEFAULT 0
+    id           bigint          NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    location     geometry(point) NOT NULL,
+    map_store_id varchar(255)    NOT NULL,
+    created_at   dateTime        NOT NULL DEFAULT now(),
+    updated_at   dateTime        NOT NULL DEFAULT now(),
+    deleted      tinyint         NOT NULL DEFAULT false
 );
 
 CREATE TABLE crew
