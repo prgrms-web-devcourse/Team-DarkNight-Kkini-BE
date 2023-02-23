@@ -22,7 +22,7 @@ import com.prgrms.mukvengers.utils.StoreObjectProvider;
 class StoreServiceTest {
 
 	@Autowired
-	private StoreService storeService;
+	private DefaultStoreService storeService;
 
 	@Autowired
 	private StoreRepository storeRepository;
