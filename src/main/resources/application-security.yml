@@ -2,7 +2,8 @@
 jwt:
   issuer: ${JWT_ISSUER}
   secret-key: ${JWT_SECRET_KEY}
-  expiry-seconds: 3600
+  expiry-seconds:
+    access-token: 3600
 
 spring:
   security:

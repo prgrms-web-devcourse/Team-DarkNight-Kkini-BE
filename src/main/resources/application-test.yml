@@ -38,4 +38,5 @@ logging:
 jwt:
   issuer: ${JWT_ISSUER}
   secret-key: ${JWT_SECRET_KEY}
-  expiry-seconds: 2
+  expiry-seconds:
+    access-token: 10

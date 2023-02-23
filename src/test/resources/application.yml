@@ -2,3 +2,4 @@ spring:
   profiles:
     include:
       - test
+      - security
