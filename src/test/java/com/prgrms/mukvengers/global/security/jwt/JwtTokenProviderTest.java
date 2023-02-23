@@ -1,6 +1,5 @@
 package com.prgrms.mukvengers.global.security.jwt;
 
-import static com.prgrms.mukvengers.utils.TestConstant.*;
 import static com.prgrms.mukvengers.utils.UserObjectProvider.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,6 +13,11 @@ import com.prgrms.mukvengers.global.security.token.exception.InvalidTokenExcepti
 import io.jsonwebtoken.Claims;
 
 class JwtTokenProviderTest {
+
+	private static final String ISSUER = "issuer";
+	private static final String SECRET_KEY = "kkini-team-kkini-project-fighting";
+	private static final int ACCESS_TOKEN_EXPIRY_SECONDS = 1;
+	private static final String USER_ROLE = "USER";
 
 	private final JwtTokenProvider jwtTokenProvider
 		= new JwtTokenProvider(ISSUER, SECRET_KEY, ACCESS_TOKEN_EXPIRY_SECONDS);
