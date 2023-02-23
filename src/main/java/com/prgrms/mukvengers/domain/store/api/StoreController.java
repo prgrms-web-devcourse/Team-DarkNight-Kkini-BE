@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.prgrms.mukvengers.domain.store.dto.request.CreateStoreRequest;
-import com.prgrms.mukvengers.domain.store.service.DefaultStoreService;
+import com.prgrms.mukvengers.domain.store.service.StoreService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/stores")
 public class StoreController {
 
-	private final DefaultStoreService storeService;
+	private final StoreService storeService;
 
 	/**
 	 * <pre>
