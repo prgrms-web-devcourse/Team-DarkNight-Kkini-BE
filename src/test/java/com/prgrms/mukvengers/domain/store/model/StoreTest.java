@@ -15,7 +15,7 @@ import com.prgrms.mukvengers.utils.StoreObjectProvider;
 class StoreTest {
 
 	@Test
-	@DisplayName("모든 필드가 유효하면 인스턴스 생성한다.")
+	@DisplayName("[성공] 모든 필드가 유효하면 인스턴스 생성한다.")
 	void constructor_success() {
 
 		assertDoesNotThrow(() -> StoreObjectProvider.createStore());
@@ -23,7 +23,7 @@ class StoreTest {
 
 	@ParameterizedTest
 	@NullSource
-	@DisplayName("Point값이 null일 경우 인스턴스 생성에 실패한다.")
+	@DisplayName("[실패] Point값이 null일 경우 인스턴스 생성에 실패한다.")
 	void validatePosition_fail(Point location) {
 
 		assertThrows(IllegalArgumentException.class, () -> StoreObjectProvider.createStore(location));
@@ -31,7 +31,7 @@ class StoreTest {
 
 	@ParameterizedTest
 	@ValueSource(doubles = {-191.45473, 195.245678, 242.7564, -242.3456})
-	@DisplayName("경도값이 유효하지 않으면 인스턴스 생성에 실패한다.")
+	@DisplayName("[실패] 경도값이 유효하지 않으면 인스턴스 생성에 실패한다.")
 	void validateLongitude_fail(double longitude) {
 
 		double latitude = 50;
@@ -41,7 +41,7 @@ class StoreTest {
 
 	@ParameterizedTest
 	@ValueSource(doubles = {-91.45473, 95.245678, 102.7564, -142.3456})
-	@DisplayName("위도값이 유효하지 않으면 인스턴스 생성에 실패한다.")
+	@DisplayName("[실패] 위도값이 유효하지 않으면 인스턴스 생성에 실패한다.")
 	void validateLatitude_fail(double latitude) {
 
 		double longitude = 50;
@@ -51,7 +51,7 @@ class StoreTest {
 
 	@ParameterizedTest
 	@NullAndEmptySource
-	@DisplayName("apiId값이 null이거나, 빈 문자열일 경우 인스턴스 생성에 실패한다.")
+	@DisplayName("[실패] apiId값이 null이거나, 빈 문자열일 경우 인스턴스 생성에 실패한다.")
 	void validateApiId_fail(String mapStoreId) {
 
 		assertThrows(IllegalArgumentException.class, () -> StoreObjectProvider.createStore(mapStoreId));

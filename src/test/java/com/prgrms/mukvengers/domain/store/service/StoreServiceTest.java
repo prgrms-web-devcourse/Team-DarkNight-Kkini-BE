@@ -28,7 +28,7 @@ class StoreServiceTest {
 	private StoreRepository storeRepository;
 
 	@Test
-	@DisplayName("Store 저장에 성공한다.")
+	@DisplayName("[성공] Store 저장에 성공한다.")
 	@Transactional
 	void create_success() {
 		//given
