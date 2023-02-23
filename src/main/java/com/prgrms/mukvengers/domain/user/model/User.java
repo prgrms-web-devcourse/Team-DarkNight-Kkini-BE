@@ -3,6 +3,8 @@ package com.prgrms.mukvengers.domain.user.model;
 import static javax.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -106,6 +108,10 @@ public class User extends BaseEntity {
 		this.profileImgUrl = validateProfileImgUrl(updateUserRequest.profileImgUrl());
 		this.introduction = validateIntroduction(updateUserRequest.introduction());
 		return this;
+	}
+
+	public boolean isSameUser(Long userId) {
+		return Objects.equals(this.id, userId);
 	}
 
 }

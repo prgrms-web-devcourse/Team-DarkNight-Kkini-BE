@@ -1,5 +1,6 @@
 package com.prgrms.mukvengers.base;
 
+import static com.prgrms.mukvengers.utils.UserObjectProvider.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 
@@ -19,20 +20,35 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.mukvengers.config.RestDocsConfig;
+import com.prgrms.mukvengers.domain.user.model.User;
+import com.prgrms.mukvengers.domain.user.repository.UserRepository;
+import com.prgrms.mukvengers.global.security.jwt.JwtTokenProvider;
 
 @Transactional
-@ExtendWith(RestDocumentationExtension.class)
-@Import({RestDocsConfig.class})
 @SpringBootTest
+@Import({RestDocsConfig.class})
+@ExtendWith(RestDocumentationExtension.class)
 public abstract class ControllerTest {
+
+	protected final String BEARER_TYPE = "Bearer ";
 
 	@Autowired
 	protected RestDocumentationResultHandler restDocs;
 
 	@Autowired
+	protected JwtTokenProvider jwtTokenProvider;
+
+	@Autowired
+	protected UserRepository userRepository;
+
+	@Autowired
 	protected ObjectMapper objectMapper;
 
 	protected MockMvc mockMvc;
+
+	protected User savedUser;
+	protected Long savedUserId;
+	protected String ACCESS_TOKEN;
 
 	@BeforeEach
 	void setUpRestDocs(WebApplicationContext webApplicationContext,
@@ -43,6 +59,13 @@ public abstract class ControllerTest {
 			.apply(springSecurity())
 			.alwaysDo(restDocs)
 			.build();
+	}
+
+	@BeforeEach
+	void setUpLogin() {
+		savedUser = userRepository.save(createUser());
+		savedUserId = savedUser.getId();
+		ACCESS_TOKEN = jwtTokenProvider.createAccessToken(savedUserId, "USER");
 	}
 
 }

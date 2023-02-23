@@ -23,14 +23,8 @@ class UserRepositoryTest extends RepositoryTest {
 	@DisplayName("[성공] 유저 엔티티를 저장할 수 있다.")
 	void saveSuccessTest() {
 		// given
-		User user = User.builder()
-			.nickname("테스트")
-			.profileImgUrl("https://defaultImg.jpg")
-			.provider("kakao")
-			.oauthId("12345")
-			.build();
 		// when
-		User savedUser = userRepository.save(user);
+		User savedUser = userRepository.save(createUser());
 		Optional<User> foundUser = userRepository.findById(savedUser.getId());
 		// then
 		assertThat(foundUser).isPresent();

@@ -5,6 +5,7 @@ import com.prgrms.mukvengers.domain.user.model.User;
 
 public class UserObjectProvider {
 
+	public static final Long USER_ID = 1L;
 	public static final String DEFAULT_NICKNAME = "끼니";
 	public static final String DEFAULT_PROFILE_IMG_URL = "https://defaultImg.jpg";
 	public static final String PROVIDER_KAKAO = "kakao";
