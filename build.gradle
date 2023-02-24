@@ -35,7 +35,7 @@ swaggerSources {
 }
 
 openapi3 {
-    setServer("http://localhost:8080") // Swagger 서버 설정
+    setServer("http://3.35.95.125:8080") // Swagger 서버 설정
     title = "restdocs-swagger API Documentation"
     description = "Spring REST Docs with SwaggerUI."
     version = "1.0.0"
