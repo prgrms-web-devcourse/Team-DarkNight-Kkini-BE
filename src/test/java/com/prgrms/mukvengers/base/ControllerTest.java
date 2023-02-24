@@ -1,12 +1,14 @@
 package com.prgrms.mukvengers.base;
 
 import static com.prgrms.mukvengers.utils.UserObjectProvider.*;
+import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.restdocs.RestDocumentationContextProvider;
@@ -28,6 +30,7 @@ import com.prgrms.mukvengers.global.security.jwt.JwtTokenProvider;
 @SpringBootTest
 @Import({RestDocsConfig.class})
 @ExtendWith(RestDocumentationExtension.class)
+@AutoConfigureTestDatabase(replace = NONE)
 public abstract class ControllerTest {
 
 	protected final String BEARER_TYPE = "Bearer ";
