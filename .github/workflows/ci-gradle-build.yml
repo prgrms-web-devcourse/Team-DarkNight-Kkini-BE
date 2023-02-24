@@ -5,8 +5,8 @@ on:
     branches:
       - main
       - develop
-  pull_request:
-    branches: [ develop ]
+    pull_request:
+      branches: [ develop ]
 
 # 권한 설정
 permissions:
