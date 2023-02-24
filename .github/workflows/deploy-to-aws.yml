@@ -1,15 +1,11 @@
-name: CI/CD
+name: CD - Deploy to AWS by docker
 
 on:
   push:
     branches:
       - main
-      - develop
 
-  pull_request:
-    branches: [ develop ]
-
-  # 권한 설정
+# 권한 설정
 permissions:
   contents: read
 
