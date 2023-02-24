@@ -4,36 +4,54 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
 import org.springframework.security.web.SecurityFilterChain;
+
+import com.prgrms.mukvengers.global.security.jwt.JwtAuthenticationEntryPoint;
+import com.prgrms.mukvengers.global.security.jwt.JwtAuthenticationFilter;
+import com.prgrms.mukvengers.global.security.token.exception.ExceptionHandlerFilter;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+	private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+	private final ExceptionHandlerFilter exceptionHandlerFilter;
 
 	@Bean
 	public SecurityFilterChain httpSecurity(HttpSecurity http) throws Exception {
 		return http
-			.csrf().disable()
 			.cors()
 			.and()
-			.authorizeRequests()
-			.antMatchers("/**").permitAll()
+			.authorizeHttpRequests()
+			.antMatchers("/tokens").permitAll()
+			.antMatchers("/docs/**").permitAll()
+			.antMatchers("/favicon.ico").permitAll()
+			.antMatchers("/api/v1/sample").permitAll()
+			.antMatchers("/api/v1/stores/**").permitAll()
+			.anyRequest().authenticated()
 			.and()
+			.httpBasic().disable()
+			.rememberMe().disable()
+			.csrf().disable()
+			.logout().disable()
+			.requestCache().disable()
+			.formLogin().disable()
+			.headers().disable()
+			.sessionManagement()
+			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			.and()
+			.exceptionHandling()
+			.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+			.and()
+			.addFilterBefore(jwtAuthenticationFilter, OAuth2AuthorizationRequestRedirectFilter.class)
+			.addFilterBefore(exceptionHandlerFilter, JwtAuthenticationFilter.class)
 			.build();
-	}
-
-	@Bean
-	public WebSecurityCustomizer webSecurityCustomizer() {
-		return web -> web.ignoring()
-			.antMatchers("/**");
-	}
-
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
 	}
 
 }

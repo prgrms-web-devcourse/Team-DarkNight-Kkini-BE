@@ -5,13 +5,14 @@ import lombok.Getter;
 @Getter
 public abstract class ServiceException extends RuntimeException {
 
-	protected static final String DOT = ".";
+	private final ErrorCode errorCode;
 
 	private final String messageKey;
 
 	private final Object[] params;
 
-	protected ServiceException(String messageKey, Object[] params) {
+	protected ServiceException(ErrorCode errorCode, String messageKey, Object[] params) {
+		this.errorCode = errorCode;
 		this.messageKey = messageKey;
 		this.params = params;
 	}
