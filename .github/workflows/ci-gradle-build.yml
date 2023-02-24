@@ -30,7 +30,7 @@ jobs:
 
       # 테스트를 진행하기 위해 액션 서버에 docker로 mysql 띄우기
       - name: Create mysql docker container
-        run: sudo docker run -d -p 3305:3306 --env MYSQL_DATABASE="${{ MYSQL_DATABASE }}" --env MYSQL_ROOT_PASSWORD="${{ MYSQL_ROOT_PASSWORD }}" mysql:8.0.31
+        run: sudo docker run -d -p 3305:3306 --env MYSQL_DATABASE="${{ TEST_DATABASE }}" --env MYSQL_ROOT_PASSWORD="${{ TEST_DATASOURCE_PASSWORD }}" mysql:8.0.31
 
       # 빌드시 캐시 적용
       - name: Cache Gradle packages
