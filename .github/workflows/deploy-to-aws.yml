@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - develop
 
 # 권한 설정
 permissions:
@@ -28,15 +29,7 @@ jobs:
       
       # 도커 MYSQL 이미지 실행
       - name: Create mysql docker container
-        run: sudo docker run -d -p 3305:3306 --env MYSQL_DATABASE="${{ secrets.TEST_DATABASE }}" --env MYSQL_ROOT_PASSWORD="${{ secrets.TEST_DATASOURCE_PASSWORD }}" mysql:8.0.3
-      
-      # 빌드시 캐시 적용
-      - name: Cache Gradle packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle', '**/gradle-wrapper.properties') }}
-          restore-keys: ${{ runner.os }}-gradle
+        run: sudo docker run -d -p 3305:3306 --env MYSQL_DATABASE="${{ secrets.TEST_DATABASE }}" --env MYSQL_ROOT_PASSWORD="${{ secrets.TEST_DATASOURCE_PASSWORD }}" mysql:8.0.31
 
       # 빌드
       - name: Build with Gradle
