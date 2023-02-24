@@ -3,3 +3,7 @@ spring:
     include:
       - test
       - security
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
