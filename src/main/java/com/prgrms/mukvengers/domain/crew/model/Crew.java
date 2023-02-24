@@ -5,7 +5,11 @@ import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
+import java.nio.charset.StandardCharsets;
+
+import javax.persistence.AttributeConverter;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -17,6 +21,9 @@ import javax.persistence.OneToOne;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
+import org.springframework.stereotype.Component;
 
 import com.prgrms.mukvengers.domain.crew.model.vo.Category;
 import com.prgrms.mukvengers.domain.crew.model.vo.Status;
@@ -50,6 +57,8 @@ public class Crew extends BaseEntity {
 	@Column(nullable = false, length = 20)
 	private String name;
 
+	@Convert(converter = Store.PointConverter.class)
+	// @ColumnTransformer(write = "ST_PointFromText(?, 4326)", read = "ST_AsText(position)")
 	@Column(nullable = false)
 	private Point location;
 
@@ -79,5 +88,26 @@ public class Crew extends BaseEntity {
 		this.status = status;
 		this.content = content;
 		this.category = category;
+	}
+
+	@Component
+	public static class PointConverter implements AttributeConverter<Point, String> {
+		static WKTReader wktReader = new WKTReader();
+
+		@Override
+		public String convertToDatabaseColumn(Point attribute) {
+			return attribute.toText();
+		}
+
+		@Override
+		public Point convertToEntityAttribute(String dbData) {
+			try {
+				String decoded = new String(dbData.getBytes(), StandardCharsets.UTF_8);
+				System.out.println(decoded);
+				return (Point)wktReader.read(decoded);
+			} catch (ParseException e) {
+				throw new IllegalArgumentException();
+			}
+		}
 	}
 }
