@@ -1,6 +1,6 @@
--- init Schema SQL
+-- init SQL
 -- create schema mukvengers
--- use mukvengers
+-- use mukvengers;
 
 DROP TABLE IF EXISTS comment;
 DROP TABLE IF EXISTS post;
@@ -23,41 +23,41 @@ CREATE TABLE users
     leader_count    int          NOT NULL DEFAULT 0,
     crew_count      int          NOT NULL DEFAULT 0,
     reported_count  int          NOT NULL DEFAULT 0,
-    enabled         tinyint      NOT NULL DEFAULT 0,
+    enabled         boolean      NOT NULL DEFAULT false,
     provider        varchar(10)  NOT NULL,
     oauth_id        varchar(255) NOT NULL,
     created_at      dateTime     NOT NULL DEFAULT now(),
     updated_at      dateTime     NOT NULL DEFAULT now(),
-    deleted         tinyint      NULL     DEFAULT 0
+    deleted         boolean      NOT NULL DEFAULT false
 );
 
 CREATE TABLE store
 (
-    id           bigint          NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    location     geometry(point) NOT NULL,
-    map_store_id varchar(255)    NOT NULL,
-    created_at   dateTime        NOT NULL DEFAULT now(),
-    updated_at   dateTime        NOT NULL DEFAULT now(),
-    deleted      tinyint         NOT NULL DEFAULT false
+    id           bigint       NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    location     point        NOT NULL,
+    map_store_id varchar(255) NOT NULL,
+    created_at   dateTime     NOT NULL DEFAULT now(),
+    updated_at   dateTime     NOT NULL DEFAULT now(),
+    deleted      boolean      NOT NULL DEFAULT false
 );
 
 CREATE TABLE crew
 (
-    id         bigint          NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    leader_id  bigint          NOT NULL,
-    store_id   bigint          NOT NULL,
-    name       varchar(20)     NOT NULL,
-    location   geometry(point) NOT NULL,
-    capacity   int             NOT NULL DEFAULT 2,
-    status     varchar(255)    NOT NULL,
-    content    varchar(255)    NOT NULL,
-    category   varchar(255)    NOT NULL,
-    created_at dateTime        NOT NULL DEFAULT now(),
-    updated_at dateTime        NOT NULL DEFAULT now(),
-    deleted    tinyint         NOT NULL DEFAULT 0,
+    id         bigint       NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    leader_id  bigint       NOT NULL,
+    store_id   bigint       NOT NULL,
+    name       varchar(20)  NOT NULL,
+    location   point        NOT NULL,
+    capacity   int          NOT NULL DEFAULT 2,
+    status     varchar(255) NOT NULL,
+    content    varchar(255) NOT NULL,
+    category   varchar(255) NOT NULL,
+    created_at dateTime     NOT NULL DEFAULT now(),
+    updated_at dateTime     NOT NULL DEFAULT now(),
+    deleted    boolean      NOT NULL DEFAULT false,
 
-    FOREIGN KEY (leader_id) REFERENCES users (id),
-    FOREIGN KEY (store_id) REFERENCES store (id)
+    FOREIGN KEY fk_crew_leader_id (leader_id) REFERENCES users (id),
+    FOREIGN KEY fk_crew_store_id (store_id) REFERENCES store (id)
 );
 
 CREATE TABLE proposal
@@ -66,13 +66,13 @@ CREATE TABLE proposal
     user_id    bigint       NOT NULL,
     crew_id    bigint       NOT NULL,
     content    varchar(100) NOT NULL,
-    checked    tinyint      NOT NULL DEFAULT 0,
+    checked    boolean      NOT NULL DEFAULT false,
     created_at dateTime     NOT NULL DEFAULT now(),
     updated_at dateTime     NOT NULL DEFAULT now(),
-    deleted    tinyint      NOT NULL DEFAULT 0,
+    deleted    boolean      NOT NULL DEFAULT false,
 
-    FOREIGN KEY (user_id) REFERENCES users (id),
-    FOREIGN KEY (crew_id) REFERENCES crew (id)
+    FOREIGN KEY fk_proposal_user_id (user_id) REFERENCES users (id),
+    FOREIGN KEY fk_proposal_crew_id (crew_id) REFERENCES crew (id)
 );
 
 CREATE TABLE crew_member
@@ -80,14 +80,14 @@ CREATE TABLE crew_member
     id         bigint   NOT NULL PRIMARY KEY AUTO_INCREMENT,
     user_id    bigint   NOT NULL,
     crew_id    bigint   NOT NULL,
-    blocked    tinyint  NOT NULL DEFAULT 0,
-    ready      tinyint  NOT NULL DEFAULT 0,
+    blocked    boolean  NOT NULL DEFAULT false,
+    ready      boolean  NOT NULL DEFAULT false,
     created_at dateTime NOT NULL DEFAULT now(),
     updated_at dateTime NOT NULL DEFAULT now(),
-    deleted    tinyint  NOT NULL DEFAULT 0,
+    deleted    boolean  NOT NULL DEFAULT false,
 
-    FOREIGN KEY (user_id) REFERENCES users (id),
-    FOREIGN KEY (crew_id) REFERENCES crew (id)
+    FOREIGN KEY fk_crew_member_user_id (user_id) REFERENCES users (id),
+    FOREIGN KEY fk_crew_member_crew_id (crew_id) REFERENCES crew (id)
 );
 
 CREATE TABLE review
@@ -103,11 +103,11 @@ CREATE TABLE review
     taste_point  int          NULL,
     created_at   dateTime     NOT NULL DEFAULT now(),
     updated_at   dateTime     NOT NULL DEFAULT now(),
-    deleted      tinyint      NOT NULL DEFAULT 0,
+    deleted      boolean      NOT NULL DEFAULT false,
 
-    FOREIGN KEY (reviewer) REFERENCES users (id),
-    FOREIGN KEY (reviewee) REFERENCES users (id),
-    FOREIGN KEY (store_id) REFERENCES store (id)
+    FOREIGN KEY fk_review_reviewer (reviewer) REFERENCES users (id),
+    FOREIGN KEY fk_review_reviewee (reviewee) REFERENCES users (id),
+    FOREIGN KEY fk_review_store_id (store_id) REFERENCES store (id)
 );
 
 CREATE TABLE post
@@ -118,10 +118,9 @@ CREATE TABLE post
     content    varchar(500) NOT NULL,
     created_at dateTime     NOT NULL DEFAULT now(),
     updated_at dateTime     NOT NULL DEFAULT now(),
-    deleted    tinyint      NOT NULL DEFAULT 0,
+    deleted    boolean      NOT NULL DEFAULT false,
 
-    FOREIGN KEY (leader_id) REFERENCES users (id),
-    FOREIGN KEY (crew_id) REFERENCES crew (id)
+    FOREIGN KEY fk_post_crew_id (crew_id) REFERENCES crew (id)
 );
 
 CREATE TABLE comment
@@ -133,10 +132,9 @@ CREATE TABLE comment
     content           varchar(255) NOT NULL,
     created_at        dateTime     NOT NULL DEFAULT now(),
     updated_at        dateTime     NOT NULL DEFAULT now(),
-    deleted           tinyint      NOT NULL DEFAULT 0,
+    deleted           boolean      NOT NULL DEFAULT false,
 
-    FOREIGN KEY (user_id) REFERENCES users (id),
-    FOREIGN KEY (post_id) REFERENCES post (id),
-    FOREIGN KEY (parent_comment_id) REFERENCES comment (id)
+    FOREIGN KEY fk_comment_leader_id (user_id) REFERENCES users (id),
+    FOREIGN KEY fk_comment_post_id (post_id) REFERENCES post (id),
+    FOREIGN KEY fk_comment_parent_comment_id (parent_comment_id) REFERENCES comment (id)
 );
-

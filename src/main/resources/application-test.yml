@@ -3,17 +3,13 @@ spring:
     import: optional:file:.env[.properties]
 
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:test;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false;
-    username: sa
-    password:
-
-  sql:
-    init:
-      schema-locations: classpath:schema.sql
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3305/mukvengers?serverTimezone=UTC
+    username: root
+    password: team-kkini
 
   jpa:
-    database: h2
+    database: mysql
     generate-ddl: false
     open-in-view: false
     hibernate:
