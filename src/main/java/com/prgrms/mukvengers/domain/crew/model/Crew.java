@@ -1,9 +1,12 @@
 package com.prgrms.mukvengers.domain.crew.model;
 
+import static io.jsonwebtoken.lang.Assert.*;
 import static javax.persistence.EnumType.*;
 import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
+import static org.springframework.util.Assert.isTrue;
+import static org.springframework.util.Assert.notNull;
 
 import java.nio.charset.StandardCharsets;
 
@@ -30,7 +33,9 @@ import com.prgrms.mukvengers.domain.crew.model.vo.Status;
 import com.prgrms.mukvengers.domain.store.model.Store;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.global.common.domain.BaseEntity;
+import com.prgrms.mukvengers.global.utils.ValidateUtil;
 
+import io.jsonwebtoken.lang.Assert;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,6 +46,11 @@ import lombok.NoArgsConstructor;
 @Where(clause = "deleted = false")
 @SQLDelete(sql = "UPDATE crew set deleted = true where id=?")
 public class Crew extends BaseEntity {
+
+	private static final Integer MAX_LATITUDE = 90;
+	private static final Integer MIN_LATITUDE = -90;
+	private static final Integer MAX_LONGITUDE = 180;
+	private static final Integer MIN_LONGITUDE = -180;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -65,15 +75,15 @@ public class Crew extends BaseEntity {
 	@Column(nullable = false)
 	private Integer capacity;
 
-	@Column(nullable = false, length = 255)
 	@Enumerated(STRING)
+	@Column(nullable = false)
 	private Status status;
 
-	@Column(nullable = false)
+	@Column
 	private String content;
 
-	@Column(nullable = false, length = 255)
 	@Enumerated(STRING)
+	@Column(nullable = false)
 	private Category category;
 
 	@Builder
@@ -103,11 +113,47 @@ public class Crew extends BaseEntity {
 		public Point convertToEntityAttribute(String dbData) {
 			try {
 				String decoded = new String(dbData.getBytes(), StandardCharsets.UTF_8);
-				System.out.println(decoded);
+
 				return (Point)wktReader.read(decoded);
 			} catch (ParseException e) {
 				throw new IllegalArgumentException();
 			}
 		}
 	}
+
+	private void validateUser(User user) {
+		notNull(user, "유효하지 않는 유저입니다");
+	}
+
+	private void validateStore(Store store) {
+		notNull(store, "유효하지 않는 가게입니다");
+	}
+
+	private void validateName(String name) {
+		ValidateUtil.checkText(name, "유효하지 않는 모임 이름입니다.");
+	}
+
+	private void validatePosition(Point location) {
+		notNull(location, "유효하지 않는 위치입니다.");
+	}
+	private void validateLatitude(Point location) {
+		isTrue(location.getX() >= MIN_LATITUDE && location.getX() <= MAX_LATITUDE, "유효하지 않는 위도 값입니다.");
+	}
+
+	private void validateLongitude(Point location) {
+		isTrue(location.getY() >= MIN_LONGITUDE && location.getY() <= MAX_LONGITUDE, "유효하지 않는 경도 값입니다.");
+	}
+
+	private void validateCapacity(Integer capacity) {
+		isTrue(2<=capacity&&capacity<=8,"유효하지 않는 인원 수 입니다");
+	}
+
+	private void validateStatus(Status status) {
+		notNull(status, "유효하지 않는 상태입니다.");
+	}
+
+	private void validateStatus(Category category) {
+		notNull(category, "유효하지 않는 카테고리입니다.");
+	}
+
 }
