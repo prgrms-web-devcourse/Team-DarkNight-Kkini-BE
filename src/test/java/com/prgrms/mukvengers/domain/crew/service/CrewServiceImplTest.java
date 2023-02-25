@@ -1,9 +1,8 @@
 package com.prgrms.mukvengers.domain.crew.service;
 
-import static com.prgrms.mukvengers.domain.crew.model.vo.Category.*;
-import static com.prgrms.mukvengers.domain.crew.model.vo.Status.*;
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -15,14 +14,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.mukvengers.base.ServiceTest;
-import com.prgrms.mukvengers.domain.crew.dto.CreateCrewRequest;
+import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
+import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
+import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
+import com.prgrms.mukvengers.domain.crew.model.vo.Category;
+import com.prgrms.mukvengers.domain.crew.model.vo.Status;
 import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
 import com.prgrms.mukvengers.domain.store.model.Store;
 import com.prgrms.mukvengers.domain.store.repository.StoreRepository;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
+import com.prgrms.mukvengers.utils.CrewObjectProvider;
 import com.prgrms.mukvengers.utils.StoreObjectProvider;
 import com.prgrms.mukvengers.utils.UserObjectProvider;
 
@@ -41,18 +45,11 @@ class CrewServiceImplTest extends ServiceTest {
 	private UserRepository userRepository;
 
 	@Test
-	@DisplayName("[성공] Crew 저장에 성공한다.")
 	@Transactional
+	@DisplayName("[성공] Crew 저장에 성공한다.")
 	void create_success() {
 
 		String mapStoreId = "16618597";
-		String name = "원정대이름";
-		String latitude = "35.75413579";
-		String longitude = "-147.4654321321";
-		Integer capacity = 5;
-		String status = "모집중";
-		String content = "저는 백엔드 개발자 입니다. 프론트 엔드 개발자 구해요";
-		String category = "조용한";
 
 		User user = UserObjectProvider.createUser();
 
@@ -62,16 +59,7 @@ class CrewServiceImplTest extends ServiceTest {
 
 		storeRepository.save(store);
 
-		CreateCrewRequest createCrewRequest = new CreateCrewRequest(
-			mapStoreId,
-			name,
-			latitude,
-			longitude,
-			capacity,
-			status,
-			content,
-			category
-		);
+		CreateCrewRequest createCrewRequest = CrewObjectProvider.getCreateCrewRequest(mapStoreId);
 
 		GeometryFactory gf = new GeometryFactory();
 		double parseLatitude = Double.parseDouble(createCrewRequest.latitude());
@@ -87,12 +75,39 @@ class CrewServiceImplTest extends ServiceTest {
 		assertThat(crew)
 			.hasFieldOrPropertyWithValue("leader", user)
 			.hasFieldOrPropertyWithValue("store", store)
-			.hasFieldOrPropertyWithValue("name", name)
+			.hasFieldOrPropertyWithValue("name", createCrewRequest.name())
 			.hasFieldOrPropertyWithValue("location", location)
-			.hasFieldOrPropertyWithValue("capacity", capacity)
-			.hasFieldOrPropertyWithValue("status", RECRUITING)
-			.hasFieldOrPropertyWithValue("content", content)
-			.hasFieldOrPropertyWithValue("category", QUIET);
+			.hasFieldOrPropertyWithValue("capacity", createCrewRequest.capacity())
+			.hasFieldOrPropertyWithValue("status", Status.getStatus(createCrewRequest.status()))
+			.hasFieldOrPropertyWithValue("content", createCrewRequest.content())
+			.hasFieldOrPropertyWithValue("category", Category.getCategory(createCrewRequest.category()));
+	}
+
+	@Test
+	@Transactional
+	@DisplayName("[성공] map api 아이디로 Crew 조회를 한다")
+	void findByMapStoreId_success() {
+
+		String mapStoreId = "16618597";
+
+		User user = UserObjectProvider.createUser();
+
+		userRepository.save(user);
+
+		Store store = StoreObjectProvider.createStore(mapStoreId);
+
+		storeRepository.save(store);
+
+		List<Crew> crews = CrewObjectProvider.createCrews(user, store);
+
+		crewRepository.saveAll(crews);
+
+		CrewResponses crewResponses = crewService.findByMapStoreId(mapStoreId);
+
+		List<CrewResponse> responses = crewResponses.responses();
+
+		assertThat(responses).hasSize(crews.size());
+
 	}
 
 }
