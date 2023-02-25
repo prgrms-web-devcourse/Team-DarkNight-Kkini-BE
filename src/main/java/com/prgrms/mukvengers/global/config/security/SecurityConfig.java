@@ -34,6 +34,7 @@ public class SecurityConfig {
 			.antMatchers("/favicon.ico").permitAll()
 			.antMatchers("/api/v1/sample").permitAll()
 			.antMatchers("/api/v1/stores/**").permitAll()
+			.antMatchers("/api/v1/crews/**").permitAll()
 			.anyRequest().authenticated()
 			.and()
 			.httpBasic().disable()
