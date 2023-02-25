@@ -110,4 +110,34 @@ class CrewServiceImplTest extends ServiceTest {
 
 	}
 
+	@Test
+	@Transactional
+	@DisplayName("[성공] 사용자의 위치를 위경도로 받아 거리 안에 있는 밥 모임을 조회한다.")
+	void findByLocation_success() {
+
+		String mapStoreId = "16618597";
+
+		User user = UserObjectProvider.createUser();
+
+		userRepository.save(user);
+
+		Store store = StoreObjectProvider.createStore(mapStoreId);
+
+		storeRepository.save(store);
+
+		Crew crew = CrewObjectProvider.createCrew(user, store);
+
+		crewRepository.save(crew);
+
+		String latitude = "35.75413579";
+		String longitude = "-147.4654321321";
+
+		CrewResponses crewResponses = crewService.findByLocation(latitude, longitude);
+
+		List<CrewResponse> responses = crewResponses.responses();
+
+		assertThat(responses).hasSize(1);
+
+	}
+
 }
