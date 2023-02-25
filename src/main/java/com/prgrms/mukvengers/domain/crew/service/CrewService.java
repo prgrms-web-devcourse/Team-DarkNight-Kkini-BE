@@ -11,4 +11,6 @@ public interface CrewService {
 	IdResponse create(CreateCrewRequest createCrewRequest, Long userId);
 
 	CrewResponses findByMapStoreId(String mapStoreId);
+
+	CrewResponses findByLocation(String latitude, String longitude);
 }

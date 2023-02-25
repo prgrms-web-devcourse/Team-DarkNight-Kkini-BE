@@ -2,6 +2,9 @@ package com.prgrms.mukvengers.domain.crew.service;
 
 import java.util.List;
 
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,6 +56,23 @@ public class CrewServiceImpl implements CrewService{
 
 		return new CrewResponses(responses);
 
+	}
+
+	@Override
+	public CrewResponses findByLocation(String latitude, String longitude) {
+		String pointWKT = String.format("POINT(%s %s)", latitude,
+			longitude);
+
+		try {
+			Point point = (Point)new WKTReader().read(pointWKT);
+
+			List<CrewResponse> responses = crewRepository.findAllByDistance(point, 500)
+				.stream().map(crewMapper::toCrewResponse).toList();
+
+			return new CrewResponses(responses);
+		} catch (ParseException e) {
+			throw new IllegalArgumentException();
+		}
 	}
 
 }
