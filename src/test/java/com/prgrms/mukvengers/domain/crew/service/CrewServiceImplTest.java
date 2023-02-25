@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.mukvengers.base.ServiceTest;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
+import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
@@ -138,6 +139,38 @@ class CrewServiceImplTest extends ServiceTest {
 
 		assertThat(responses).hasSize(1);
 
+	}
+
+	@Test
+	@Transactional
+	@DisplayName("[성공] 모임의 상태를 받아 변경한다.")
+	void updateStatus_success() {
+
+		String mapStoreId = "16618597";
+
+		User user = UserObjectProvider.createUser();
+
+		userRepository.save(user);
+
+		Store store = StoreObjectProvider.createStore(mapStoreId);
+
+		storeRepository.save(store);
+
+		Crew crew = CrewObjectProvider.createCrew(user, store);
+
+		crewRepository.save(crew);
+
+		String status = "모집종료";
+
+		UpdateStatusRequest updateStatusRequest = new UpdateStatusRequest(crew.getId(), status);
+
+		crewService.updateStatus(updateStatusRequest);
+
+		Optional<Crew> optionalCrew = crewRepository.findById(crew.getId());
+
+		assertThat(optionalCrew).isPresent();
+		Crew savedCrew = optionalCrew.get();
+		assertThat(savedCrew.getStatus()).isEqualTo(Status.getStatus(status));
 	}
 
 }
