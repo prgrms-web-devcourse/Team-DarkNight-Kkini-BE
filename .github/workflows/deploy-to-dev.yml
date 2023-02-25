@@ -3,8 +3,9 @@ name: CD - Deploy to AWS by docker
 on:
   push:
     branches:
-      - main
       - develop
+  pull_request:
+    branches: [ develop ]
 
 # 권한 설정
 permissions:
@@ -41,6 +42,15 @@ jobs:
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }} .
           docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
+
+      - name: Send To Env
+        uses: appleboy/scp-action@master
+        with:
+          username: ec2-user
+          host: ${{ secrets.EC2_HOST }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          source: "./.env"
+          target: "/home/ec2-user"
 
       - name: Deploy to dev
         uses: appleboy/ssh-action@master
