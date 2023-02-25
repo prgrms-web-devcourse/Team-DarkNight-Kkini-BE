@@ -1,12 +1,10 @@
 package com.prgrms.mukvengers.domain.crew.model;
 
-import static io.jsonwebtoken.lang.Assert.*;
 import static javax.persistence.EnumType.*;
 import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
-import static org.springframework.util.Assert.isTrue;
-import static org.springframework.util.Assert.notNull;
+import static org.springframework.util.Assert.*;
 
 import java.nio.charset.StandardCharsets;
 
@@ -21,6 +19,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.ColumnTransformer;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.locationtech.jts.geom.Point;
@@ -35,7 +34,6 @@ import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.global.common.domain.BaseEntity;
 import com.prgrms.mukvengers.global.utils.ValidateUtil;
 
-import io.jsonwebtoken.lang.Assert;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -68,7 +66,7 @@ public class Crew extends BaseEntity {
 	private String name;
 
 	@Convert(converter = Store.PointConverter.class)
-	// @ColumnTransformer(write = "ST_PointFromText(?, 4326)", read = "ST_AsText(position)")
+	@ColumnTransformer(write = "ST_PointFromText(?, 4326)", read = "ST_AsText(location)")
 	@Column(nullable = false)
 	private Point location;
 
@@ -136,6 +134,7 @@ public class Crew extends BaseEntity {
 	private void validatePosition(Point location) {
 		notNull(location, "유효하지 않는 위치입니다.");
 	}
+
 	private void validateLatitude(Point location) {
 		isTrue(location.getX() >= MIN_LATITUDE && location.getX() <= MAX_LATITUDE, "유효하지 않는 위도 값입니다.");
 	}
@@ -145,7 +144,7 @@ public class Crew extends BaseEntity {
 	}
 
 	private void validateCapacity(Integer capacity) {
-		isTrue(2<=capacity&&capacity<=8,"유효하지 않는 인원 수 입니다");
+		isTrue(2 <= capacity && capacity <= 8, "유효하지 않는 인원 수 입니다");
 	}
 
 	private void validateStatus(Status status) {
