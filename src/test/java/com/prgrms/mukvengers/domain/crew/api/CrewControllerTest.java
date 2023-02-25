@@ -16,13 +16,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.prgrms.mukvengers.base.ControllerTest;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
-import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
+import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
 import com.prgrms.mukvengers.domain.store.model.Store;
@@ -192,5 +191,44 @@ class CrewControllerTest extends ControllerTest {
 					fieldWithPath("responses.[].category").type(STRING).description("밥 모임 카테고리")
 				)
 			));
+	}
+
+	@Test
+	@DisplayName("[성공]밥 모임 상태를 변경한다.")
+	void updateStatus_success() throws Exception {
+
+		String mapStoreId = "16618597";
+
+		User user = UserObjectProvider.createUser();
+
+		userRepository.save(user);
+
+		Store store = StoreObjectProvider.createStore(mapStoreId);
+
+		storeRepository.save(store);
+
+		Crew crew = CrewObjectProvider.createCrew(user, store);
+
+		crewRepository.save(crew);
+
+		String status = "모집종료";
+
+		UpdateStatusRequest updateStatusRequest = new UpdateStatusRequest(crew.getId(), status);
+
+		String jsonRequest = objectMapper.writeValueAsString(updateStatusRequest);
+
+		mockMvc.perform(patch("/api/v1/crews")
+				.contentType(APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
+				.content(jsonRequest))
+			.andExpect(status().isOk())
+			.andDo(print())
+			.andDo(document("crew-updateStatus",
+				requestFields(
+					fieldWithPath("crewId").type(NUMBER).description("밥 모임 아이디"),
+					fieldWithPath("status").type(STRING).description("밥 모임 상태")
+				)
+			));
+
 	}
 }
