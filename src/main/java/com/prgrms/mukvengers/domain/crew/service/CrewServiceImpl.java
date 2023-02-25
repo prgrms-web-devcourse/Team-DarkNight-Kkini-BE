@@ -19,13 +19,14 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class CrewServiceImpl {
+public class CrewServiceImpl implements CrewService{
 
 	private final CrewRepository crewRepository;
 	private final UserRepository userRepository;
 	private final StoreRepository storeRepository;
 	private final CrewMapper crewMapper;
 
+	@Override
 	@Transactional
 	public IdResponse create(CreateCrewRequest createCrewRequest, Long userId) {
 		User user = userRepository.findById(userId)
