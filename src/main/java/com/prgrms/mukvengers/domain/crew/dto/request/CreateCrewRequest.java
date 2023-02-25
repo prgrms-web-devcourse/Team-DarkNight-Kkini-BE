@@ -1,4 +1,4 @@
-package com.prgrms.mukvengers.domain.crew.dto;
+package com.prgrms.mukvengers.domain.crew.dto.request;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
