@@ -13,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import org.hibernate.annotations.ColumnTransformer;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.locationtech.jts.geom.Point;
@@ -45,7 +46,7 @@ public class Store extends BaseEntity {
 	private Long id;
 
 	@Convert(converter = PointConverter.class)
-	// @ColumnTransformer(write = "ST_PointFromText(?, 4326)", read = "ST_AsText(position)")
+	@ColumnTransformer(write = "ST_PointFromText(?, 4326)", read = "ST_AsText(location)")
 	@Column(nullable = false)
 	private Point location;
 
