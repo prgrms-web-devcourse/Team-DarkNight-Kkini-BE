@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
+import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
 import com.prgrms.mukvengers.domain.crew.mapper.CrewMapper;
@@ -73,6 +74,15 @@ public class CrewServiceImpl implements CrewService{
 		} catch (ParseException e) {
 			throw new IllegalArgumentException();
 		}
+	}
+
+	@Override
+	public void updateStatus(UpdateStatusRequest updateStatusRequest) {
+		Crew crew = crewRepository.findById(updateStatusRequest.crewId())
+			.orElseThrow();
+
+		crew.changeStatus(updateStatusRequest.status());
+
 	}
 
 }

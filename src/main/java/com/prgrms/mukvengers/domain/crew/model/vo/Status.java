@@ -3,7 +3,9 @@ package com.prgrms.mukvengers.domain.crew.model.vo;
 import java.util.Arrays;
 
 public enum Status {
-	RECRUITING("모집중");
+	RECRUITING("모집중"),
+	CLOSE("모집종료"),
+	FINISH("식사완료");
 
 	private final String status;
 

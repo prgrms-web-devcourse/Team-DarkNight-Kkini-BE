@@ -88,6 +88,17 @@ public class Crew extends BaseEntity {
 	protected Crew(User leader, Store store, String name, Point location, Integer capacity, Status status,
 		String content,
 		Category category) {
+
+		validateUser(leader);
+		validateStore(store);
+		validateName(name);
+		validatePosition(location);
+		validateLatitude(location);
+		validateLongitude(location);
+		validateCapacity(capacity);
+		validateStatus(status);
+		validateCategory(category);
+
 		this.leader = leader;
 		this.store = store;
 		this.name = name;
@@ -96,6 +107,12 @@ public class Crew extends BaseEntity {
 		this.status = status;
 		this.content = content;
 		this.category = category;
+	}
+
+	public Status changeStatus(String status) {
+		this.status = validateStatus(Status.getStatus(status));
+
+		return this.status;
 	}
 
 	@Component
@@ -147,11 +164,12 @@ public class Crew extends BaseEntity {
 		isTrue(2 <= capacity && capacity <= 8, "유효하지 않는 인원 수 입니다");
 	}
 
-	private void validateStatus(Status status) {
+	private Status validateStatus(Status status) {
 		notNull(status, "유효하지 않는 상태입니다.");
+		return status;
 	}
 
-	private void validateStatus(Category category) {
+	private void validateCategory(Category category) {
 		notNull(category, "유효하지 않는 카테고리입니다.");
 	}
 
