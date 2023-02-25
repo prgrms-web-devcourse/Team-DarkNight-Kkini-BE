@@ -8,13 +8,16 @@ import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.prgrms.mukvengers.domain.crew.dto.CreateCrewRequest;
+import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
+import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
 import com.prgrms.mukvengers.domain.crew.service.CrewService;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
 import com.prgrms.mukvengers.global.security.jwt.JwtAuthentication;
@@ -40,4 +43,15 @@ public class CrewController {
 		return ResponseEntity.created(URI.create(createURL)).build();
 
 	}
+
+	@GetMapping(value = "/{mapStoreId}", produces = APPLICATION_JSON_VALUE)
+	public ResponseEntity<CrewResponses> findByMapStoreId(
+		@PathVariable String mapStoreId) {
+
+		CrewResponses responses = crewService.findByMapStoreId(mapStoreId);
+
+		return ResponseEntity.ok(responses);
+
+	}
+
 }
