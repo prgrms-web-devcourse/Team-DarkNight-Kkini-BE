@@ -111,11 +111,13 @@ tasks.withType(GenerateSwaggerUI).configureEach {
 
 tasks.register('copySwaggerUI', Copy) {
     dependsOn 'generateSwaggerUISample'
+    dependsOn "jar"
+    dependsOn "bootJarMainClassName"
 
     def generateSwaggerUISampleTask = tasks.named('generateSwaggerUISample', GenerateSwaggerUI).get()
 
     from("${generateSwaggerUISampleTask.outputDir}")
-    into("${project.buildDir}/resources/main/static/docs/api/.")
+    into("${project.buildDir}/resources/main/static/docs/")
 }
 
 task copyDocument(type: Copy) {
