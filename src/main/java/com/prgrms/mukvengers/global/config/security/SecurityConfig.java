@@ -10,6 +10,9 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import com.prgrms.mukvengers.global.security.jwt.JwtAuthenticationEntryPoint;
 import com.prgrms.mukvengers.global.security.jwt.JwtAuthenticationFilter;
+import com.prgrms.mukvengers.global.security.oauth.handler.HttpCookieOAuthAuthorizationRequestRepository;
+import com.prgrms.mukvengers.global.security.oauth.handler.OAuthAuthenticationFailureHandler;
+import com.prgrms.mukvengers.global.security.oauth.handler.OAuthAuthenticationSuccessHandler;
 import com.prgrms.mukvengers.global.security.token.exception.ExceptionHandlerFilter;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,9 @@ public class SecurityConfig {
 
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+	private final OAuthAuthenticationSuccessHandler oauthAuthenticationSuccessHandler;
+	private final OAuthAuthenticationFailureHandler oauthAuthenticationFailureHandler;
+	private final HttpCookieOAuthAuthorizationRequestRepository httpCookieOAuthAuthorizationRequestRepository;
 	private final ExceptionHandlerFilter exceptionHandlerFilter;
 
 	@Bean
@@ -30,7 +36,7 @@ public class SecurityConfig {
 			.and()
 			.authorizeHttpRequests()
 			.antMatchers("/tokens").permitAll()
-			.antMatchers("/docs/**").permitAll()
+			.antMatchers("/oauth2/**").permitAll()
 			.antMatchers("/favicon.ico").permitAll()
 			.antMatchers("/api/v1/sample").permitAll()
 			.antMatchers("/api/v1/stores/**").permitAll()
@@ -46,6 +52,13 @@ public class SecurityConfig {
 			.sessionManagement()
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and()
+			.oauth2Login()
+			.authorizationEndpoint().baseUri("/oauth2/authorization")
+			.authorizationRequestRepository(httpCookieOAuthAuthorizationRequestRepository)
+			.and()
+			.successHandler(oauthAuthenticationSuccessHandler)
+			.failureHandler(oauthAuthenticationFailureHandler)
+			.and()
 			.exceptionHandling()
 			.authenticationEntryPoint(jwtAuthenticationEntryPoint)
 			.and()
@@ -53,6 +66,5 @@ public class SecurityConfig {
 			.addFilterBefore(exceptionHandlerFilter, JwtAuthenticationFilter.class)
 			.build();
 	}
-
 }
 
