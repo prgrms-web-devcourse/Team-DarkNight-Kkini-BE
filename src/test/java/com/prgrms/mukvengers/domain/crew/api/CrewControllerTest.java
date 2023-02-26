@@ -75,6 +75,7 @@ class CrewControllerTest extends ControllerTest {
 
 		mockMvc.perform(get("/api/v1/crews/{mapStoreId}", savedStore.getMapStoreId())
 				.params(params)
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
 				.accept(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data").exists())
@@ -143,19 +144,20 @@ class CrewControllerTest extends ControllerTest {
 		String longitude = "-147.4654321321";
 
 		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-		params.add("x", latitude);
-		params.add("y", longitude);
+		params.add("latitude", latitude);
+		params.add("longitude", longitude);
 
 		mockMvc.perform(get("/api/v1/crews")
 				.params(params)
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
 				.accept(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data").exists())
 			.andDo(print())
 			.andDo(document("crew-findByLocation",
 				requestParameters(
-					parameterWithName("x").description("사용자의 위도"),
-					parameterWithName("y").description("가게 경도")),
+					parameterWithName("latitude").description("사용자의 위도"),
+					parameterWithName("longitude").description("가게 경도")),
 				responseFields(
 					fieldWithPath("data.responses.[].id").type(NUMBER).description("밥 모임 아이디"),
 					fieldWithPath("data.responses.[].leader").type(OBJECT).description("밥 모임 방장 정보"),

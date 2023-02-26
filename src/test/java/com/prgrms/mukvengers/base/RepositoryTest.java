@@ -1,5 +1,7 @@
 package com.prgrms.mukvengers.base;
 
+import static com.prgrms.mukvengers.utils.StoreObjectProvider.*;
+import static com.prgrms.mukvengers.utils.UserObjectProvider.*;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.*;
 
 import java.util.List;
@@ -18,8 +20,6 @@ import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
 import com.prgrms.mukvengers.global.config.jpa.JpaConfig;
 import com.prgrms.mukvengers.utils.CrewObjectProvider;
-import com.prgrms.mukvengers.utils.StoreObjectProvider;
-import com.prgrms.mukvengers.utils.UserObjectProvider;
 
 @DataJpaTest
 @Import(JpaConfig.class)
@@ -44,11 +44,9 @@ public abstract class RepositoryTest {
 	@BeforeEach
 	void setUp() {
 
-		savedUser = UserObjectProvider.createUser();
-		userRepository.save(savedUser);
+		userRepository.save(createUser());
 
-		savedStore = StoreObjectProvider.createStore();
-		storeRepository.save(savedStore);
+		storeRepository.save(createStore());
 
 		crews = CrewObjectProvider.createCrews(savedUser, savedStore);
 		crewRepository.saveAll(crews);

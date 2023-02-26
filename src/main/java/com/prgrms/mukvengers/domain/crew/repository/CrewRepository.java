@@ -23,6 +23,14 @@ public interface CrewRepository extends JpaRepository<Crew, Long> {
 	Slice<Crew> joinStoreByMapStoreId(@Param(value = "mapStoreId") String mapStoreId, @Param("id") Long id,
 		Pageable pageable);
 
+	@Query("""
+			SELECT c
+			FROM Crew c
+			JOIN FETCH  c.store s
+			WHERE s.mapStoreId = :mapStoreId
+		""")
+	Slice<Crew> joinStoreByMapStoreIdFirst(@Param(value = "mapStoreId") String mapStoreId, Pageable pageable);
+
 	@Query(nativeQuery = true, value =
 		"SELECT *, ST_DISTANCE_SPHERE(ST_POINTFROMTEXT(:#{#location.toText()}, 4326), ST_SRID(crew.location, 4326)) dist FROM crew "
 			+ "WHERE ST_DISTANCE_SPHERE(ST_POINTFROMTEXT(:#{#location.toText()}, 4326), ST_SRID(crew.location, 4326)) < :distance "

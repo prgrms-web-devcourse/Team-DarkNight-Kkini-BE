@@ -22,6 +22,12 @@ public enum ErrorCode {
 	// User
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "U001", "존재하지 않는 사용자입니다."),
 
+	// Store
+	STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "S001", "존재하지 않는 가게입니다."),
+
+	// Crew
+	CREW_NOT_FOUND(HttpStatus.NOT_FOUND, "CR001", "존재하지 않는 모임입니다."),
+
 	// Auth
 	INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "A001", "유효하지 않은 토큰입니다."),
 	EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "A002", "만료된 토큰입니다."),

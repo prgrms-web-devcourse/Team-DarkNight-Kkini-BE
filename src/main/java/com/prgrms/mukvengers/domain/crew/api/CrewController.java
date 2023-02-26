@@ -69,10 +69,10 @@ public class CrewController {
 	@GetMapping(value = "/{mapStoreId}", produces = APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponse<CrewSliceResponse>> findByMapStoreId(
 		@PathVariable String mapStoreId,
-		@RequestParam("cursorId") Long cursorId,
+		@RequestParam(required = false, value = "cursorId") Long cursorId,
 		@RequestParam("size") Integer size) {
 
-		CrewSliceResponse responses = crewService.findByMapStoreId(mapStoreId, cursorId, size);
+		CrewSliceResponse responses = crewService.getByMapStoreId(mapStoreId, cursorId, size);
 
 		return ResponseEntity.ok().body(new ApiResponse<>(responses));
 
@@ -82,16 +82,16 @@ public class CrewController {
 	 * <pre>
 	 *     사용자의 위도, 경도로 특정 거리 안에 있는 밥 모임 조회
 	 * </pre>
-	 * @param x 사용자 위도
-	 * @param y 사용자 경도
+	 * @param latitude 사용자 위도
+	 * @param longitude 사용자 경도
 	 * @return status : 200, body : 사용자 위치를 기반으로 특정 거리 안에 있는 밥 모임 정보
 	 */
 	@GetMapping(produces = APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponse<CrewResponses>> findByLocation(
-		@RequestParam("x") String x,
-		@RequestParam("y") String y
+		@RequestParam("latitude") String latitude,
+		@RequestParam("longitude") String longitude
 	) {
-		CrewResponses responses = crewService.findByLocation(x, y);
+		CrewResponses responses = crewService.getByLocation(latitude, longitude);
 
 		return ResponseEntity.ok().body(new ApiResponse<>(responses));
 	}

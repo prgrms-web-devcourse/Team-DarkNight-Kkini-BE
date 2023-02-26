@@ -67,7 +67,7 @@ class CrewServiceImplTest extends ServiceTest {
 
 		Integer size = 5;
 
-		CrewSliceResponse crewSliceResponse = crewService.findByMapStoreId(savedStore.getMapStoreId(), cursorId, size);
+		CrewSliceResponse crewSliceResponse = crewService.getByMapStoreId(savedStore.getMapStoreId(), cursorId, size);
 
 		Slice<CrewResponse> responses = crewSliceResponse.responses();
 
@@ -87,7 +87,7 @@ class CrewServiceImplTest extends ServiceTest {
 		String latitude = "35.75413579";
 		String longitude = "-147.4654321321";
 
-		CrewResponses crewResponses = crewService.findByLocation(latitude, longitude);
+		CrewResponses crewResponses = crewService.getByLocation(latitude, longitude);
 
 		List<CrewResponse> responses = crewResponses.responses();
 

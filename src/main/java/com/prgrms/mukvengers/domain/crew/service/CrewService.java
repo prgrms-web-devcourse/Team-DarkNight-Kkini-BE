@@ -10,9 +10,9 @@ public interface CrewService {
 
 	IdResponse create(CreateCrewRequest createCrewRequest, Long userId);
 
-	CrewSliceResponse findByMapStoreId(String mapStoreId, Long cursorId, Integer size);
+	CrewSliceResponse getByMapStoreId(String mapStoreId, Long cursorId, Integer size);
 
-	CrewResponses findByLocation(String latitude, String longitude);
+	CrewResponses getByLocation(String latitude, String longitude);
 
 	void updateStatus(UpdateStatusRequest updateStatusRequest);
 

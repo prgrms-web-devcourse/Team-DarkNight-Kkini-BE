@@ -17,9 +17,11 @@ import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewSliceResponse;
+import com.prgrms.mukvengers.domain.crew.exception.CrewNotFoundException;
 import com.prgrms.mukvengers.domain.crew.mapper.CrewMapper;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
+import com.prgrms.mukvengers.domain.store.exception.StoreNotFoundException;
 import com.prgrms.mukvengers.domain.store.model.Store;
 import com.prgrms.mukvengers.domain.store.repository.StoreRepository;
 import com.prgrms.mukvengers.domain.user.exception.UserNotFoundException;
@@ -46,7 +48,7 @@ public class CrewServiceImpl implements CrewService {
 			.orElseThrow(() -> new UserNotFoundException(userId));
 
 		Store store = storeRepository.findByMapStoreId(createCrewRequest.mapStoreId())
-			.orElseThrow();
+			.orElseThrow(() -> new StoreNotFoundException(createCrewRequest.mapStoreId()));
 
 		Crew crew = crewMapper.toCrew(createCrewRequest, user, store);
 
@@ -56,16 +58,24 @@ public class CrewServiceImpl implements CrewService {
 	}
 
 	@Override
-	public CrewSliceResponse findByMapStoreId(String mapStoreId, Long cursorId, Integer size) {
+	public CrewSliceResponse getByMapStoreId(String mapStoreId, Long cursorId, Integer size) {
 		Pageable pageable = PageRequest.of(0, size, Sort.by("id").descending());
 
-		Slice<CrewResponse> responses = crewRepository.joinStoreByMapStoreId(mapStoreId, cursorId, pageable)
-			.map(crewMapper::toCrewResponse);
+		Slice<CrewResponse> responses;
+
+		if (cursorId == null) {
+			responses = crewRepository.joinStoreByMapStoreIdFirst(mapStoreId, pageable)
+				.map(crewMapper::toCrewResponse);
+		} else {
+			responses = crewRepository.joinStoreByMapStoreId(mapStoreId, cursorId, pageable)
+				.map(crewMapper::toCrewResponse);
+		}
+
 		return new CrewSliceResponse(responses);
 	}
 
 	@Override
-	public CrewResponses findByLocation(String latitude, String longitude) {
+	public CrewResponses getByLocation(String latitude, String longitude) {
 		String pointWKT = String.format("POINT(%s %s)", latitude,
 			longitude);
 
@@ -84,7 +94,7 @@ public class CrewServiceImpl implements CrewService {
 	@Override
 	public void updateStatus(UpdateStatusRequest updateStatusRequest) {
 		Crew crew = crewRepository.findById(updateStatusRequest.crewId())
-			.orElseThrow();
+			.orElseThrow(() -> new CrewNotFoundException(updateStatusRequest.crewId()));
 
 		crew.changeStatus(updateStatusRequest.status());
 
