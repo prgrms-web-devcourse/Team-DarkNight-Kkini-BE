@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,52 +22,22 @@ import com.prgrms.mukvengers.domain.crew.dto.response.CrewSliceResponse;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crew.model.vo.Category;
 import com.prgrms.mukvengers.domain.crew.model.vo.Status;
-import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
-import com.prgrms.mukvengers.domain.store.model.Store;
-import com.prgrms.mukvengers.domain.store.repository.StoreRepository;
-import com.prgrms.mukvengers.domain.user.model.User;
-import com.prgrms.mukvengers.domain.user.repository.UserRepository;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
 import com.prgrms.mukvengers.utils.CrewObjectProvider;
-import com.prgrms.mukvengers.utils.StoreObjectProvider;
-import com.prgrms.mukvengers.utils.UserObjectProvider;
 
 class CrewServiceImplTest extends ServiceTest {
-
-	@Autowired
-	private CrewService crewService;
-
-	@Autowired
-	private CrewRepository crewRepository;
-
-	@Autowired
-	private StoreRepository storeRepository;
-
-	@Autowired
-	private UserRepository userRepository;
 
 	@Test
 	@Transactional
 	@DisplayName("[성공] Crew 저장에 성공한다.")
 	void create_success() {
 
-		String mapStoreId = "16618597";
+		CreateCrewRequest createCrewRequest = CrewObjectProvider.getCreateCrewRequest(savedStore.getMapStoreId());
 
-		User user = UserObjectProvider.createUser();
-
-		userRepository.save(user);
-
-		Store store = StoreObjectProvider.createStore(mapStoreId);
-
-		storeRepository.save(store);
-
-		CreateCrewRequest createCrewRequest = CrewObjectProvider.getCreateCrewRequest(mapStoreId);
-
-		GeometryFactory gf = new GeometryFactory();
 		double parseLatitude = Double.parseDouble(createCrewRequest.latitude());
 		double parseLongitude = Double.parseDouble(createCrewRequest.longitude());
 		Point location = gf.createPoint(new Coordinate(parseLatitude, parseLongitude));
-		IdResponse idResponse = crewService.create(createCrewRequest, user.getId());
+		IdResponse idResponse = crewService.create(createCrewRequest, savedUser.getId());
 
 		Optional<Crew> optionalCrew = crewRepository.findById(idResponse.id());
 
@@ -76,8 +45,8 @@ class CrewServiceImplTest extends ServiceTest {
 		assertThat(optionalCrew).isPresent();
 		Crew crew = optionalCrew.get();
 		assertThat(crew)
-			.hasFieldOrPropertyWithValue("leader", user)
-			.hasFieldOrPropertyWithValue("store", store)
+			.hasFieldOrPropertyWithValue("leader", savedUser)
+			.hasFieldOrPropertyWithValue("store", savedStore)
 			.hasFieldOrPropertyWithValue("name", createCrewRequest.name())
 			.hasFieldOrPropertyWithValue("location", location)
 			.hasFieldOrPropertyWithValue("capacity", createCrewRequest.capacity())
@@ -91,17 +60,7 @@ class CrewServiceImplTest extends ServiceTest {
 	@DisplayName("[성공] map api 아이디로 Crew 조회를 한다")
 	void findByMapStoreId_success() {
 
-		String mapStoreId = "16618597";
-
-		User user = UserObjectProvider.createUser();
-
-		userRepository.save(user);
-
-		Store store = StoreObjectProvider.createStore(mapStoreId);
-
-		storeRepository.save(store);
-
-		List<Crew> crews = CrewObjectProvider.createCrews(user, store);
+		List<Crew> crews = CrewObjectProvider.createCrews(savedUser, savedStore);
 
 		crewRepository.saveAll(crews);
 
@@ -109,7 +68,7 @@ class CrewServiceImplTest extends ServiceTest {
 
 		Integer size = 5;
 
-		CrewSliceResponse crewSliceResponse = crewService.findByMapStoreId(mapStoreId, cursorId, size);
+		CrewSliceResponse crewSliceResponse = crewService.findByMapStoreId(savedStore.getMapStoreId(), cursorId, size);
 
 		Slice<CrewResponse> responses = crewSliceResponse.responses();
 
@@ -122,17 +81,7 @@ class CrewServiceImplTest extends ServiceTest {
 	@DisplayName("[성공] 사용자의 위치를 위경도로 받아 거리 안에 있는 밥 모임을 조회한다.")
 	void findByLocation_success() {
 
-		String mapStoreId = "16618597";
-
-		User user = UserObjectProvider.createUser();
-
-		userRepository.save(user);
-
-		Store store = StoreObjectProvider.createStore(mapStoreId);
-
-		storeRepository.save(store);
-
-		Crew crew = CrewObjectProvider.createCrew(user, store);
+		Crew crew = CrewObjectProvider.createCrew(savedUser, savedStore);
 
 		crewRepository.save(crew);
 
@@ -152,17 +101,7 @@ class CrewServiceImplTest extends ServiceTest {
 	@DisplayName("[성공] 모임의 상태를 받아 변경한다.")
 	void updateStatus_success() {
 
-		String mapStoreId = "16618597";
-
-		User user = UserObjectProvider.createUser();
-
-		userRepository.save(user);
-
-		Store store = StoreObjectProvider.createStore(mapStoreId);
-
-		storeRepository.save(store);
-
-		Crew crew = CrewObjectProvider.createCrew(user, store);
+		Crew crew = CrewObjectProvider.createCrew(savedUser, savedStore);
 
 		crewRepository.save(crew);
 

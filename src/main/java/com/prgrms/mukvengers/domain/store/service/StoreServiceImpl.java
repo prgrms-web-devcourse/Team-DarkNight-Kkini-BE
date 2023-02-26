@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class DefaultStoreService implements StoreService{
+public class StoreServiceImpl implements StoreService{
 
 	private final StoreRepository storeRepository;
 	private final StoreMapper storeMapper;

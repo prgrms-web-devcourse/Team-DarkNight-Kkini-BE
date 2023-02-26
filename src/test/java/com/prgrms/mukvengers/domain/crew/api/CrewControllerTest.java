@@ -14,7 +14,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -23,33 +22,15 @@ import com.prgrms.mukvengers.base.ControllerTest;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
-import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
-import com.prgrms.mukvengers.domain.store.model.Store;
-import com.prgrms.mukvengers.domain.store.repository.StoreRepository;
-import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.utils.CrewObjectProvider;
-import com.prgrms.mukvengers.utils.StoreObjectProvider;
-import com.prgrms.mukvengers.utils.UserObjectProvider;
 
 class CrewControllerTest extends ControllerTest {
-
-	@Autowired
-	private StoreRepository storeRepository;
-
-	@Autowired
-	private CrewRepository crewRepository;
 
 	@Test
 	@DisplayName("[성공]밥 모임을 저장한다.")
 	void create_success() throws Exception {
 
-		Store store = StoreObjectProvider.createStore("16618597");
-
-		storeRepository.save(store);
-
-		String mapStoreId = "16618597";
-
-		CreateCrewRequest createCrewRequest = CrewObjectProvider.getCreateCrewRequest(mapStoreId);
+		CreateCrewRequest createCrewRequest = CrewObjectProvider.getCreateCrewRequest(savedStore.getMapStoreId());
 
 		String jsonRequest = objectMapper.writeValueAsString(createCrewRequest);
 
@@ -80,17 +61,7 @@ class CrewControllerTest extends ControllerTest {
 	@DisplayName("[성공] 맵 api 아이디로 해당 가게의 밥 모임을 전부 조회한다.")
 	void findByMapStoreId_success() throws Exception {
 
-		String mapStoreId = "16618597";
-
-		User user = UserObjectProvider.createUser();
-
-		userRepository.save(user);
-
-		Store store = StoreObjectProvider.createStore(mapStoreId);
-
-		storeRepository.save(store);
-
-		List<Crew> crews = CrewObjectProvider.createCrews(user, store);
+		List<Crew> crews = CrewObjectProvider.createCrews(savedUser, savedStore);
 
 		crewRepository.saveAll(crews);
 
@@ -102,11 +73,11 @@ class CrewControllerTest extends ControllerTest {
 		params.add("cursorId", String.valueOf(cursorId));
 		params.add("size", String.valueOf(size));
 
-		mockMvc.perform(get("/api/v1/crews/{mapStoreId}", mapStoreId)
+		mockMvc.perform(get("/api/v1/crews/{mapStoreId}", savedStore.getMapStoreId())
 				.params(params)
 				.accept(APPLICATION_JSON))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.responses").exists())
+			.andExpect(jsonPath("$.data").exists())
 			.andDo(print())
 			.andDo(document("crew-findByMapStoreId",
 				pathParameters(
@@ -116,45 +87,45 @@ class CrewControllerTest extends ControllerTest {
 					parameterWithName("cursorId").description("현제 커서 아이디"),
 					parameterWithName("size").description("한번에 가져올 데이터 사이즈")),
 				responseFields(
-					fieldWithPath("responses.content.[].id").type(NUMBER).description("밥 모임 아이디"),
-					fieldWithPath("responses.content.[].leader").type(OBJECT).description("밥 모임 방장 정보"),
-					fieldWithPath("responses.content.[].leader.id").type(NUMBER).description("방장 아이디"),
-					fieldWithPath("responses.content.[].leader.nickname").type(STRING).description("방장 닉네임"),
-					fieldWithPath("responses.content.[].leader.profileImgUrl").type(STRING).description("방장 프로필"),
-					fieldWithPath("responses.content.[].leader.introduction").type(STRING).description("방장 소개"),
-					fieldWithPath("responses.content.[].leader.leaderCount").type(NUMBER).description("방장 횟수"),
-					fieldWithPath("responses.content.[].leader.crewCount").type(NUMBER).description("방장 모임 참여 횟수"),
-					fieldWithPath("responses.content.[].leader.tasteScore").type(NUMBER).description("방장 맛잘알 점수"),
-					fieldWithPath("responses.content.[].leader.mannerScore").type(NUMBER).description("방장 매너온도"),
-					fieldWithPath("responses.content.[].store").type(OBJECT).description("밥 모임 가게 정보"),
-					fieldWithPath("responses.content.[].store.id").type(NUMBER).description("밥 모임 가게 아이디"),
-					fieldWithPath("responses.content.[].store.latitude").type(STRING).description("밥 모임 가게 위도"),
-					fieldWithPath("responses.content.[].store.longitude").type(STRING).description("밥 모임 가게 경도"),
-					fieldWithPath("responses.content.[].store.mapStoreId").type(STRING).description("맵 api 아이디"),
-					fieldWithPath("responses.content.[].name").type(STRING).description("밥 모임 이름"),
-					fieldWithPath("responses.content.[].latitude").type(STRING).description("가게 위도"),
-					fieldWithPath("responses.content.[].longitude").type(STRING).description("가게 경도"),
-					fieldWithPath("responses.content.[].capacity").type(NUMBER).description("밥 모임 정원"),
-					fieldWithPath("responses.content.[].status").type(STRING).description("밥 모임 상태"),
-					fieldWithPath("responses.content.[].content").type(STRING).description("밥 모임 내용"),
-					fieldWithPath("responses.content.[].category").type(STRING).description("밥 모임 카테고리"),
-					fieldWithPath("responses.pageable.sort.empty").type(BOOLEAN).description(""),
-					fieldWithPath("responses.pageable.sort.sorted").type(BOOLEAN).description(""),
-					fieldWithPath("responses.pageable.sort.unsorted").type(BOOLEAN).description(""),
-					fieldWithPath("responses.pageable.offset").type(NUMBER).description(""),
-					fieldWithPath("responses.pageable.pageSize").type(NUMBER).description(""),
-					fieldWithPath("responses.pageable.pageNumber").type(NUMBER).description(""),
-					fieldWithPath("responses.pageable.paged").type(BOOLEAN).description(""),
-					fieldWithPath("responses.pageable.unpaged").type(BOOLEAN).description(""),
-					fieldWithPath("responses.size").type(NUMBER).description(""),
-					fieldWithPath("responses.number").type(NUMBER).description(""),
-					fieldWithPath("responses.sort.empty").type(BOOLEAN).description(""),
-					fieldWithPath("responses.sort.sorted").type(BOOLEAN).description(""),
-					fieldWithPath("responses.sort.unsorted").type(BOOLEAN).description(""),
-					fieldWithPath("responses.first").type(BOOLEAN).description(""),
-					fieldWithPath("responses.last").type(BOOLEAN).description(""),
-					fieldWithPath("responses.numberOfElements").type(NUMBER).description(""),
-					fieldWithPath("responses.empty").type(BOOLEAN).description("")
+					fieldWithPath("data.responses.content.[].id").type(NUMBER).description("밥 모임 아이디"),
+					fieldWithPath("data.responses.content.[].leader").type(OBJECT).description("밥 모임 방장 정보"),
+					fieldWithPath("data.responses.content.[].leader.id").type(NUMBER).description("방장 아이디"),
+					fieldWithPath("data.responses.content.[].leader.nickname").type(STRING).description("방장 닉네임"),
+					fieldWithPath("data.responses.content.[].leader.profileImgUrl").type(STRING).description("방장 프로필"),
+					fieldWithPath("data.responses.content.[].leader.introduction").type(STRING).description("방장 소개"),
+					fieldWithPath("data.responses.content.[].leader.leaderCount").type(NUMBER).description("방장 횟수"),
+					fieldWithPath("data.responses.content.[].leader.crewCount").type(NUMBER).description("방장 모임 참여 횟수"),
+					fieldWithPath("data.responses.content.[].leader.tasteScore").type(NUMBER).description("방장 맛잘알 점수"),
+					fieldWithPath("data.responses.content.[].leader.mannerScore").type(NUMBER).description("방장 매너온도"),
+					fieldWithPath("data.responses.content.[].store").type(OBJECT).description("밥 모임 가게 정보"),
+					fieldWithPath("data.responses.content.[].store.id").type(NUMBER).description("밥 모임 가게 아이디"),
+					fieldWithPath("data.responses.content.[].store.latitude").type(STRING).description("밥 모임 가게 위도"),
+					fieldWithPath("data.responses.content.[].store.longitude").type(STRING).description("밥 모임 가게 경도"),
+					fieldWithPath("data.responses.content.[].store.mapStoreId").type(STRING).description("맵 api 아이디"),
+					fieldWithPath("data.responses.content.[].name").type(STRING).description("밥 모임 이름"),
+					fieldWithPath("data.responses.content.[].latitude").type(STRING).description("가게 위도"),
+					fieldWithPath("data.responses.content.[].longitude").type(STRING).description("가게 경도"),
+					fieldWithPath("data.responses.content.[].capacity").type(NUMBER).description("밥 모임 정원"),
+					fieldWithPath("data.responses.content.[].status").type(STRING).description("밥 모임 상태"),
+					fieldWithPath("data.responses.content.[].content").type(STRING).description("밥 모임 내용"),
+					fieldWithPath("data.responses.content.[].category").type(STRING).description("밥 모임 카테고리"),
+					fieldWithPath("data.responses.pageable.sort.empty").type(BOOLEAN).description(""),
+					fieldWithPath("data.responses.pageable.sort.sorted").type(BOOLEAN).description(""),
+					fieldWithPath("data.responses.pageable.sort.unsorted").type(BOOLEAN).description(""),
+					fieldWithPath("data.responses.pageable.offset").type(NUMBER).description(""),
+					fieldWithPath("data.responses.pageable.pageSize").type(NUMBER).description(""),
+					fieldWithPath("data.responses.pageable.pageNumber").type(NUMBER).description(""),
+					fieldWithPath("data.responses.pageable.paged").type(BOOLEAN).description(""),
+					fieldWithPath("data.responses.pageable.unpaged").type(BOOLEAN).description(""),
+					fieldWithPath("data.responses.size").type(NUMBER).description(""),
+					fieldWithPath("data.responses.number").type(NUMBER).description(""),
+					fieldWithPath("data.responses.sort.empty").type(BOOLEAN).description(""),
+					fieldWithPath("data.responses.sort.sorted").type(BOOLEAN).description(""),
+					fieldWithPath("data.responses.sort.unsorted").type(BOOLEAN).description(""),
+					fieldWithPath("data.responses.first").type(BOOLEAN).description(""),
+					fieldWithPath("data.responses.last").type(BOOLEAN).description(""),
+					fieldWithPath("data.responses.numberOfElements").type(NUMBER).description(""),
+					fieldWithPath("data.responses.empty").type(BOOLEAN).description("")
 				)
 			));
 
@@ -164,17 +135,7 @@ class CrewControllerTest extends ControllerTest {
 	@DisplayName("[성공] 사용자의 위도, 경도로 특정 범위 안에 있는 밥 모임을 모드 조회한다.")
 	void findByLocation_success() throws Exception {
 
-		String mapStoreId = "16618597";
-
-		User user = UserObjectProvider.createUser();
-
-		userRepository.save(user);
-
-		Store store = StoreObjectProvider.createStore(mapStoreId);
-
-		storeRepository.save(store);
-
-		List<Crew> crews = CrewObjectProvider.createCrews(user, store);
+		List<Crew> crews = CrewObjectProvider.createCrews(savedUser, savedStore);
 
 		crewRepository.saveAll(crews);
 
@@ -189,35 +150,35 @@ class CrewControllerTest extends ControllerTest {
 				.params(params)
 				.accept(APPLICATION_JSON))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.responses").exists())
+			.andExpect(jsonPath("$.data").exists())
 			.andDo(print())
 			.andDo(document("crew-findByLocation",
 				requestParameters(
 					parameterWithName("x").description("사용자의 위도"),
 					parameterWithName("y").description("가게 경도")),
 				responseFields(
-					fieldWithPath("responses.[].id").type(NUMBER).description("밥 모임 아이디"),
-					fieldWithPath("responses.[].leader").type(OBJECT).description("밥 모임 방장 정보"),
-					fieldWithPath("responses.[].leader.id").type(NUMBER).description("방장 아이디"),
-					fieldWithPath("responses.[].leader.nickname").type(STRING).description("방장 닉네임"),
-					fieldWithPath("responses.[].leader.profileImgUrl").type(STRING).description("방장 프로필"),
-					fieldWithPath("responses.[].leader.introduction").type(STRING).description("방장 소개"),
-					fieldWithPath("responses.[].leader.leaderCount").type(NUMBER).description("방장 횟수"),
-					fieldWithPath("responses.[].leader.crewCount").type(NUMBER).description("방장 모임 참여 횟수"),
-					fieldWithPath("responses.[].leader.tasteScore").type(NUMBER).description("방장 맛잘알 점수"),
-					fieldWithPath("responses.[].leader.mannerScore").type(NUMBER).description("방장 매너온도"),
-					fieldWithPath("responses.[].store").type(OBJECT).description("밥 모임 가게 정보"),
-					fieldWithPath("responses.[].store.id").type(NUMBER).description("밥 모임 가게 아이디"),
-					fieldWithPath("responses.[].store.latitude").type(STRING).description("밥 모임 가게 위도"),
-					fieldWithPath("responses.[].store.longitude").type(STRING).description("밥 모임 가게 경도"),
-					fieldWithPath("responses.[].store.mapStoreId").type(STRING).description("맵 api 아이디"),
-					fieldWithPath("responses.[].name").type(STRING).description("밥 모임 이름"),
-					fieldWithPath("responses.[].latitude").type(STRING).description("가게 위도"),
-					fieldWithPath("responses.[].longitude").type(STRING).description("가게 경도"),
-					fieldWithPath("responses.[].capacity").type(NUMBER).description("밥 모임 정원"),
-					fieldWithPath("responses.[].status").type(STRING).description("밥 모임 상태"),
-					fieldWithPath("responses.[].content").type(STRING).description("밥 모임 내용"),
-					fieldWithPath("responses.[].category").type(STRING).description("밥 모임 카테고리")
+					fieldWithPath("data.responses.[].id").type(NUMBER).description("밥 모임 아이디"),
+					fieldWithPath("data.responses.[].leader").type(OBJECT).description("밥 모임 방장 정보"),
+					fieldWithPath("data.responses.[].leader.id").type(NUMBER).description("방장 아이디"),
+					fieldWithPath("data.responses.[].leader.nickname").type(STRING).description("방장 닉네임"),
+					fieldWithPath("data.responses.[].leader.profileImgUrl").type(STRING).description("방장 프로필"),
+					fieldWithPath("data.responses.[].leader.introduction").type(STRING).description("방장 소개"),
+					fieldWithPath("data.responses.[].leader.leaderCount").type(NUMBER).description("방장 횟수"),
+					fieldWithPath("data.responses.[].leader.crewCount").type(NUMBER).description("방장 모임 참여 횟수"),
+					fieldWithPath("data.responses.[].leader.tasteScore").type(NUMBER).description("방장 맛잘알 점수"),
+					fieldWithPath("data.responses.[].leader.mannerScore").type(NUMBER).description("방장 매너온도"),
+					fieldWithPath("data.responses.[].store").type(OBJECT).description("밥 모임 가게 정보"),
+					fieldWithPath("data.responses.[].store.id").type(NUMBER).description("밥 모임 가게 아이디"),
+					fieldWithPath("data.responses.[].store.latitude").type(STRING).description("밥 모임 가게 위도"),
+					fieldWithPath("data.responses.[].store.longitude").type(STRING).description("밥 모임 가게 경도"),
+					fieldWithPath("data.responses.[].store.mapStoreId").type(STRING).description("맵 api 아이디"),
+					fieldWithPath("data.responses.[].name").type(STRING).description("밥 모임 이름"),
+					fieldWithPath("data.responses.[].latitude").type(STRING).description("가게 위도"),
+					fieldWithPath("data.responses.[].longitude").type(STRING).description("가게 경도"),
+					fieldWithPath("data.responses.[].capacity").type(NUMBER).description("밥 모임 정원"),
+					fieldWithPath("data.responses.[].status").type(STRING).description("밥 모임 상태"),
+					fieldWithPath("data.responses.[].content").type(STRING).description("밥 모임 내용"),
+					fieldWithPath("data.responses.[].category").type(STRING).description("밥 모임 카테고리")
 				)
 			));
 	}
@@ -226,17 +187,7 @@ class CrewControllerTest extends ControllerTest {
 	@DisplayName("[성공]밥 모임 상태를 변경한다.")
 	void updateStatus_success() throws Exception {
 
-		String mapStoreId = "16618597";
-
-		User user = UserObjectProvider.createUser();
-
-		userRepository.save(user);
-
-		Store store = StoreObjectProvider.createStore(mapStoreId);
-
-		storeRepository.save(store);
-
-		Crew crew = CrewObjectProvider.createCrew(user, store);
+		Crew crew = CrewObjectProvider.createCrew(savedUser, savedStore);
 
 		crewRepository.save(crew);
 
