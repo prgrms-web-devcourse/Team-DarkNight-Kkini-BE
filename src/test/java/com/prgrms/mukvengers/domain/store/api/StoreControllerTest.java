@@ -22,7 +22,7 @@ class StoreControllerTest extends ControllerTest {
 	@DisplayName("[성공]가게를 저장한다.")
 	void create_success() throws Exception {
 
-		CreateStoreRequest createStoreRequest = StoreObjectProvider.getCreateStoreRequest();
+		CreateStoreRequest createStoreRequest = StoreObjectProvider.getCreateStoreRequest("123456789");
 
 		String jsonRequest = objectMapper.writeValueAsString(createStoreRequest);
 

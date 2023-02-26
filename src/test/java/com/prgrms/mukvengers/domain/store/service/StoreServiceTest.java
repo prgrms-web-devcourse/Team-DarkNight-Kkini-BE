@@ -27,7 +27,7 @@ class StoreServiceTest extends ServiceTest {
 	@Transactional
 	void create_success() {
 		//given
-		CreateStoreRequest createStoreRequest = StoreObjectProvider.getCreateStoreRequest();
+		CreateStoreRequest createStoreRequest = StoreObjectProvider.getCreateStoreRequest("1234567899");
 
 		double latitude = Double.parseDouble(createStoreRequest.latitude());
 		double longitude = Double.parseDouble(createStoreRequest.longitude());

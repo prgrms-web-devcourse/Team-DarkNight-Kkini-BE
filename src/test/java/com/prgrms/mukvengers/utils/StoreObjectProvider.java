@@ -56,7 +56,7 @@ public class StoreObjectProvider {
 
 	}
 
-	public static CreateStoreRequest getCreateStoreRequest() {
+	public static CreateStoreRequest getCreateStoreRequest(String mapStoreId) {
 		return new CreateStoreRequest(String.valueOf(latitude), String.valueOf(longitude), mapStoreId);
 	}
 
