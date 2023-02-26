@@ -8,6 +8,7 @@ plugins {
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
     id 'org.hidetake.swagger.generator' version '2.18.2'
     id 'com.epages.restdocs-api-spec' version '0.16.2'
+    id "co.uzzu.dotenv.gradle" version "2.0.0"
 }
 
 group = 'com.prgrms'
@@ -35,8 +36,8 @@ swaggerSources {
 }
 
 openapi3 {
-    setServer("http://3.35.95.125:8080") // Swagger 서버 설정
-    title = "restdocs-swagger API Documentation"
+    setServer(env.SERVER_ADDRESS.orElse("http://localhost:8080")) // Swagger 서버 설정
+    title = "KKINI API Document"
     description = "Spring REST Docs with SwaggerUI."
     version = "1.0.0"
     format = "yaml"
