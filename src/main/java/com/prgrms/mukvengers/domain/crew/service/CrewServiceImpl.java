@@ -5,6 +5,10 @@ import java.util.List;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +16,7 @@ import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
+import com.prgrms.mukvengers.domain.crew.dto.response.CrewSliceResponse;
 import com.prgrms.mukvengers.domain.crew.mapper.CrewMapper;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
@@ -27,7 +32,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class CrewServiceImpl implements CrewService{
+public class CrewServiceImpl implements CrewService {
 
 	private final CrewRepository crewRepository;
 	private final UserRepository userRepository;
@@ -51,12 +56,12 @@ public class CrewServiceImpl implements CrewService{
 	}
 
 	@Override
-	public CrewResponses findByMapStoreId(String mapStoreId) {
-		List<CrewResponse> responses = crewRepository.joinStoreByMapStoreId(mapStoreId)
-			.stream().map(crewMapper::toCrewResponse).toList();
+	public CrewSliceResponse findByMapStoreId(String mapStoreId, Long cursorId, Integer size) {
+		Pageable pageable = PageRequest.of(0, size, Sort.by("id").descending());
 
-		return new CrewResponses(responses);
-
+		Slice<CrewResponse> responses = crewRepository.joinStoreByMapStoreId(mapStoreId, cursorId, pageable)
+			.map(crewMapper::toCrewResponse);
+		return new CrewSliceResponse(responses);
 	}
 
 	@Override
@@ -67,7 +72,7 @@ public class CrewServiceImpl implements CrewService{
 		try {
 			Point point = (Point)new WKTReader().read(pointWKT);
 
-			List<CrewResponse> responses = crewRepository.findAllByDistance(point, 500)
+			List<CrewResponse> responses = crewRepository.findAllByLocation(point, 500)
 				.stream().map(crewMapper::toCrewResponse).toList();
 
 			return new CrewResponses(responses);

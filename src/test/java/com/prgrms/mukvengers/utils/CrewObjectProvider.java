@@ -46,7 +46,7 @@ public class CrewObjectProvider {
 
 	public static List<Crew> createCrews(User user, Store store) {
 
-		return IntStream.range(0, 3)
+		return IntStream.range(0, 20)
 			.mapToObj(i -> createCrew(user, store)).collect(Collectors.toList());
 
 	}
