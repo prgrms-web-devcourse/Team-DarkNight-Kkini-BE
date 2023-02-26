@@ -11,6 +11,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.mukvengers.base.ServiceTest;
@@ -18,6 +19,7 @@ import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
+import com.prgrms.mukvengers.domain.crew.dto.response.CrewSliceResponse;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crew.model.vo.Category;
 import com.prgrms.mukvengers.domain.crew.model.vo.Status;
@@ -103,11 +105,15 @@ class CrewServiceImplTest extends ServiceTest {
 
 		crewRepository.saveAll(crews);
 
-		CrewResponses crewResponses = crewService.findByMapStoreId(mapStoreId);
+		Long cursorId = 15L;
 
-		List<CrewResponse> responses = crewResponses.responses();
+		Integer size = 5;
 
-		assertThat(responses).hasSize(crews.size());
+		CrewSliceResponse crewSliceResponse = crewService.findByMapStoreId(mapStoreId, cursorId, size);
+
+		Slice<CrewResponse> responses = crewSliceResponse.responses();
+
+		assertThat(responses).hasSize(size);
 
 	}
 

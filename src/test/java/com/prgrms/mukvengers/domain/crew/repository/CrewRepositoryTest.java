@@ -9,6 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 
 import com.prgrms.mukvengers.base.RepositoryTest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
@@ -19,9 +23,15 @@ class CrewRepositoryTest extends RepositoryTest {
 	@DisplayName("[성공] 맵 api 아이디로 해당 가게의 밥 모임을 조회한다.")
 	void joinStoreByMapStoreId_success() {
 
-		List<Crew> savedCrews = crewRepository.joinStoreByMapStoreId(savedStore.getMapStoreId());
+		Long cursorId = 15L;
 
-		assertThat(savedCrews).hasSize(crews.size());
+		Integer size = 5;
+
+		Pageable pageable = PageRequest.of(0, size, Sort.by("id").descending());
+
+		Slice<Crew> savedCrews = crewRepository.joinStoreByMapStoreId(savedStore.getMapStoreId(), cursorId, pageable);
+
+		assertThat(savedCrews).hasSize(size);
 	}
 
 	@Test
@@ -32,7 +42,7 @@ class CrewRepositoryTest extends RepositoryTest {
 		double longitude = -147.4654321321;
 		double latitude = 35.75413579;
 		Point location = gf.createPoint(new Coordinate(latitude, longitude));
-		List<Crew> savedCrews = crewRepository.findAllByDistance(location, 1000);
+		List<Crew> savedCrews = crewRepository.findAllByLocation(location, 1000);
 
 		assertThat(savedCrews).hasSize(crews.size());
 
