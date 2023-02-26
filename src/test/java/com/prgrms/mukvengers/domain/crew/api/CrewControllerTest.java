@@ -94,7 +94,16 @@ class CrewControllerTest extends ControllerTest {
 
 		crewRepository.saveAll(crews);
 
+		Long cursorId = 15L;
+
+		Integer size = 5;
+
+		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+		params.add("cursorId", String.valueOf(cursorId));
+		params.add("size", String.valueOf(size));
+
 		mockMvc.perform(get("/api/v1/crews/{mapStoreId}", mapStoreId)
+				.params(params)
 				.accept(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.responses").exists())
@@ -103,36 +112,56 @@ class CrewControllerTest extends ControllerTest {
 				pathParameters(
 					parameterWithName("mapStoreId").description("api에서 사용하는 가게 아이디")
 				),
+				requestParameters(
+					parameterWithName("cursorId").description("현제 커서 아이디"),
+					parameterWithName("size").description("한번에 가져올 데이터 사이즈")),
 				responseFields(
-					fieldWithPath("responses.[].id").type(NUMBER).description("밥 모임 아이디"),
-					fieldWithPath("responses.[].leader").type(OBJECT).description("밥 모임 방장 정보"),
-					fieldWithPath("responses.[].leader.id").type(NUMBER).description("방장 아이디"),
-					fieldWithPath("responses.[].leader.nickname").type(STRING).description("방장 닉네임"),
-					fieldWithPath("responses.[].leader.profileImgUrl").type(STRING).description("방장 프로필"),
-					fieldWithPath("responses.[].leader.introduction").type(STRING).description("방장 소개"),
-					fieldWithPath("responses.[].leader.leaderCount").type(NUMBER).description("방장 횟수"),
-					fieldWithPath("responses.[].leader.crewCount").type(NUMBER).description("방장 모임 참여 횟수"),
-					fieldWithPath("responses.[].leader.tasteScore").type(NUMBER).description("방장 맛잘알 점수"),
-					fieldWithPath("responses.[].leader.mannerScore").type(NUMBER).description("방장 매너온도"),
-					fieldWithPath("responses.[].store").type(OBJECT).description("밥 모임 가게 정보"),
-					fieldWithPath("responses.[].store.id").type(NUMBER).description("밥 모임 가게 아이디"),
-					fieldWithPath("responses.[].store.latitude").type(STRING).description("밥 모임 가게 위도"),
-					fieldWithPath("responses.[].store.longitude").type(STRING).description("밥 모임 가게 경도"),
-					fieldWithPath("responses.[].store.mapStoreId").type(STRING).description("맵 api 아이디"),
-					fieldWithPath("responses.[].name").type(STRING).description("밥 모임 이름"),
-					fieldWithPath("responses.[].latitude").type(STRING).description("가게 위도"),
-					fieldWithPath("responses.[].longitude").type(STRING).description("가게 경도"),
-					fieldWithPath("responses.[].capacity").type(NUMBER).description("밥 모임 정원"),
-					fieldWithPath("responses.[].status").type(STRING).description("밥 모임 상태"),
-					fieldWithPath("responses.[].content").type(STRING).description("밥 모임 내용"),
-					fieldWithPath("responses.[].category").type(STRING).description("밥 모임 카테고리")
+					fieldWithPath("responses.content.[].id").type(NUMBER).description("밥 모임 아이디"),
+					fieldWithPath("responses.content.[].leader").type(OBJECT).description("밥 모임 방장 정보"),
+					fieldWithPath("responses.content.[].leader.id").type(NUMBER).description("방장 아이디"),
+					fieldWithPath("responses.content.[].leader.nickname").type(STRING).description("방장 닉네임"),
+					fieldWithPath("responses.content.[].leader.profileImgUrl").type(STRING).description("방장 프로필"),
+					fieldWithPath("responses.content.[].leader.introduction").type(STRING).description("방장 소개"),
+					fieldWithPath("responses.content.[].leader.leaderCount").type(NUMBER).description("방장 횟수"),
+					fieldWithPath("responses.content.[].leader.crewCount").type(NUMBER).description("방장 모임 참여 횟수"),
+					fieldWithPath("responses.content.[].leader.tasteScore").type(NUMBER).description("방장 맛잘알 점수"),
+					fieldWithPath("responses.content.[].leader.mannerScore").type(NUMBER).description("방장 매너온도"),
+					fieldWithPath("responses.content.[].store").type(OBJECT).description("밥 모임 가게 정보"),
+					fieldWithPath("responses.content.[].store.id").type(NUMBER).description("밥 모임 가게 아이디"),
+					fieldWithPath("responses.content.[].store.latitude").type(STRING).description("밥 모임 가게 위도"),
+					fieldWithPath("responses.content.[].store.longitude").type(STRING).description("밥 모임 가게 경도"),
+					fieldWithPath("responses.content.[].store.mapStoreId").type(STRING).description("맵 api 아이디"),
+					fieldWithPath("responses.content.[].name").type(STRING).description("밥 모임 이름"),
+					fieldWithPath("responses.content.[].latitude").type(STRING).description("가게 위도"),
+					fieldWithPath("responses.content.[].longitude").type(STRING).description("가게 경도"),
+					fieldWithPath("responses.content.[].capacity").type(NUMBER).description("밥 모임 정원"),
+					fieldWithPath("responses.content.[].status").type(STRING).description("밥 모임 상태"),
+					fieldWithPath("responses.content.[].content").type(STRING).description("밥 모임 내용"),
+					fieldWithPath("responses.content.[].category").type(STRING).description("밥 모임 카테고리"),
+					fieldWithPath("responses.pageable.sort.empty").type(BOOLEAN).description(""),
+					fieldWithPath("responses.pageable.sort.sorted").type(BOOLEAN).description(""),
+					fieldWithPath("responses.pageable.sort.unsorted").type(BOOLEAN).description(""),
+					fieldWithPath("responses.pageable.offset").type(NUMBER).description(""),
+					fieldWithPath("responses.pageable.pageSize").type(NUMBER).description(""),
+					fieldWithPath("responses.pageable.pageNumber").type(NUMBER).description(""),
+					fieldWithPath("responses.pageable.paged").type(BOOLEAN).description(""),
+					fieldWithPath("responses.pageable.unpaged").type(BOOLEAN).description(""),
+					fieldWithPath("responses.size").type(NUMBER).description(""),
+					fieldWithPath("responses.number").type(NUMBER).description(""),
+					fieldWithPath("responses.sort.empty").type(BOOLEAN).description(""),
+					fieldWithPath("responses.sort.sorted").type(BOOLEAN).description(""),
+					fieldWithPath("responses.sort.unsorted").type(BOOLEAN).description(""),
+					fieldWithPath("responses.first").type(BOOLEAN).description(""),
+					fieldWithPath("responses.last").type(BOOLEAN).description(""),
+					fieldWithPath("responses.numberOfElements").type(NUMBER).description(""),
+					fieldWithPath("responses.empty").type(BOOLEAN).description("")
 				)
 			));
 
 	}
 
 	@Test
-	@DisplayName("[성공] 맵 api 아이디로 해당 가게의 밥 모임을 전부 조회한다.")
+	@DisplayName("[성공] 사용자의 위도, 경도로 특정 범위 안에 있는 밥 모임을 모드 조회한다.")
 	void findByLocation_success() throws Exception {
 
 		String mapStoreId = "16618597";

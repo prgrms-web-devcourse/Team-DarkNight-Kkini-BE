@@ -21,6 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
+import com.prgrms.mukvengers.domain.crew.dto.response.CrewSliceResponse;
 import com.prgrms.mukvengers.domain.crew.service.CrewService;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
 import com.prgrms.mukvengers.global.security.jwt.JwtAuthentication;
@@ -48,10 +49,12 @@ public class CrewController {
 	}
 
 	@GetMapping(value = "/{mapStoreId}", produces = APPLICATION_JSON_VALUE)
-	public ResponseEntity<CrewResponses> findByMapStoreId(
-		@PathVariable String mapStoreId) {
+	public ResponseEntity<CrewSliceResponse> findByMapStoreId(
+		@PathVariable String mapStoreId,
+		@RequestParam("cursorId") Long cursorId,
+		@RequestParam("size") Integer size) {
 
-		CrewResponses responses = crewService.findByMapStoreId(mapStoreId);
+		CrewSliceResponse responses = crewService.findByMapStoreId(mapStoreId, cursorId, size);
 
 		return ResponseEntity.ok(responses);
 
