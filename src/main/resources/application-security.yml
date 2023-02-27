@@ -5,20 +5,24 @@ jwt:
   expiry-seconds:
     access-token: 3600
 
+# OAuth 2.0 설정
 spring:
   security:
     oauth2:
       client:
         registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: profile
           kakao:
             client-name: kakao
-            client-id: ${CLIENT_ID}
-            client-secret: ${CLIENT_SECRET}
+            client-id: ${KAKAO_CLIENT_ID}
+            client-secret: ${KAKAO_CLIENT_SECRET}
             scope:
               - profile_nickname
               - profile_image
-              - account_email
-            redirect-uri: ${REDIRECT_URI}
+            redirect-uri: ${KAKAO_REDIRECT_URI}
             authorization-grant-type: authorization_code
             client-authentication-method: POST
         provider:
