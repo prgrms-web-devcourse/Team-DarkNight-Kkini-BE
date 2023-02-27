@@ -36,6 +36,7 @@ public class SecurityConfig {
 			.and()
 			.authorizeHttpRequests()
 			.antMatchers("/tokens").permitAll()
+			.antMatchers("/docs/**").permitAll()
 			.antMatchers("/oauth2/**").permitAll()
 			.antMatchers("/favicon.ico").permitAll()
 			.antMatchers("/api/v1/sample").permitAll()

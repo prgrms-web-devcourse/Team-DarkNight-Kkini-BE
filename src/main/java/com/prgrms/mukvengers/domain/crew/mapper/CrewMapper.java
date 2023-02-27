@@ -23,11 +23,13 @@ public interface CrewMapper {
 	@Mapping(target = "status", source = "createCrewRequest.status", qualifiedByName = "statusMethod")
 	@Mapping(target = "category", source = "createCrewRequest.category", qualifiedByName = "categoryMethod")
 	@Mapping(target = "location", source = "createCrewRequest", qualifiedByName = "pointMethod")
+	@Mapping(target = "promiseTime", source = "createCrewRequest.promiseTime")
 	Crew toCrew(CreateCrewRequest createCrewRequest, User user, Store store);
 
 	@Mapping(target = "latitude", source = "crew", qualifiedByName = "latitudeMethod")
 	@Mapping(target = "longitude", source = "crew", qualifiedByName = "longitudeMethod")
 	@Mapping(target = "store", source = "crew.store", qualifiedByName = "storeMethod")
+	@Mapping(target = "promiseTime", source = "crew.promiseTime")
 	CrewResponse toCrewResponse(Crew crew);
 
 	@Named("storeMethod")

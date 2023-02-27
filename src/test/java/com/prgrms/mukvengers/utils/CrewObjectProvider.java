@@ -1,5 +1,6 @@
 package com.prgrms.mukvengers.utils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -28,7 +29,6 @@ public class CrewObjectProvider {
 	private static final Point location = gf.createPoint(
 		new Coordinate(Double.parseDouble(latitude), Double.parseDouble(longitude)));
 
-
 	public static Crew createCrew(User user, Store store) {
 
 		return Crew.builder()
@@ -36,6 +36,7 @@ public class CrewObjectProvider {
 			.store(store)
 			.name(name)
 			.location(location)
+			.promiseTime(LocalDateTime.now())
 			.capacity(capacity)
 			.status(Status.getStatus(status))
 			.content(content)
@@ -57,6 +58,7 @@ public class CrewObjectProvider {
 			name,
 			latitude,
 			longitude,
+			LocalDateTime.now(),
 			capacity,
 			status,
 			content,

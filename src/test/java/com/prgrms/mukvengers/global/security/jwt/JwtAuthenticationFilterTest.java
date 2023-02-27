@@ -26,7 +26,7 @@ class JwtAuthenticationFilterTest {
 	private static final String BEARER_TYPE = "Bearer ";
 	private static final String ISSUER = "issuer";
 	private static final String SECRET_KEY = "kkini-team-kkini-project-fighting";
-	private static final int ACCESS_TOKEN_EXPIRY_SECONDS = 1;
+	private static final int ACCESS_TOKEN_EXPIRY_SECONDS = 3;
 	private static final String USER_ROLE = "USER";
 
 	private JwtAuthenticationFilter jwtAuthenticationFilter;
