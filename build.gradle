@@ -36,7 +36,7 @@ swaggerSources {
 }
 
 openapi3 {
-    setServer(env.SERVER_ADDRESS.orElse("http://localhost:8080")) // Swagger 서버 설정
+    setServer(env.MY_SERVER.orElse("http://localhost:8080")) // Swagger 서버 설정
     title = "KKINI API Document"
     description = "Spring REST Docs with SwaggerUI."
     version = "1.0.0"
