@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import javax.persistence.AttributeConverter;
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -55,46 +54,35 @@ public class Crew extends BaseEntity {
 	private static final Integer MIN_LATITUDE = -90;
 	private static final Integer MAX_LONGITUDE = 180;
 	private static final Integer MIN_LONGITUDE = -180;
-
+	@OneToMany(mappedBy = "crew")
+	private final List<CrewMember> crewMembers = new ArrayList<>();
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
-
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "leader_id", referencedColumnName = "id")
 	private User leader;
-
 	@OneToOne(fetch = LAZY)
 	@JoinColumn(name = "store_id", referencedColumnName = "id")
 	private Store store;
-
 	@Column(nullable = false, length = 20)
 	private String name;
-
 	@Convert(converter = Store.PointConverter.class)
 	@ColumnTransformer(write = "ST_PointFromText(?, 4326)", read = "ST_AsText(location)")
 	@Column(nullable = false)
 	private Point location;
-
 	@Column(nullable = false)
 	private Integer capacity;
-
 	@Enumerated(STRING)
 	@Column(nullable = false)
 	private Status status;
-
 	@Column
 	private String content;
-
 	@Enumerated(STRING)
 	@Column(nullable = false)
 	private Category category;
-
 	@Column(nullable = false)
 	private LocalDateTime promiseTime;
-
-	@OneToMany(mappedBy = "crew")
-	private List<CrewMember> crewMembers = new ArrayList<>();
 
 	@Builder
 	protected Crew(User leader, Store store, String name, Point location, Integer capacity, Status status,
@@ -121,52 +109,10 @@ public class Crew extends BaseEntity {
 		this.promiseTime = promiseTime;
 	}
 
-	@Component
-	public static class PointConverter implements AttributeConverter<Point, String> {
-		static WKTReader wktReader = new WKTReader();
-
-		@Override
-		public String convertToDatabaseColumn(Point attribute) {
-			return attribute.toText();
-		}
-
-		@Override
-		public Point convertToEntityAttribute(String dbData) {
-			try {
-				String decoded = new String(dbData.getBytes(), StandardCharsets.UTF_8);
-				System.out.println(decoded);
-				return (Point)wktReader.read(decoded);
-			} catch (ParseException e) {
-				throw new IllegalArgumentException();
-			}
-		}
-	}
-
 	public Status changeStatus(String status) {
 		this.status = validateStatus(Status.getStatus(status));
 
 		return this.status;
-	}
-
-	@Component
-	public static class PointConverter implements AttributeConverter<Point, String> {
-		static WKTReader wktReader = new WKTReader();
-
-		@Override
-		public String convertToDatabaseColumn(Point attribute) {
-			return attribute.toText();
-		}
-
-		@Override
-		public Point convertToEntityAttribute(String dbData) {
-			try {
-				String decoded = new String(dbData.getBytes(), StandardCharsets.UTF_8);
-
-				return (Point)wktReader.read(decoded);
-			} catch (ParseException e) {
-				throw new IllegalArgumentException();
-			}
-		}
 	}
 
 	private void validateUser(User user) {
@@ -204,6 +150,26 @@ public class Crew extends BaseEntity {
 
 	private void validateCategory(Category category) {
 		notNull(category, "유효하지 않는 카테고리입니다.");
+	}
+
+	@Component
+	public static class PointConverter implements AttributeConverter<Point, String> {
+		static WKTReader wktReader = new WKTReader();
+
+		@Override
+		public String convertToDatabaseColumn(Point attribute) {
+			return attribute.toText();
+		}
+
+		@Override
+		public Point convertToEntityAttribute(String dbData) {
+			try {
+				String decoded = new String(dbData.getBytes(), StandardCharsets.UTF_8);
+				return (Point)wktReader.read(decoded);
+			} catch (ParseException e) {
+				throw new IllegalArgumentException();
+			}
+		}
 	}
 
 }
