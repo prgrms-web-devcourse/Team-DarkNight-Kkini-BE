@@ -19,7 +19,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
@@ -35,7 +34,6 @@ import com.prgrms.mukvengers.domain.crew.model.vo.Category;
 import com.prgrms.mukvengers.domain.crew.model.vo.Status;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.store.model.Store;
-import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.global.common.domain.BaseEntity;
 import com.prgrms.mukvengers.global.utils.ValidateUtil;
 
@@ -59,9 +57,6 @@ public class Crew extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
-	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "leader_id", referencedColumnName = "id")
-	private User leader;
 	@OneToOne(fetch = LAZY)
 	@JoinColumn(name = "store_id", referencedColumnName = "id")
 	private Store store;
@@ -85,10 +80,9 @@ public class Crew extends BaseEntity {
 	private LocalDateTime promiseTime;
 
 	@Builder
-	protected Crew(User leader, Store store, String name, Point location, Integer capacity, Status status,
+	protected Crew(Store store, String name, Point location, Integer capacity, Status status,
 		String content, Category category, LocalDateTime promiseTime) {
 
-		validateUser(leader);
 		validateStore(store);
 		validateName(name);
 		validatePosition(location);
@@ -98,7 +92,6 @@ public class Crew extends BaseEntity {
 		validateStatus(status);
 		validateCategory(category);
 
-		this.leader = leader;
 		this.store = store;
 		this.name = name;
 		this.location = location;
@@ -113,10 +106,6 @@ public class Crew extends BaseEntity {
 		this.status = validateStatus(Status.getStatus(status));
 
 		return this.status;
-	}
-
-	private void validateUser(User user) {
-		notNull(user, "유효하지 않는 유저입니다");
 	}
 
 	private void validateStore(Store store) {

@@ -14,17 +14,15 @@ import com.prgrms.mukvengers.domain.crew.model.vo.Category;
 import com.prgrms.mukvengers.domain.crew.model.vo.Status;
 import com.prgrms.mukvengers.domain.store.dto.response.StoreResponse;
 import com.prgrms.mukvengers.domain.store.model.Store;
-import com.prgrms.mukvengers.domain.user.model.User;
 
 @Mapper(componentModel = "spring")
 public interface CrewMapper {
 
-	@Mapping(target = "leader", source = "user")
 	@Mapping(target = "status", source = "createCrewRequest.status", qualifiedByName = "statusMethod")
 	@Mapping(target = "category", source = "createCrewRequest.category", qualifiedByName = "categoryMethod")
 	@Mapping(target = "location", source = "createCrewRequest", qualifiedByName = "pointMethod")
 	@Mapping(target = "promiseTime", source = "createCrewRequest.promiseTime")
-	Crew toCrew(CreateCrewRequest createCrewRequest, User user, Store store);
+	Crew toCrew(CreateCrewRequest createCrewRequest, Store store);
 
 	@Mapping(target = "latitude", source = "crew", qualifiedByName = "latitudeMethod")
 	@Mapping(target = "longitude", source = "crew", qualifiedByName = "longitudeMethod")

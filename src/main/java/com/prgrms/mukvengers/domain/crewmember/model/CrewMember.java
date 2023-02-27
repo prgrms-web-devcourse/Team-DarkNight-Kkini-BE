@@ -47,11 +47,15 @@ public class CrewMember extends BaseEntity {
 	@Column(nullable = false)
 	private boolean ready;
 
+	@Column(nullable = false)
+	private boolean isLeader;
+
 	@Builder
-	protected CrewMember(User user, Crew crew, boolean blocked, boolean ready) {
+	protected CrewMember(User user, Crew crew, boolean blocked, boolean ready, boolean isLeader) {
 		this.user = user;
 		this.crew = crew;
 		this.blocked = blocked;
 		this.ready = ready;
+		this.isLeader = isLeader;
 	}
 }

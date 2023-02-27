@@ -51,7 +51,7 @@ public abstract class RepositoryTest {
 
 		savedStore = storeRepository.save(createStore());
 
-		crews = CrewObjectProvider.createCrews(savedUser, savedStore);
+		crews = CrewObjectProvider.createCrews(savedStore);
 		crewRepository.saveAll(crews);
 
 	}

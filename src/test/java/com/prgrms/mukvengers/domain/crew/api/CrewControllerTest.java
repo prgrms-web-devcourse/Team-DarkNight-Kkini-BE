@@ -62,7 +62,7 @@ class CrewControllerTest extends ControllerTest {
 	@DisplayName("[성공] 맵 api 아이디로 해당 가게의 밥 모임을 전부 조회한다.")
 	void findByMapStoreId_success() throws Exception {
 
-		List<Crew> crews = CrewObjectProvider.createCrews(savedUser, savedStore);
+		List<Crew> crews = CrewObjectProvider.createCrews(savedStore);
 
 		crewRepository.saveAll(crews);
 
@@ -90,15 +90,6 @@ class CrewControllerTest extends ControllerTest {
 					parameterWithName("size").description("한번에 가져올 데이터 사이즈")),
 				responseFields(
 					fieldWithPath("data.responses.content.[].id").type(NUMBER).description("밥 모임 아이디"),
-					fieldWithPath("data.responses.content.[].leader").type(OBJECT).description("밥 모임 방장 정보"),
-					fieldWithPath("data.responses.content.[].leader.id").type(NUMBER).description("방장 아이디"),
-					fieldWithPath("data.responses.content.[].leader.nickname").type(STRING).description("방장 닉네임"),
-					fieldWithPath("data.responses.content.[].leader.profileImgUrl").type(STRING).description("방장 프로필"),
-					fieldWithPath("data.responses.content.[].leader.introduction").type(STRING).description("방장 소개"),
-					fieldWithPath("data.responses.content.[].leader.leaderCount").type(NUMBER).description("방장 횟수"),
-					fieldWithPath("data.responses.content.[].leader.crewCount").type(NUMBER).description("방장 모임 참여 횟수"),
-					fieldWithPath("data.responses.content.[].leader.tasteScore").type(NUMBER).description("방장 맛잘알 점수"),
-					fieldWithPath("data.responses.content.[].leader.mannerScore").type(NUMBER).description("방장 매너온도"),
 					fieldWithPath("data.responses.content.[].store").type(OBJECT).description("밥 모임 가게 정보"),
 					fieldWithPath("data.responses.content.[].store.id").type(NUMBER).description("밥 모임 가게 아이디"),
 					fieldWithPath("data.responses.content.[].store.latitude").type(STRING).description("밥 모임 가게 위도"),
@@ -138,7 +129,7 @@ class CrewControllerTest extends ControllerTest {
 	@DisplayName("[성공] 사용자의 위도, 경도로 특정 범위 안에 있는 밥 모임을 모드 조회한다.")
 	void findByLocation_success() throws Exception {
 
-		List<Crew> crews = CrewObjectProvider.createCrews(savedUser, savedStore);
+		List<Crew> crews = CrewObjectProvider.createCrews(savedStore);
 
 		crewRepository.saveAll(crews);
 
@@ -162,15 +153,6 @@ class CrewControllerTest extends ControllerTest {
 					parameterWithName("longitude").description("가게 경도")),
 				responseFields(
 					fieldWithPath("data.responses.[].id").type(NUMBER).description("밥 모임 아이디"),
-					fieldWithPath("data.responses.[].leader").type(OBJECT).description("밥 모임 방장 정보"),
-					fieldWithPath("data.responses.[].leader.id").type(NUMBER).description("방장 아이디"),
-					fieldWithPath("data.responses.[].leader.nickname").type(STRING).description("방장 닉네임"),
-					fieldWithPath("data.responses.[].leader.profileImgUrl").type(STRING).description("방장 프로필"),
-					fieldWithPath("data.responses.[].leader.introduction").type(STRING).description("방장 소개"),
-					fieldWithPath("data.responses.[].leader.leaderCount").type(NUMBER).description("방장 횟수"),
-					fieldWithPath("data.responses.[].leader.crewCount").type(NUMBER).description("방장 모임 참여 횟수"),
-					fieldWithPath("data.responses.[].leader.tasteScore").type(NUMBER).description("방장 맛잘알 점수"),
-					fieldWithPath("data.responses.[].leader.mannerScore").type(NUMBER).description("방장 매너온도"),
 					fieldWithPath("data.responses.[].store").type(OBJECT).description("밥 모임 가게 정보"),
 					fieldWithPath("data.responses.[].store.id").type(NUMBER).description("밥 모임 가게 아이디"),
 					fieldWithPath("data.responses.[].store.latitude").type(STRING).description("밥 모임 가게 위도"),
@@ -192,7 +174,7 @@ class CrewControllerTest extends ControllerTest {
 	@DisplayName("[성공]밥 모임 상태를 변경한다.")
 	void updateStatus_success() throws Exception {
 
-		Crew crew = CrewObjectProvider.createCrew(savedUser, savedStore);
+		Crew crew = CrewObjectProvider.createCrew(savedStore);
 
 		crewRepository.save(crew);
 
