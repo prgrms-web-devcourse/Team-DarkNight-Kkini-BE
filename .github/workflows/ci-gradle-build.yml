@@ -1,12 +1,8 @@
 name: CI - Gradle Build
 # Event
 on:
-  push:
-    branches:
-      - main
-      - develop
-    pull_request:
-      branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
 
 # 권한 설정
 permissions:
