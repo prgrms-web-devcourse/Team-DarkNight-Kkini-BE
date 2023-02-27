@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
 import com.prgrms.mukvengers.domain.crew.service.CrewService;
@@ -17,6 +18,7 @@ import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
 
 @SpringBootTest
+@Transactional
 public abstract class ServiceTest {
 
 	@Autowired
@@ -38,10 +40,14 @@ public abstract class ServiceTest {
 
 	protected User savedUser;
 	protected Store savedStore;
+	protected Long savedUserId;
 
 	@BeforeEach
 	void setUpLogin() {
+
 		savedUser = userRepository.save(createUser());
+
+		savedUserId = savedUser.getId();
 
 		savedStore = storeRepository.save(createStore());
 	}

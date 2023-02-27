@@ -40,13 +40,16 @@ public abstract class RepositoryTest {
 	protected Store savedStore;
 
 	protected List<Crew> crews;
+	protected Long savedUserId;
 
 	@BeforeEach
 	void setUp() {
 
-		userRepository.save(createUser());
+		savedUser = userRepository.save(createUser());
 
-		storeRepository.save(createStore());
+		savedUserId = savedUser.getId();
+
+		savedStore = storeRepository.save(createStore());
 
 		crews = CrewObjectProvider.createCrews(savedUser, savedStore);
 		crewRepository.saveAll(crews);

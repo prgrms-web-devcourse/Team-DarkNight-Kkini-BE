@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.Slice;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.mukvengers.base.ServiceTest;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
@@ -27,7 +26,6 @@ import com.prgrms.mukvengers.utils.CrewObjectProvider;
 class CrewServiceImplTest extends ServiceTest {
 
 	@Test
-	@Transactional
 	@DisplayName("[성공] Crew 저장에 성공한다.")
 	void create_success() {
 
@@ -55,7 +53,6 @@ class CrewServiceImplTest extends ServiceTest {
 	}
 
 	@Test
-	@Transactional
 	@DisplayName("[성공] map api 아이디로 Crew 조회를 한다")
 	void findByMapStoreId_success() {
 
@@ -76,7 +73,6 @@ class CrewServiceImplTest extends ServiceTest {
 	}
 
 	@Test
-	@Transactional
 	@DisplayName("[성공] 사용자의 위치를 위경도로 받아 거리 안에 있는 밥 모임을 조회한다.")
 	void findByLocation_success() {
 
@@ -96,7 +92,6 @@ class CrewServiceImplTest extends ServiceTest {
 	}
 
 	@Test
-	@Transactional
 	@DisplayName("[성공] 모임의 상태를 받아 변경한다.")
 	void updateStatus_success() {
 
