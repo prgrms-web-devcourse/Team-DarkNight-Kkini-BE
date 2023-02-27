@@ -52,13 +52,13 @@ public class Review extends BaseEntity {
 	@Column(nullable = false, length = 20)
 	private String crewName;
 
-	@Column(nullable = false, length = 255)
+	@Column(nullable = true, length = 255)
 	private String content;
 
 	@Column(nullable = false)
 	private Integer mannerPoint;
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private Integer tastePoint;
 
 	@Builder
@@ -73,5 +73,4 @@ public class Review extends BaseEntity {
 		this.mannerPoint = mannerPoint;
 		this.tastePoint = tastePoint;
 	}
-
 }
