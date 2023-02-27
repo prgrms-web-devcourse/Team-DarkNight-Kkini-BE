@@ -1,5 +1,6 @@
 package com.prgrms.mukvengers.base;
 
+import static com.prgrms.mukvengers.utils.StoreObjectProvider.*;
 import static com.prgrms.mukvengers.utils.UserObjectProvider.*;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
@@ -22,9 +23,13 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.mukvengers.config.RestDocsConfig;
+import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
+import com.prgrms.mukvengers.domain.store.model.Store;
+import com.prgrms.mukvengers.domain.store.repository.StoreRepository;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
 import com.prgrms.mukvengers.global.security.jwt.JwtTokenProvider;
+import com.prgrms.mukvengers.utils.StoreObjectProvider;
 
 @Transactional
 @SpringBootTest
@@ -47,11 +52,18 @@ public abstract class ControllerTest {
 	@Autowired
 	protected ObjectMapper objectMapper;
 
+	@Autowired
+	protected StoreRepository storeRepository;
+
+	@Autowired
+	protected CrewRepository crewRepository;
+
 	protected MockMvc mockMvc;
 
 	protected User savedUser;
 	protected Long savedUserId;
 	protected String ACCESS_TOKEN;
+	protected Store savedStore;
 
 	@BeforeEach
 	void setUpRestDocs(WebApplicationContext webApplicationContext,
@@ -69,6 +81,8 @@ public abstract class ControllerTest {
 		savedUser = userRepository.save(createUser());
 		savedUserId = savedUser.getId();
 		ACCESS_TOKEN = jwtTokenProvider.createAccessToken(savedUserId, "USER");
+
+		savedStore = storeRepository.save(createStore());
 	}
 
 }

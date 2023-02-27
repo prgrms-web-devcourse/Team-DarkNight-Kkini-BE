@@ -45,18 +45,18 @@ public class StoreObjectProvider {
 
 	}
 
-	public static void createStore(String mapStoreId) {
+	public static Store createStore(String mapStoreId) {
 
 		Point location = gf.createPoint(new Coordinate(latitude, longitude));
 
-		Store.builder()
+		return Store.builder()
 			.location(location)
 			.mapStoreId(mapStoreId)
 			.build();
 
 	}
 
-	public static CreateStoreRequest getCreateStoreRequest() {
+	public static CreateStoreRequest getCreateStoreRequest(String mapStoreId) {
 		return new CreateStoreRequest(String.valueOf(latitude), String.valueOf(longitude), mapStoreId);
 	}
 

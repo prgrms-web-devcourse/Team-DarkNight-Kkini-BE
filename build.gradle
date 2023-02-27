@@ -8,6 +8,7 @@ plugins {
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
     id 'org.hidetake.swagger.generator' version '2.18.2'
     id 'com.epages.restdocs-api-spec' version '0.16.2'
+    id "co.uzzu.dotenv.gradle" version "2.0.0"
 }
 
 group = 'com.prgrms'
@@ -35,8 +36,8 @@ swaggerSources {
 }
 
 openapi3 {
-    setServer("http://localhost:8080") // Swagger 서버 설정
-    title = "restdocs-swagger API Documentation"
+    setServer(env.SERVER_ADDRESS.orElse("http://localhost:8080")) // Swagger 서버 설정
+    title = "KKINI API Document"
     description = "Spring REST Docs with SwaggerUI."
     version = "1.0.0"
     format = "yaml"
@@ -110,11 +111,13 @@ tasks.withType(GenerateSwaggerUI).configureEach {
 
 tasks.register('copySwaggerUI', Copy) {
     dependsOn 'generateSwaggerUISample'
+    dependsOn "jar"
+    dependsOn "bootJarMainClassName"
 
     def generateSwaggerUISampleTask = tasks.named('generateSwaggerUISample', GenerateSwaggerUI).get()
 
     from("${generateSwaggerUISampleTask.outputDir}")
-    into("${project.buildDir}/resources/main/static/docs/api/.")
+    into("${project.buildDir}/resources/main/static/docs/")
 }
 
 task copyDocument(type: Copy) {
