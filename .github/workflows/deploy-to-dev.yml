@@ -65,8 +65,8 @@ jobs:
       - name: Deploy To Dev
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.EC2_HOST }}
           username: ec2-user
+          host: ${{ secrets.EC2_HOST }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
             sudo docker rm -f $(docker ps -qa)
