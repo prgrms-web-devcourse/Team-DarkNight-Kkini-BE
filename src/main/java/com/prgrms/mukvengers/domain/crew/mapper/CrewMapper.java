@@ -29,6 +29,7 @@ public interface CrewMapper {
 	@Mapping(target = "latitude", source = "crew", qualifiedByName = "latitudeMethod")
 	@Mapping(target = "longitude", source = "crew", qualifiedByName = "longitudeMethod")
 	@Mapping(target = "store", source = "crew.store", qualifiedByName = "storeMethod")
+	@Mapping(target = "promiseTime", source = "crew.promiseTime")
 	CrewResponse toCrewResponse(Crew crew);
 
 	@Named("storeMethod")

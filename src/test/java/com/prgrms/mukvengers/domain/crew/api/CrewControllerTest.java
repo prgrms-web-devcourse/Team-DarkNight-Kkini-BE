@@ -108,7 +108,7 @@ class CrewControllerTest extends ControllerTest {
 					fieldWithPath("data.responses.content.[].latitude").type(STRING).description("가게 위도"),
 					fieldWithPath("data.responses.content.[].longitude").type(STRING).description("가게 경도"),
 					fieldWithPath("data.responses.content.[].capacity").type(NUMBER).description("밥 모임 정원"),
-					fieldWithPath("data.responses.content.[].promiseTime").type(STRING).description("약속 시간"),
+					fieldWithPath("data.responses.content.[].promiseTime").type(ARRAY).description("약속 시간"),
 					fieldWithPath("data.responses.content.[].status").type(STRING).description("밥 모임 상태"),
 					fieldWithPath("data.responses.content.[].content").type(STRING).description("밥 모임 내용"),
 					fieldWithPath("data.responses.content.[].category").type(STRING).description("밥 모임 카테고리"),
@@ -180,7 +180,7 @@ class CrewControllerTest extends ControllerTest {
 					fieldWithPath("data.responses.[].latitude").type(STRING).description("가게 위도"),
 					fieldWithPath("data.responses.[].longitude").type(STRING).description("가게 경도"),
 					fieldWithPath("data.responses.[].capacity").type(NUMBER).description("밥 모임 정원"),
-					fieldWithPath("data.responses.[].promiseTime").type(STRING).description("약속 시간"),
+					fieldWithPath("data.responses.[].promiseTime").type(ARRAY).description("약속 시간"),
 					fieldWithPath("data.responses.[].status").type(STRING).description("밥 모임 상태"),
 					fieldWithPath("data.responses.[].content").type(STRING).description("밥 모임 내용"),
 					fieldWithPath("data.responses.[].category").type(STRING).description("밥 모임 카테고리")
