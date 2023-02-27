@@ -35,6 +35,12 @@ import lombok.NoArgsConstructor;
 @SQLDelete(sql = "UPDATE store set deleted = true where id=?")
 public class Store extends BaseEntity {
 
+	private static final Integer MAX_LATITUDE = 90;
+	private static final Integer MIN_LATITUDE = -90;
+	private static final Integer MAX_LONGITUDE = 180;
+	private static final Integer MIN_LONGITUDE = -180;
+
+
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
@@ -58,19 +64,19 @@ public class Store extends BaseEntity {
 		this.mapStoreId = mapStoreId;
 	}
 
-	public void validatePosition(Point location) {
+	private void validatePosition(Point location) {
 		notNull(location, "유효하지 않는 위치입니다.");
 	}
 
-	public void validateLongitude(Point location) {
-		isTrue(location.getX() >= -90 && location.getX() <= 90, "유효하지 않는 위도 값입니다.");
+	private void validateLatitude(Point location) {
+		isTrue(location.getX() >= MIN_LATITUDE && location.getX() <= MAX_LATITUDE, "유효하지 않는 위도 값입니다.");
 	}
 
-	public void validateLatitude(Point location) {
-		isTrue(location.getY() >= -180 && location.getY() <= 180, "유효하지 않는 경도 값입니다.");
+	private void validateLongitude(Point location) {
+		isTrue(location.getY() >= MIN_LONGITUDE && location.getY() <= MAX_LONGITUDE, "유효하지 않는 경도 값입니다.");
 	}
 
-	public void validateMapStoreId(String mapStoreId) {
+	private void validateMapStoreId(String mapStoreId) {
 		ValidateUtil.checkText(mapStoreId, "유효하지 않는 가게 아이디입니다.");
 	}
 
@@ -87,6 +93,7 @@ public class Store extends BaseEntity {
 		public Point convertToEntityAttribute(String dbData) {
 			try {
 				String decoded = new String(dbData.getBytes(), StandardCharsets.UTF_8);
+
 				return (Point)wktReader.read(decoded);
 			} catch (ParseException e) {
 				throw new IllegalArgumentException();
