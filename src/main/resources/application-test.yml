@@ -21,6 +21,15 @@ spring:
   flyway:
     enabled: false
 
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+
+jwt:
+  expiry-seconds:
+    access-token: 5
+
 decorator:
   datasource:
     p6spy:
@@ -30,9 +39,3 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type.descriptor.sql: trace
-
-jwt:
-  issuer: ${JWT_ISSUER}
-  secret-key: ${JWT_SECRET_KEY}
-  expiry-seconds:
-    access-token: 10
