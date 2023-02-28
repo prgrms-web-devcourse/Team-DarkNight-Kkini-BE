@@ -96,6 +96,11 @@ public class Crew extends BaseEntity {
 	@OneToMany(mappedBy = "crew")
 	private List<CrewMember> crewMembers = new ArrayList<>();
 
+	public void addCrewMember(CrewMember crewMember) {
+		crewMembers.add(crewMember);
+	}
+
+
 	@Builder
 	protected Crew(User leader, Store store, String name, Point location, Integer capacity, Status status,
 		String content, Category category, LocalDateTime promiseTime) {
