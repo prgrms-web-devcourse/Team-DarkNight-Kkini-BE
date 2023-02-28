@@ -25,11 +25,11 @@ jobs:
         run: echo "${{ secrets.ENV_PROPERTIES }}" > ./.env # GitHub SecretKey 에서 설정한 내용으로 .env 파일 생성
 
       # 테스트를 진행하기 위해 액션 서버에 docker로 mysql 띄우기
-      - name: Create mysql docker container
+      - name: Create Mysql Docker Container
         run: sudo docker run -d -p 3305:3306 --env MYSQL_DATABASE="${{ secrets.TEST_DATABASE }}" --env MYSQL_ROOT_PASSWORD="${{ secrets.TEST_DATASOURCE_PASSWORD }}" mysql:8.0.31
 
       # 빌드시 캐시 적용
-      - name: Cache Gradle packages
+      - name: Cache Gradle Packages
         uses: actions/cache@v3
         with:
           path: ~/.gradle/caches
