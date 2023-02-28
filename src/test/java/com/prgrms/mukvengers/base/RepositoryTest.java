@@ -14,6 +14,8 @@ import org.springframework.context.annotation.Import;
 
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
+import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
+import com.prgrms.mukvengers.domain.review.repository.ReviewRepository;
 import com.prgrms.mukvengers.domain.store.model.Store;
 import com.prgrms.mukvengers.domain.store.repository.StoreRepository;
 import com.prgrms.mukvengers.domain.user.model.User;
@@ -34,6 +36,12 @@ public abstract class RepositoryTest {
 
 	@Autowired
 	protected CrewRepository crewRepository;
+
+	@Autowired
+	protected CrewMemberRepository crewMemberRepository;
+
+	@Autowired
+	protected ReviewRepository reviewRepository;
 
 	protected User savedUser;
 
