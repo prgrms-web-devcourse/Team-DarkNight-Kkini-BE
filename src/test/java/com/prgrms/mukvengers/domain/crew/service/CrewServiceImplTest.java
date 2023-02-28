@@ -9,14 +9,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
 import com.prgrms.mukvengers.base.ServiceTest;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
+import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
-import com.prgrms.mukvengers.domain.crew.dto.response.CrewSliceResponse;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crew.model.vo.Category;
 import com.prgrms.mukvengers.domain.crew.model.vo.Status;
@@ -60,11 +62,13 @@ class CrewServiceImplTest extends ServiceTest {
 
 		crewRepository.saveAll(crews);
 
-		Long cursorId = 15L;
+		Integer page = 0;
 
 		Integer size = 5;
 
-		CrewSliceResponse crewSliceResponse = crewService.getByMapStoreId(savedStore.getMapStoreId(), cursorId, size);
+		Pageable pageable = PageRequest.of(page, size);
+
+		CrewPageResponse crewSliceResponse = crewService.getByMapStoreId(savedStore.getMapStoreId(), pageable);
 
 		Slice<CrewResponse> responses = crewSliceResponse.responses();
 
