@@ -27,11 +27,11 @@ jobs:
         run: echo "${{ secrets.ENV_PROPERTIES }}" > ./.env # GitHub SecretKey 에서 설정한 내용으로 .env 파일 생성
 
       # 도커 MYSQL 이미지 실행
-      - name: Create mysql docker container
+      - name: Create Mysql Docker Container
         run: sudo docker run -d -p 3305:3306 --env MYSQL_DATABASE="${{ secrets.TEST_DATABASE }}" --env MYSQL_ROOT_PASSWORD="${{ secrets.TEST_DATASOURCE_PASSWORD }}" mysql:8.0.31
 
       # 빌드시 캐시 적용
-      - name: Cache Gradle packages
+      - name: Cache Gradle Packages
         uses: actions/cache@v3
         with:
           path: ~/.gradle/caches
@@ -43,14 +43,14 @@ jobs:
         run: ./gradlew clean bootJar
 
       # versioning을 위한 시간 설정
-      - name: Get current time
+      - name: Get Current Time
         uses: 1466587594/get-current-time@v2
         id: current-time
         with:
           format: YYYYMMDDTHHmm
           utcOffset: "+09:00"
 
-      - name: Generate deployment package
+      - name: Generate Deployment Package
         run: |
           mkdir -p deploy
           cp build/libs/*.jar deploy/application.jar
