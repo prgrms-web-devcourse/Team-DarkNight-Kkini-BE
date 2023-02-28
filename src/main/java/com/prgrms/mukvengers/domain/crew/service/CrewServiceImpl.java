@@ -66,8 +66,7 @@ public class CrewServiceImpl implements CrewService {
 
 	@Override
 	public CrewResponses getByLocation(String latitude, String longitude) {
-		String pointWKT = String.format("POINT(%s %s)", latitude,
-			longitude);
+		String pointWKT = String.format("POINT(%s %s)", latitude, longitude);
 
 		try {
 			Point point = (Point)new WKTReader().read(pointWKT);

@@ -1,14 +1,15 @@
 package com.prgrms.mukvengers.global.utils;
 
+import static lombok.AccessLevel.*;
+
 import java.util.Locale;
 
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.util.Assert;
 
-import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = PRIVATE)
 public class MessageUtil {
 
 	private static final String MESSAGE_ALT = "오류 메시지를 찾지 못했습니다.";

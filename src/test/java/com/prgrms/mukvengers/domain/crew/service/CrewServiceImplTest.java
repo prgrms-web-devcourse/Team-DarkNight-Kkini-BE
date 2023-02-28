@@ -29,13 +29,15 @@ class CrewServiceImplTest extends ServiceTest {
 
 	@Test
 	@DisplayName("[성공] Crew 저장에 성공한다.")
-	void create_success() {
+	void create_success() { //given when then 쓰면 좋을듯?
 
 		CreateCrewRequest createCrewRequest = CrewObjectProvider.getCreateCrewRequest(savedStore.getMapStoreId());
 
 		double parseLatitude = Double.parseDouble(createCrewRequest.latitude());
 		double parseLongitude = Double.parseDouble(createCrewRequest.longitude());
+
 		Point location = gf.createPoint(new Coordinate(parseLatitude, parseLongitude));
+
 		IdResponse idResponse = crewService.create(createCrewRequest, savedUser.getId());
 
 		Optional<Crew> optionalCrew = crewRepository.findById(idResponse.id());

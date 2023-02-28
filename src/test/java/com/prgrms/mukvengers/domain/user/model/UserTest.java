@@ -13,12 +13,6 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 class UserTest {
 
-	private static final String email = "test@test.com";
-	private static final String nickName = "테스터";
-	private static final String introduce = "테스트하는 중";
-	private static final String prologName = "테스터의 prolog";
-	private static final String provider = "kakao";
-	private static final String oauthId = "1";
 	private static final String SIZE_255_STRING_DUMMY = "0" + "1234567890".repeat(26);
 
 	private static Stream<Arguments> provideStringDummy() {
@@ -29,8 +23,8 @@ class UserTest {
 	}
 
 	@Test
-	@DisplayName("[성공] 유저 생성")
-	void createTest() {
+	@DisplayName("[성공] 닉네임, 프로필 이미지, provider, oauthId로 유저를 생성할 수 있다.")
+	void create_success() {
 		//given & when
 		User user = User.builder()
 			.nickname("테스트")
@@ -39,6 +33,7 @@ class UserTest {
 			.oauthId("12345")
 			.build();
 		//then
+		// 나머지 값들은 디폴트 값으로 자동 생성됨
 		assertThat(user)
 			.hasFieldOrPropertyWithValue("nickname", "테스트")
 			.hasFieldOrPropertyWithValue("profileImgUrl", "https://defaultImg.jpg")
@@ -54,27 +49,13 @@ class UserTest {
 	}
 
 	@ParameterizedTest
-	@DisplayName("nickName 유효성 검증")
 	@NullAndEmptySource
 	@MethodSource("provideStringDummy")
-	void nickNameValidateTest(String inputNickName) {
+	@DisplayName("[성공] nickName 필드는 유효성 검증을 한다. 따라서, null, 빈 값, 255이상의 값이 들어올 수 없다.")
+	void validateNickname_success(String inputNickName) {
 		//given & when & then
-		assertThatThrownBy(() -> getBuilder().nickname(inputNickName).build())
+		assertThatThrownBy(() -> User.builder().nickname(inputNickName).build())
 			.isInstanceOf(IllegalArgumentException.class);
-	}
-
-	@ParameterizedTest
-	@DisplayName("자기 소개 유효성 검증")
-	@NullAndEmptySource
-	@MethodSource("provideStringDummy")
-	void emailValidateTest(String inputIntroduce) {
-		//given & when & then
-		assertThatThrownBy(() -> getBuilder().nickname(inputIntroduce).build())
-			.isInstanceOf(IllegalArgumentException.class);
-	}
-
-	private User.UserBuilder getBuilder() {
-		return User.builder();
 	}
 
 }
