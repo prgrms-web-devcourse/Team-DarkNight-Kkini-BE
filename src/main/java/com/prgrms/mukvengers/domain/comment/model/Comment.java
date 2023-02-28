@@ -33,10 +33,6 @@ public class Comment extends BaseEntity {
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 
-	// @ManyToOne(fetch = LAZY)
-	// @JoinColumn(name = "post_id")
-	// private Post post;
-
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "crew_id")
 	private Crew crew;
@@ -47,7 +43,6 @@ public class Comment extends BaseEntity {
 
 	@Column(nullable = false, length = 500)
 	private String content;
-
 
 	@Builder
 	protected Comment(Crew crew, User user, String content) {
