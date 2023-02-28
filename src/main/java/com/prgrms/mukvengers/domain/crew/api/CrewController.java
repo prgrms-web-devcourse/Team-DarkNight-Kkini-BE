@@ -6,6 +6,9 @@ import java.net.URI;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +23,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
+import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
-import com.prgrms.mukvengers.domain.crew.dto.response.CrewSliceResponse;
 import com.prgrms.mukvengers.domain.crew.service.CrewService;
 import com.prgrms.mukvengers.global.common.dto.ApiResponse;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
@@ -62,17 +65,15 @@ public class CrewController {
 	 *     맵 api 가게 아이디로 가게의 밥 모임 조회
 	 * </pre>
 	 * @param mapStoreId 맵 api 가게 아이디
-	 * @param cursorId 마지막으로 조회한 아이디
-	 * @param size 페이지 사이즈
+	 * @param pageable 페이지 정보
 	 * @return status : 200, body : 해당 가게의 현재 모집 중인 밥 모임 정보
 	 */
 	@GetMapping(value = "/{mapStoreId}", produces = APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponse<CrewSliceResponse>> findByMapStoreId(
+	public ResponseEntity<ApiResponse<CrewPageResponse>> findByMapStoreId(
 		@PathVariable String mapStoreId,
-		@RequestParam(required = false, value = "cursorId") Long cursorId,
-		@RequestParam("size") Integer size) {
+		@PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
-		CrewSliceResponse responses = crewService.getByMapStoreId(mapStoreId, cursorId, size);
+		CrewPageResponse responses = crewService.getByMapStoreId(mapStoreId, pageable);
 
 		return ResponseEntity.ok().body(new ApiResponse<>(responses));
 
