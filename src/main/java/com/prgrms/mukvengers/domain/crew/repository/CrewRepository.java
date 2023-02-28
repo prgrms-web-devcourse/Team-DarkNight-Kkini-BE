@@ -1,6 +1,7 @@
 package com.prgrms.mukvengers.domain.crew.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.Page;
@@ -27,4 +28,11 @@ public interface CrewRepository extends JpaRepository<Crew, Long> {
 			+ "ORDER BY dist ASC")
 	List<Crew> findAllByLocation(@Param("location") Point location, @Param("distance") int distance);
 
+	@Query("""
+		SELECT c
+		FROM Crew c
+		JOIN FETCH c.crewMembers cm
+		WHERE c.id = :crewId AND c.leader.id = :revieweeId AND cm.user.id = :reviewerId
+		""")
+	Optional<Crew> joinCrewMemberByCrewId(@Param(value = "crewId") Long crewId, @Param(value = "reviewerId") Long reviewerId,@Param(value = "revieweeId") Long revieweeId);
 }
