@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import com.epages.restdocs.apispec.Schema;
 import com.prgrms.mukvengers.base.ControllerTest;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
@@ -26,6 +27,12 @@ import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.utils.CrewObjectProvider;
 
 class CrewControllerTest extends ControllerTest {
+
+	public static final Schema CREATE_CREW_REQUEST = new Schema("createCrewRequest");
+	public static final Schema CREW_PAGE_RESPONSE = new Schema("crewPageResponse");
+	public static final Schema FIND_BY_USER_LOCATION_CREW_REQUEST = new Schema("findByUserLocationCrewRequest");
+	public static final Schema CREW_RESPONSE = new Schema("crewResponse");
+	public static final Schema UPDATE_CREW_REQUEST = new Schema("updateCrewRequest");
 
 	@Test
 	@DisplayName("[성공]밥 모임을 저장한다.")
@@ -49,6 +56,7 @@ class CrewControllerTest extends ControllerTest {
 						.tag(CREW)
 						.summary("모임 생성 API")
 						.description("모임을 생성합니다.")
+						.requestSchema(CREATE_CREW_REQUEST)
 						.requestFields(
 							fieldWithPath("latitude").type(STRING).description("위도"),
 							fieldWithPath("longitude").type(STRING).description("경도"),
@@ -101,6 +109,7 @@ class CrewControllerTest extends ControllerTest {
 						.requestParameters(
 							parameterWithName("page").description("현재 페이지 번호"),
 							parameterWithName("size").description("한번에 가져올 데이터 사이즈"))
+						.responseSchema(CREW_PAGE_RESPONSE)
 						.responseFields(
 							fieldWithPath("data.responses.content.[].id").type(NUMBER).description("밥 모임 아이디"),
 							fieldWithPath("data.responses.content.[].leader").type(OBJECT).description("밥 모임 방장 정보"),
@@ -190,9 +199,11 @@ class CrewControllerTest extends ControllerTest {
 						.tag(CREW)
 						.summary("위치 기반 밥 모임 조회 API")
 						.description("사용자 위치로 특정 거리 안에 있는 모임을 조회합니다.")
+						.requestSchema(FIND_BY_USER_LOCATION_CREW_REQUEST)
 						.requestParameters(
 							parameterWithName("latitude").description("사용자의 위도"),
 							parameterWithName("longitude").description("사용자의 경도"))
+						.responseSchema(CREW_RESPONSE)
 						.responseFields(
 							fieldWithPath("data.responses.[].id").type(NUMBER).description("밥 모임 아이디"),
 							fieldWithPath("data.responses.[].leader").type(OBJECT).description("밥 모임 방장 정보"),
@@ -248,6 +259,7 @@ class CrewControllerTest extends ControllerTest {
 						.tag(CREW)
 						.summary("모임 상태 변경 API")
 						.description("밥 모임의 상태를 변경합니다.")
+						.requestSchema(UPDATE_CREW_REQUEST)
 						.requestFields(
 							fieldWithPath("crewId").type(NUMBER).description("밥 모임 아이디"),
 							fieldWithPath("status").type(STRING).description("밥 모임 상태"))

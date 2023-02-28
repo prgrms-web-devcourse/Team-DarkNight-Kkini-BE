@@ -171,6 +171,7 @@ class UserControllerTest extends ControllerTest {
 						.tags(USER)
 						.summary("내 정보 삭제 API")
 						.description("내 정보를 삭제합니다.")
+						.responseSchema(new Schema("NONE"))
 						.build()
 				))
 			);

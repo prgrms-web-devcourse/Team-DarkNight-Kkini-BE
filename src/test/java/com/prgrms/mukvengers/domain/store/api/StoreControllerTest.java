@@ -21,6 +21,9 @@ import com.prgrms.mukvengers.utils.StoreObjectProvider;
 
 class StoreControllerTest extends ControllerTest {
 
+	public static final Schema CREATE_STORE_REQUEST = new Schema("createStoreRequest");
+	public static final Schema STORE_RESPONSE = new Schema("storeResponse");
+
 	@Test
 	@DisplayName("[성공] 가게를 저장한다.")
 	void create_success() throws Exception {
@@ -42,7 +45,8 @@ class StoreControllerTest extends ControllerTest {
 					builder()
 						.tags(STORE)
 						.summary("가게 저장 API")
-						.requestSchema(new Schema("createStoreRequest"))
+						.requestSchema(CREATE_STORE_REQUEST)
+						.responseSchema(STORE_RESPONSE)
 						.description("가게 정보를 저장합니다.")
 						.requestFields(
 							fieldWithPath("latitude").type(STRING).description("위도"),
