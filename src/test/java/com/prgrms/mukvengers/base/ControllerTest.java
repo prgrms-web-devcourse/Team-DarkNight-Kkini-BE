@@ -29,10 +29,9 @@ import com.prgrms.mukvengers.domain.store.repository.StoreRepository;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
 import com.prgrms.mukvengers.global.security.jwt.JwtTokenProvider;
-import com.prgrms.mukvengers.utils.StoreObjectProvider;
 
-@Transactional
 @SpringBootTest
+@Transactional
 @Import({RestDocsConfig.class})
 @ExtendWith(RestDocumentationExtension.class)
 @AutoConfigureTestDatabase(replace = NONE)
@@ -60,10 +59,13 @@ public abstract class ControllerTest {
 
 	protected MockMvc mockMvc;
 
+	protected String accessToken;
+
 	protected User savedUser;
-	protected Long savedUserId;
-	protected String ACCESS_TOKEN;
+
 	protected Store savedStore;
+
+	protected Long savedUserId;
 
 	@BeforeEach
 	void setUpRestDocs(WebApplicationContext webApplicationContext,
@@ -78,11 +80,14 @@ public abstract class ControllerTest {
 
 	@BeforeEach
 	void setUpLogin() {
+
 		savedUser = userRepository.save(createUser());
-		savedUserId = savedUser.getId();
-		ACCESS_TOKEN = jwtTokenProvider.createAccessToken(savedUserId, "USER");
 
 		savedStore = storeRepository.save(createStore());
+
+		savedUserId = savedUser.getId();
+
+		accessToken = jwtTokenProvider.createAccessToken(savedUserId, "USER");
 	}
 
 }
