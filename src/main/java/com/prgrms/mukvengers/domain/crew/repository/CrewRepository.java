@@ -16,7 +16,7 @@ public interface CrewRepository extends JpaRepository<Crew, Long> {
 	@Query("""
 			SELECT c
 			FROM Crew c
-			JOIN FETCH c.store s
+			JOIN c.store s
 			WHERE s.mapStoreId = :mapStoreId
 		""")
 	Page<Crew> findAllByMapStoreId(@Param(value = "mapStoreId") String mapStoreId, Pageable pageable);
