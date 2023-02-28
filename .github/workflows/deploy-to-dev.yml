@@ -27,7 +27,7 @@ jobs:
         run: echo "${{ secrets.ENV_PROPERTIES }}" > ./.env # GitHub SecretKey 에서 설정한 내용으로 .env 파일 생성
       
       # 도커 MYSQL 이미지 실행
-      - name: Create mysql docker container
+      - name: Create Mysql Docker Container
         run: sudo docker run -d -p 3305:3306 --env MYSQL_DATABASE="${{ secrets.TEST_DATABASE }}" --env MYSQL_ROOT_PASSWORD="${{ secrets.TEST_DATASOURCE_PASSWORD }}" mysql:8.0.31
 
       # 빌드
@@ -41,7 +41,7 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }} .
           docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
 
-      - name: Send To Env
+      - name: Send to Environment
         uses: appleboy/scp-action@master
         with:
           username: ec2-user
@@ -50,7 +50,7 @@ jobs:
           source: "./.env"
           target: "/home/ec2-user"
 
-      - name: Send To Docker-Compose
+      - name: Send to Docker-Compose
         uses: appleboy/scp-action@master
         with:
           username: ec2-user
@@ -60,7 +60,7 @@ jobs:
           source: "./docker-compose.yml"
           target: "/home/ec2-user/"
 
-      - name: Deploy To Dev
+      - name: Deploy to Dev
         uses: appleboy/ssh-action@master
         with:
           username: ec2-user
