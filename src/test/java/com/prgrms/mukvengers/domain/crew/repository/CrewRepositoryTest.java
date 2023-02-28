@@ -39,9 +39,12 @@ class CrewRepositoryTest extends RepositoryTest {
 	void findAllByDistance_success() {
 
 		GeometryFactory gf = new GeometryFactory();
+
 		double longitude = -147.4654321321;
 		double latitude = 35.75413579;
+
 		Point location = gf.createPoint(new Coordinate(latitude, longitude));
+
 		List<Crew> savedCrews = crewRepository.findAllByLocation(location, 1000);
 
 		assertThat(savedCrews).hasSize(crews.size());

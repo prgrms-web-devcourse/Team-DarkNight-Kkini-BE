@@ -46,9 +46,9 @@ class JwtAuthenticationFilterTest {
 		ACCESS_TOKEN = jwtTokenProvider.createAccessToken(USER_ID, USER_ROLE);
 	}
 
-	@DisplayName("[성공] 헤더(Authorization Bearer)에서 토큰을 추출할 수 있다.")
 	@Test
-	void extractTokenFromRequestSuccessTest() {
+	@DisplayName("[성공] 헤더(Authorization Bearer)에서 토큰을 추출할 수 있다.")
+	void extractTokenFromRequest_success() {
 		// given
 		request.addHeader(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN);
 		// when
@@ -57,15 +57,14 @@ class JwtAuthenticationFilterTest {
 		assertDoesNotThrow(() -> jwtTokenProvider.validateToken(token));
 	}
 
-	@DisplayName("[성공] 유효한 Access Token이 헤더에 있는 경우 인증된 사용자 정보(userId, token)가 SecurityContextHolder에 저장된다.")
 	@Test
-	void doFilterInternalSuccessTest() throws ServletException, IOException {
+	@DisplayName("[성공] 유효한 Access Token이 헤더에 있는 경우 인증된 사용자 정보(userId, token)가 SecurityContextHolder에 저장된다.")
+	void doFilterInternal_success() throws ServletException, IOException {
 		// given
 		request.addHeader(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN);
 		// when
 		jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
 		// then
-
 		// 현재 SecurityContext에 들어 있는 인증된 사용자(principal) 추출
 		JwtAuthentication user = (JwtAuthentication)
 			SecurityContextHolder
@@ -78,12 +77,16 @@ class JwtAuthenticationFilterTest {
 			.hasFieldOrPropertyWithValue("accessToken", ACCESS_TOKEN);
 	}
 
-	@DisplayName("[실패] 유효한 Access Token이 헤더에 있는 경우")
+	// 띄어쓰기를 어떻게 하면 좋을까?
+
 	@Test
-	void doFilterInternal_InvalidToken() {
+	@DisplayName("[실패] 유효한 Access Token이 헤더에 있는 경우")
+	void doFilterInternal_InvalidToken_fail() {
 		// given
 		String invalidToken = "invalidToken";
+
 		request.addHeader(HttpHeaders.AUTHORIZATION, BEARER_TYPE + invalidToken);
+
 		// when & then
 		assertThatThrownBy(
 			() -> jwtAuthenticationFilter.doFilterInternal(request, response, filterChain))
@@ -91,13 +94,16 @@ class JwtAuthenticationFilterTest {
 
 	}
 
-	@DisplayName("[실패] 만료된 토큰일 경우 예외를 발생한다.")
 	@Test
-	void doFilterInternal_ExpiredToken() {
+	@DisplayName("[실패] 만료된 토큰일 경우 예외를 발생한다.")
+	void doFilterInternal_ExpiredToken_fail() {
 		// given
 		JwtTokenProvider jwtTokenProvider = new JwtTokenProvider(ISSUER, SECRET_KEY, 0);
+
 		String newToken = jwtTokenProvider.createAccessToken(USER_ID, USER_ROLE);
+
 		request.addHeader(HttpHeaders.AUTHORIZATION, BEARER_TYPE + newToken);
+
 		// when & then
 		assertThatThrownBy(
 			() -> jwtAuthenticationFilter.doFilterInternal(request, response, filterChain))

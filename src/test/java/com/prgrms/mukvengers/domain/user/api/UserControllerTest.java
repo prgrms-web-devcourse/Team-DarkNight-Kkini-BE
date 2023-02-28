@@ -19,10 +19,10 @@ class UserControllerTest extends ControllerTest {
 
 	@Test
 	@DisplayName("[성공] 사용자는 자신의 프로필 정보를 확인할 수 있다")
-	void getMyProfileSuccessTest() throws Exception {
+	void getMyProfile_success() throws Exception {
 		// when
 		mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/user/me")
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken)
 			)
 			// then
 			.andExpectAll(
@@ -47,11 +47,11 @@ class UserControllerTest extends ControllerTest {
 
 	@Test
 	@DisplayName("[성공] 유저 아이디로 유저 정보를 조회할 수 있다.")
-	void getUserProfileSuccessTest() throws Exception {
+	void getUserProfile_success() throws Exception {
 		// when
 		mockMvc.perform(RestDocumentationRequestBuilders
 				.get("/api/v1/user/{userId}", savedUserId)
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken)
 			)
 			// then
 			.andExpectAll(
@@ -75,12 +75,13 @@ class UserControllerTest extends ControllerTest {
 
 	@Test
 	@DisplayName("[성공] 자신의 프로필을 수정할 수 있다.")
-	void updateMyProfileSuccessTest() throws Exception {
+	void updateMyProfile_success() throws Exception {
+		// given
 		UpdateUserRequest request = getUpdateUserRequest();
 
 		// when
 		mockMvc.perform(RestDocumentationRequestBuilders.put("/api/v1/user/me")
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(request))
 			)
@@ -107,23 +108,24 @@ class UserControllerTest extends ControllerTest {
 
 	@Test
 	@DisplayName("자신의 계정을 삭제할 수 있다")
-	void deleteMyProfileSuccessTest() throws Exception {
+	void deleteMyProfile_success() throws Exception {
 
-		//given
+		// given
 		User createdUser = User.builder()
 			.nickname(DEFAULT_NICKNAME)
 			.profileImgUrl(DEFAULT_PROFILE_IMG_URL)
 			.provider(PROVIDER_KAKAO)
 			.oauthId(OAUTH_ID)
 			.build();
+		User savedUser = userRepository.save(createdUser);
 
-		User user = userRepository.save(createdUser);
-		Long userId = user.getId();
-		String token = jwtTokenProvider.createAccessToken(userId, "USER");
+		Long userId = savedUser.getId();
+
+		String accessToken = jwtTokenProvider.createAccessToken(userId, "USER");
 
 		// when
 		mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/user/me")
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + token)
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken)
 			)
 			// then
 			.andExpectAll(

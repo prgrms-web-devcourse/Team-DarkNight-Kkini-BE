@@ -36,7 +36,7 @@ class CrewControllerTest extends ControllerTest {
 
 		mockMvc.perform(post("/api/v1/crews")
 				.contentType(APPLICATION_JSON)
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken)
 				.content(jsonRequest))
 			.andExpect(status().isCreated())
 			.andExpect(header().string("Location", containsString("/api/v1/crews")))
@@ -76,7 +76,7 @@ class CrewControllerTest extends ControllerTest {
 
 		mockMvc.perform(get("/api/v1/crews/{mapStoreId}", savedStore.getMapStoreId())
 				.params(params)
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken)
 				.accept(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data").exists())
@@ -151,7 +151,7 @@ class CrewControllerTest extends ControllerTest {
 
 		mockMvc.perform(get("/api/v1/crews")
 				.params(params)
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken)
 				.accept(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data").exists())
@@ -204,7 +204,7 @@ class CrewControllerTest extends ControllerTest {
 
 		mockMvc.perform(patch("/api/v1/crews")
 				.contentType(APPLICATION_JSON)
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken)
 				.content(jsonRequest))
 			.andExpect(status().isOk())
 			.andDo(print())
