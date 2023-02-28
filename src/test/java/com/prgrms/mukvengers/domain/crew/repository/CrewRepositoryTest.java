@@ -12,7 +12,6 @@ import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
 
 import com.prgrms.mukvengers.base.RepositoryTest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
@@ -23,13 +22,13 @@ class CrewRepositoryTest extends RepositoryTest {
 	@DisplayName("[성공] 맵 api 아이디로 해당 가게의 밥 모임을 조회한다.")
 	void joinStoreByMapStoreId_success() {
 
-		Long cursorId = 15L;
+		Integer page = 0;
 
 		Integer size = 5;
 
-		Pageable pageable = PageRequest.of(0, size, Sort.by("id").descending());
+		Pageable pageable = PageRequest.of(page, size);
 
-		Slice<Crew> savedCrews = crewRepository.joinStoreByMapStoreId(savedStore.getMapStoreId(), cursorId, pageable);
+		Slice<Crew> savedCrews = crewRepository.findAllByMapStoreId(savedStore.getMapStoreId(), pageable);
 
 		assertThat(savedCrews).hasSize(size);
 	}
