@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
 import com.prgrms.mukvengers.domain.crew.service.CrewService;
+import com.prgrms.mukvengers.domain.review.repository.ReviewRepository;
+import com.prgrms.mukvengers.domain.review.service.ReviewService;
 import com.prgrms.mukvengers.domain.store.model.Store;
 import com.prgrms.mukvengers.domain.store.repository.StoreRepository;
 import com.prgrms.mukvengers.domain.store.service.StoreService;
@@ -35,6 +37,12 @@ public abstract class ServiceTest {
 
 	@Autowired
 	protected CrewService crewService;
+
+	@Autowired
+	protected ReviewService reviewService;
+
+	@Autowired
+	protected ReviewRepository reviewRepository;
 
 	protected GeometryFactory gf = new GeometryFactory();
 
