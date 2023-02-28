@@ -54,8 +54,8 @@ public class Crew extends BaseEntity {
 	private static final Integer MIN_LATITUDE = -90;
 	private static final Integer MAX_LONGITUDE = 180;
 	private static final Integer MIN_LONGITUDE = -180;
-	@OneToMany(mappedBy = "crew")
-	private final List<CrewMember> crewMembers = new ArrayList<>();
+
+
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
