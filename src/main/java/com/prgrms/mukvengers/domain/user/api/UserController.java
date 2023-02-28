@@ -1,6 +1,7 @@
 package com.prgrms.mukvengers.domain.user.api;
 
 import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.MediaType.*;
 
 import javax.validation.Valid;
 
@@ -30,29 +31,32 @@ public class UserController {
 
 	private final UserService userService;
 
-	@GetMapping("/{userId}")
+	@GetMapping(value = "/{userId}", produces = APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponse<UserProfileResponse>> getUserProfile(
 		@PathVariable Long userId
 	) {
-		return ResponseEntity.ok()
-			.body(new ApiResponse<>(userService.getUserProfile(userId)));
+		UserProfileResponse response = userService.getUserProfile(userId);
+
+		return ResponseEntity.ok().body(new ApiResponse<>(response));
 	}
 
-	@GetMapping("/me")
+	@GetMapping(value = "/me", produces = APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponse<UserProfileResponse>> getMyProfile(
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		return ResponseEntity.ok()
-			.body(new ApiResponse<>(userService.getUserProfile(user.id())));
+		UserProfileResponse response = userService.getUserProfile(user.id());
+
+		return ResponseEntity.ok().body(new ApiResponse<>(response));
 	}
 
-	@PutMapping("/me")
+	@PutMapping(value = "/me", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponse<UserProfileResponse>> updateMyProfile(
 		@RequestBody @Valid UpdateUserRequest updateUserRequest,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		return ResponseEntity.ok()
-			.body(new ApiResponse<>(userService.updateUserProfile(updateUserRequest, user.id())));
+		UserProfileResponse response = userService.updateUserProfile(updateUserRequest, user.id());
+
+		return ResponseEntity.ok().body(new ApiResponse<>(response));
 	}
 
 	@DeleteMapping("/me")
