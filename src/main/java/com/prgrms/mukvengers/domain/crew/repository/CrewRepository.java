@@ -13,18 +13,10 @@ import com.prgrms.mukvengers.domain.crew.model.Crew;
 
 public interface CrewRepository extends JpaRepository<Crew, Long> {
 
-	// @Query("""
-	// 		SELECT c
-	// 		FROM Crew c
-	// 		JOIN FETCH  c.store s
-	// 		WHERE s.mapStoreId = :mapStoreId
-	// 	""")
-	// Page<Crew> joinStoreByMapStoreId(@Param(value = "mapStoreId") String mapStoreId, Pageable pageable);
-
 	@Query("""
 			SELECT c
 			FROM Crew c
-			JOIN  c.store s
+			JOIN FETCH c.store s
 			WHERE s.mapStoreId = :mapStoreId
 		""")
 	Page<Crew> findAllByMapStoreId(@Param(value = "mapStoreId") String mapStoreId, Pageable pageable);
