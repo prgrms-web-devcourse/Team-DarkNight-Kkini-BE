@@ -30,7 +30,7 @@ class CrewServiceImplTest extends ServiceTest {
 
 	@Test
 	@DisplayName("[성공] Crew 저장에 성공한다.")
-	void create_success() {
+	void create_success() { //given when then 쓰면 좋을듯?
 
 		CreateCrewRequest createCrewRequest = CrewObjectProvider.getCreateCrewRequest(savedStore.getMapStoreId());
 
