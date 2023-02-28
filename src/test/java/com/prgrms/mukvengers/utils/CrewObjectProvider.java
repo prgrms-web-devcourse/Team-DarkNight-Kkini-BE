@@ -27,6 +27,18 @@ public class CrewObjectProvider {
 	private static final String category = "조용한";
 	private static final Point location = gf.createPoint(
 		new Coordinate(Double.parseDouble(longitude), Double.parseDouble(latitude)));
+	// private??
+	private final static GeometryFactory GF = new GeometryFactory();
+	private static final String LATITUDE = "35.75413579";
+	private static final String LONGITUDE = "-147.4654321321";
+	private static final String NAME = "원정대이름";
+	private static final Integer CAPACITY = 5;
+	private static final String STATUS = "모집중";
+	private static final String CONTENT = "저는 백엔드 개발자 입니다. 프론트 엔드 개발자 구해요";
+	private static final String CATEGORY = "조용한";
+	private static final LocalDateTime PROMISE_TIME = LocalDateTime.now();
+	private static final Point LOCATION = GF.createPoint(
+		new Coordinate(Double.parseDouble(LATITUDE), Double.parseDouble(LONGITUDE)));
 
 	public static Crew createCrew(Store store) {
 
@@ -61,6 +73,14 @@ public class CrewObjectProvider {
 			status,
 			content,
 			category
+			NAME,
+			LATITUDE,
+			LONGITUDE,
+			PROMISE_TIME,
+			CAPACITY,
+			STATUS,
+			CONTENT,
+			CATEGORY
 		);
 	}
 }
