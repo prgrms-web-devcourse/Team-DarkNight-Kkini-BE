@@ -18,10 +18,14 @@ import com.prgrms.mukvengers.domain.store.repository.StoreRepository;
 import com.prgrms.mukvengers.domain.store.service.StoreService;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
+import com.prgrms.mukvengers.domain.user.service.UserService;
 
 @SpringBootTest
 @Transactional
 public abstract class ServiceTest {
+
+	@Autowired
+	protected UserService userService;
 
 	@Autowired
 	protected UserRepository userRepository;
@@ -33,10 +37,10 @@ public abstract class ServiceTest {
 	protected StoreRepository storeRepository;
 
 	@Autowired
-	protected CrewRepository crewRepository;
+	protected CrewService crewService;
 
 	@Autowired
-	protected CrewService crewService;
+	protected CrewRepository crewRepository;
 
 	@Autowired
 	protected ReviewService reviewService;
@@ -47,7 +51,9 @@ public abstract class ServiceTest {
 	protected GeometryFactory gf = new GeometryFactory();
 
 	protected User savedUser;
+
 	protected Store savedStore;
+
 	protected Long savedUserId;
 
 	@BeforeEach
