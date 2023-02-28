@@ -1,5 +1,7 @@
 # default
 spring:
+  config:
+    import: optional:file:.env[.properties]
 
   # database 설정
   datasource:
@@ -31,21 +33,13 @@ spring:
     enabled: true
     baseline-on-migrate: true
 
-# SQL 로그 설정
-
 --- # local
 spring:
   config:
-    activate.on-profile: "db-local"
-    import: optional:file:.env[.properties]
+    activate.on-profile: local
 
+# SQL 로그 설정
 logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type.descriptor.sql: trace
-
---- # prod
-spring:
-  config:
-    activate.on-profile: "db-prod"
-    import: optional:file:.env[.properties]

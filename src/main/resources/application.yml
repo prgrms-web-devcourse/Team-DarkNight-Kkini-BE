@@ -12,11 +12,6 @@ spring:
   profiles:
     active:
       - prod
-    group:
-      local:
-        - db-local
-      prod:
-        - db-prod
     include:
       - db
       - security
