@@ -6,12 +6,10 @@ import static javax.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 import static org.springframework.util.Assert.*;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.AttributeConverter;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -26,9 +24,6 @@ import org.hibernate.annotations.ColumnTransformer;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.io.ParseException;
-import org.locationtech.jts.io.WKTReader;
-import org.springframework.stereotype.Component;
 
 import com.prgrms.mukvengers.domain.crew.model.vo.Category;
 import com.prgrms.mukvengers.domain.crew.model.vo.Status;
@@ -53,11 +48,10 @@ public class Crew extends BaseEntity {
 	private static final Integer MAX_LONGITUDE = 180;
 	private static final Integer MIN_LONGITUDE = -180;
 
-
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
-  
+
 	@OneToOne(fetch = LAZY)
 	@JoinColumn(name = "store_id", referencedColumnName = "id")
 	private Store store;
@@ -94,46 +88,42 @@ public class Crew extends BaseEntity {
 		crewMembers.add(crewMember);
 	}
 
-
 	@Builder
 	protected Crew(Store store, String name, Point location, Integer capacity, Status status,
 		String content, Category category, LocalDateTime promiseTime) {
 
-		validateStore(store);
-		validateName(name);
-		validatePosition(location);
-		validateLatitude(location);
-		validateLongitude(location);
-		validateCapacity(capacity);
-		validateStatus(status);
-		validateCategory(category);
-
-		this.store = store;
-		this.name = name;
-		this.location = location;
-		this.capacity = capacity;
-		this.status = status;
-		this.content = content;
-		this.category = category;
-		this.promiseTime = promiseTime;
+		this.store = validateStore(store);
+		this.name = validateName(name);
+		this.location = validatePosition(location);
+		this.capacity = validateCapacity(capacity);
+		this.status = validateStatus(status);
+		this.category = validateCategory(category);
+		this.content = validateContent(content);
+		this.promiseTime = validatePromiseTime(promiseTime);
 	}
 
 	public Status changeStatus(String status) {
 		this.status = validateStatus(Status.getStatus(status));
-
 		return this.status;
 	}
 
-	private void validateStore(Store store) {
+	private Store validateStore(Store store) {
 		notNull(store, "유효하지 않는 가게입니다");
+		return store;
 	}
 
-	private void validateName(String name) {
+	private String validateName(String name) {
 		ValidateUtil.checkText(name, "유효하지 않는 모임 이름입니다.");
+		return name;
 	}
 
-	private void validatePosition(Point location) {
+	private Point validatePosition(Point location) {
 		notNull(location, "유효하지 않는 위치입니다.");
+
+		validateLatitude(location);
+		validateLongitude(location);
+
+		return location;
 	}
 
 	private void validateLatitude(Point location) {
@@ -144,8 +134,9 @@ public class Crew extends BaseEntity {
 		isTrue(location.getY() >= MIN_LONGITUDE && location.getY() <= MAX_LONGITUDE, "유효하지 않는 경도 값입니다.");
 	}
 
-	private void validateCapacity(Integer capacity) {
+	private Integer validateCapacity(Integer capacity) {
 		isTrue(2 <= capacity && capacity <= 8, "유효하지 않는 인원 수 입니다");
+		return capacity;
 	}
 
 	private Status validateStatus(Status status) {
@@ -153,28 +144,39 @@ public class Crew extends BaseEntity {
 		return status;
 	}
 
-	private void validateCategory(Category category) {
+	private Category validateCategory(Category category) {
 		notNull(category, "유효하지 않는 카테고리입니다.");
+		return category;
 	}
 
-	@Component
-	public static class PointConverter implements AttributeConverter<Point, String> {
-		static WKTReader wktReader = new WKTReader();
-
-		@Override
-		public String convertToDatabaseColumn(Point attribute) {
-			return attribute.toText();
-		}
-
-		@Override
-		public Point convertToEntityAttribute(String dbData) {
-			try {
-				String decoded = new String(dbData.getBytes(), StandardCharsets.UTF_8);
-				return (Point)wktReader.read(decoded);
-			} catch (ParseException e) {
-				throw new IllegalArgumentException();
-			}
-		}
+	private String validateContent(String content) {
+		notNull(content, "유효하지 않는 콘텐츠입니다..");
+		return content;
 	}
+
+	private LocalDateTime validatePromiseTime(LocalDateTime promiseTime) {
+		notNull(promiseTime, "유효하지 않는 약속시간입니다.");
+		return promiseTime;
+	}
+
+	// @Component
+	// public static class PointConverter implements AttributeConverter<Point, String> {
+	// 	static WKTReader wktReader = new WKTReader();
+	//
+	// 	@Override
+	// 	public String convertToDatabaseColumn(Point attribute) {
+	// 		return attribute.toText();
+	// 	}
+	//
+	// 	@Override
+	// 	public Point convertToEntityAttribute(String dbData) {
+	// 		try {
+	// 			String decoded = new String(dbData.getBytes(), StandardCharsets.UTF_8);
+	// 			return (Point)wktReader.read(decoded);
+	// 		} catch (ParseException e) {
+	// 			throw new IllegalArgumentException();
+	// 		}
+	// 	}
+	// }
 
 }
