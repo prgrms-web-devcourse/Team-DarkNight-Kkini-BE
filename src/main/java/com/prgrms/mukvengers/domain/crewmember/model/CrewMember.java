@@ -15,7 +15,6 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import com.prgrms.mukvengers.domain.crew.model.Crew;
-import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.global.common.domain.BaseEntity;
 
 import lombok.Builder;
@@ -33,9 +32,8 @@ public class CrewMember extends BaseEntity {
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 
-	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "user_id", referencedColumnName = "id")
-	private User user;
+	@Column(nullable = false)
+	private Long userId;
 
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "crew_id", referencedColumnName = "id")
@@ -47,11 +45,15 @@ public class CrewMember extends BaseEntity {
 	@Column(nullable = false)
 	private boolean ready;
 
+	@Column(nullable = false)
+	private boolean isLeader;
+
 	@Builder
-	protected CrewMember(User user, Crew crew, boolean blocked, boolean ready) {
-		this.user = user;
+	protected CrewMember(Long userId, Crew crew, boolean blocked, boolean ready, boolean isLeader) {
+		this.userId = userId;
 		this.crew = crew;
 		this.blocked = blocked;
 		this.ready = ready;
+		this.isLeader = isLeader;
 	}
 }

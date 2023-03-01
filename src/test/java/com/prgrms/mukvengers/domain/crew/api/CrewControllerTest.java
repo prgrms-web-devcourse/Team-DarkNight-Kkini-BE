@@ -79,7 +79,7 @@ class CrewControllerTest extends ControllerTest {
 	@DisplayName("[성공] 맵 api 아이디로 해당 가게의 밥 모임을 전부 조회한다.")
 	void findByMapStoreId_success() throws Exception {
 
-		List<Crew> crews = CrewObjectProvider.createCrews(savedUser, savedStore);
+		List<Crew> crews = CrewObjectProvider.createCrews(savedStore);
 
 		crewRepository.saveAll(crews);
 
@@ -175,7 +175,7 @@ class CrewControllerTest extends ControllerTest {
 	@DisplayName("[성공] 사용자의 위도, 경도로 특정 범위 안에 있는 밥 모임을 모드 조회한다.")
 	void findByLocation_success() throws Exception {
 
-		List<Crew> crews = CrewObjectProvider.createCrews(savedUser, savedStore);
+		List<Crew> crews = CrewObjectProvider.createCrews(savedStore);
 
 		crewRepository.saveAll(crews);
 
@@ -237,7 +237,7 @@ class CrewControllerTest extends ControllerTest {
 	@DisplayName("[성공]밥 모임 상태를 변경한다.")
 	void updateStatus_success() throws Exception {
 
-		Crew crew = CrewObjectProvider.createCrew(savedUser, savedStore);
+		Crew crew = CrewObjectProvider.createCrew(savedStore);
 
 		crewRepository.save(crew);
 

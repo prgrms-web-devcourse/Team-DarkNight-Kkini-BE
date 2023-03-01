@@ -14,7 +14,6 @@ import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crew.model.vo.Category;
 import com.prgrms.mukvengers.domain.crew.model.vo.Status;
 import com.prgrms.mukvengers.domain.store.model.Store;
-import com.prgrms.mukvengers.domain.user.model.User;
 
 public class CrewObjectProvider {
 	// private??
@@ -30,10 +29,9 @@ public class CrewObjectProvider {
 	private static final Point LOCATION = GF.createPoint(
 		new Coordinate(Double.parseDouble(LATITUDE), Double.parseDouble(LONGITUDE)));
 
-	public static Crew createCrew(User user, Store store) {
+	public static Crew createCrew(Store store) {
 
 		return Crew.builder()
-			.leader(user)
 			.store(store)
 			.name(NAME)
 			.location(LOCATION)
@@ -46,10 +44,10 @@ public class CrewObjectProvider {
 
 	}
 
-	public static List<Crew> createCrews(User user, Store store) {
+	public static List<Crew> createCrews(Store store) {
 
 		return IntStream.range(0, 20)
-			.mapToObj(i -> createCrew(user, store)).collect(Collectors.toList());
+			.mapToObj(i -> createCrew(store)).collect(Collectors.toList());
 
 	}
 
