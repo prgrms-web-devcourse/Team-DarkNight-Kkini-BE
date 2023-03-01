@@ -44,7 +44,6 @@ CREATE TABLE store
 CREATE TABLE crew
 (
     id           bigint       NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    leader_id    bigint       NOT NULL,
     store_id     bigint       NOT NULL,
     name         varchar(20)  NOT NULL,
     location     point        NOT NULL,
@@ -57,7 +56,6 @@ CREATE TABLE crew
     updated_at   dateTime     NOT NULL DEFAULT now(),
     deleted      boolean      NOT NULL DEFAULT false,
 
-    FOREIGN KEY fk_crew_leader_id (leader_id) REFERENCES users (id),
     FOREIGN KEY fk_crew_store_id (store_id) REFERENCES store (id)
 );
 
@@ -81,13 +79,13 @@ CREATE TABLE crew_member
     id         bigint   NOT NULL PRIMARY KEY AUTO_INCREMENT,
     user_id    bigint   NOT NULL,
     crew_id    bigint   NOT NULL,
+    is_leader  boolean  NOT NULL DEFAULT false,
     blocked    boolean  NOT NULL DEFAULT false,
     ready      boolean  NOT NULL DEFAULT false,
     created_at dateTime NOT NULL DEFAULT now(),
     updated_at dateTime NOT NULL DEFAULT now(),
     deleted    boolean  NOT NULL DEFAULT false,
 
-    FOREIGN KEY fk_crew_member_user_id (user_id) REFERENCES users (id),
     FOREIGN KEY fk_crew_member_crew_id (crew_id) REFERENCES crew (id)
 );
 
@@ -127,12 +125,11 @@ CREATE TABLE review
 CREATE TABLE comment
 (
     id         bigint       NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    user_id    bigint       NOT NULL,
+    user_id    bigint       NOT NULL, -- 유저 아이디 없어도 되는지??
     crew_id    bigint       NOT NULL,
     content    varchar(255) NOT NULL,
     created_at dateTime     NOT NULL DEFAULT now(),
     updated_at dateTime     NOT NULL DEFAULT now(),
-    deleted    boolean      NOT NULL DEFAULT false,
+    deleted    boolean      NOT NULL DEFAULT false
 
-    FOREIGN KEY fk_comment_leader_id (user_id) REFERENCES users (id)
 );

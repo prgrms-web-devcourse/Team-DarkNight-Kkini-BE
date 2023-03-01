@@ -44,7 +44,6 @@ class CrewServiceImplTest extends ServiceTest {
 		assertThat(optionalCrew).isPresent();
 		Crew crew = optionalCrew.get();
 		assertThat(crew)
-			.hasFieldOrPropertyWithValue("leader", savedUser)
 			.hasFieldOrPropertyWithValue("store", savedStore)
 			.hasFieldOrPropertyWithValue("name", createCrewRequest.name())
 			.hasFieldOrPropertyWithValue("location", location)
@@ -58,7 +57,7 @@ class CrewServiceImplTest extends ServiceTest {
 	@DisplayName("[성공] map api 아이디로 Crew 조회를 한다")
 	void findByMapStoreId_success() {
 
-		List<Crew> crews = CrewObjectProvider.createCrews(savedUser, savedStore);
+		List<Crew> crews = CrewObjectProvider.createCrews(savedStore);
 
 		crewRepository.saveAll(crews);
 
@@ -80,7 +79,7 @@ class CrewServiceImplTest extends ServiceTest {
 	@DisplayName("[성공] 사용자의 위치를 위경도로 받아 거리 안에 있는 밥 모임을 조회한다.")
 	void findByLocation_success() {
 
-		Crew crew = CrewObjectProvider.createCrew(savedUser, savedStore);
+		Crew crew = CrewObjectProvider.createCrew(savedStore);
 
 		crewRepository.save(crew);
 
@@ -99,7 +98,7 @@ class CrewServiceImplTest extends ServiceTest {
 	@DisplayName("[성공] 모임의 상태를 받아 변경한다.")
 	void updateStatus_success() {
 
-		Crew crew = CrewObjectProvider.createCrew(savedUser, savedStore);
+		Crew crew = CrewObjectProvider.createCrew(savedStore);
 
 		crewRepository.save(crew);
 
