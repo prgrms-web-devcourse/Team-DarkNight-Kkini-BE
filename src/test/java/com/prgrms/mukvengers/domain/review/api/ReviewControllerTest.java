@@ -71,7 +71,7 @@ class ReviewControllerTest extends ControllerTest {
 		String jsonRequest = objectMapper.writeValueAsString(leaderReviewRequest);
 
 		mockMvc.perform(post("/api/v1/crews/{crewId}/reviews/leader", crew.getId())
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken)
 				.contentType(APPLICATION_JSON)
 				.content(jsonRequest))
 			.andExpect(status().isCreated())
@@ -100,7 +100,7 @@ class ReviewControllerTest extends ControllerTest {
 		String jsonRequest = objectMapper.writeValueAsString(memberReviewRequest);
 
 		mockMvc.perform(post("/api/v1/crews/{crewId}/reviews/member", crew.getId())
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken)
 				.contentType(APPLICATION_JSON)
 				.content(jsonRequest))
 			.andExpect(status().isCreated())
@@ -127,7 +127,7 @@ class ReviewControllerTest extends ControllerTest {
 		Review review = reviewRepository.save(createReview);
 
 		mockMvc.perform(get("/api/v1/reviews/{reviewId}", review.getId())
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken)
 				.contentType(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(print())
