@@ -46,14 +46,14 @@ public class CrewMember extends BaseEntity {
 	private boolean ready;
 
 	@Column(nullable = false)
-	private boolean isLeader;
+	private Role role;
 
 	@Builder
-	protected CrewMember(Long userId, Crew crew, boolean blocked, boolean ready, boolean isLeader) {
+	protected CrewMember(Long userId, Crew crew, boolean blocked, boolean ready, boolean isLeader, Role role) {
 		this.userId = userId;
 		this.crew = crew;
 		this.blocked = blocked;
 		this.ready = ready;
-		this.isLeader = isLeader;
+		this.role = role;
 	}
 }

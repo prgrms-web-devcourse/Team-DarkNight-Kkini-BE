@@ -48,12 +48,12 @@ class ReviewControllerTest extends ControllerTest {
 	void setCrew() {
 		reviewer = userRepository.save(savedUser);
 		reviewee = userRepository.save(createUser());
-		crew = crewRepository.save(createCrew(reviewee, savedStore));
+		crew = crewRepository.save(createCrew(savedStore));
 
 		//crewMemberObjectProvider 변경 예정
 		CrewMember createCrewMember = CrewMember.builder()
 			.crew(crew)
-			.user(reviewer)
+			.userId(reviewer.getId())
 			.ready(false)
 			.blocked(false)
 			.build();
@@ -175,7 +175,7 @@ class ReviewControllerTest extends ControllerTest {
 	private CreateMemberReviewRequest createReviewOfMemberRequest() {
 		User otherCrewOne = userRepository.save(createUser());
 		CrewMember createCrewMember = CrewMember.builder()
-			.user(otherCrewOne)
+			.userId(otherCrewOne.getId())
 			.crew(crew)
 			.ready(false)
 			.blocked(false)

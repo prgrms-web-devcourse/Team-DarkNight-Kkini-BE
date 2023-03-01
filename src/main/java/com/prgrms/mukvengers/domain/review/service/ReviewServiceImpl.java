@@ -43,7 +43,7 @@ public class ReviewServiceImpl implements ReviewService {
 		Crew crew = crewRepository.findById(crewId)
 			.orElseThrow(() -> new IllegalArgumentException("해당 crew 존재하지 않는 밥모임입니다."));
 
-		Crew findCrew = crewRepository.joinCrewMemberByCrewId(crew.getId(), reviewer.getId(), reviewee.getId())
+		Crew findCrew = crewRepository.joinCrewMemberByCrewId(crew.getId())
 			.orElseThrow(() -> new IllegalArgumentException("해당 Reviewer와 Reviewee는 밥모임 아이디가 같지 않다."));
 
 		Review review = reviewMapper.toReview(leaderReviewRequest, reviewer, reviewee, findCrew);

@@ -60,11 +60,7 @@ public abstract class RepositoryTest {
 
 		savedStore = storeRepository.save(createStore());
 
-		savedUserId = savedUser.getId();
-		crews = CrewObjectProvider.createCrews(savedStore);
-		crewRepository.saveAll(crews);
-
-		crews = createCrews(savedUser, savedStore);
+		crews = createCrews(savedStore);
 
 		crewRepository.saveAll(crews); // 위험할 가능성이 높음
 	}
