@@ -37,10 +37,9 @@ public class ReviewController {
 	@PostMapping("/crews/{crewId}/reviews/leader")
 	public ResponseEntity<IdResponse> createReviewOfLeader
 	(
-		@PathVariable Long crewId,
+		@RequestBody @Valid CreateLeaderReviewRequest createLeaderReviewRequest,
 		@AuthenticationPrincipal JwtAuthentication user,    // 리뷰를 작성하고자 하는 reviewer
-		@RequestBody @Valid CreateLeaderReviewRequest createLeaderReviewRequest
-
+		@PathVariable Long crewId
 	) {
 		IdResponse reviewIdResponse = reviewService.createReviewOfLeader(createLeaderReviewRequest, user.id(), crewId);
 		URI location = UriComponentsBuilder.fromUriString("/api/v1/reviews/" + reviewIdResponse.id()).build().toUri();
@@ -53,10 +52,9 @@ public class ReviewController {
 	@PostMapping("/crews/{crewId}/reviews/member")
 	public ResponseEntity<IdResponse> createReviewOfMember
 	(
-		@PathVariable Long crewId,
+		@Valid @RequestBody CreateMemberReviewRequest createMemberReviewRequest,
 		@AuthenticationPrincipal JwtAuthentication user,
-		@Valid @RequestBody CreateMemberReviewRequest createMemberReviewRequest
-
+		@PathVariable Long crewId
 	) {
 		IdResponse reviewIdResponse = reviewService.createMemberReview(createMemberReviewRequest, user.id(), crewId);
 		URI location = UriComponentsBuilder.fromUriString("/api/v1/posts/" + reviewIdResponse.id()).build().toUri();
