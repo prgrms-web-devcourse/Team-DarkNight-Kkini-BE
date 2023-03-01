@@ -37,6 +37,10 @@ import com.prgrms.mukvengers.global.security.jwt.JwtTokenProvider;
 @AutoConfigureTestDatabase(replace = NONE)
 public abstract class ControllerTest {
 
+	protected final String CREW = "모임 API";
+	protected final String STORE = "가게 API";
+	protected final String USER = "유저 API";
+
 	protected final String BEARER_TYPE = "Bearer ";
 
 	@Autowired
@@ -86,6 +90,7 @@ public abstract class ControllerTest {
 		savedStore = storeRepository.save(createStore());
 
 		savedUserId = savedUser.getId();
+		accessToken = jwtTokenProvider.createAccessToken(savedUserId, "USER");
 
 		accessToken = jwtTokenProvider.createAccessToken(savedUserId, "USER");
 	}
