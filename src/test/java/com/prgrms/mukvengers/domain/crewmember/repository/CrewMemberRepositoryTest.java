@@ -44,12 +44,9 @@ class CrewMemberRepositoryTest extends RepositoryTest {
 	@DisplayName("[성공] Reviewer와 Reviewee는 밥모임 아이디가 같아야한다.")
 	void joinCrewMemberByCrewId_success() {
 
-		if (crewMember.getCrew().getId().equals(crew.getId()) ) {
-
-		}
-			Optional<Crew> findcrew = crewRepository.joinCrewMemberByCrewId(crew.getId(),
-				reviewer.getId(),
-				reviewee.getId());
+		Optional<Crew> findcrew = crewRepository.joinCrewMemberByCrewId(crew.getId(),
+			reviewer.getId(),
+			reviewee.getId());
 
 		assertThat(findcrew.get().getId()).isEqualTo(crew.getId());
 	}
