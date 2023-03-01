@@ -24,6 +24,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.mukvengers.config.RestDocsConfig;
 import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
+import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
 import com.prgrms.mukvengers.domain.store.model.Store;
 import com.prgrms.mukvengers.domain.store.repository.StoreRepository;
 import com.prgrms.mukvengers.domain.user.model.User;
@@ -60,6 +61,9 @@ public abstract class ControllerTest {
 
 	@Autowired
 	protected CrewRepository crewRepository;
+
+	@Autowired
+	protected CrewMemberRepository crewMemberRepository;
 
 	protected MockMvc mockMvc;
 

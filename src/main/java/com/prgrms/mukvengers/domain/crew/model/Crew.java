@@ -54,35 +54,52 @@ public class Crew extends BaseEntity {
 	private static final Integer MIN_LATITUDE = -90;
 	private static final Integer MAX_LONGITUDE = 180;
 	private static final Integer MIN_LONGITUDE = -180;
-	@OneToMany(mappedBy = "crew")
-	private final List<CrewMember> crewMembers = new ArrayList<>();
+
+
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
+
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "leader_id", referencedColumnName = "id")
 	private User leader;
+
 	@OneToOne(fetch = LAZY)
 	@JoinColumn(name = "store_id", referencedColumnName = "id")
 	private Store store;
+
 	@Column(nullable = false, length = 20)
 	private String name;
+
 	@Convert(converter = Store.PointConverter.class)
 	@ColumnTransformer(write = "ST_PointFromText(?, 4326)", read = "ST_AsText(location)")
 	@Column(nullable = false)
 	private Point location;
+
 	@Column(nullable = false)
 	private Integer capacity;
+
+	@Column(nullable = false, length = 255)
 	@Enumerated(STRING)
-	@Column(nullable = false)
 	private Status status;
-	@Column
+
+	@Column(nullable = false)
 	private String content;
+
 	@Enumerated(STRING)
 	@Column(nullable = false)
 	private Category category;
+
 	@Column(nullable = false)
 	private LocalDateTime promiseTime;
+
+	@OneToMany(mappedBy = "crew")
+	private List<CrewMember> crewMembers = new ArrayList<>();
+
+	public void addCrewMember(CrewMember crewMember) {
+		crewMembers.add(crewMember);
+	}
+
 
 	@Builder
 	protected Crew(User leader, Store store, String name, Point location, Integer capacity, Status status,
