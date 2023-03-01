@@ -24,12 +24,12 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.mukvengers.config.RestDocsConfig;
 import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
+import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
 import com.prgrms.mukvengers.domain.store.model.Store;
 import com.prgrms.mukvengers.domain.store.repository.StoreRepository;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
 import com.prgrms.mukvengers.global.security.jwt.JwtTokenProvider;
-import com.prgrms.mukvengers.utils.StoreObjectProvider;
 
 @Transactional
 @SpringBootTest
@@ -37,6 +37,10 @@ import com.prgrms.mukvengers.utils.StoreObjectProvider;
 @ExtendWith(RestDocumentationExtension.class)
 @AutoConfigureTestDatabase(replace = NONE)
 public abstract class ControllerTest {
+
+	protected final String CREW = "모임 API";
+	protected final String STORE = "가게 API";
+	protected final String USER = "유저 API";
 
 	protected final String BEARER_TYPE = "Bearer ";
 
@@ -58,11 +62,14 @@ public abstract class ControllerTest {
 	@Autowired
 	protected CrewRepository crewRepository;
 
+	@Autowired
+	protected CrewMemberRepository crewMemberRepository;
+
 	protected MockMvc mockMvc;
 
 	protected User savedUser;
 	protected Long savedUserId;
-	protected String ACCESS_TOKEN;
+	protected String accessToken;
 	protected Store savedStore;
 
 	@BeforeEach
@@ -80,7 +87,7 @@ public abstract class ControllerTest {
 	void setUpLogin() {
 		savedUser = userRepository.save(createUser());
 		savedUserId = savedUser.getId();
-		ACCESS_TOKEN = jwtTokenProvider.createAccessToken(savedUserId, "USER");
+		accessToken = jwtTokenProvider.createAccessToken(savedUserId, "USER");
 
 		savedStore = storeRepository.save(createStore());
 	}

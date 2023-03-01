@@ -5,18 +5,16 @@ import java.util.List;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
+import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
-import com.prgrms.mukvengers.domain.crew.dto.response.CrewSliceResponse;
 import com.prgrms.mukvengers.domain.crew.exception.CrewNotFoundException;
 import com.prgrms.mukvengers.domain.crew.mapper.CrewMapper;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
@@ -58,20 +56,12 @@ public class CrewServiceImpl implements CrewService {
 	}
 
 	@Override
-	public CrewSliceResponse getByMapStoreId(String mapStoreId, Long cursorId, Integer size) {
-		Pageable pageable = PageRequest.of(0, size, Sort.by("id").descending());
+	public CrewPageResponse getByMapStoreId(String mapStoreId, Pageable pageable) {
 
-		Slice<CrewResponse> responses;
+		Page<CrewResponse> responses = crewRepository.findAllByMapStoreId(mapStoreId, pageable)
+			.map(crewMapper::toCrewResponse);
 
-		if (cursorId == null) {
-			responses = crewRepository.joinStoreByMapStoreIdFirst(mapStoreId, pageable)
-				.map(crewMapper::toCrewResponse);
-		} else {
-			responses = crewRepository.joinStoreByMapStoreId(mapStoreId, cursorId, pageable)
-				.map(crewMapper::toCrewResponse);
-		}
-
-		return new CrewSliceResponse(responses);
+		return new CrewPageResponse(responses);
 	}
 
 	@Override
