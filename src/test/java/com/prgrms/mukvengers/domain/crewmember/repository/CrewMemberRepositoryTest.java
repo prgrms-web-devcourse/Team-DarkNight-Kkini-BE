@@ -48,6 +48,8 @@ class CrewMemberRepositoryTest extends RepositoryTest {
 			reviewer.getId(),
 			reviewee.getId());
 
+
+		assertThat(findcrew).isPresent();
 		assertThat(findcrew.get().getId()).isEqualTo(crew.getId());
 	}
 }
