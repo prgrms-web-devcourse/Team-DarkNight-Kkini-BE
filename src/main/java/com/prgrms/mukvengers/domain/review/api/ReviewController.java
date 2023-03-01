@@ -36,11 +36,12 @@ public class ReviewController {
 	 */
 	@PostMapping("/crews/{crewId}/reviews/leader")
 	public ResponseEntity<IdResponse> createReviewOfLeader
-		(
-			@RequestBody @Valid CreateLeaderReviewRequest createLeaderReviewRequest,
-			@AuthenticationPrincipal JwtAuthentication user,	// 리뷰를 작성하고자 하는 reviewer
-			@PathVariable Long crewId
-		) {
+	(
+		@PathVariable Long crewId,
+		@AuthenticationPrincipal JwtAuthentication user,    // 리뷰를 작성하고자 하는 reviewer
+		@RequestBody @Valid CreateLeaderReviewRequest createLeaderReviewRequest
+
+	) {
 		IdResponse reviewIdResponse = reviewService.createReviewOfLeader(createLeaderReviewRequest, user.id(), crewId);
 		URI location = UriComponentsBuilder.fromUriString("/api/v1/reviews/" + reviewIdResponse.id()).build().toUri();
 		return ResponseEntity.created(location).build();
@@ -51,11 +52,12 @@ public class ReviewController {
 	 */
 	@PostMapping("/crews/{crewId}/reviews/member")
 	public ResponseEntity<IdResponse> createReviewOfMember
-		(
-			@Valid @RequestBody CreateMemberReviewRequest createMemberReviewRequest,
-			@AuthenticationPrincipal JwtAuthentication user,
-			@PathVariable Long crewId
-		) {
+	(
+		@PathVariable Long crewId,
+		@AuthenticationPrincipal JwtAuthentication user,
+		@Valid @RequestBody CreateMemberReviewRequest createMemberReviewRequest
+
+	) {
 		IdResponse reviewIdResponse = reviewService.createMemberReview(createMemberReviewRequest, user.id(), crewId);
 		URI location = UriComponentsBuilder.fromUriString("/api/v1/posts/" + reviewIdResponse.id()).build().toUri();
 		return ResponseEntity.created(location).build();
@@ -66,10 +68,10 @@ public class ReviewController {
 	 */
 	@GetMapping("/reviews/{reviewId}")
 	public ResponseEntity<ApiResponse<ReviewResponse>> getSingleReview
-		(
-			@PathVariable Long reviewId,
-			@AuthenticationPrincipal JwtAuthentication user
-		) {
+	(
+		@PathVariable Long reviewId,
+		@AuthenticationPrincipal JwtAuthentication user
+	) {
 		ReviewResponse findReview = reviewService.getSingleReview(reviewId, user.id());
 		return ResponseEntity.ok().body(new ApiResponse<>(findReview));
 	}
