@@ -70,8 +70,7 @@ public abstract class ControllerTest {
 	protected String accessToken;
 
 	protected User savedUser;
-	protected Long savedUserId;
-	protected String ACCESS_TOKEN;
+
 	protected Store savedStore;
 
 	protected Long savedUserId;
