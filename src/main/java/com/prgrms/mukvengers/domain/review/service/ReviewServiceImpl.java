@@ -3,6 +3,7 @@ package com.prgrms.mukvengers.domain.review.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.prgrms.mukvengers.domain.crew.exception.CrewNotFoundException;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
 import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
@@ -12,6 +13,7 @@ import com.prgrms.mukvengers.domain.review.dto.response.ReviewResponse;
 import com.prgrms.mukvengers.domain.review.mapper.ReviewMapper;
 import com.prgrms.mukvengers.domain.review.model.Review;
 import com.prgrms.mukvengers.domain.review.repository.ReviewRepository;
+import com.prgrms.mukvengers.domain.user.exception.UserNotFoundException;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
@@ -35,13 +37,13 @@ public class ReviewServiceImpl implements ReviewService {
 		Long crewId) {
 
 		User reviewer = userRepository.findById(reviewerId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 Reviewer 존재하지 않는 회원입니다."));
+			.orElseThrow(() -> new UserNotFoundException(reviewerId));
 
 		User reviewee = userRepository.findById(leaderReviewRequest.leaderId())
-			.orElseThrow(() -> new IllegalArgumentException("해당 Reviewee 존재하지 않는 회원입니다."));
+			.orElseThrow(() -> new UserNotFoundException(leaderReviewRequest.leaderId()));
 
 		Crew crew = crewRepository.findById(crewId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 crew 존재하지 않는 밥모임입니다."));
+			.orElseThrow(() -> new CrewNotFoundException(crewId));
 
 		Crew findCrew = crewRepository.joinCrewMemberByCrewId(crew.getId())
 			.orElseThrow(() -> new IllegalArgumentException("해당 Reviewer와 Reviewee는 밥모임 아이디가 같지 않다."));
@@ -57,15 +59,15 @@ public class ReviewServiceImpl implements ReviewService {
 	public IdResponse createMemberReview(CreateMemberReviewRequest memberReviewRequest, Long reviewerId, Long crewId) {
 
 		Crew crew = crewRepository.findById(crewId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 crew는 존재하지 않는 밥모임입니다."));
+			.orElseThrow(() -> new UserNotFoundException(crewId));
 
 		User reviewer = userRepository.findById(reviewerId)
 			.filter(r -> crewMemberRepository.findCrewMemberByCrewId(crewId, r.getId()).isPresent())
-			.orElseThrow(() -> new IllegalArgumentException("Reviewer 존재하지 않는 사용자이거나 해당 밥모임원이 아닙니다."));
+			.orElseThrow(() -> new UserNotFoundException(reviewerId));
 
 		User reviewee = userRepository.findById(memberReviewRequest.revieweeId())
 			.filter(review -> crewMemberRepository.findCrewMemberByCrewId(crewId, review.getId()).isPresent())
-			.orElseThrow(() -> new IllegalArgumentException("Reviewee 존재하지 않는 사용자이거나 해당 밥모임원이 아닙니다."));
+			.orElseThrow(() -> new UserNotFoundException(memberReviewRequest.revieweeId()));
 
 		Review review = reviewMapper.toReview(memberReviewRequest, reviewer, reviewee, crew);
 
