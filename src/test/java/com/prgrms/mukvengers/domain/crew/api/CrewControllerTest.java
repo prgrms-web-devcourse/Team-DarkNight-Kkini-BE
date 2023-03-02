@@ -165,10 +165,12 @@ class CrewControllerTest extends ControllerTest {
 
 		String latitude = "35.75413579";
 		String longitude = "-147.4654321321";
+		String distance = "500";
 
 		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 		params.add("latitude", latitude);
 		params.add("longitude", longitude);
+		params.add("distance", distance);
 
 		mockMvc.perform(get("/api/v1/crews")
 				.params(params)
@@ -186,7 +188,8 @@ class CrewControllerTest extends ControllerTest {
 						.requestSchema(FIND_BY_USER_LOCATION_CREW_REQUEST)
 						.requestParameters(
 							parameterWithName("latitude").description("사용자의 위도"),
-							parameterWithName("longitude").description("사용자의 경도"))
+							parameterWithName("longitude").description("사용자의 경도"),
+							parameterWithName("distance").description("모임을 찾을 범위 거리"))
 						.responseSchema(CREW_RESPONSE)
 						.responseFields(
 							fieldWithPath("data.responses.[].id").type(NUMBER).description("밥 모임 아이디"),

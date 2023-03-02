@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
+import com.prgrms.mukvengers.domain.crew.dto.request.DistanceRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
@@ -65,12 +66,12 @@ public class CrewServiceImpl implements CrewService {
 	}
 
 	@Override
-	public CrewResponses getByLocation(String longitude, String latitude) {
+	public CrewResponses getByLocation(DistanceRequest distanceRequest) {
 		GeometryFactory gf = new GeometryFactory();
 
-		Point location = gf.createPoint(new Coordinate(Double.parseDouble(longitude), Double.parseDouble(latitude)));
+		Point location = gf.createPoint(new Coordinate(distanceRequest.longitude(), distanceRequest.latitude()));
 
-		List<CrewResponse> responses = crewRepository.findAllByLocation(location, 500)
+		List<CrewResponse> responses = crewRepository.findAllByLocation(location, distanceRequest.distance())
 			.stream().map(crewMapper::toCrewResponse).toList();
 
 		return new CrewResponses(responses);
