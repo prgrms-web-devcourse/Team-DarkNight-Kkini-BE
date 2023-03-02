@@ -166,8 +166,8 @@ class ReviewControllerTest extends ControllerTest {
 							fieldWithPath("data.reviewee.mannerScore").type(NUMBER).description("리뷰이의 매너 점수"),
 
 							fieldWithPath("data.store.id").type(NUMBER).description("가게의 아이디"),
-							fieldWithPath("data.store.latitude").type(STRING).description("가게의 위도"),
-							fieldWithPath("data.store.longitude").type(STRING).description("가게의 경도"),
+							fieldWithPath("data.store.latitude").type(NUMBER).description("가게의 위도"),
+							fieldWithPath("data.store.longitude").type(NUMBER).description("가게의 경도"),
 							fieldWithPath("data.store.mapStoreId").type(STRING).description("지도 api 제공 id"),
 
 							fieldWithPath("data.crewName").type(STRING).description("리뷰하고자 하는 밥모임 이름"),

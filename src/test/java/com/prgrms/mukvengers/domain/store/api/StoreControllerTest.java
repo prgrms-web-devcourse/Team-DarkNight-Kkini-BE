@@ -46,7 +46,6 @@ class StoreControllerTest extends ControllerTest {
 						.tags(STORE)
 						.summary("가게 저장 API")
 						.requestSchema(CREATE_STORE_REQUEST)
-						.responseSchema(STORE_RESPONSE)
 						.description("가게 정보를 저장합니다.")
 						.requestFields(
 							fieldWithPath("latitude").type(STRING).description("위도"),
@@ -54,6 +53,35 @@ class StoreControllerTest extends ControllerTest {
 							fieldWithPath("mapStoreId").type(STRING).description("지도 api 제공 id"))
 						.responseHeaders(
 							headerWithName("Location").description("조회해볼 수 있는 요청 주소"))
+						.build()
+				)
+			));
+	}
+
+	@Test
+	@DisplayName("[성공] 맵 api 아이디로 Store 조회를 성공한다.")
+	void getByMapStoreId_success() throws Exception {
+
+		mockMvc.perform(get("/api/v1/stores/{mapStoreId}", savedStore.getMapStoreId())
+				.accept(APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andDo(print())
+			.andDo(document("store-getByMapStoreId",
+				resource(
+					builder()
+						.tags(STORE)
+						.summary("가게 조회 API")
+						.responseSchema(STORE_RESPONSE)
+						.description("가게 정보를 조회합니다.")
+						.pathParameters(
+							parameterWithName("mapStoreId").description("맵 api id")
+						)
+						.responseFields(
+							fieldWithPath("data.id").type(NUMBER).description("가게 아이디"),
+							fieldWithPath("data.longitude").type(NUMBER).description("경도"),
+							fieldWithPath("data.latitude").type(NUMBER).description("위도"),
+							fieldWithPath("data.mapStoreId").type(STRING).description("맵 api id")
+						)
 						.build()
 				)
 			));

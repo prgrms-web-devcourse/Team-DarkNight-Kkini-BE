@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.prgrms.mukvengers.base.ServiceTest;
 import com.prgrms.mukvengers.domain.store.dto.request.CreateStoreRequest;
+import com.prgrms.mukvengers.domain.store.dto.response.StoreResponse;
 import com.prgrms.mukvengers.domain.store.model.Store;
 import com.prgrms.mukvengers.utils.StoreObjectProvider;
 
@@ -40,6 +41,19 @@ class StoreServiceTest extends ServiceTest {
 		assertThat(store)
 			.hasFieldOrPropertyWithValue("location", location)
 			.hasFieldOrPropertyWithValue("mapStoreId", createStoreRequest.mapStoreId());
+	}
+
+	@Test
+	@DisplayName("[성공] 맵 api 아이디로 Store 조회를 성공한다.")
+	void getByMapStoreId_success() {
+
+		StoreResponse storeResponse = storeService.getByMapStoreId(savedStore.getMapStoreId());
+
+		assertThat(storeResponse)
+			.hasFieldOrPropertyWithValue("id", savedStore.getId())
+			.hasFieldOrPropertyWithValue("longitude", savedStore.getLocation().getX())
+			.hasFieldOrPropertyWithValue("latitude", savedStore.getLocation().getY())
+			.hasFieldOrPropertyWithValue("mapStoreId", savedStore.getMapStoreId());
 	}
 
 }
