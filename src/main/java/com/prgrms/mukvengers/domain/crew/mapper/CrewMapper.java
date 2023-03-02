@@ -29,8 +29,8 @@ public interface CrewMapper {
 
 	@Named("storeMethod")
 	default StoreResponse mapStore(Store store) {
-		return new StoreResponse(store.getId(), String.valueOf(store.getLocation().getX()),
-			String.valueOf(store.getLocation().getY()), store.getMapStoreId());
+		return new StoreResponse(store.getId(), store.getLocation().getX(), store.getLocation().getY(),
+			store.getMapStoreId());
 
 	}
 
