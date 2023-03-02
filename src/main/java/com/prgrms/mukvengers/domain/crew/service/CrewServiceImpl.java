@@ -2,9 +2,9 @@ package com.prgrms.mukvengers.domain.crew.service;
 
 import java.util.List;
 
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.io.ParseException;
-import org.locationtech.jts.io.WKTReader;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -65,20 +65,15 @@ public class CrewServiceImpl implements CrewService {
 	}
 
 	@Override
-	public CrewResponses getByLocation(String latitude, String longitude) {
-		String pointWKT = String.format("POINT(%s %s)", latitude,
-			longitude);
+	public CrewResponses getByLocation(String longitude, String latitude) {
+		GeometryFactory gf = new GeometryFactory();
 
-		try {
-			Point point = (Point)new WKTReader().read(pointWKT);
+		Point location = gf.createPoint(new Coordinate(Double.parseDouble(longitude), Double.parseDouble(latitude)));
 
-			List<CrewResponse> responses = crewRepository.findAllByLocation(point, 500)
-				.stream().map(crewMapper::toCrewResponse).toList();
+		List<CrewResponse> responses = crewRepository.findAllByLocation(location, 500)
+			.stream().map(crewMapper::toCrewResponse).toList();
 
-			return new CrewResponses(responses);
-		} catch (ParseException e) {
-			throw new IllegalArgumentException();
-		}
+		return new CrewResponses(responses);
 	}
 
 	@Override

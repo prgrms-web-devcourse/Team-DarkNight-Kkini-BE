@@ -23,16 +23,15 @@ public interface CrewRepository extends JpaRepository<Crew, Long> {
 	Page<Crew> findAllByMapStoreId(@Param(value = "mapStoreId") String mapStoreId, Pageable pageable);
 
 	@Query(nativeQuery = true, value =
-		"SELECT *, ST_DISTANCE_SPHERE(ST_POINTFROMTEXT(:#{#location.toText()}, 4326), ST_SRID(crew.location, 4326)) dist FROM crew "
-			+ "WHERE ST_DISTANCE_SPHERE(ST_POINTFROMTEXT(:#{#location.toText()}, 4326), ST_SRID(crew.location, 4326)) < :distance "
-			+ "ORDER BY dist ASC")
+		"SELECT * FROM crew c "
+			+ "WHERE ST_DISTANCE_SPHERE(:location, c.location) < :distance ")
 	List<Crew> findAllByLocation(@Param("location") Point location, @Param("distance") int distance);
 
 	@Query("""
 		SELECT c
 		FROM Crew c
 		JOIN FETCH c.crewMembers cm
-		WHERE c.id = :crewId AND c.leader.id = :revieweeId AND cm.user.id = :reviewerId
+		WHERE c.id = :crewId
 		""")
-	Optional<Crew> joinCrewMemberByCrewId(@Param(value = "crewId") Long crewId, @Param(value = "reviewerId") Long reviewerId,@Param(value = "revieweeId") Long revieweeId);
+	Optional<Crew> joinCrewMemberByCrewId(@Param(value = "crewId") Long crewId);
 }

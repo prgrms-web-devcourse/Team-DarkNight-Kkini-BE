@@ -1,8 +1,5 @@
 package com.prgrms.mukvengers.domain.crew.mapper;
 
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.io.ParseException;
-import org.locationtech.jts.io.WKTReader;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -20,8 +17,8 @@ public interface CrewMapper {
 
 	@Mapping(target = "status", source = "createCrewRequest.status", qualifiedByName = "statusMethod")
 	@Mapping(target = "category", source = "createCrewRequest.category", qualifiedByName = "categoryMethod")
-	@Mapping(target = "location", source = "createCrewRequest", qualifiedByName = "pointMethod")
 	@Mapping(target = "promiseTime", source = "createCrewRequest.promiseTime")
+	@Mapping(target = "store", source = "store")
 	Crew toCrew(CreateCrewRequest createCrewRequest, Store store);
 
 	@Mapping(target = "latitude", source = "crew", qualifiedByName = "latitudeMethod")
@@ -39,12 +36,12 @@ public interface CrewMapper {
 
 	@Named("latitudeMethod")
 	default String mapLatitude(Crew crew) {
-		return String.valueOf(crew.getLocation().getX());
+		return String.valueOf(crew.getLocation().getY());
 	}
 
 	@Named("longitudeMethod")
 	default String mapLongitude(Crew crew) {
-		return String.valueOf(crew.getLocation().getY());
+		return String.valueOf(crew.getLocation().getX());
 	}
 
 	@Named("statusMethod")
@@ -57,18 +54,6 @@ public interface CrewMapper {
 		return Category.getCategory(category);
 	}
 
-	@Named("pointMethod")
-	default Point mapPoint(CreateCrewRequest createCrewRequest) {
-
-		String pointWKT = String.format("POINT(%s %s)", createCrewRequest.latitude(),
-			createCrewRequest.longitude());
-
-		try {
-			return (Point)new WKTReader().read(pointWKT);
-		} catch (ParseException e) {
-			throw new IllegalArgumentException();
-		}
-	}
 }
 
 

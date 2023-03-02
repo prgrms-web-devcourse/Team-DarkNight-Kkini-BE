@@ -1,9 +1,8 @@
 package com.prgrms.mukvengers.domain.store.mapper;
 
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.io.ParseException;
-import org.locationtech.jts.io.WKTReader;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -18,15 +17,14 @@ public interface StoreMapper {
 	Store toStore(CreateStoreRequest createStoreRequest);
 
 	@Named("pointMethod")
-	default Point mapPoint(CreateStoreRequest createStoreRequest) {
+	default Point mapPoint(CreateStoreRequest request) {
 
-		String pointWKT = String.format("POINT(%s %s)", createStoreRequest.latitude(),
-			createStoreRequest.longitude());
+		GeometryFactory gf = new GeometryFactory();
 
-		try {
-			return (Point)new WKTReader().read(pointWKT);
-		} catch (ParseException e) {
-			throw new IllegalArgumentException();
-		}
+		return gf.createPoint(new Coordinate(
+			Double.parseDouble(request.longitude()),
+			Double.parseDouble(request.latitude())));
+
 	}
+
 }

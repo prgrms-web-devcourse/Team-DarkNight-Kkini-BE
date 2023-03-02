@@ -14,7 +14,7 @@ public interface CrewService {
 
 	CrewPageResponse getByMapStoreId(String mapStoreId, Pageable pageable);
 
-	CrewResponses getByLocation(String latitude, String longitude);
+	CrewResponses getByLocation(String longitude, String latitude);
 
 	void updateStatus(UpdateStatusRequest updateStatusRequest);
 

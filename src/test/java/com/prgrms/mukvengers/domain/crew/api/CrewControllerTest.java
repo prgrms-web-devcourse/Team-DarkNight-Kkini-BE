@@ -112,22 +112,6 @@ class CrewControllerTest extends ControllerTest {
 						.responseSchema(CREW_PAGE_RESPONSE)
 						.responseFields(
 							fieldWithPath("data.responses.content.[].id").type(NUMBER).description("밥 모임 아이디"),
-							fieldWithPath("data.responses.content.[].leader").type(OBJECT).description("밥 모임 방장 정보"),
-							fieldWithPath("data.responses.content.[].leader.id").type(NUMBER).description("방장 아이디"),
-							fieldWithPath("data.responses.content.[].leader.nickname").type(STRING)
-								.description("방장 닉네임"),
-							fieldWithPath("data.responses.content.[].leader.profileImgUrl").type(STRING)
-								.description("방장 프로필"),
-							fieldWithPath("data.responses.content.[].leader.introduction").type(STRING)
-								.description("방장 소개"),
-							fieldWithPath("data.responses.content.[].leader.leaderCount").type(NUMBER)
-								.description("방장 횟수"),
-							fieldWithPath("data.responses.content.[].leader.crewCount").type(NUMBER)
-								.description("방장 모임 참여 횟수"),
-							fieldWithPath("data.responses.content.[].leader.tasteScore").type(NUMBER)
-								.description("방장 맛잘알 점수"),
-							fieldWithPath("data.responses.content.[].leader.mannerScore").type(NUMBER)
-								.description("방장 매너온도"),
 							fieldWithPath("data.responses.content.[].store").type(OBJECT).description("밥 모임 가게 정보"),
 							fieldWithPath("data.responses.content.[].store.id").type(NUMBER).description("밥 모임 가게 아이디"),
 							fieldWithPath("data.responses.content.[].store.latitude").type(STRING)
@@ -206,15 +190,6 @@ class CrewControllerTest extends ControllerTest {
 						.responseSchema(CREW_RESPONSE)
 						.responseFields(
 							fieldWithPath("data.responses.[].id").type(NUMBER).description("밥 모임 아이디"),
-							fieldWithPath("data.responses.[].leader").type(OBJECT).description("밥 모임 방장 정보"),
-							fieldWithPath("data.responses.[].leader.id").type(NUMBER).description("방장 아이디"),
-							fieldWithPath("data.responses.[].leader.nickname").type(STRING).description("방장 닉네임"),
-							fieldWithPath("data.responses.[].leader.profileImgUrl").type(STRING).description("방장 프로필"),
-							fieldWithPath("data.responses.[].leader.introduction").type(STRING).description("방장 소개"),
-							fieldWithPath("data.responses.[].leader.leaderCount").type(NUMBER).description("방장 횟수"),
-							fieldWithPath("data.responses.[].leader.crewCount").type(NUMBER).description("방장 모임 참여 횟수"),
-							fieldWithPath("data.responses.[].leader.tasteScore").type(NUMBER).description("방장 맛잘알 점수"),
-							fieldWithPath("data.responses.[].leader.mannerScore").type(NUMBER).description("방장 매너온도"),
 							fieldWithPath("data.responses.[].store").type(OBJECT).description("밥 모임 가게 정보"),
 							fieldWithPath("data.responses.[].store.id").type(NUMBER).description("밥 모임 가게 아이디"),
 							fieldWithPath("data.responses.[].store.latitude").type(STRING).description("밥 모임 가게 위도"),

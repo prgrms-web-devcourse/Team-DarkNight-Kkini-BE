@@ -27,11 +27,11 @@ class CrewMemberRepositoryTest extends RepositoryTest {
 		reviewer = userRepository.save(createUser());
 		reviewee = userRepository.save(createUser());
 
-		crew = crewRepository.save(createCrew(reviewee, savedStore));
+		crew = crewRepository.save(createCrew(savedStore));
 
 		// CrewMemberObjectProvider
 		CrewMember createCrewMember = CrewMember.builder()
-			.user(reviewer)
+			.userId(reviewer.getId())
 			.crew(crew)
 			.blocked(false)
 			.ready(false)
@@ -44,10 +44,7 @@ class CrewMemberRepositoryTest extends RepositoryTest {
 	@DisplayName("[성공] Reviewer와 Reviewee는 밥모임 아이디가 같아야한다.")
 	void joinCrewMemberByCrewId_success() {
 
-		Optional<Crew> findcrew = crewRepository.joinCrewMemberByCrewId(crew.getId(),
-			reviewer.getId(),
-			reviewee.getId());
-
+		Optional<Crew> findcrew = crewRepository.joinCrewMemberByCrewId(crew.getId());
 
 		assertThat(findcrew).isPresent();
 		assertThat(findcrew.get().getId()).isEqualTo(crew.getId());

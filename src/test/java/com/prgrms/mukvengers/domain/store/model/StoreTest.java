@@ -36,7 +36,7 @@ class StoreTest {
 
 		double latitude = 50;
 
-		assertThrows(IllegalArgumentException.class, () -> StoreObjectProvider.createStore(latitude, longitude));
+		assertThrows(IllegalArgumentException.class, () -> StoreObjectProvider.createStore(longitude, latitude));
 	}
 
 	@ParameterizedTest
@@ -46,7 +46,7 @@ class StoreTest {
 
 		double longitude = 50;
 
-		assertThrows(IllegalArgumentException.class, () -> StoreObjectProvider.createStore(latitude, longitude));
+		assertThrows(IllegalArgumentException.class, () -> StoreObjectProvider.createStore(longitude, latitude));
 	}
 
 	@ParameterizedTest

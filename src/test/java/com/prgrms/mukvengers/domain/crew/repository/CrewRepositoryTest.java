@@ -60,7 +60,7 @@ class CrewRepositoryTest extends RepositoryTest {
 		GeometryFactory gf = new GeometryFactory();
 		double longitude = -147.4654321321;
 		double latitude = 35.75413579;
-		Point location = gf.createPoint(new Coordinate(latitude, longitude));
+		Point location = gf.createPoint(new Coordinate(longitude, latitude));
 		List<Crew> savedCrews = crewRepository.findAllByLocation(location, 1000);
 
 		assertThat(savedCrews).hasSize(crews.size());
@@ -71,10 +71,10 @@ class CrewRepositoryTest extends RepositoryTest {
 	@DisplayName("[성공] Reviewer는 리뷰를 남기고 싶은 해당 Reviewee와 밥모임 아이디가 같아야 한다.")
 	void joinCrewMemberByCrewId_success() {
 
-		crew = crewRepository.save(createCrew(reviewee, savedStore));
+		crew = crewRepository.save(createCrew(savedStore));
 
 		CrewMember createCrewMember = CrewMember.builder()
-			.user(reviewer)
+			.userId(reviewer.getId())
 			.crew(crew)
 			.blocked(false)
 			.ready(false)
@@ -82,8 +82,7 @@ class CrewRepositoryTest extends RepositoryTest {
 
 		crewMember = crewMemberRepository.save(createCrewMember);
 
-		Optional<Crew> findCrew = crewRepository.joinCrewMemberByCrewId(crew.getId(), reviewer.getId(),
-			reviewee.getId());
+		Optional<Crew> findCrew = crewRepository.joinCrewMemberByCrewId(crew.getId());
 
 		assertThat(findCrew.get().getId()).isEqualTo(crew.getId());
 		assertThat(crew.getId()).isEqualTo(crewMember.getCrew().getId());
@@ -93,13 +92,13 @@ class CrewRepositoryTest extends RepositoryTest {
 	@DisplayName("[실패] Reviewer와 Reviewee의 밥모임 아이디가 다르면 에러가 발생한다.")
 	void joinCrewMemberByCrewId_fail() {
 
-		crew = crewRepository.save(createCrew(reviewer, savedStore));
+		crew = crewRepository.save(createCrew(savedStore));
 
 		User otherReviewer = userRepository.save(createUser());
-		Crew otherCrew = crewRepository.save(createCrew(otherReviewer, savedStore));
+		Crew otherCrew = crewRepository.save(createCrew(savedStore));
 
 		CrewMember createCreMember = CrewMember.builder()
-			.user(reviewee)
+			.userId(reviewee.getId())
 			.crew(otherCrew)
 			.blocked(false)
 			.ready(false)

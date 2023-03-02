@@ -26,7 +26,7 @@ public class CrewObjectProvider {
 	private static final String content = "저는 백엔드 개발자 입니다. 프론트 엔드 개발자 구해요";
 	private static final String category = "조용한";
 	private static final Point location = gf.createPoint(
-		new Coordinate(Double.parseDouble(latitude), Double.parseDouble(longitude)));
+		new Coordinate(Double.parseDouble(longitude), Double.parseDouble(latitude)));
 
 	public static Crew createCrew(Store store) {
 
@@ -54,8 +54,8 @@ public class CrewObjectProvider {
 		return new CreateCrewRequest(
 			mapStoreId,
 			name,
-			latitude,
 			longitude,
+			latitude,
 			LocalDateTime.now(),
 			capacity,
 			status,
