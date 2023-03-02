@@ -65,7 +65,7 @@ public class CrewServiceImpl implements CrewService {
 	}
 
 	@Override
-	public CrewResponses getByLocation(String latitude, String longitude) {
+	public CrewResponses getByLocation(String longitude, String latitude) {
 		GeometryFactory gf = new GeometryFactory();
 
 		Point location = gf.createPoint(new Coordinate(Double.parseDouble(longitude), Double.parseDouble(latitude)));

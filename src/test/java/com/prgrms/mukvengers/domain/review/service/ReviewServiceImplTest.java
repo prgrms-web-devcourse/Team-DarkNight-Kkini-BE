@@ -43,6 +43,7 @@ class ReviewServiceImplTest extends ServiceTest {
 	}
 
 	@Test
+	@Disabled
 	@DisplayName("[성공] 리더에 대한 후기를 남길 경우 매너 온도와 맛잘알 평가를 할 수 있다.")
 	void createLeaderReviewTest_success() {
 

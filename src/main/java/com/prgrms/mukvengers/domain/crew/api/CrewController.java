@@ -92,7 +92,7 @@ public class CrewController {
 		@RequestParam("latitude") String latitude,
 		@RequestParam("longitude") String longitude
 	) {
-		CrewResponses responses = crewService.getByLocation(latitude, longitude);
+		CrewResponses responses = crewService.getByLocation(longitude, latitude);
 
 		return ResponseEntity.ok().body(new ApiResponse<>(responses));
 	}
