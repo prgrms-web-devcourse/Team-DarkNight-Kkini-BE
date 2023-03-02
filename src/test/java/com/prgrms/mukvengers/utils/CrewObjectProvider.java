@@ -54,8 +54,8 @@ public class CrewObjectProvider {
 		return new CreateCrewRequest(
 			mapStoreId,
 			name,
-			latitude,
 			longitude,
+			latitude,
 			LocalDateTime.now(),
 			capacity,
 			status,

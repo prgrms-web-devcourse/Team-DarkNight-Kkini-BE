@@ -18,6 +18,7 @@ public interface CrewMapper {
 	@Mapping(target = "status", source = "createCrewRequest.status", qualifiedByName = "statusMethod")
 	@Mapping(target = "category", source = "createCrewRequest.category", qualifiedByName = "categoryMethod")
 	@Mapping(target = "promiseTime", source = "createCrewRequest.promiseTime")
+	@Mapping(target = "store", source = "store")
 	Crew toCrew(CreateCrewRequest createCrewRequest, Store store);
 
 	@Mapping(target = "latitude", source = "crew", qualifiedByName = "latitudeMethod")
@@ -35,12 +36,12 @@ public interface CrewMapper {
 
 	@Named("latitudeMethod")
 	default String mapLatitude(Crew crew) {
-		return String.valueOf(crew.getLocation().getX());
+		return String.valueOf(crew.getLocation().getY());
 	}
 
 	@Named("longitudeMethod")
 	default String mapLongitude(Crew crew) {
-		return String.valueOf(crew.getLocation().getY());
+		return String.valueOf(crew.getLocation().getX());
 	}
 
 	@Named("statusMethod")

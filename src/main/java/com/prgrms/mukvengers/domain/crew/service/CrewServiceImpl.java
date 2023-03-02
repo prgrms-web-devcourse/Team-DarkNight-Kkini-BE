@@ -68,7 +68,7 @@ public class CrewServiceImpl implements CrewService {
 	public CrewResponses getByLocation(String latitude, String longitude) {
 		GeometryFactory gf = new GeometryFactory();
 
-		Point location = gf.createPoint(new Coordinate(Double.parseDouble(latitude), Double.parseDouble(longitude)));
+		Point location = gf.createPoint(new Coordinate(Double.parseDouble(longitude), Double.parseDouble(latitude)));
 
 		List<CrewResponse> responses = crewRepository.findAllByLocation(location, 500)
 			.stream().map(crewMapper::toCrewResponse).toList();
