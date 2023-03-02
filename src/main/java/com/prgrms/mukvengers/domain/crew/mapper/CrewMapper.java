@@ -1,8 +1,5 @@
 package com.prgrms.mukvengers.domain.crew.mapper;
 
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.io.ParseException;
-import org.locationtech.jts.io.WKTReader;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -20,7 +17,6 @@ public interface CrewMapper {
 
 	@Mapping(target = "status", source = "createCrewRequest.status", qualifiedByName = "statusMethod")
 	@Mapping(target = "category", source = "createCrewRequest.category", qualifiedByName = "categoryMethod")
-	@Mapping(target = "location", source = "createCrewRequest", qualifiedByName = "pointMethod")
 	@Mapping(target = "promiseTime", source = "createCrewRequest.promiseTime")
 	Crew toCrew(CreateCrewRequest createCrewRequest, Store store);
 
@@ -57,18 +53,6 @@ public interface CrewMapper {
 		return Category.getCategory(category);
 	}
 
-	@Named("pointMethod")
-	default Point mapPoint(CreateCrewRequest createCrewRequest) {
-
-		String pointWKT = String.format("POINT(%s %s)", createCrewRequest.latitude(),
-			createCrewRequest.longitude());
-
-		try {
-			return (Point)new WKTReader().read(pointWKT);
-		} catch (ParseException e) {
-			throw new IllegalArgumentException();
-		}
-	}
 }
 
 
