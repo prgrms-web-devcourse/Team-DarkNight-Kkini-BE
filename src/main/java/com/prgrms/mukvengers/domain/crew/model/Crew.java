@@ -116,11 +116,11 @@ public class Crew extends BaseEntity {
 	}
 
 	private void validateLatitude(Point location) {
-		isTrue(location.getX() >= MIN_LATITUDE && location.getX() <= MAX_LATITUDE, "유효하지 않는 위도 값입니다.");
+		isTrue(location.getY() >= MIN_LATITUDE && location.getY() <= MAX_LATITUDE, "유효하지 않는 위도 값입니다.");
 	}
 
 	private void validateLongitude(Point location) {
-		isTrue(location.getY() >= MIN_LONGITUDE && location.getY() <= MAX_LONGITUDE, "유효하지 않는 경도 값입니다.");
+		isTrue(location.getX() >= MIN_LONGITUDE && location.getX() <= MAX_LONGITUDE, "유효하지 않는 경도 값입니다.");
 	}
 
 	private void validateCapacity(Integer capacity) {

@@ -40,9 +40,9 @@ class ReviewServiceImplTest extends ServiceTest {
 	void createLeaderReviewTest_success() {
 
 		// given
-		Crew crew = crewRepository.save(createCrew(reviewee, savedStore));
+		Crew crew = crewRepository.save(createCrew(savedStore));
 		CrewMember createCrewMember = CrewMember.builder()
-			.user(reviewer)
+			.userId(reviewer.getId())
 			.crew(crew)
 			.build();
 
@@ -55,7 +55,7 @@ class ReviewServiceImplTest extends ServiceTest {
 		reviewService.createReviewOfLeader(leaderReviewRequest, reviewer.getId(), crew.getId());
 
 		// then
-		assertThat(createMember.getCrew().getLeader().getId()).isEqualTo(reviewee.getId());
+		assertThat(createMember.getUserId()).isEqualTo(reviewee.getId());
 		assertThat(createMember.getCrew().getId()).isEqualTo(crew.getId());
 	}
 
@@ -64,15 +64,15 @@ class ReviewServiceImplTest extends ServiceTest {
 	void createMemberReviewTest_success() {
 		// given
 		User leader = userRepository.save(createUser());
-		Crew crew = crewRepository.save(createCrew(leader, savedStore));
+		Crew crew = crewRepository.save(createCrew(savedStore));
 
 		CrewMember createMemberOfReviewer = CrewMember.builder()
-			.user(reviewer)
+			.userId(reviewer.getId())
 			.crew(crew)
 			.build();
 
 		CrewMember createMemberOfReviewee = CrewMember.builder()
-			.user(reviewee)
+			.userId(reviewee.getId())
 			.crew(crew)
 			.build();
 
@@ -83,7 +83,7 @@ class ReviewServiceImplTest extends ServiceTest {
 
 		// when
 		IdResponse review = reviewService.createMemberReview(memberReviewRequest,
-			crewMemberOfReviewer.getUser().getId(), crew.getId());
+			crewMemberOfReviewer.getUserId(), crew.getId());
 
 		Review saveReview = reviewRepository.findById(review.id()).get();
 

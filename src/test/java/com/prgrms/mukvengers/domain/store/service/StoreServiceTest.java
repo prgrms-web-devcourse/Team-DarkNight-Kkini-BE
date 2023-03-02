@@ -26,7 +26,7 @@ class StoreServiceTest extends ServiceTest {
 
 		double latitude = Double.parseDouble(createStoreRequest.latitude());
 		double longitude = Double.parseDouble(createStoreRequest.longitude());
-		Point location = gf.createPoint(new Coordinate(latitude, longitude));
+		Point location = gf.createPoint(new Coordinate(longitude, latitude));
 
 		//when
 		String mapStoreId = storeService.create(createStoreRequest);

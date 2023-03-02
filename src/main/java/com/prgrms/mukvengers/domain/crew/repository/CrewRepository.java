@@ -31,8 +31,7 @@ public interface CrewRepository extends JpaRepository<Crew, Long> {
 		SELECT c
 		FROM Crew c
 		JOIN FETCH c.crewMembers cm
-		WHERE c.id = :crewId AND c.leader.id = :revieweeId AND cm.user.id = :reviewerId
+		WHERE c.id = :crewId
 		""")
-	Optional<Crew> joinCrewMemberByCrewId(@Param(value = "crewId") Long crewId,
-		@Param(value = "reviewerId") Long reviewerId, @Param(value = "revieweeId") Long revieweeId);
+	Optional<Crew> joinCrewMemberByCrewId(@Param(value = "crewId") Long crewId);
 }

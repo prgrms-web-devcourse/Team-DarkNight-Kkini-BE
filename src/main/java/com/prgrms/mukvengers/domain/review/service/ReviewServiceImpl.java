@@ -43,7 +43,7 @@ public class ReviewServiceImpl implements ReviewService {
 		Crew crew = crewRepository.findById(crewId)
 			.orElseThrow(() -> new IllegalArgumentException("해당 crew 존재하지 않는 밥모임입니다."));
 
-		Crew findCrew = crewRepository.joinCrewMemberByCrewId(crew.getId(), reviewer.getId(), reviewee.getId())
+		Crew findCrew = crewRepository.joinCrewMemberByCrewId(crew.getId())
 			.orElseThrow(() -> new IllegalArgumentException("해당 Reviewer와 Reviewee는 밥모임 아이디가 같지 않다."));
 
 		Review review = reviewMapper.toReview(leaderReviewRequest, reviewer, reviewee, findCrew);
@@ -60,11 +60,11 @@ public class ReviewServiceImpl implements ReviewService {
 			.orElseThrow(() -> new IllegalArgumentException("해당 crew는 존재하지 않는 밥모임입니다."));
 
 		User reviewer = userRepository.findById(reviewerId)
-			.filter(r -> crewMemberRepository.findCrewMemberByCrewId(crewId, r.getId()).isPresent())
+			.filter(r -> crewMemberRepository.findCrewMemberByCrewId(crewId).isPresent())
 			.orElseThrow(() -> new IllegalArgumentException("Reviewer 존재하지 않는 사용자이거나 해당 밥모임원이 아닙니다."));
 
 		User reviewee = userRepository.findById(memberReviewRequest.revieweeId())
-			.filter(review -> crewMemberRepository.findCrewMemberByCrewId(crewId, review.getId()).isPresent())
+			.filter(review -> crewMemberRepository.findCrewMemberByCrewId(crewId).isPresent())
 			.orElseThrow(() -> new IllegalArgumentException("Reviewee 존재하지 않는 사용자이거나 해당 밥모임원이 아닙니다."));
 
 		Review review = reviewMapper.toReview(memberReviewRequest, reviewer, reviewee, crew);

@@ -35,7 +35,7 @@ class CrewServiceImplTest extends ServiceTest {
 
 		double parseLatitude = Double.parseDouble(createCrewRequest.latitude());
 		double parseLongitude = Double.parseDouble(createCrewRequest.longitude());
-		Point location = gf.createPoint(new Coordinate(parseLatitude, parseLongitude));
+		Point location = gf.createPoint(new Coordinate(parseLongitude, parseLatitude));
 		IdResponse idResponse = crewService.create(createCrewRequest, savedUser.getId());
 
 		Optional<Crew> optionalCrew = crewRepository.findById(idResponse.id());
@@ -86,7 +86,7 @@ class CrewServiceImplTest extends ServiceTest {
 		String latitude = "35.75413579";
 		String longitude = "-147.4654321321";
 
-		CrewResponses crewResponses = crewService.getByLocation(latitude, longitude);
+		CrewResponses crewResponses = crewService.getByLocation(longitude, latitude);
 
 		List<CrewResponse> responses = crewResponses.responses();
 
