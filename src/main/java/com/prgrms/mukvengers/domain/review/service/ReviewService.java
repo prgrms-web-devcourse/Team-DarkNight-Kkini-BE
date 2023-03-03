@@ -6,7 +6,7 @@ import com.prgrms.mukvengers.domain.review.dto.response.ReviewResponse;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
 
 public interface ReviewService {
-	IdResponse createReviewOfLeader(CreateLeaderReviewRequest request, Long reviewerId, Long crewId);
+	IdResponse createLeaderReview(CreateLeaderReviewRequest request, Long reviewerId, Long crewId);
 
 	IdResponse createMemberReview(CreateMemberReviewRequest request, Long reviewerId, Long crewId);
 

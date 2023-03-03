@@ -33,7 +33,7 @@ public class ReviewServiceImpl implements ReviewService {
 
 	@Override
 	@Transactional
-	public IdResponse createReviewOfLeader(CreateLeaderReviewRequest leaderReviewRequest, Long reviewerId,
+	public IdResponse createLeaderReview(CreateLeaderReviewRequest leaderReviewRequest, Long reviewerId,
 		Long crewId) {
 
 		User reviewer = userRepository.findById(reviewerId)

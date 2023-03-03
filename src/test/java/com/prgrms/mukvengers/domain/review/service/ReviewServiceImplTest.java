@@ -66,7 +66,7 @@ class ReviewServiceImplTest extends ServiceTest {
 		CreateLeaderReviewRequest leaderReviewRequest = createLeaderReviewRequest(reviewee.getId());
 
 		// when
-		reviewService.createReviewOfLeader(leaderReviewRequest, reviewer.getId(), crew.getId());
+		reviewService.createLeaderReview(leaderReviewRequest, reviewer.getId(), crew.getId());
 
 		// then
 		assertThat(leader.getUserId()).isEqualTo(reviewee.getId());
