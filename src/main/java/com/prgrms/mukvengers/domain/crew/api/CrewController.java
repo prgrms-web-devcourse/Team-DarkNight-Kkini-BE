@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
-import com.prgrms.mukvengers.domain.crew.dto.request.DistanceRequest;
+import com.prgrms.mukvengers.domain.crew.dto.request.SearchCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
@@ -44,21 +44,19 @@ public class CrewController {
 	 * <pre>
 	 *     밥 모임 생성
 	 * </pre>
-	 * @param createCrewRequest 밥 모임 정보 DTO
+	 * @param createCrewRequest 밥 모임 생성 DTO
 	 * @param user 유저 정보
 	 * @return status : 201, body : 생성된 밥 모임 조회 redirectUri
 	 */
 	@PostMapping(consumes = APPLICATION_JSON_VALUE)
-	public ResponseEntity<URI> create(
+	public ResponseEntity<IdResponse> create
+	(
 		@RequestBody @Valid CreateCrewRequest createCrewRequest,
-		@AuthenticationPrincipal JwtAuthentication user) {
-
+		@AuthenticationPrincipal JwtAuthentication user
+	) {
 		IdResponse idResponse = crewService.create(createCrewRequest, user.id());
-
-		String createURL = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString() + "/" + idResponse.id();
-
-		return ResponseEntity.created(URI.create(createURL)).build();
-
+		URI location = UriComponentsBuilder.fromUriString("/api/v1/crews/" + idResponse.id()).build().toUri();
+		return ResponseEntity.created(location).build();
 	}
 
 	/**
@@ -66,33 +64,32 @@ public class CrewController {
 	 *     맵 api 가게 아이디로 가게의 밥 모임 조회
 	 * </pre>
 	 * @param mapStoreId 맵 api 가게 아이디
-	 * @param pageable 페이지 정보
-	 * @return status : 200, body : 해당 가게의 현재 모집 중인 밥 모임 정보
+	 * @param pageable 페이징 데이터
+	 * @return status : 200, body : 해당 가게의 현재 모집 중인 밥 모임 데이터
 	 */
 	@GetMapping(value = "/{mapStoreId}", produces = APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponse<CrewPageResponse>> findByMapStoreId(
+	public ResponseEntity<ApiResponse<CrewPageResponse>> getByMapStoreId
+	(
 		@PathVariable String mapStoreId,
-		@PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable) {
-
+		@PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable
+	) {
 		CrewPageResponse responses = crewService.getByMapStoreId(mapStoreId, pageable);
-
 		return ResponseEntity.ok().body(new ApiResponse<>(responses));
-
 	}
 
 	/**
 	 * <pre>
 	 *     사용자의 위도, 경도로 특정 거리 안에 있는 밥 모임 조회
 	 * </pre>
-	 * @param distanceRequest 사용자 경도, 위도, 모임을 찾을 반경 거리 정보를 가진 DTO
-	 * @return status : 200, body : 사용자 위치를 기반으로 특정 거리 안에 있는 밥 모임 정보
+	 * @param distanceRequest 사용자 경도, 위도, 모임을 찾을 반경 거리 DTO
+	 * @return status : 200, body : 사용자 위치를 기반으로 특정 거리 안에 있는 밥 모임 데이터
 	 */
 	@GetMapping(produces = APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponse<CrewResponses>> findByLocation(
-		@ModelAttribute @Valid DistanceRequest distanceRequest
+	public ResponseEntity<ApiResponse<CrewResponses>> getByLocation
+	(
+		@ModelAttribute @Valid SearchCrewRequest distanceRequest
 	) {
 		CrewResponses responses = crewService.getByLocation(distanceRequest);
-
 		return ResponseEntity.ok().body(new ApiResponse<>(responses));
 	}
 
@@ -100,17 +97,17 @@ public class CrewController {
 	 * <pre>
 	 *     밥 모임 상태 변경
 	 * </pre>
-	 * @param updateStatusRequest 밤 모임 아이디와, 변경할 상태 정보
+	 * @param updateStatusRequest 밤 모임 아이디와, 변경할 상태 DTO
 	 * @param user 사용자 정보
 	 * @return status : 200
 	 */
 	@PatchMapping
-	public ResponseEntity<Void> updateStatus(
+	public ResponseEntity<Void> updateStatus
+	(
 		@RequestBody @Valid UpdateStatusRequest updateStatusRequest,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
 		crewService.updateStatus(updateStatusRequest);
-
 		return ResponseEntity.ok().build();
 	}
 
