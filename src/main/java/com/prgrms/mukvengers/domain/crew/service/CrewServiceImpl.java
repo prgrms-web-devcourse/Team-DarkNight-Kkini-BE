@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
-import com.prgrms.mukvengers.domain.crew.dto.request.DistanceRequest;
+import com.prgrms.mukvengers.domain.crew.dto.request.SearchCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
@@ -24,7 +24,6 @@ import com.prgrms.mukvengers.domain.store.exception.StoreNotFoundException;
 import com.prgrms.mukvengers.domain.store.model.Store;
 import com.prgrms.mukvengers.domain.store.repository.StoreRepository;
 import com.prgrms.mukvengers.domain.user.exception.UserNotFoundException;
-import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
 
@@ -43,7 +42,8 @@ public class CrewServiceImpl implements CrewService {
 	@Override
 	@Transactional
 	public IdResponse create(CreateCrewRequest createCrewRequest, Long userId) {
-		User user = userRepository.findById(userId)
+
+		userRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException(userId));
 
 		Store store = storeRepository.findByMapStoreId(createCrewRequest.mapStoreId())
@@ -66,7 +66,8 @@ public class CrewServiceImpl implements CrewService {
 	}
 
 	@Override
-	public CrewResponses getByLocation(DistanceRequest distanceRequest) {
+	public CrewResponses getByLocation(SearchCrewRequest distanceRequest) {
+
 		GeometryFactory gf = new GeometryFactory();
 
 		Point location = gf.createPoint(new Coordinate(distanceRequest.longitude(), distanceRequest.latitude()));
@@ -79,6 +80,7 @@ public class CrewServiceImpl implements CrewService {
 
 	@Override
 	public void updateStatus(UpdateStatusRequest updateStatusRequest) {
+
 		Crew crew = crewRepository.findById(updateStatusRequest.crewId())
 			.orElseThrow(() -> new CrewNotFoundException(updateStatusRequest.crewId()));
 
