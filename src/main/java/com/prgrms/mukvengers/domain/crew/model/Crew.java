@@ -1,5 +1,6 @@
 package com.prgrms.mukvengers.domain.crew.model;
 
+import static com.prgrms.mukvengers.global.utils.ValidateUtil.*;
 import static javax.persistence.EnumType.*;
 import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
@@ -28,7 +29,6 @@ import com.prgrms.mukvengers.domain.crew.model.vo.Status;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.store.model.Store;
 import com.prgrms.mukvengers.global.common.domain.BaseEntity;
-import com.prgrms.mukvengers.global.utils.ValidateUtil;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -45,6 +45,9 @@ public class Crew extends BaseEntity {
 	private static final Integer MIN_LATITUDE = -90;
 	private static final Integer MAX_LONGITUDE = 180;
 	private static final Integer MIN_LONGITUDE = -180;
+
+	@OneToMany(mappedBy = "crew")
+	private final List<CrewMember> crewMembers = new ArrayList<>();
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -73,12 +76,9 @@ public class Crew extends BaseEntity {
 	@Enumerated(STRING)
 	@Column(nullable = false)
 	private Category category;
-
+	
 	@Column(nullable = false)
 	private LocalDateTime promiseTime;
-
-	@OneToMany(mappedBy = "crew")
-	private final List<CrewMember> crewMembers = new ArrayList<>();
 
 	@Builder
 	protected Crew(Store store, String name, Point location, Integer capacity, Status status,
@@ -98,9 +98,8 @@ public class Crew extends BaseEntity {
 		crewMembers.add(crewMember);
 	}
 
-	public Status changeStatus(String status) {
+	public void changeStatus(String status) {
 		this.status = validateStatus(Status.getStatus(status));
-		return this.status;
 	}
 
 	private Store validateStore(Store store) {
@@ -109,25 +108,25 @@ public class Crew extends BaseEntity {
 	}
 
 	private String validateName(String name) {
-		ValidateUtil.checkText(name, "유효하지 않는 모임 이름입니다.");
+		checkText(name, "유효하지 않는 모임 이름입니다.");
 		return name;
 	}
 
 	private Point validatePosition(Point location) {
 		notNull(location, "유효하지 않는 위치입니다.");
 
-		validateLatitude(location);
 		validateLongitude(location);
+		validateLatitude(location);
 
 		return location;
 	}
 
-	private void validateLatitude(Point location) {
-		isTrue(location.getY() >= MIN_LATITUDE && location.getY() <= MAX_LATITUDE, "유효하지 않는 위도 값입니다.");
-	}
-
 	private void validateLongitude(Point location) {
 		isTrue(location.getX() >= MIN_LONGITUDE && location.getX() <= MAX_LONGITUDE, "유효하지 않는 경도 값입니다.");
+	}
+
+	private void validateLatitude(Point location) {
+		isTrue(location.getY() >= MIN_LATITUDE && location.getY() <= MAX_LATITUDE, "유효하지 않는 위도 값입니다.");
 	}
 
 	private Integer validateCapacity(Integer capacity) {

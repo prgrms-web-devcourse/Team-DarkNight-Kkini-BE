@@ -37,17 +37,12 @@ public class Comment extends BaseEntity {
 	@JoinColumn(name = "crew_id")
 	private Crew crew;
 
-	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "user_id")
-	private User user;
-
 	@Column(nullable = false, length = 500)
 	private String content;
 
 	@Builder
 	protected Comment(Crew crew, User user, String content) {
 		this.crew = crew;
-		this.user = user;
 		this.content = content;
 	}
 }
