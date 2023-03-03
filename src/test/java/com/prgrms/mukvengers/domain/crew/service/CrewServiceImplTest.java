@@ -15,6 +15,7 @@ import org.springframework.data.domain.Slice;
 
 import com.prgrms.mukvengers.base.ServiceTest;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
+import com.prgrms.mukvengers.domain.crew.dto.request.DistanceRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
@@ -83,10 +84,13 @@ class CrewServiceImplTest extends ServiceTest {
 
 		crewRepository.save(crew);
 
-		String latitude = "35.75413579";
-		String longitude = "-147.4654321321";
+		Double latitude = 35.75413579;
+		Double longitude = -147.4654321321;
+		Integer distance = 500;
 
-		CrewResponses crewResponses = crewService.getByLocation(longitude, latitude);
+		DistanceRequest distanceRequest = new DistanceRequest(longitude, latitude, distance);
+
+		CrewResponses crewResponses = crewService.getByLocation(distanceRequest);
 
 		List<CrewResponse> responses = crewResponses.responses();
 

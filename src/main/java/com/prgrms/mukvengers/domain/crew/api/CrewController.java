@@ -12,16 +12,17 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
+import com.prgrms.mukvengers.domain.crew.dto.request.DistanceRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
@@ -83,16 +84,14 @@ public class CrewController {
 	 * <pre>
 	 *     사용자의 위도, 경도로 특정 거리 안에 있는 밥 모임 조회
 	 * </pre>
-	 * @param latitude 사용자 위도
-	 * @param longitude 사용자 경도
+	 * @param distanceRequest 사용자 경도, 위도, 모임을 찾을 반경 거리 정보를 가진 DTO
 	 * @return status : 200, body : 사용자 위치를 기반으로 특정 거리 안에 있는 밥 모임 정보
 	 */
 	@GetMapping(produces = APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponse<CrewResponses>> findByLocation(
-		@RequestParam("latitude") String latitude,
-		@RequestParam("longitude") String longitude
+		@ModelAttribute @Valid DistanceRequest distanceRequest
 	) {
-		CrewResponses responses = crewService.getByLocation(longitude, latitude);
+		CrewResponses responses = crewService.getByLocation(distanceRequest);
 
 		return ResponseEntity.ok().body(new ApiResponse<>(responses));
 	}

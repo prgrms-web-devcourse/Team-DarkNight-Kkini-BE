@@ -3,6 +3,7 @@ package com.prgrms.mukvengers.domain.crew.service;
 import org.springframework.data.domain.Pageable;
 
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
+import com.prgrms.mukvengers.domain.crew.dto.request.DistanceRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
@@ -14,7 +15,7 @@ public interface CrewService {
 
 	CrewPageResponse getByMapStoreId(String mapStoreId, Pageable pageable);
 
-	CrewResponses getByLocation(String longitude, String latitude);
+	CrewResponses getByLocation(DistanceRequest distanceRequest);
 
 	void updateStatus(UpdateStatusRequest updateStatusRequest);
 
