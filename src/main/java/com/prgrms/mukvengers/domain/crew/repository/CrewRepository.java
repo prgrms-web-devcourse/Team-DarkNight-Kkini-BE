@@ -15,7 +15,8 @@ import com.prgrms.mukvengers.domain.crew.model.Crew;
 public interface CrewRepository extends JpaRepository<Crew, Long> {
 
 	@Query(value = """
-		SELECT c FROM Crew c
+		SELECT c 
+		FROM Crew c
 		JOIN FETCH c.store s
 		WHERE s.mapStoreId = :mapStoreId
 		""",
