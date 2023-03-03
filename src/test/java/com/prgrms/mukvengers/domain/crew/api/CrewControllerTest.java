@@ -114,9 +114,9 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("data.responses.content.[].id").type(NUMBER).description("밥 모임 아이디"),
 							fieldWithPath("data.responses.content.[].store").type(OBJECT).description("밥 모임 가게 정보"),
 							fieldWithPath("data.responses.content.[].store.id").type(NUMBER).description("밥 모임 가게 아이디"),
-							fieldWithPath("data.responses.content.[].store.latitude").type(STRING)
+							fieldWithPath("data.responses.content.[].store.latitude").type(NUMBER)
 								.description("밥 모임 가게 위도"),
-							fieldWithPath("data.responses.content.[].store.longitude").type(STRING)
+							fieldWithPath("data.responses.content.[].store.longitude").type(NUMBER)
 								.description("밥 모임 가게 경도"),
 							fieldWithPath("data.responses.content.[].store.mapStoreId").type(STRING)
 								.description("맵 api 아이디"),
@@ -195,8 +195,8 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("data.responses.[].id").type(NUMBER).description("밥 모임 아이디"),
 							fieldWithPath("data.responses.[].store").type(OBJECT).description("밥 모임 가게 정보"),
 							fieldWithPath("data.responses.[].store.id").type(NUMBER).description("밥 모임 가게 아이디"),
-							fieldWithPath("data.responses.[].store.latitude").type(STRING).description("밥 모임 가게 위도"),
-							fieldWithPath("data.responses.[].store.longitude").type(STRING).description("밥 모임 가게 경도"),
+							fieldWithPath("data.responses.[].store.latitude").type(NUMBER).description("밥 모임 가게 위도"),
+							fieldWithPath("data.responses.[].store.longitude").type(NUMBER).description("밥 모임 가게 경도"),
 							fieldWithPath("data.responses.[].store.mapStoreId").type(STRING).description("맵 api 아이디"),
 							fieldWithPath("data.responses.[].name").type(STRING).description("밥 모임 이름"),
 							fieldWithPath("data.responses.[].latitude").type(STRING).description("가게 위도"),
