@@ -16,8 +16,7 @@ public class StoreObjectProvider {
 
 	public static Store createStore() {
 
-		Point location = gf.createPoint(new Coordinate(longitude, latitude));
-		Point location = STORE_GF.createPoint(new Coordinate(STORE_LATITUDE, STORE_LONGITUDE));
+		Point location = STORE_GF.createPoint(new Coordinate(STORE_LONGITUDE, STORE_LATITUDE));
 
 		return Store.builder()
 			.location(location)
@@ -37,8 +36,7 @@ public class StoreObjectProvider {
 
 	public static void createStore(double longitude, double latitude) {
 
-		Point location = gf.createPoint(new Coordinate(longitude, latitude));
-		Point location = STORE_GF.createPoint(new Coordinate(latitude, longitude));
+		Point location = STORE_GF.createPoint(new Coordinate(longitude, latitude));
 
 		Store.builder()
 			.location(location)
@@ -49,8 +47,7 @@ public class StoreObjectProvider {
 
 	public static Store createStore(String mapStoreId) {
 
-		Point location = gf.createPoint(new Coordinate(longitude, latitude));
-		Point location = STORE_GF.createPoint(new Coordinate(STORE_LATITUDE, STORE_LONGITUDE));
+		Point location = STORE_GF.createPoint(new Coordinate(STORE_LONGITUDE, STORE_LATITUDE));
 
 		return Store.builder()
 			.location(location)
@@ -60,8 +57,7 @@ public class StoreObjectProvider {
 	}
 
 	public static CreateStoreRequest getCreateStoreRequest(String mapStoreId) {
-		return new CreateStoreRequest(String.valueOf(longitude), String.valueOf(latitude), mapStoreId);
-		return new CreateStoreRequest(String.valueOf(STORE_LATITUDE), String.valueOf(STORE_LONGITUDE), mapStoreId);
+		return new CreateStoreRequest(String.valueOf(STORE_LONGITUDE), String.valueOf(STORE_LATITUDE), mapStoreId);
 	}
 
 }

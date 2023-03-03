@@ -64,14 +64,10 @@ public class ReviewServiceImpl implements ReviewService {
 		User reviewer = userRepository.findById(reviewerId)
 			.filter(r -> crewMemberRepository.findCrewMemberByCrewId(crewId).isPresent())
 			.orElseThrow(() -> new IllegalArgumentException("Reviewer 존재하지 않는 사용자이거나 해당 밥모임원이 아닙니다."));
-			.filter(r -> crewMemberRepository.findCrewMemberByCrewId(crewId, r.getId()).isPresent())
-			.orElseThrow(() -> new UserNotFoundException(reviewerId));
 
 		User reviewee = userRepository.findById(memberReviewRequest.revieweeId())
 			.filter(review -> crewMemberRepository.findCrewMemberByCrewId(crewId).isPresent())
 			.orElseThrow(() -> new IllegalArgumentException("Reviewee 존재하지 않는 사용자이거나 해당 밥모임원이 아닙니다."));
-			.filter(review -> crewMemberRepository.findCrewMemberByCrewId(crewId, review.getId()).isPresent())
-			.orElseThrow(() -> new UserNotFoundException(memberReviewRequest.revieweeId()));
 
 		Review review = reviewMapper.toReview(memberReviewRequest, reviewer, reviewee, crew);
 

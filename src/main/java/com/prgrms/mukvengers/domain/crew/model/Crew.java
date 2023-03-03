@@ -46,8 +46,6 @@ public class Crew extends BaseEntity {
 	private static final Integer MAX_LONGITUDE = 180;
 	private static final Integer MIN_LONGITUDE = -180;
 
-	@OneToMany(mappedBy = "crew")
-	private final List<CrewMember> crewMembers = new ArrayList<>();
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
@@ -55,29 +53,32 @@ public class Crew extends BaseEntity {
 	@OneToOne(fetch = LAZY)
 	@JoinColumn(name = "store_id", referencedColumnName = "id")
 	private Store store;
+
 	@Column(nullable = false, length = 20)
 	private String name;
+
 	@Column(nullable = false)
 	private Point location;
+
 	@Column(nullable = false)
 	private Integer capacity;
+
 	@Column(nullable = false, length = 255)
 	@Enumerated(STRING)
 	private Status status;
+
 	@Column(nullable = false)
 	private String content;
+
 	@Enumerated(STRING)
 	@Column(nullable = false)
 	private Category category;
+
 	@Column(nullable = false)
 	private LocalDateTime promiseTime;
 
 	@OneToMany(mappedBy = "crew")
-	private List<CrewMember> crewMembers = new ArrayList<>();
-
-	public void addCrewMember(CrewMember crewMember) {
-		crewMembers.add(crewMember);
-	}
+	private final List<CrewMember> crewMembers = new ArrayList<>();
 
 	@Builder
 	protected Crew(Store store, String name, Point location, Integer capacity, Status status,
