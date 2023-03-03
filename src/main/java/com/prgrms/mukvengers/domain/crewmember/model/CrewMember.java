@@ -1,6 +1,6 @@
 package com.prgrms.mukvengers.domain.crewmember.model;
 
-import static com.prgrms.mukvengers.domain.crewmember.model.Role.*;
+import static com.prgrms.mukvengers.domain.crewmember.model.vo.Role.*;
 import static javax.persistence.EnumType.*;
 import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
@@ -18,6 +18,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import com.prgrms.mukvengers.domain.crew.model.Crew;
+import com.prgrms.mukvengers.domain.crewmember.model.vo.Role;
 import com.prgrms.mukvengers.global.common.domain.BaseEntity;
 
 import lombok.Builder;
