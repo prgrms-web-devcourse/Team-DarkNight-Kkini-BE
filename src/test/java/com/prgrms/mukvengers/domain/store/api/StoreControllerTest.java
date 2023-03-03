@@ -38,7 +38,7 @@ class StoreControllerTest extends ControllerTest {
 				.accept(APPLICATION_JSON))
 			.andExpect(status().isCreated())
 			.andExpect(header().string("Location", containsString("/api/v1/stores")))
-			.andExpect(redirectedUrlPattern("http://localhost:8080/api/v1/stores/*"))
+			.andExpect(redirectedUrlPattern("/api/v1/stores/*"))
 			.andDo(print())
 			.andDo(document("store-create",
 				resource(
