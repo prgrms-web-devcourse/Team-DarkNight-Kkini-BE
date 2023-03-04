@@ -64,7 +64,7 @@ public class Store extends BaseEntity {
 	private String phoneNumber;
 
 	@Builder
-	public Store(Point location, String mapStoreId, String placeName, String categories, String roadAddressName,
+	protected Store(Point location, String mapStoreId, String placeName, String categories, String roadAddressName,
 		Double rating, String photoUrls, String kakaoPlaceUrl, String phoneNumber) {
 		this.location = validatePosition(location);
 		this.mapStoreId = validateMapStoreId(mapStoreId);
@@ -105,32 +105,32 @@ public class Store extends BaseEntity {
 	}
 
 	private String validateCategories(String categories) {
-		checkText(categories, "유효하지 않는 가게 아이디입니다.");
+		checkText(categories, "유효하지 않는 가게 카테고리입니다.");
 		return categories;
 	}
 
 	private String validateRoadAddressName(String roadAddressName) {
-		checkText(roadAddressName, "유효하지 않는 가게 아이디입니다.");
+		checkText(roadAddressName, "유효하지 않는 가게 도로명 주소입니다.");
 		return roadAddressName;
 	}
 
 	private Double validateRating(Double rating) {
-		notNull(rating, "유효하지 않는 가게 아이디입니다.");
+		notNull(rating, "유효하지 않는 가게 평점입니다.");
 		return rating;
 	}
 
 	private String validatePhotoUrls(String photoUrls) {
-		checkText(photoUrls, "유효하지 않는 가게 아이디입니다.");
+		checkText(photoUrls, "유효하지 않는 가게 사진 URL입니다.");
 		return photoUrls;
 	}
 
 	private String validateKakaoPlaceUrl(String kakaoPlaceUrl) {
-		checkText(kakaoPlaceUrl, "유효하지 않는 가게 아이디입니다.");
+		checkText(kakaoPlaceUrl, "유효하지 않는 가게 상세페이지 URL입니다.");
 		return kakaoPlaceUrl;
 	}
 
 	private String validatePhoneNumber(String phoneNumber) {
-		checkText(phoneNumber, "유효하지 않는 가게 아이디입니다.");
+		checkText(phoneNumber, "유효하지 않는 가게 전화번호입니다.");
 		return phoneNumber;
 	}
 

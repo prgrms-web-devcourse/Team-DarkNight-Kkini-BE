@@ -54,7 +54,7 @@ class StoreControllerTest extends ControllerTest {
 							fieldWithPath("placeName").type(STRING).description("가게 이름"),
 							fieldWithPath("categories").type(STRING).description("가게 카테고리"),
 							fieldWithPath("roadAddressName").type(STRING).description("가게 도로명 주소"),
-							fieldWithPath("rating").type(NUMBER).description("가게 별점"),
+							fieldWithPath("rating").type(NUMBER).description("가게 평점"),
 							fieldWithPath("photoUrls").type(STRING).description("가게 사진 URL"),
 							fieldWithPath("kakaoPlaceUrl").type(STRING).description("가게 상세 페이지 URL"),
 							fieldWithPath("phoneNumber").type(STRING).description("가게 전화번호"))
@@ -91,7 +91,7 @@ class StoreControllerTest extends ControllerTest {
 							fieldWithPath("data.placeName").type(STRING).description("가게 이름"),
 							fieldWithPath("data.categories").type(STRING).description("가게 카테고리"),
 							fieldWithPath("data.roadAddressName").type(STRING).description("가게 도로명 주소"),
-							fieldWithPath("data.rating").type(NUMBER).description("가게 별점"),
+							fieldWithPath("data.rating").type(NUMBER).description("가게 평점"),
 							fieldWithPath("data.photoUrls").type(STRING).description("가게 사진 URL"),
 							fieldWithPath("data.kakaoPlaceUrl").type(STRING).description("가게 상세 페이지 URL"),
 							fieldWithPath("data.phoneNumber").type(STRING).description("가게 전화번호")
