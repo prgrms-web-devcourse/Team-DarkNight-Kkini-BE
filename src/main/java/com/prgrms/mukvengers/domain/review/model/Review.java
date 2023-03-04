@@ -16,7 +16,7 @@ import javax.persistence.ManyToOne;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-import com.prgrms.mukvengers.domain.store.model.Store;
+import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.global.common.domain.BaseEntity;
 
@@ -44,14 +44,11 @@ public class Review extends BaseEntity {
 	private User reviewee;
 
 	@ManyToOne
-	@JoinColumn(name = "store_id", referencedColumnName = "id")
-	private Store store;
+	@JoinColumn(name = "crew_id", referencedColumnName = "id")
+	private Crew crew;
 
 	@Column(nullable = false)
 	private LocalDateTime promiseTime;
-
-	@Column(nullable = false, length = 20)
-	private String crewName;
 
 	@Column
 	private String content;
@@ -63,14 +60,13 @@ public class Review extends BaseEntity {
 	private Integer tastePoint;
 
 	@Builder
-	protected Review(User reviewer, User reviewee, Store store, LocalDateTime promiseTime,
-		String crewName, String content, Integer mannerPoint, Integer tastePoint) {
+	protected Review(User reviewer, User reviewee, Crew crew, LocalDateTime promiseTime,
+		String content, Integer mannerPoint, Integer tastePoint) {
 
 		this.reviewer = validateUser(reviewer);
 		this.reviewee = validateUser(reviewee);
-		this.store = validateStore(store);
+		this.crew = validateCrew(crew);
 		this.promiseTime = validatePromiseTime(promiseTime);
-		this.crewName = validateCrewName(crewName);
 		this.content = content;
 		this.mannerPoint = validateMannerPoint(mannerPoint);
 		this.tastePoint = tastePoint;
@@ -86,14 +82,9 @@ public class Review extends BaseEntity {
 		return user;
 	}
 
-	private Store validateStore(Store store) {
-		notNull(store, "유효하지 않는 가게입니다.");
-		return store;
-	}
-
-	private String validateCrewName(String crewName) {
-		hasText(crewName, "유효하지 않는 크루명입니다.");
-		return crewName;
+	private Crew validateCrew(Crew crew) {
+		notNull(crew, "유효하지 않는 밥모임입니다.");
+		return crew;
 	}
 
 	private Integer validateMannerPoint(Integer mannerPoint) {
