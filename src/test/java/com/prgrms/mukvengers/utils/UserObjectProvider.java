@@ -20,6 +20,15 @@ public class UserObjectProvider {
 			.build();
 	}
 
+	public static User createUser(String oauth_id) {
+		return User.builder()
+			.nickname(DEFAULT_NICKNAME)
+			.profileImgUrl(DEFAULT_PROFILE_IMG_URL)
+			.provider(PROVIDER_KAKAO)
+			.oauthId(oauth_id)
+			.build();
+	}
+
 	public static UpdateUserRequest getUpdateUserRequest() {
 		return new UpdateUserRequest(
 			"수정된 이름",

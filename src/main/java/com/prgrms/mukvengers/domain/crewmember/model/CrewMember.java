@@ -1,6 +1,5 @@
 package com.prgrms.mukvengers.domain.crewmember.model;
 
-import static com.prgrms.mukvengers.domain.crewmember.model.vo.Role.*;
 import static javax.persistence.EnumType.*;
 import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
@@ -43,22 +42,14 @@ public class CrewMember extends BaseEntity {
 	@JoinColumn(name = "crew_id", referencedColumnName = "id")
 	private Crew crew;
 
-	@Column(nullable = false)
-	private boolean blocked;
-
-	@Column(nullable = false)
-	private boolean ready;
-
 	@Enumerated(STRING)
 	@Column(nullable = false)
 	private Role role;
 
 	@Builder
-	protected CrewMember(Long userId, Crew crew, boolean blocked, boolean ready, boolean isLeader) {
+	protected CrewMember(Long userId, Crew crew, Role role) {
 		this.userId = userId;
 		this.crew = crew;
-		this.blocked = blocked;
-		this.ready = ready;
-		this.role = MEMBER;
+		this.role = role;
 	}
 }

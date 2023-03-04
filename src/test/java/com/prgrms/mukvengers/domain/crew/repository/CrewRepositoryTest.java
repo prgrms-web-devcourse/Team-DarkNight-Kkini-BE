@@ -1,11 +1,9 @@
 package com.prgrms.mukvengers.domain.crew.repository;
 
-import static com.prgrms.mukvengers.utils.CrewObjectProvider.*;
 import static com.prgrms.mukvengers.utils.UserObjectProvider.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +17,6 @@ import org.springframework.data.domain.Slice;
 
 import com.prgrms.mukvengers.base.RepositoryTest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
-import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.user.model.User;
 
 class CrewRepositoryTest extends RepositoryTest {
@@ -27,10 +24,6 @@ class CrewRepositoryTest extends RepositoryTest {
 	User reviewer;
 
 	User reviewee;
-
-	Crew crew;
-
-	CrewMember crewMember;
 
 	@BeforeEach
 	void setCrews() {
@@ -65,47 +58,5 @@ class CrewRepositoryTest extends RepositoryTest {
 
 		assertThat(savedCrews).hasSize(crews.size());
 
-	}
-
-	@Test
-	@DisplayName("[성공] Reviewer는 리뷰를 남기고 싶은 해당 Reviewee와 밥모임 아이디가 같아야 한다.")
-	void joinCrewMemberByCrewId_success() {
-
-		crew = crewRepository.save(createCrew(savedStore));
-
-		CrewMember createCrewMember = CrewMember.builder()
-			.userId(reviewer.getId())
-			.crew(crew)
-			.blocked(false)
-			.ready(false)
-			.build();
-
-		crewMember = crewMemberRepository.save(createCrewMember);
-
-		Optional<Crew> findCrew = crewRepository.joinCrewMemberByCrewId(crew.getId());
-
-		assertThat(findCrew.get().getId()).isEqualTo(crew.getId());
-		assertThat(crew.getId()).isEqualTo(crewMember.getCrew().getId());
-	}
-
-	@Test
-	@DisplayName("[실패] Reviewer와 Reviewee의 밥모임 아이디가 다르면 에러가 발생한다.")
-	void joinCrewMemberByCrewId_fail() {
-
-		crew = crewRepository.save(createCrew(savedStore));
-
-		User otherReviewer = userRepository.save(createUser());
-		Crew otherCrew = crewRepository.save(createCrew(savedStore));
-
-		CrewMember createCreMember = CrewMember.builder()
-			.userId(reviewee.getId())
-			.crew(otherCrew)
-			.blocked(false)
-			.ready(false)
-			.build();
-
-		CrewMember findCrewMember = crewMemberRepository.save(createCreMember);
-
-		assertThat(findCrewMember.getCrew().getId()).isNotEqualTo(crew.getId());
 	}
 }

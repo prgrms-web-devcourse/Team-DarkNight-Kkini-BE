@@ -5,8 +5,9 @@ import static com.prgrms.mukvengers.utils.ReviewObjectProvider.*;
 import static com.prgrms.mukvengers.utils.UserObjectProvider.*;
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.prgrms.mukvengers.base.ServiceTest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
+import com.prgrms.mukvengers.domain.crewmember.model.vo.Role;
 import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
 import com.prgrms.mukvengers.domain.review.dto.request.CreateLeaderReviewRequest;
 import com.prgrms.mukvengers.domain.review.dto.request.CreateMemberReviewRequest;
@@ -21,6 +23,7 @@ import com.prgrms.mukvengers.domain.review.dto.response.ReviewResponse;
 import com.prgrms.mukvengers.domain.review.model.Review;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
+import com.prgrms.mukvengers.utils.CrewMemberObjectProvider;
 
 class ReviewServiceImplTest extends ServiceTest {
 
@@ -29,90 +32,75 @@ class ReviewServiceImplTest extends ServiceTest {
 
 	User reviewer;
 	User reviewee;
+	Crew crew;
 
 	@BeforeEach
 	void setReview() {
 		reviewer = savedUser;
-		User user2 = User.builder()
-			.nickname(DEFAULT_NICKNAME)
-			.profileImgUrl(DEFAULT_PROFILE_IMG_URL)
-			.provider(PROVIDER_KAKAO)
-			.oauthId("asda")
-			.build();
-		reviewee = userRepository.save(user2);
+		reviewee = userRepository.save(createUser("kakao_1212"));
+		crew = crewRepository.save(createCrew(savedStore));
 	}
 
 	@Test
 	@DisplayName("[성공] 리더에 대한 후기를 남길 경우 매너 온도와 맛잘알 평가를 할 수 있다.")
 	void createLeaderReviewTest_success() {
-
 		// given
-		Crew crew = crewRepository.save(createCrew(savedStore));
-		CrewMember createCrewMember1 = CrewMember.builder()
-			.userId(reviewer.getId())
-			.crew(crew)
-			.build();
+		CrewMember createMemberOfLeader = CrewMemberObjectProvider.createCrewMember(reviewee.getId(), crew,
+			Role.LEADER);
+		CrewMember createMemberOfMember = CrewMemberObjectProvider.createCrewMember(reviewer.getId(), crew,
+			Role.MEMBER);
 
-		CrewMember createCrewMember2 = CrewMember.builder()
-			.userId(reviewee.getId())
-			.crew(crew)
-			.build();
+		CrewMember leader = crewMemberRepository.save(createMemberOfLeader);
+		CrewMember member = crewMemberRepository.save(createMemberOfMember);
 
-		CrewMember member = crewMemberRepository.save(createCrewMember1);
-		CrewMember leader = crewMemberRepository.save(createCrewMember2);
 		crew.addCrewMember(member);
 		crew.addCrewMember(leader);
 
 		CreateLeaderReviewRequest leaderReviewRequest = createLeaderReviewRequest(reviewee.getId());
 
 		// when
-		reviewService.createLeaderReview(leaderReviewRequest, reviewer.getId(), crew.getId());
+		IdResponse leaderReview = reviewService.createLeaderReview(leaderReviewRequest, reviewer.getId(), crew.getId());
+		Optional<Review> findReview = reviewRepository.findById(leaderReview.id());
 
 		// then
-		assertThat(leader.getUserId()).isEqualTo(reviewee.getId());
-		assertThat(leader.getCrew().getId()).isEqualTo(crew.getId());
+		assertThat(findReview).isPresent();
+		assertThat(findReview.get().getReviewee().getId()).isEqualTo(leader.getUserId());
+		assertThat(findReview.get().getMannerPoint()).isEqualTo(MANNER_POINT);
+		assertThat(findReview.get().getTastePoint()).isEqualTo(TASTE_POINT);
 	}
 
 	@Test
-	@Disabled
 	@DisplayName("[성공] 밥모임원에 대한 후기를 남길 경우 매너 온도 평가를 할 수 있다.")
 	void createMemberReviewTest_success() {
 		// given
-		User leader = userRepository.save(createUser());
-		Crew crew = crewRepository.save(createCrew(savedStore));
-
-		CrewMember createMemberOfReviewer = CrewMember.builder()
-			.userId(reviewer.getId())
-			.crew(crew)
-			.build();
-
-		CrewMember createMemberOfReviewee = CrewMember.builder()
-			.userId(reviewee.getId())
-			.crew(crew)
-			.build();
+		CrewMember createMemberOfReviewer = CrewMemberObjectProvider.createCrewMember(reviewer.getId(), crew,
+			Role.MEMBER);
+		CrewMember createMemberOfReviewee = CrewMemberObjectProvider.createCrewMember(reviewee.getId(), crew,
+			Role.MEMBER);
 
 		CrewMember crewMemberOfReviewer = crewMemberRepository.save(createMemberOfReviewer);
 		CrewMember crewMemberOfReviewee = crewMemberRepository.save(createMemberOfReviewee);
 
+		crew.addCrewMember(crewMemberOfReviewer);
+		crew.addCrewMember(crewMemberOfReviewee);
+
 		CreateMemberReviewRequest memberReviewRequest = createMemberReviewRequest(reviewee.getId());
 
 		// when
-		IdResponse review = reviewService.createMemberReview(memberReviewRequest,
-			crewMemberOfReviewer.getUserId(), crew.getId());
-
-		Review saveReview = reviewRepository.findById(review.id()).get();
+		IdResponse review = reviewService.createMemberReview(memberReviewRequest, reviewer.getId(), crew.getId());
+		Optional<Review> findReview = reviewRepository.findById(review.id());
 
 		// then
-		assertThat(saveReview.getMannerPoint()).isEqualTo(MANNER_POINT);
-		assertThat(crewMemberOfReviewer.getCrew().getId()).isEqualTo(crewMemberOfReviewee.getCrew().getId());
+		assertThat(findReview).isPresent();
+		assertThat(findReview.get().getMannerPoint()).isEqualTo(MANNER_POINT);
+		assertThat(findReview.get().getTastePoint()).isNull();
 	}
 
 	@Test
-	@Disabled
 	@DisplayName("[성공] reviewer가 본인이면 단건 리뷰 조회할 수 있다.")
 	void getSingleLeaderReview() {
 		// given
-		Review review = reviewRepository.save(createLeaderReview(reviewer, reviewee, savedStore));
+		Review review = reviewRepository.save(createLeaderReview(reviewer, reviewee, crew));
 
 		// when
 		ReviewResponse singleReview = reviewService.getSingleReview(review.getId(), reviewer.getId());
