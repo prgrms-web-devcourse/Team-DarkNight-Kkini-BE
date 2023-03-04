@@ -33,12 +33,19 @@ CREATE TABLE users
 
 CREATE TABLE store
 (
-    id           bigint       NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    location     point        NOT NULL,
-    map_store_id varchar(255) NOT NULL,
-    created_at   dateTime     NOT NULL DEFAULT now(),
-    updated_at   dateTime     NOT NULL DEFAULT now(),
-    deleted      boolean      NOT NULL DEFAULT false
+    id                bigint       NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    location          point        NOT NULL,
+    map_store_id      varchar(255) NOT NULL,
+    place_name        varchar(255) NULL,
+    categories        varchar(255) NULL,
+    road_address_name varchar(255) NULL,
+    rating            varchar(255) NULL,
+    photo_urls        varchar(255) NULL,
+    kakao_place_url   varchar(255) NULL,
+    phone_number      varchar(255) NULL,
+    created_at        dateTime     NOT NULL DEFAULT now(),
+    updated_at        dateTime     NOT NULL DEFAULT now(),
+    deleted           boolean      NOT NULL DEFAULT false
 );
 
 CREATE TABLE crew
@@ -58,21 +65,6 @@ CREATE TABLE crew
 
     FOREIGN KEY fk_crew_store_id (store_id) REFERENCES store (id)
 );
-
-# CREATE TABLE proposal
-# (
-#     id         bigint       NOT NULL PRIMARY KEY AUTO_INCREMENT,
-#     user_id    bigint       NOT NULL,
-#     crew_id    bigint       NOT NULL,
-#     content    varchar(100) NOT NULL,
-#     checked    boolean      NOT NULL DEFAULT false,
-#     created_at dateTime     NOT NULL DEFAULT now(),
-#     updated_at dateTime     NOT NULL DEFAULT now(),
-#     deleted    boolean      NOT NULL DEFAULT false,
-#
-#     FOREIGN KEY fk_proposal_user_id (user_id) REFERENCES users (id),
-#     FOREIGN KEY fk_proposal_crew_id (crew_id) REFERENCES crew (id)
-# );
 
 CREATE TABLE crew_member
 (
@@ -106,18 +98,21 @@ CREATE TABLE review
     FOREIGN KEY fk_review_crew_id (crew_id) REFERENCES crew (id)
 );
 
-# CREATE TABLE post
-# (
-#     id         bigint       NOT NULL PRIMARY KEY AUTO_INCREMENT,
-#     leader_id  bigint       NOT NULL,
-#     crew_id    bigint       NOT NULL,
-#     content    varchar(500) NOT NULL,
-#     created_at dateTime     NOT NULL DEFAULT now(),
-#     updated_at dateTime     NOT NULL DEFAULT now(),
-#     deleted    boolean      NOT NULL DEFAULT false,
-#
-#     FOREIGN KEY fk_post_crew_id (crew_id) REFERENCES crew (id)
-# );
+CREATE TABLE proposal
+(
+    id         bigint       NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    user_id    bigint       NOT NULL,
+    leader_id  bigint       NOT NULL,
+    crew_id    bigint       NOT NULL,
+    content    varchar(100) NOT NULL,
+    status     varchar(100) NOT NULL,
+    created_at dateTime     NOT NULL DEFAULT now(),
+    updated_at dateTime     NOT NULL DEFAULT now(),
+    deleted    boolean      NOT NULL DEFAULT false,
+
+    FOREIGN KEY fk_proposal_user_id (user_id) REFERENCES users (id),
+    FOREIGN KEY fk_proposal_crew_id (crew_id) REFERENCES crew (id)
+);
 
 CREATE TABLE comment
 (
