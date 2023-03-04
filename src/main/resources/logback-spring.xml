@@ -1,0 +1,49 @@
+<configuration packagingData="true">
+    <springProperty name="AWS_ACCESS_KEY" source="cloud.aws.credentials.access-key"/>
+    <springProperty name="AWS_SECRET_KEY" source="cloud.aws.credentials.secret-key"/>
+
+    <appender name="aws_cloud_watch_log" class="ca.pjer.logback.AwsLogsAppender">
+        <layout>
+            <pattern>[%thread] [%date] [%level] [%file:%line] - %msg%n</pattern>
+        </layout>
+        <logGroupName>kkini-log</logGroupName>
+        <logStreamUuidPrefix>kkini</logStreamUuidPrefix>
+        <logRegion>ap-northeast-2</logRegion>
+        <maxBatchLogEvents>50</maxBatchLogEvents>
+        <maxFlushTimeMillis>30000</maxFlushTimeMillis>
+        <maxBlockTimeMillis>5000</maxBlockTimeMillis>
+        <retentionTimeDays>7</retentionTimeDays>
+        <accessKeyId>${AWS_ACCESS_KEY}</accessKeyId>
+        <secretAccessKey>${AWS_SECRET_KEY}</secretAccessKey>
+    </appender>
+
+    <appender name="application_log" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>[%thread] [%date] [%level] [%file:%line] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <springProfile name="local">
+        <root level="INFO">
+            <appender-ref ref="application_log"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="dev">
+        <root level="INFO">
+            <appender-ref ref="application_log"/>
+        </root>
+        <logger name="dev-error" level="ERROR">
+            <appender-ref ref="aws_cloud_watch_log"/>
+        </logger>
+    </springProfile>
+
+    <springProfile name="prod">
+        <root level="INFO">
+            <appender-ref ref="application_log"/>
+        </root>
+        <logger name="prod-error" level="ERROR">
+            <appender-ref ref="aws_cloud_watch_log"/>
+        </logger>
+    </springProfile>
+</configuration>
