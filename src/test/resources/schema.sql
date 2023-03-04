@@ -92,7 +92,7 @@ CREATE TABLE review
     id           bigint       NOT NULL PRIMARY KEY AUTO_INCREMENT,
     reviewer     bigint       NOT NULL,
     reviewee     bigint       NOT NULL,
-    crew_id     bigint       NOT NULL,
+    crew_id      bigint       NOT NULL,
     promise_time dateTime     NOT NULL,
     content      varchar(255) NULL,
     manner_point int          NOT NULL,
