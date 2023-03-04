@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
-import com.prgrms.mukvengers.global.security.jwt.JwtTokenProvider;
+import com.prgrms.mukvengers.global.security.oauth.dto.AuthUserInfo;
 import com.prgrms.mukvengers.global.security.oauth.dto.OAuthUserInfo;
 import com.prgrms.mukvengers.global.security.oauth.mapper.OAuthMapper;
 
@@ -16,14 +16,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class OAuthService {
-
-	private final JwtTokenProvider jwtTokenProvider;
+public class OAuthService { // TODO: 현재 상당히 객체 지향적으로 좋지 않아 보임
+	
 	private final UserRepository userRepository;
 	private final OAuthMapper oauthMapper;
 
 	@Transactional
-	public String login(OAuth2User oauth2User, String providerName) {
+	public AuthUserInfo login(OAuth2User oauth2User, String providerName) {
 
 		OAuthUserInfo oauthUserInfo = OAuthProvider
 			.getOAuthProviderByName(providerName)
@@ -34,8 +33,8 @@ public class OAuthService {
 			.findByUserIdByProviderAndOauthId(oauthUserInfo.provider(), oauthUserInfo.oauthId())
 			.orElseGet(() -> userRepository.save(oauthMapper.toUser(oauthUserInfo)));
 
-		String accessToken = jwtTokenProvider.createAccessToken(user.getId(), "ROLE_USER");
-		log.debug("{}를 통해 로그인 한 사용자(ID: {}), accessToken = {}", providerName, user.getId(), accessToken);
-		return accessToken;
+		log.debug("{}를 통해 로그인 한 사용자(ID: {})", providerName, user.getId());
+
+		return new AuthUserInfo(user.getId(), "ROLE_USER");
 	}
 }
