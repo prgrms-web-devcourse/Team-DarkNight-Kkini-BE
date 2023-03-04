@@ -73,16 +73,16 @@ class ReviewServiceImplTest extends ServiceTest {
 	@DisplayName("[성공] 밥모임원에 대한 후기를 남길 경우 매너 온도 평가를 할 수 있다.")
 	void createMemberReviewTest_success() {
 		// given
-		CrewMember createMemberOfReviewer = CrewMemberObjectProvider.createCrewMember(reviewee.getId(), crew,
+		CrewMember createMemberOfReviewer = CrewMemberObjectProvider.createCrewMember(reviewer.getId(), crew,
 			Role.MEMBER);
-		CrewMember createMemberOfReviewee = CrewMemberObjectProvider.createCrewMember(reviewer.getId(), crew,
+		CrewMember createMemberOfReviewee = CrewMemberObjectProvider.createCrewMember(reviewee.getId(), crew,
 			Role.MEMBER);
 
-		CrewMember reviewer = crewMemberRepository.save(createMemberOfReviewer);
-		CrewMember reviewee = crewMemberRepository.save(createMemberOfReviewee);
+		CrewMember crewMemberOfReviewer = crewMemberRepository.save(createMemberOfReviewer);
+		CrewMember crewMemberOfReviewee = crewMemberRepository.save(createMemberOfReviewee);
 
-		crew.addCrewMember(reviewer);
-		crew.addCrewMember(reviewee);
+		crew.addCrewMember(crewMemberOfReviewer);
+		crew.addCrewMember(crewMemberOfReviewee);
 
 		CreateMemberReviewRequest memberReviewRequest = createMemberReviewRequest(reviewee.getId());
 
