@@ -32,8 +32,6 @@ import com.prgrms.mukvengers.domain.user.model.User;
 
 class ReviewControllerTest extends ControllerTest {
 
-	private static final String REVIEW = "리뷰 API";
-
 	@Autowired
 	ReviewController reviewController;
 
