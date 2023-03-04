@@ -1,11 +1,14 @@
 package com.prgrms.mukvengers.domain.crewmember.model;
 
+import static com.prgrms.mukvengers.domain.crewmember.model.vo.Role.*;
+import static javax.persistence.EnumType.*;
 import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -15,6 +18,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import com.prgrms.mukvengers.domain.crew.model.Crew;
+import com.prgrms.mukvengers.domain.crewmember.model.vo.Role;
 import com.prgrms.mukvengers.global.common.domain.BaseEntity;
 
 import lombok.Builder;
@@ -45,8 +49,9 @@ public class CrewMember extends BaseEntity {
 	@Column(nullable = false)
 	private boolean ready;
 
+	@Enumerated(STRING)
 	@Column(nullable = false)
-	private boolean isLeader;
+	private Role role;
 
 	@Builder
 	protected CrewMember(Long userId, Crew crew, boolean blocked, boolean ready, boolean isLeader) {
@@ -54,6 +59,6 @@ public class CrewMember extends BaseEntity {
 		this.crew = crew;
 		this.blocked = blocked;
 		this.ready = ready;
-		this.isLeader = isLeader;
+		this.role = MEMBER;
 	}
 }

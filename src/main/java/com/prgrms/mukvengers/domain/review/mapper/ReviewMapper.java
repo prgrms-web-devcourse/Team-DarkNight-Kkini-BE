@@ -49,13 +49,13 @@ public interface ReviewMapper {
 	ReviewResponse toReviewResponse(Review review);
 
 	@Named("latitudeMethod")
-	default String mapLatitude(Review review) {
-		return String.valueOf(review.getStore().getLocation().getX());
+	default Double mapLatitude(Review review) {
+		return review.getStore().getLocation().getX();
 	}
 
 	@Named("longitudeMethod")
-	default String mapLongitude(Review review) {
-		return String.valueOf(review.getStore().getLocation().getY());
+	default Double mapLongitude(Review review) {
+		return review.getStore().getLocation().getY();
 	}
 
 	@Named("storeIdMethod")

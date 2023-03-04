@@ -1,6 +1,6 @@
-# jwt 설정
+# JWT 설정
 jwt:
-  issuer: ${JWT_ISSUER}
+  issuer: KKINI
   secret-key: ${JWT_SECRET_KEY}
   expiry-seconds:
     access-token: 3600

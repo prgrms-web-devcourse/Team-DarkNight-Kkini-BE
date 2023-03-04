@@ -1,5 +1,6 @@
 package com.prgrms.mukvengers.base;
 
+import static com.prgrms.mukvengers.utils.CrewObjectProvider.*;
 import static com.prgrms.mukvengers.utils.StoreObjectProvider.*;
 import static com.prgrms.mukvengers.utils.UserObjectProvider.*;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.*;
@@ -21,7 +22,6 @@ import com.prgrms.mukvengers.domain.store.repository.StoreRepository;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
 import com.prgrms.mukvengers.global.config.jpa.JpaConfig;
-import com.prgrms.mukvengers.utils.CrewObjectProvider;
 
 @DataJpaTest
 @Import(JpaConfig.class)
@@ -48,6 +48,7 @@ public abstract class RepositoryTest {
 	protected Store savedStore;
 
 	protected List<Crew> crews;
+
 	protected Long savedUserId;
 
 	@BeforeEach
@@ -59,8 +60,8 @@ public abstract class RepositoryTest {
 
 		savedStore = storeRepository.save(createStore());
 
-		crews = CrewObjectProvider.createCrews(savedStore);
-		crewRepository.saveAll(crews);
+		crews = createCrews(savedStore);
 
+		crewRepository.saveAll(crews); // 위험할 가능성이 높음
 	}
 }

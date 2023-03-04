@@ -14,7 +14,7 @@ ALTER TABLE crew_member
 
 # 방장 여부 필드 추가
 ALTER TABLE crew_member
-    ADD COLUMN is_leader boolean NOT NULL DEFAULT false;
+    ADD COLUMN role varchar(50) NOT NULL;
 
 # fk 삭제 "fk_comment_leader_id (user_id) REFERENCES users (id)"
 ALTER TABLE comment

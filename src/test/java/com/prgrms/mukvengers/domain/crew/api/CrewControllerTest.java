@@ -48,7 +48,7 @@ class CrewControllerTest extends ControllerTest {
 				.content(jsonRequest))
 			.andExpect(status().isCreated())
 			.andExpect(header().string("Location", containsString("/api/v1/crews")))
-			.andExpect(redirectedUrlPattern("http://localhost:8080/api/v1/crews/*"))
+			.andExpect(redirectedUrlPattern("/api/v1/crews/*"))
 			.andDo(print())
 			.andDo(document("모임 생성",
 				resource(
@@ -112,17 +112,7 @@ class CrewControllerTest extends ControllerTest {
 						.responseSchema(CREW_PAGE_RESPONSE)
 						.responseFields(
 							fieldWithPath("data.responses.content.[].id").type(NUMBER).description("밥 모임 아이디"),
-							fieldWithPath("data.responses.content.[].store").type(OBJECT).description("밥 모임 가게 정보"),
-							fieldWithPath("data.responses.content.[].store.id").type(NUMBER).description("밥 모임 가게 아이디"),
-							fieldWithPath("data.responses.content.[].store.latitude").type(NUMBER)
-								.description("밥 모임 가게 위도"),
-							fieldWithPath("data.responses.content.[].store.longitude").type(NUMBER)
-								.description("밥 모임 가게 경도"),
-							fieldWithPath("data.responses.content.[].store.mapStoreId").type(STRING)
-								.description("맵 api 아이디"),
 							fieldWithPath("data.responses.content.[].name").type(STRING).description("밥 모임 이름"),
-							fieldWithPath("data.responses.content.[].latitude").type(STRING).description("가게 위도"),
-							fieldWithPath("data.responses.content.[].longitude").type(STRING).description("가게 경도"),
 							fieldWithPath("data.responses.content.[].capacity").type(NUMBER).description("밥 모임 정원"),
 							fieldWithPath("data.responses.content.[].promiseTime").type(ARRAY).description("약속 시간"),
 							fieldWithPath("data.responses.content.[].status").type(STRING).description("밥 모임 상태"),
@@ -193,14 +183,7 @@ class CrewControllerTest extends ControllerTest {
 						.responseSchema(CREW_RESPONSE)
 						.responseFields(
 							fieldWithPath("data.responses.[].id").type(NUMBER).description("밥 모임 아이디"),
-							fieldWithPath("data.responses.[].store").type(OBJECT).description("밥 모임 가게 정보"),
-							fieldWithPath("data.responses.[].store.id").type(NUMBER).description("밥 모임 가게 아이디"),
-							fieldWithPath("data.responses.[].store.latitude").type(NUMBER).description("밥 모임 가게 위도"),
-							fieldWithPath("data.responses.[].store.longitude").type(NUMBER).description("밥 모임 가게 경도"),
-							fieldWithPath("data.responses.[].store.mapStoreId").type(STRING).description("맵 api 아이디"),
 							fieldWithPath("data.responses.[].name").type(STRING).description("밥 모임 이름"),
-							fieldWithPath("data.responses.[].latitude").type(STRING).description("가게 위도"),
-							fieldWithPath("data.responses.[].longitude").type(STRING).description("가게 경도"),
 							fieldWithPath("data.responses.[].capacity").type(NUMBER).description("밥 모임 정원"),
 							fieldWithPath("data.responses.[].promiseTime").type(ARRAY).description("약속 시간"),
 							fieldWithPath("data.responses.[].status").type(STRING).description("밥 모임 상태"),

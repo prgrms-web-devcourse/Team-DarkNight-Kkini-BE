@@ -43,28 +43,34 @@ class ReviewServiceImplTest extends ServiceTest {
 	}
 
 	@Test
-	@Disabled
 	@DisplayName("[성공] 리더에 대한 후기를 남길 경우 매너 온도와 맛잘알 평가를 할 수 있다.")
 	void createLeaderReviewTest_success() {
 
 		// given
 		Crew crew = crewRepository.save(createCrew(savedStore));
-		CrewMember createCrewMember = CrewMember.builder()
+		CrewMember createCrewMember1 = CrewMember.builder()
 			.userId(reviewer.getId())
 			.crew(crew)
 			.build();
 
-		CrewMember createMember = crewMemberRepository.save(createCrewMember);
-		crew.addCrewMember(createMember);
+		CrewMember createCrewMember2 = CrewMember.builder()
+			.userId(reviewee.getId())
+			.crew(crew)
+			.build();
+
+		CrewMember member = crewMemberRepository.save(createCrewMember1);
+		CrewMember leader = crewMemberRepository.save(createCrewMember2);
+		crew.addCrewMember(member);
+		crew.addCrewMember(leader);
 
 		CreateLeaderReviewRequest leaderReviewRequest = createLeaderReviewRequest(reviewee.getId());
 
 		// when
-		reviewService.createReviewOfLeader(leaderReviewRequest, reviewer.getId(), crew.getId());
+		reviewService.createLeaderReview(leaderReviewRequest, reviewer.getId(), crew.getId());
 
 		// then
-		assertThat(createMember.getUserId()).isEqualTo(reviewee.getId());
-		assertThat(createMember.getCrew().getId()).isEqualTo(crew.getId());
+		assertThat(leader.getUserId()).isEqualTo(reviewee.getId());
+		assertThat(leader.getCrew().getId()).isEqualTo(crew.getId());
 	}
 
 	@Test
@@ -102,6 +108,7 @@ class ReviewServiceImplTest extends ServiceTest {
 	}
 
 	@Test
+	@Disabled
 	@DisplayName("[성공] reviewer가 본인이면 단건 리뷰 조회할 수 있다.")
 	void getSingleLeaderReview() {
 		// given

@@ -17,15 +17,8 @@ import com.prgrms.mukvengers.domain.user.dto.response.UserProfileResponse;
 import com.prgrms.mukvengers.domain.user.exception.UserNotFoundException;
 import com.prgrms.mukvengers.domain.user.mapper.UserMapper;
 import com.prgrms.mukvengers.domain.user.model.User;
-import com.prgrms.mukvengers.domain.user.repository.UserRepository;
 
 class UserServiceTest extends ServiceTest {
-
-	@Autowired
-	private UserService userService;
-
-	@Autowired
-	private UserRepository userRepository;
 
 	@Autowired
 	private UserMapper userMapper;
@@ -43,7 +36,7 @@ class UserServiceTest extends ServiceTest {
 
 		@Test
 		@DisplayName("[성공] userId를 통해서 사용자 프로필를 조회할 수 있다.")
-		void getUserProfileSuccessTest() {
+		void getUserProfile_success() {
 			// given & when
 			UserProfileResponse userProfile = userService.getUserProfile(savedUser.getId());
 			//then
@@ -53,7 +46,7 @@ class UserServiceTest extends ServiceTest {
 
 		@Test
 		@DisplayName("[성공] 사용자의 프로필(닉네임, 프로필 이미지, 자기소개)를 한번에 수정할 수 있다.")
-		void updateUserProfileSuccessTest() {
+		void updateUserProfile_success() {
 			//given
 			UpdateUserRequest request = new UpdateUserRequest("테스트2", "https://updateImg.jpg", "수정된 자기소개");
 			// when
@@ -73,7 +66,7 @@ class UserServiceTest extends ServiceTest {
 
 		@Test
 		@DisplayName("[성공] userId를 통해서 사용자 정보를 삭제할 수 있다.")
-		void deleteUserSuccessTest() {
+		void deleteUser_success() {
 			assertDoesNotThrow(
 				() -> userService.deleteUser(savedUser.getId())
 			);
@@ -84,7 +77,7 @@ class UserServiceTest extends ServiceTest {
 
 		@Test
 		@DisplayName("[실패] userId에 해당하는 사용자가 없으면 UserNotFoundException")
-		void notFoundMatchUser() {
+		void notFoundMatchUser_fail() {
 			Long UNSAVED_USER_ID = 0L;
 			assertAll(
 				() -> assertThatThrownBy(() -> userService.getUserProfile(UNSAVED_USER_ID))
