@@ -27,6 +27,7 @@ import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
+import com.prgrms.mukvengers.domain.crew.dto.response.MyCrewResponse;
 import com.prgrms.mukvengers.domain.crew.service.CrewService;
 import com.prgrms.mukvengers.global.common.dto.ApiResponse;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
@@ -75,6 +76,14 @@ public class CrewController {
 	) {
 		CrewResponse response = crewService.getById(crewId);
 		return ResponseEntity.ok().body(new ApiResponse<>(response));
+	}
+
+	@GetMapping(value = "/me", produces = APPLICATION_JSON_VALUE)
+	public ResponseEntity<ApiResponse<MyCrewResponse>> getByUserId(
+		@AuthenticationPrincipal JwtAuthentication user
+	) {
+		MyCrewResponse responses = crewService.getByUserId(user.id());
+		return ResponseEntity.ok().body(new ApiResponse<>(responses));
 	}
 
 	/**
