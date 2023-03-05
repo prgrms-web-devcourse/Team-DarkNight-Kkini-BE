@@ -20,7 +20,7 @@ ALTER TABLE store
 
 # 카카오 URL 필드 추가
 ALTER TABLE store
-    ADD COLUMN kakao_placeUrl varchar(255) NULL;
+    ADD COLUMN kakao_place_url varchar(255) NULL;
 
 # 가게 전화번호 필드 추가
 ALTER TABLE store

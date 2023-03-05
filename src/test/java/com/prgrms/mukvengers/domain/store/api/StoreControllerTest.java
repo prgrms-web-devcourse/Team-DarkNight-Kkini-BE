@@ -48,9 +48,16 @@ class StoreControllerTest extends ControllerTest {
 						.requestSchema(CREATE_STORE_REQUEST)
 						.description("가게 정보를 저장합니다.")
 						.requestFields(
-							fieldWithPath("latitude").type(STRING).description("위도"),
-							fieldWithPath("longitude").type(STRING).description("경도"),
-							fieldWithPath("mapStoreId").type(STRING).description("지도 api 제공 id"))
+							fieldWithPath("latitude").type(NUMBER).description("위도"),
+							fieldWithPath("longitude").type(NUMBER).description("경도"),
+							fieldWithPath("mapStoreId").type(STRING).description("지도 api 제공 id"),
+							fieldWithPath("placeName").type(STRING).description("가게 이름"),
+							fieldWithPath("categories").type(STRING).description("가게 카테고리"),
+							fieldWithPath("roadAddressName").type(STRING).description("가게 도로명 주소"),
+							fieldWithPath("rating").type(NUMBER).description("가게 평점"),
+							fieldWithPath("photoUrls").type(STRING).description("가게 사진 URL"),
+							fieldWithPath("kakaoPlaceUrl").type(STRING).description("가게 상세 페이지 URL"),
+							fieldWithPath("phoneNumber").type(STRING).description("가게 전화번호"))
 						.responseHeaders(
 							headerWithName("Location").description("조회해볼 수 있는 요청 주소"))
 						.build()
@@ -78,9 +85,16 @@ class StoreControllerTest extends ControllerTest {
 						)
 						.responseFields(
 							fieldWithPath("data.id").type(NUMBER).description("가게 아이디"),
-							fieldWithPath("data.longitude").type(NUMBER).description("경도"),
 							fieldWithPath("data.latitude").type(NUMBER).description("위도"),
-							fieldWithPath("data.mapStoreId").type(STRING).description("맵 api id")
+							fieldWithPath("data.longitude").type(NUMBER).description("경도"),
+							fieldWithPath("data.mapStoreId").type(STRING).description("지도 api 제공 id"),
+							fieldWithPath("data.placeName").type(STRING).description("가게 이름"),
+							fieldWithPath("data.categories").type(STRING).description("가게 카테고리"),
+							fieldWithPath("data.roadAddressName").type(STRING).description("가게 도로명 주소"),
+							fieldWithPath("data.rating").type(NUMBER).description("가게 평점"),
+							fieldWithPath("data.photoUrls").type(STRING).description("가게 사진 URL"),
+							fieldWithPath("data.kakaoPlaceUrl").type(STRING).description("가게 상세 페이지 URL"),
+							fieldWithPath("data.phoneNumber").type(STRING).description("가게 전화번호")
 						)
 						.build()
 				)
