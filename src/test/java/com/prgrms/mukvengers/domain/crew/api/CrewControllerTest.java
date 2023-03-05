@@ -3,6 +3,9 @@ package com.prgrms.mukvengers.domain.crew.api;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
 import static com.epages.restdocs.apispec.ResourceDocumentation.*;
 import static com.epages.restdocs.apispec.ResourceSnippetParameters.*;
+import static com.prgrms.mukvengers.domain.crew.model.vo.Status.*;
+import static com.prgrms.mukvengers.utils.CrewMemberObjectProvider.*;
+import static com.prgrms.mukvengers.utils.CrewObjectProvider.*;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.http.MediaType.*;
@@ -24,6 +27,8 @@ import com.prgrms.mukvengers.base.ControllerTest;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
+import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
+import com.prgrms.mukvengers.domain.crewmember.model.vo.Role;
 import com.prgrms.mukvengers.utils.CrewObjectProvider;
 
 class CrewControllerTest extends ControllerTest {
@@ -34,6 +39,7 @@ class CrewControllerTest extends ControllerTest {
 	public static final Schema FIND_BY_USER_LOCATION_CREW_REQUEST = new Schema("findByUserLocationCrewRequest");
 	public static final Schema CREW_RESPONSE = new Schema("crewResponse");
 	public static final Schema UPDATE_CREW_REQUEST = new Schema("updateCrewRequest");
+	public static final Schema FIND_BY_USER_ID_CREW_REQUEST = new Schema("findByUserIdCrewRequest");
 
 	@Test
 	@DisplayName("[성공]밥 모임을 저장한다.")
@@ -80,7 +86,7 @@ class CrewControllerTest extends ControllerTest {
 	@DisplayName("[성공] 모임 아이디로 모임을 조회한다.")
 	void getById_success() throws Exception {
 
-		Crew crew = CrewObjectProvider.createCrew(savedStore);
+		Crew crew = CrewObjectProvider.createCrew(savedStore, RECRUITING);
 
 		crewRepository.save(crew);
 
@@ -96,13 +102,14 @@ class CrewControllerTest extends ControllerTest {
 				resource(
 					builder()
 						.tag(CREW)
-						.summary("위치 기반 밥 모임 조회 API")
-						.description("사용자 위치로 특정 거리 안에 있는 모임을 조회합니다.")
+						.summary("모임 아이디로 모임 조회 API")
+						.description("모임 아이디로 모임을 단건 조회 합니다.")
 						.requestSchema(FIND_BY_CREW_ID_CREW_REQUEST)
 						.pathParameters(
 							parameterWithName("crewId").description("모임 아이디"))
 						.responseSchema(CREW_RESPONSE)
 						.responseFields(
+							fieldWithPath("data.currentMember").type(NUMBER).description("밥 모임 현재 인원"),
 							fieldWithPath("data.id").type(NUMBER).description("밥 모임 아이디"),
 							fieldWithPath("data.name").type(STRING).description("밥 모임 이름"),
 							fieldWithPath("data.capacity").type(NUMBER).description("밥 모임 정원"),
@@ -110,6 +117,49 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("data.status").type(STRING).description("밥 모임 상태"),
 							fieldWithPath("data.content").type(STRING).description("밥 모임 내용"),
 							fieldWithPath("data.category").type(STRING).description("밥 모임 카테고리"))
+						.build()
+				)
+			));
+	}
+
+	@Test
+	@DisplayName("[성공] 사용자가 참여한 모임을 조회한다.")
+	void getByUserId_success() throws Exception {
+
+		List<Crew> crews = createCrews(savedStore);
+		crewRepository.saveAll(crews);
+
+		crews.forEach(crew -> {
+			CrewMember crewMember = createCrewMember(savedUserId, crew, Role.MEMBER);
+			crewMemberRepository.save(crewMember);
+		});
+
+		mockMvc.perform(get("/api/v1/crews/me")
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
+				.accept(APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.data").exists())
+			.andDo(print())
+			.andDo(document("crew-getByUserId",
+				resource(
+					builder()
+						.tag(CREW)
+						.summary("사용자가 참여한 모든 모임 조회 API")
+						.description(
+							"사용자가 참여한 모든 모임을 조회합니다. "
+								+ "현재 모집 중인 모임과 모집종료된 모임 모두 조회하며 모집중인 데이터가 먼저 정렬되고 그후 모집 종료된 데이터가 옵니다.")
+						.requestSchema(FIND_BY_USER_ID_CREW_REQUEST)
+						.responseSchema(CREW_RESPONSE)
+						.responseFields(
+							fieldWithPath("data.profileImgUrl").type(STRING).description("사용자의 프로필 이미지"),
+							fieldWithPath("data.responses.[].currentMember").type(NUMBER).description("밥 모임 현재 인원"),
+							fieldWithPath("data.responses.[].id").type(NUMBER).description("밥 모임 아이디"),
+							fieldWithPath("data.responses.[].name").type(STRING).description("밥 모임 이름"),
+							fieldWithPath("data.responses.[].capacity").type(NUMBER).description("밥 모임 정원"),
+							fieldWithPath("data.responses.[].promiseTime").type(ARRAY).description("약속 시간"),
+							fieldWithPath("data.responses.[].status").type(STRING).description("밥 모임 상태"),
+							fieldWithPath("data.responses.[].content").type(STRING).description("밥 모임 내용"),
+							fieldWithPath("data.responses.[].category").type(STRING).description("밥 모임 카테고리"))
 						.build()
 				)
 			));
@@ -157,6 +207,8 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("data.responses.content.[].promiseTime").type(ARRAY).description("약속 시간"),
 							fieldWithPath("data.responses.content.[].status").type(STRING).description("밥 모임 상태"),
 							fieldWithPath("data.responses.content.[].content").type(STRING).description("밥 모임 내용"),
+							fieldWithPath("data.responses.content.[]currentMember").type(NUMBER)
+								.description("밥 모임 현재 인원"),
 							fieldWithPath("data.responses.content.[].category").type(STRING).description("밥 모임 카테고리"),
 							fieldWithPath("data.responses.pageable.sort.empty").type(BOOLEAN).description("빈 페이지 여부"),
 							fieldWithPath("data.responses.pageable.sort.sorted").type(BOOLEAN).description("페이지 정렬 여부"),
@@ -222,6 +274,7 @@ class CrewControllerTest extends ControllerTest {
 							parameterWithName("distance").description("모임을 찾을 범위 거리"))
 						.responseSchema(CREW_RESPONSE)
 						.responseFields(
+							fieldWithPath("data.responses.[].currentMember").type(NUMBER).description("밥 모임 현재 인원"),
 							fieldWithPath("data.responses.[].id").type(NUMBER).description("밥 모임 아이디"),
 							fieldWithPath("data.responses.[].name").type(STRING).description("밥 모임 이름"),
 							fieldWithPath("data.responses.[].capacity").type(NUMBER).description("밥 모임 정원"),
@@ -238,7 +291,7 @@ class CrewControllerTest extends ControllerTest {
 	@DisplayName("[성공]밥 모임 상태를 변경한다.")
 	void updateStatus_success() throws Exception {
 
-		Crew crew = CrewObjectProvider.createCrew(savedStore);
+		Crew crew = CrewObjectProvider.createCrew(savedStore, RECRUITING);
 
 		crewRepository.save(crew);
 
