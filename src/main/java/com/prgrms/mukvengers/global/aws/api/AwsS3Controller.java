@@ -23,7 +23,7 @@ public class AwsS3Controller {
 
 	@PostMapping("/resource")
 	public AwsS3 upload(@RequestPart("file") MultipartFile multipartFile) throws IOException {
-		return awsS3Service.upload(multipartFile, "upload");
+		return awsS3Service.upload(multipartFile, "profile");
 	}
 
 	@DeleteMapping("/resource")

@@ -68,8 +68,8 @@ public class AwsS3Service {
 		File file = new File(System.getProperty("user.dir") + "/" + multipartFile.getOriginalFilename());
 
 		if (file.createNewFile()) {
-			try (FileOutputStream fos = new FileOutputStream(file)) {
-				fos.write(multipartFile.getBytes());
+			try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+				fileOutputStream.write(multipartFile.getBytes());
 			}
 			return Optional.of(file);
 		}
