@@ -30,7 +30,6 @@ public class CrewObjectProvider {
 		new Coordinate(Double.parseDouble(LONGITUDE), Double.parseDouble(LATITUDE)));
 
 	public static Crew createCrew(Store store) {
-
 		return Crew.builder()
 			.store(store)
 			.name(NAME)
@@ -40,14 +39,12 @@ public class CrewObjectProvider {
 			.content(CONTENT)
 			.category(CATEGORY)
 			.build();
-
 	}
 
 	public static List<Crew> createCrews(Store store) {
-
 		return IntStream.range(0, 20)
-			.mapToObj(i -> createCrew(store)).collect(Collectors.toList());
-
+			.mapToObj(i -> createCrew(store, i % 2 == 0 ? STATUS_CLOSE : STATUS_RECRUITING))
+			.collect(Collectors.toList());
 	}
 
 	public static CreateCrewRequest getCreateCrewRequest(String mapStoreId) {

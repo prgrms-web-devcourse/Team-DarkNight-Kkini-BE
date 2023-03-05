@@ -13,7 +13,7 @@ public class JwtConfig {
 	public JwtTokenProvider jwtTokenProvider(
 		@Value("${jwt.issuer}") String issuer,
 		@Value("${jwt.secret-key}") String secretKey,
-		@Value("${jwt.expiry-seconds.access-token}") int accessTokenExpirySeconds
+		@Value("${jwt.expiry-seconds.access-token}") long accessTokenExpirySeconds
 	) {
 		return new JwtTokenProvider(issuer, secretKey, accessTokenExpirySeconds);
 	}

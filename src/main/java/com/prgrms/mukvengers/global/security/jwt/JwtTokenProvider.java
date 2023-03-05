@@ -3,7 +3,6 @@ package com.prgrms.mukvengers.global.security.jwt;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -29,7 +28,8 @@ public class JwtTokenProvider {
 	public JwtTokenProvider(
 		@Value("${jwt.issuer}") String issuer,
 		@Value("${jwt.secret-key}") String secretKey,
-		@Value("${jwt.expiry-seconds.access-token}") long accessTokenExpirySeconds) {
+		@Value("${jwt.expiry-seconds.access-token}") long accessTokenExpirySeconds
+	) {
 		this.issuer = issuer;
 		this.secretKey = secretKey;
 		this.accessTokenExpirySeconds = accessTokenExpirySeconds;
@@ -70,7 +70,4 @@ public class JwtTokenProvider {
 		}
 	}
 
-	public String createRefreshToken() {
-		return UUID.randomUUID().toString();
-	}
 }

@@ -3,6 +3,7 @@ package com.prgrms.mukvengers.domain.review.api;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
 import static com.epages.restdocs.apispec.ResourceDocumentation.*;
 import static com.epages.restdocs.apispec.ResourceSnippetParameters.*;
+import static com.prgrms.mukvengers.domain.crew.model.vo.Status.*;
 import static com.prgrms.mukvengers.utils.CrewMemberObjectProvider.*;
 import static com.prgrms.mukvengers.utils.CrewObjectProvider.*;
 import static com.prgrms.mukvengers.utils.ReviewObjectProvider.*;
@@ -47,7 +48,7 @@ class ReviewControllerTest extends ControllerTest {
 	void setCrew() {
 		reviewer = savedUser;
 		reviewee = userRepository.save(createUser("kakao_1212"));
-		crew = crewRepository.save(createCrew(savedStore));
+		crew = crewRepository.save(createCrew(savedStore, RECRUITING));
 
 		crewMemberOfReviewer = crewMemberRepository.save(
 			createCrewMember(reviewer.getId(), crew, Role.MEMBER));
@@ -158,6 +159,7 @@ class ReviewControllerTest extends ControllerTest {
 							fieldWithPath("data.reviewee.tasteScore").type(NUMBER).description("리뷰이의 맛잘알 점수"),
 							fieldWithPath("data.reviewee.mannerScore").type(NUMBER).description("리뷰이의 매너 점수"),
 
+							fieldWithPath("data.crew.currentMember").type(NULL).description("밥모임의 아이디"),
 							fieldWithPath("data.crew.id").type(NUMBER).description("밥모임의 아이디"),
 							fieldWithPath("data.crew.name").type(STRING).description("밥모임의 이름"),
 							fieldWithPath("data.crew.capacity").type(NUMBER).description("밥모임의 정원"),

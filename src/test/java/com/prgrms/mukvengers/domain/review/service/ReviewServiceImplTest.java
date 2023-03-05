@@ -1,5 +1,6 @@
 package com.prgrms.mukvengers.domain.review.service;
 
+import static com.prgrms.mukvengers.domain.crew.model.vo.Status.*;
 import static com.prgrms.mukvengers.utils.CrewObjectProvider.*;
 import static com.prgrms.mukvengers.utils.ReviewObjectProvider.*;
 import static com.prgrms.mukvengers.utils.UserObjectProvider.*;
@@ -38,7 +39,7 @@ class ReviewServiceImplTest extends ServiceTest {
 	void setReview() {
 		reviewer = savedUser;
 		reviewee = userRepository.save(createUser("kakao_1212"));
-		crew = crewRepository.save(createCrew(savedStore));
+		crew = crewRepository.save(createCrew(savedStore, RECRUITING));
 	}
 
 	@Test
