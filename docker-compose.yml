@@ -13,6 +13,14 @@ services:
       - ./mysqldata:/var/lib/mysql
     restart: always
 
+  redis:
+    container_name: kkini-redis
+    image: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+
   web:
     container_name: web
     image: kiseo/kkini
