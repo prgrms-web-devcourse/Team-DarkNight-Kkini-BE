@@ -25,6 +25,7 @@ import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.SearchCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
+import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
 import com.prgrms.mukvengers.domain.crew.service.CrewService;
 import com.prgrms.mukvengers.global.common.dto.ApiResponse;
@@ -61,18 +62,36 @@ public class CrewController {
 
 	/**
 	 * <pre>
+	 *     밥 모임 조회
+	 * </pre>
+	 * @param crewId 밥 모임 아이디
+	 * @return status : 200, body : 조회된 밥 모임 데이터 DTO
+	 */
+	@GetMapping(value = "/{crewId}", produces = APPLICATION_JSON_VALUE)
+	public ResponseEntity<ApiResponse<CrewResponse>> getById
+	(
+		@PathVariable Long crewId,
+		@AuthenticationPrincipal JwtAuthentication user
+	) {
+		CrewResponse response = crewService.getById(crewId);
+		return ResponseEntity.ok().body(new ApiResponse<>(response));
+	}
+
+	/**
+	 * <pre>
 	 *     맵 api 가게 아이디로 가게의 밥 모임 조회
 	 * </pre>
 	 * @param mapStoreId 맵 api 가게 아이디
 	 * @param pageable 페이징 데이터
 	 * @return status : 200, body : 해당 가게의 현재 모집 중인 밥 모임 데이터
 	 */
-	@GetMapping(value = "/{mapStoreId}", produces = APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/page/{mapStoreId}", produces = APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponse<CrewPageResponse>> getByMapStoreId
 	(
 		@PathVariable String mapStoreId,
 		@PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable
 	) {
+
 		CrewPageResponse responses = crewService.getByMapStoreId(mapStoreId, pageable);
 		return ResponseEntity.ok().body(new ApiResponse<>(responses));
 	}
