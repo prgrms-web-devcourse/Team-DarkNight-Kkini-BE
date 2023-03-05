@@ -89,6 +89,9 @@ dependencies {
     implementation 'org.hibernate:hibernate-spatial'
     //https://mvnrepository.com/artifact/org.locationtech.jts/jts-core
     implementation 'org.locationtech.jts:jts-core:1.19.0'
+
+    // AWS
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 
