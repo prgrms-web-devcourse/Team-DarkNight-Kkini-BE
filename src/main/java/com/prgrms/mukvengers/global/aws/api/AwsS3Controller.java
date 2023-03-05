@@ -1,4 +1,4 @@
-package com.prgrms.mukvengers.global.file.api;
+package com.prgrms.mukvengers.global.aws.api;
 
 import java.io.IOException;
 
@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.prgrms.mukvengers.global.file.service.AwsS3Service;
-import com.prgrms.mukvengers.global.file.util.AwsS3;
+import com.prgrms.mukvengers.global.aws.service.AwsS3Service;
+import com.prgrms.mukvengers.global.aws.util.AwsS3;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/s3")
 @RequiredArgsConstructor
+@RequestMapping("/s3")
 public class AwsS3Controller {
 
 	private final AwsS3Service awsS3Service;

@@ -1,4 +1,4 @@
-package com.prgrms.mukvengers.global.file.util;
+package com.prgrms.mukvengers.global.aws.util;
 
 import lombok.Builder;
 import lombok.Getter;

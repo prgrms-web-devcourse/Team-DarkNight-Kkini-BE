@@ -1,4 +1,4 @@
-package com.prgrms.mukvengers.global.file.service;
+package com.prgrms.mukvengers.global.aws.service;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,7 +14,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.prgrms.mukvengers.global.file.util.AwsS3;
+import com.prgrms.mukvengers.global.aws.util.AwsS3;
 
 import lombok.RequiredArgsConstructor;
 
