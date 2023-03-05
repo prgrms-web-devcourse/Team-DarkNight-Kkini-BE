@@ -5,7 +5,6 @@ import static org.springframework.http.HttpStatus.*;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,8 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.mukvengers.global.common.dto.ApiResponse;
-import com.prgrms.mukvengers.global.security.jwt.JwtAuthentication;
-import com.prgrms.mukvengers.global.security.token.dto.request.CreateAccessTokenRequest;
+import com.prgrms.mukvengers.global.security.token.dto.request.RefreshTokenRequest;
 import com.prgrms.mukvengers.global.security.token.dto.response.TokenResponse;
 import com.prgrms.mukvengers.global.security.token.service.TokenService;
 
@@ -30,9 +28,9 @@ public class TokenController {
 
 	@PostMapping
 	public ResponseEntity<ApiResponse<TokenResponse>> getTokensByRefreshToken(
-		@RequestBody @Valid CreateAccessTokenRequest createAccessTokenRequest
+		@RequestBody @Valid RefreshTokenRequest refreshTokenRequest
 	) {
-		TokenResponse response = tokenService.renewTokens(createAccessTokenRequest);
+		TokenResponse response = tokenService.renewTokens(refreshTokenRequest);
 
 		return ResponseEntity.ok().body(new ApiResponse<>(response));
 	}
@@ -40,8 +38,8 @@ public class TokenController {
 	@DeleteMapping
 	@ResponseStatus(NO_CONTENT)
 	public void deleteRefreshToken(
-		@AuthenticationPrincipal JwtAuthentication user
+		@RequestBody @Valid RefreshTokenRequest refreshTokenRequest
 	) {
-		tokenService.deleteTokenByUserId(user.id());
+		tokenService.deleteRefreshToken(refreshTokenRequest);
 	}
 }
