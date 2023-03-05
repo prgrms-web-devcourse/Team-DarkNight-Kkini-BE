@@ -52,7 +52,7 @@ class CrewServiceImplTest extends ServiceTest {
 			.hasFieldOrPropertyWithValue("name", createCrewRequest.name())
 			.hasFieldOrPropertyWithValue("location", location)
 			.hasFieldOrPropertyWithValue("capacity", createCrewRequest.capacity())
-			.hasFieldOrPropertyWithValue("status", Status.of(createCrewRequest.status()))
+			.hasFieldOrPropertyWithValue("status", Status.RECRUITING)
 			.hasFieldOrPropertyWithValue("content", createCrewRequest.content())
 			.hasFieldOrPropertyWithValue("category", Category.of(createCrewRequest.category()));
 	}
