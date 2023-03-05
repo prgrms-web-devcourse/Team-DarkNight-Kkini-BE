@@ -26,7 +26,8 @@ class JwtAuthenticationFilterTest {
 	private static final String BEARER_TYPE = "Bearer ";
 	private static final String ISSUER = "issuer";
 	private static final String SECRET_KEY = "kkini-team-kkini-project-fighting";
-	private static final int ACCESS_TOKEN_EXPIRY_SECONDS = 3;
+	private static final long ACCESS_TOKEN_EXPIRY_SECONDS = 3L;
+	private static final long REFRESH_TOKEN_EXPIRY_SECONDS = 5L;
 	private static final String USER_ROLE = "USER";
 
 	private JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -41,7 +42,8 @@ class JwtAuthenticationFilterTest {
 		request = new MockHttpServletRequest();
 		response = new MockHttpServletResponse();
 		filterChain = new MockFilterChain();
-		jwtTokenProvider = new JwtTokenProvider(ISSUER, SECRET_KEY, ACCESS_TOKEN_EXPIRY_SECONDS);
+		jwtTokenProvider = new JwtTokenProvider(ISSUER, SECRET_KEY, ACCESS_TOKEN_EXPIRY_SECONDS,
+			REFRESH_TOKEN_EXPIRY_SECONDS);
 		jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtTokenProvider);
 		ACCESS_TOKEN = jwtTokenProvider.createAccessToken(USER_ID, USER_ROLE);
 	}
@@ -98,7 +100,7 @@ class JwtAuthenticationFilterTest {
 	@DisplayName("[실패] 만료된 토큰일 경우 예외를 발생한다.")
 	void doFilterInternal_ExpiredToken_fail() {
 		// given
-		JwtTokenProvider jwtTokenProvider = new JwtTokenProvider(ISSUER, SECRET_KEY, 0);
+		JwtTokenProvider jwtTokenProvider = new JwtTokenProvider(ISSUER, SECRET_KEY, 0, 3);
 
 		String newToken = jwtTokenProvider.createAccessToken(USER_ID, USER_ROLE);
 
