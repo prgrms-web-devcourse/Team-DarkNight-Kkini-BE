@@ -1,0 +1,12 @@
+cloud:
+  aws:
+    s3:
+      bucket: kkini-bucket
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
