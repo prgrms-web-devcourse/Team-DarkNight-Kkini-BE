@@ -57,6 +57,15 @@ public class CrewServiceImpl implements CrewService {
 	}
 
 	@Override
+	public CrewResponse getById(Long crewId) {
+
+		Crew crew = crewRepository.findById(crewId)
+			.orElseThrow(() -> new CrewNotFoundException(crewId));
+
+		return crewMapper.toCrewResponse(crew);
+	}
+
+	@Override
 	public CrewPageResponse getByMapStoreId(String mapStoreId, Pageable pageable) {
 
 		Page<CrewResponse> responses = crewRepository.findAllByMapStoreId(mapStoreId, pageable)

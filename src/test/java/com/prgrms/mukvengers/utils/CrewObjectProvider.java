@@ -1,5 +1,8 @@
 package com.prgrms.mukvengers.utils;
 
+import static com.prgrms.mukvengers.domain.crew.model.vo.Category.*;
+import static com.prgrms.mukvengers.domain.crew.model.vo.Status.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,9 +25,9 @@ public class CrewObjectProvider {
 	private static final String LONGITUDE = "-147.4654321321";
 	private static final String NAME = "원정대이름";
 	private static final Integer CAPACITY = 5;
-	private static final String STATUS = "모집중";
+	private static final Status STATUS = RECRUITING;
 	private static final String CONTENT = "저는 백엔드 개발자 입니다. 프론트 엔드 개발자 구해요";
-	private static final String CATEGORY = "조용한";
+	private static final Category CATEGORY = QUIET;
 	private static final LocalDateTime PROMISE_TIME = LocalDateTime.now();
 	private static final Point LOCATION = GF.createPoint(
 		new Coordinate(Double.parseDouble(LONGITUDE), Double.parseDouble(LATITUDE)));
@@ -37,9 +40,9 @@ public class CrewObjectProvider {
 			.location(LOCATION)
 			.promiseTime(PROMISE_TIME)
 			.capacity(CAPACITY)
-			.status(Status.getStatus(STATUS))
+			.status(STATUS)
 			.content(CONTENT)
-			.category(Category.getCategory(CATEGORY))
+			.category(CATEGORY)
 			.build();
 
 	}
@@ -59,9 +62,9 @@ public class CrewObjectProvider {
 			LATITUDE,
 			PROMISE_TIME,
 			CAPACITY,
-			STATUS,
+			STATUS.getStatus(),
 			CONTENT,
-			CATEGORY
+			CATEGORY.getCategory()
 		);
 	}
 }

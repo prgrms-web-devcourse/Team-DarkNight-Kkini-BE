@@ -27,12 +27,12 @@ public interface CrewMapper {
 
 	@Named("statusMethod")
 	default Status mapStatus(String status) {
-		return Status.getStatus(status);
+		return Status.of(status);
 	}
 
 	@Named("categoryMethod")
 	default Category mapCategory(String category) {
-		return Category.getCategory(category);
+		return Category.of(category);
 	}
 
 }
