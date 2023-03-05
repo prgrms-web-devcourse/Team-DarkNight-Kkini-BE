@@ -1,5 +1,7 @@
 package com.prgrms.mukvengers.global.aws.api;
 
+import static org.springframework.http.MediaType.*;
+
 import java.io.IOException;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,7 +23,7 @@ public class AwsS3Controller {
 
 	private final AwsS3Service awsS3Service;
 
-	@PostMapping("/resource")
+	@PostMapping(value = "/resource", consumes = MULTIPART_FORM_DATA_VALUE)
 	public AwsS3 upload(@RequestPart("file") MultipartFile multipartFile) throws IOException {
 		return awsS3Service.upload(multipartFile, "profile");
 	}
