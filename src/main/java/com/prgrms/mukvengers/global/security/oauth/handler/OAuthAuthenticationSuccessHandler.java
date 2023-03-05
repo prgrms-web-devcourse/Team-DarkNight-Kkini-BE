@@ -1,7 +1,6 @@
 package com.prgrms.mukvengers.global.security.oauth.handler;
 
 import static com.prgrms.mukvengers.global.security.oauth.handler.HttpCookieOAuthAuthorizationRequestRepository.*;
-import static org.springframework.http.HttpHeaders.*;
 
 import java.io.IOException;
 
@@ -17,7 +16,10 @@ import org.springframework.security.web.authentication.SavedRequestAwareAuthenti
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.prgrms.mukvengers.global.security.oauth.dto.AuthUserInfo;
 import com.prgrms.mukvengers.global.security.oauth.service.OAuthService;
+import com.prgrms.mukvengers.global.security.token.dto.response.TokenResponse;
+import com.prgrms.mukvengers.global.security.token.service.TokenService;
 import com.prgrms.mukvengers.global.utils.CookieUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -29,9 +31,8 @@ import lombok.extern.slf4j.Slf4j;
 public class OAuthAuthenticationSuccessHandler
 	extends SavedRequestAwareAuthenticationSuccessHandler {
 
-	private static final String BEARER_TYPE = "Bearer ";
-
 	private final OAuthService oauthService;
+	private final TokenService tokenService;
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -40,9 +41,10 @@ public class OAuthAuthenticationSuccessHandler
 		if (authentication instanceof OAuth2AuthenticationToken authenticationToken) {
 			OAuth2User oauth2User = authenticationToken.getPrincipal();
 			String providerName = authenticationToken.getAuthorizedClientRegistrationId();
-			String accessToken = oauthService.login(oauth2User, providerName);
-			String redirectUrl = getRedirectUrl(request, accessToken);
-			setResponse(response, accessToken);
+			AuthUserInfo authUserInfo = oauthService.login(oauth2User, providerName);
+			TokenResponse token = tokenService.createToken(authUserInfo);
+			String redirectUrl = getRedirectUrl(request, token.accessToken());
+			setResponse(response, token.refreshToken());
 			getRedirectStrategy().sendRedirect(request, response, redirectUrl);
 
 		} else {
@@ -60,8 +62,7 @@ public class OAuthAuthenticationSuccessHandler
 			.build().toUriString();
 	}
 
-	private void setResponse(HttpServletResponse response, String accessToken) {
-		response.setHeader(AUTHORIZATION, BEARER_TYPE + accessToken); // 헤더 값이 사라짐..
-		response.addCookie(new Cookie("token", accessToken)); // 임시로 쿠키에 담아서 보내기
+	private void setResponse(HttpServletResponse response, String refreshToken) {
+		response.addCookie(new Cookie("refreshToken", refreshToken)); // 임시로 쿠키에 담아서 보내기
 	}
 }
