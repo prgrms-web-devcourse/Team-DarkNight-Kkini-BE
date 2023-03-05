@@ -29,6 +29,7 @@ import com.prgrms.mukvengers.utils.CrewObjectProvider;
 class CrewControllerTest extends ControllerTest {
 
 	public static final Schema CREATE_CREW_REQUEST = new Schema("createCrewRequest");
+	public static final Schema FIND_BY_CREW_ID_CREW_REQUEST = new Schema("findByCrewIdCrewRequest");
 	public static final Schema CREW_PAGE_RESPONSE = new Schema("crewPageResponse");
 	public static final Schema FIND_BY_USER_LOCATION_CREW_REQUEST = new Schema("findByUserLocationCrewRequest");
 	public static final Schema CREW_RESPONSE = new Schema("crewResponse");
@@ -76,6 +77,45 @@ class CrewControllerTest extends ControllerTest {
 	}
 
 	@Test
+	@DisplayName("[성공] 모임 아이디로 모임을 조회한다.")
+	void getById_success() throws Exception {
+
+		Crew crew = CrewObjectProvider.createCrew(savedStore);
+
+		crewRepository.save(crew);
+
+		Long crewId = crew.getId();
+
+		mockMvc.perform(get("/api/v1/crews/{crewId}", crewId)
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
+				.accept(APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.data").exists())
+			.andDo(print())
+			.andDo(document("crew-getById",
+				resource(
+					builder()
+						.tag(CREW)
+						.summary("위치 기반 밥 모임 조회 API")
+						.description("사용자 위치로 특정 거리 안에 있는 모임을 조회합니다.")
+						.requestSchema(FIND_BY_CREW_ID_CREW_REQUEST)
+						.pathParameters(
+							parameterWithName("crewId").description("모임 아이디"))
+						.responseSchema(CREW_RESPONSE)
+						.responseFields(
+							fieldWithPath("data.id").type(NUMBER).description("밥 모임 아이디"),
+							fieldWithPath("data.name").type(STRING).description("밥 모임 이름"),
+							fieldWithPath("data.capacity").type(NUMBER).description("밥 모임 정원"),
+							fieldWithPath("data.promiseTime").type(ARRAY).description("약속 시간"),
+							fieldWithPath("data.status").type(STRING).description("밥 모임 상태"),
+							fieldWithPath("data.content").type(STRING).description("밥 모임 내용"),
+							fieldWithPath("data.category").type(STRING).description("밥 모임 카테고리"))
+						.build()
+				)
+			));
+	}
+
+	@Test
 	@DisplayName("[성공] 맵 api 아이디로 해당 가게의 밥 모임을 전부 조회한다.")
 	void findByMapStoreId_success() throws Exception {
 
@@ -91,14 +131,14 @@ class CrewControllerTest extends ControllerTest {
 		params.add("page", String.valueOf(page));
 		params.add("size", String.valueOf(size));
 
-		mockMvc.perform(get("/api/v1/crews/{mapStoreId}", savedStore.getMapStoreId())
+		mockMvc.perform(get("/api/v1/crews/page/{mapStoreId}", savedStore.getMapStoreId())
 				.params(params)
 				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
 				.accept(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data").exists())
 			.andDo(print())
-			.andDo(document("crew-findByMapStoreId",
+			.andDo(document("crew-getByMapStoreId",
 				resource(
 					builder()
 						.tag(CREW)
@@ -169,7 +209,7 @@ class CrewControllerTest extends ControllerTest {
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data").exists())
 			.andDo(print())
-			.andDo(document("crew-findByLocation",
+			.andDo(document("crew-getByLocation",
 				resource(
 					builder()
 						.tag(CREW)
