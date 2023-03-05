@@ -1,5 +1,8 @@
 package com.prgrms.mukvengers.domain.crew.service;
 
+import static com.prgrms.mukvengers.domain.crew.model.vo.Status.*;
+import static com.prgrms.mukvengers.utils.CrewMemberObjectProvider.*;
+import static com.prgrms.mukvengers.utils.CrewObjectProvider.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
@@ -20,9 +23,11 @@ import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
+import com.prgrms.mukvengers.domain.crew.dto.response.MyCrewResponse;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crew.model.vo.Category;
-import com.prgrms.mukvengers.domain.crew.model.vo.Status;
+import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
+import com.prgrms.mukvengers.domain.crewmember.model.vo.Role;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
 import com.prgrms.mukvengers.utils.CrewObjectProvider;
 
@@ -52,9 +57,26 @@ class CrewServiceImplTest extends ServiceTest {
 			.hasFieldOrPropertyWithValue("name", createCrewRequest.name())
 			.hasFieldOrPropertyWithValue("location", location)
 			.hasFieldOrPropertyWithValue("capacity", createCrewRequest.capacity())
-			.hasFieldOrPropertyWithValue("status", Status.of(createCrewRequest.status()))
+			.hasFieldOrPropertyWithValue("status", of(createCrewRequest.status()))
 			.hasFieldOrPropertyWithValue("content", createCrewRequest.content())
 			.hasFieldOrPropertyWithValue("category", Category.of(createCrewRequest.category()));
+	}
+
+	@Test
+	@DisplayName("[성공] 유저 아이디로 유저가 참여한 Crew를 조회한다.")
+	void getByUserId_success() {
+
+		List<Crew> crews = createCrews(savedStore);
+		crewRepository.saveAll(crews);
+
+		crews.forEach(crew -> {
+			CrewMember crewMember = createCrewMember(savedUserId, crew, Role.MEMBER);
+			crewMemberRepository.save(crewMember);
+		});
+
+		MyCrewResponse responses = crewService.getByUserId(savedUserId);
+		assertThat(responses.responses()).hasSize(crews.size());
+		assertThat(responses.profileImgUrl()).isEqualTo(savedUser.getProfileImgUrl());
 	}
 
 	@Test
@@ -62,7 +84,7 @@ class CrewServiceImplTest extends ServiceTest {
 	void getById_success() {
 
 		//given
-		Crew crew = CrewObjectProvider.createCrew(savedStore);
+		Crew crew = CrewObjectProvider.createCrew(savedStore, RECRUITING);
 
 		crewRepository.save(crew);
 
@@ -107,7 +129,7 @@ class CrewServiceImplTest extends ServiceTest {
 	void findByLocation_success() {
 
 		//given
-		Crew crew = CrewObjectProvider.createCrew(savedStore);
+		Crew crew = CrewObjectProvider.createCrew(savedStore, RECRUITING);
 
 		crewRepository.save(crew);
 
@@ -131,7 +153,7 @@ class CrewServiceImplTest extends ServiceTest {
 	void updateStatus_success() {
 
 		//given
-		Crew crew = CrewObjectProvider.createCrew(savedStore);
+		Crew crew = CrewObjectProvider.createCrew(savedStore, RECRUITING);
 
 		crewRepository.save(crew);
 
@@ -146,7 +168,7 @@ class CrewServiceImplTest extends ServiceTest {
 
 		assertThat(optionalCrew).isPresent();
 		Crew savedCrew = optionalCrew.get();
-		assertThat(savedCrew.getStatus()).isEqualTo(Status.of(status));
+		assertThat(savedCrew.getStatus()).isEqualTo(of(status));
 	}
 
 }

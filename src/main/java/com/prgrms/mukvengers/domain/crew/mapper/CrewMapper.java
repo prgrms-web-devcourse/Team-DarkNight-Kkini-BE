@@ -23,7 +23,7 @@ public interface CrewMapper {
 	Crew toCrew(CreateCrewRequest createCrewRequest, Store store);
 
 	@Mapping(target = "promiseTime", source = "crew.promiseTime")
-	CrewResponse toCrewResponse(Crew crew);
+	CrewResponse toCrewResponse(Crew crew, Integer currentMember);
 
 	@Named("statusMethod")
 	default Status mapStatus(String status) {
