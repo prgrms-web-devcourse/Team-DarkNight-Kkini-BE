@@ -33,7 +33,7 @@ public class FileController {
 		File tempTargetFile = fileManager.convertMultipartFileToFile(multipartFile)
 			.orElseThrow(() -> new IllegalArgumentException());
 		String fileUrl = uploadFileToS3.upload(tempTargetFile, FILE_PATH, fileName);
-
+	
 		fileManager.removeFile(tempTargetFile);
 		return UploadFileResponse.toUploadFileResponse(originalFilename, fileUrl);
 	}
