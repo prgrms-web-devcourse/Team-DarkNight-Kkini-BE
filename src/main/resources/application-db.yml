@@ -28,10 +28,15 @@ spring:
         dialect: org.hibernate.spatial.dialect.mysql.MySQL8SpatialDialect
         format_sql: true
 
-    # flyway 설정
+  # flyway 설정
   flyway:
     enabled: true
     baseline-on-migrate: true
+
+  # redis
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
 
 --- # local
 spring:
