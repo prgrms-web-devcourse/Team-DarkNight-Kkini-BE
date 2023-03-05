@@ -76,7 +76,7 @@ public class Crew extends BaseEntity {
 	@Enumerated(STRING)
 	@Column(nullable = false)
 	private Category category;
-	
+
 	@Column(nullable = false)
 	private LocalDateTime promiseTime;
 
@@ -99,7 +99,7 @@ public class Crew extends BaseEntity {
 	}
 
 	public void changeStatus(String status) {
-		this.status = validateStatus(Status.getStatus(status));
+		this.status = validateStatus(Status.of(status));
 	}
 
 	private Store validateStore(Store store) {

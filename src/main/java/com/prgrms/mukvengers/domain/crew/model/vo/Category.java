@@ -1,24 +1,30 @@
 package com.prgrms.mukvengers.domain.crew.model.vo;
 
 import java.util.Arrays;
+import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum Category {
 	QUIET("조용한");
 
-	private final String name;
+	private final String category;
 
-	Category(String name) {
-		this.name = name;
+	Category(String category) {
+		this.category = category;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public static Category getCategory(String name) {
+	@JsonCreator
+	public static Category of(String categoryName) {
 		return Arrays.stream(Category.values())
-			.filter(a -> a.name.equals(name))
-			.findAny()
+			.filter(category -> Objects.equals(category.getCategory(), categoryName))
+			.findFirst()
 			.orElseThrow();
+	}
+
+	@JsonValue
+	public String getCategory() {
+		return category;
 	}
 }
