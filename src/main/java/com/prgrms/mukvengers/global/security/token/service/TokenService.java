@@ -1,16 +1,18 @@
 package com.prgrms.mukvengers.global.security.token.service;
 
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.prgrms.mukvengers.domain.user.exception.UserNotFoundException;
 import com.prgrms.mukvengers.global.security.jwt.JwtTokenProvider;
 import com.prgrms.mukvengers.global.security.oauth.dto.AuthUserInfo;
-import com.prgrms.mukvengers.global.security.token.dto.request.CreateAccessTokenRequest;
+import com.prgrms.mukvengers.global.security.token.dto.request.RefreshTokenRequest;
 import com.prgrms.mukvengers.global.security.token.dto.response.TokenResponse;
 import com.prgrms.mukvengers.global.security.token.exception.RefreshTokenNotFoundException;
-import com.prgrms.mukvengers.global.security.token.model.Token;
-import com.prgrms.mukvengers.global.security.token.repository.TokenRepository;
+import com.prgrms.mukvengers.global.security.token.model.RefreshToken;
+import com.prgrms.mukvengers.global.security.token.repository.RefreshTokenRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,38 +22,49 @@ import lombok.RequiredArgsConstructor;
 public class TokenService {
 
 	private final JwtTokenProvider jwtTokenProvider;
-	private final TokenRepository tokenRepository;
+	private final RefreshTokenRepository refreshTokenRepository;
+
+	@Value("${jwt.expiry-seconds.refresh-token}")
+	private int refreshTokenExpirySeconds;
 
 	@Transactional
 	public TokenResponse createToken(AuthUserInfo user) {
 
 		String accessToken = jwtTokenProvider.createAccessToken(user.id(), user.role());
-		String refreshToken = jwtTokenProvider.createRefreshToken();
+		RefreshToken refreshToken
+			= new RefreshToken(createRefreshToken(), user.id(), refreshTokenExpirySeconds);
 
-		tokenRepository.save(new Token(refreshToken, user.id()));
+		refreshTokenRepository.save(refreshToken);
 
-		return new TokenResponse(user.id(), accessToken, refreshToken);
+		return new TokenResponse(user.id(), accessToken, refreshToken.getRefreshToken());
 	}
 
 	@Transactional
-	public TokenResponse renewTokens(CreateAccessTokenRequest createAccessTokenRequest) {
-		String refreshToken = createAccessTokenRequest.refreshToken();
+	public TokenResponse renewTokens(RefreshTokenRequest refreshTokenRequest) {
+		String refreshToken = refreshTokenRequest.refreshToken();
 
-		Token token = tokenRepository.findById(refreshToken)
+		RefreshToken token = refreshTokenRepository.findById(refreshToken)
 			.orElseThrow(() -> new RefreshTokenNotFoundException(refreshToken));
 
-		tokenRepository.delete(token);
+		refreshTokenRepository.delete(token);
 		AuthUserInfo user = new AuthUserInfo(token.getUserId(), "USER");
 
 		return createToken(user);
 	}
 
 	@Transactional
-	public void deleteTokenByUserId(Long userId) {
-		tokenRepository.findByUserId(userId)
-			.ifPresentOrElse(tokenRepository::delete,
+	public void deleteRefreshToken(RefreshTokenRequest refreshTokenRequest) {
+		String refreshToken = refreshTokenRequest.refreshToken();
+
+		refreshTokenRepository.findById(refreshToken)
+			.ifPresentOrElse(refreshTokenRepository::delete,
 				() -> {
-					throw new UserNotFoundException(userId);
+					throw new RefreshTokenNotFoundException(refreshToken);
 				});
 	}
+
+	public String createRefreshToken() {
+		return UUID.randomUUID().toString();
+	}
+
 }

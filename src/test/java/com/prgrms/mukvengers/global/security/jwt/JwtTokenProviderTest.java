@@ -17,11 +17,10 @@ class JwtTokenProviderTest {
 	private static final String ISSUER = "issuer";
 	private static final String SECRET_KEY = "kkini-team-kkini-project-fighting";
 	private static final int ACCESS_TOKEN_EXPIRY_SECONDS = 1;
-	private static final long REFRESH_TOKEN_EXPIRY_SECONDS = 5L;
 	private static final String USER_ROLE = "USER";
 
 	private final JwtTokenProvider jwtTokenProvider
-		= new JwtTokenProvider(ISSUER, SECRET_KEY, ACCESS_TOKEN_EXPIRY_SECONDS, REFRESH_TOKEN_EXPIRY_SECONDS);
+		= new JwtTokenProvider(ISSUER, SECRET_KEY, ACCESS_TOKEN_EXPIRY_SECONDS);
 
 	private String accessToken;
 
@@ -99,8 +98,7 @@ class JwtTokenProviderTest {
 		String invalidIssuer = "wrong-issuer";
 
 		JwtTokenProvider wongTokenProvider
-			= new JwtTokenProvider(invalidIssuer, SECRET_KEY, ACCESS_TOKEN_EXPIRY_SECONDS,
-			REFRESH_TOKEN_EXPIRY_SECONDS);
+			= new JwtTokenProvider(invalidIssuer, SECRET_KEY, ACCESS_TOKEN_EXPIRY_SECONDS);
 		//when
 		accessToken = wongTokenProvider.createAccessToken(USER_ID, USER_ROLE);
 		//then
@@ -115,7 +113,7 @@ class JwtTokenProviderTest {
 		String invalidSecretKey = "when_the_night_comes,we_get_stronger";
 
 		JwtTokenProvider wongTokenProvider
-			= new JwtTokenProvider(ISSUER, invalidSecretKey, ACCESS_TOKEN_EXPIRY_SECONDS, REFRESH_TOKEN_EXPIRY_SECONDS);
+			= new JwtTokenProvider(ISSUER, invalidSecretKey, ACCESS_TOKEN_EXPIRY_SECONDS);
 		//when
 		accessToken = wongTokenProvider.createAccessToken(USER_ID, USER_ROLE);
 		//then
