@@ -15,6 +15,7 @@ spring:
     include:
       - db
       - security
+      - aws
   # ResourceHandler 설정 (Static Resource Mapping)
   web:
     resources:
