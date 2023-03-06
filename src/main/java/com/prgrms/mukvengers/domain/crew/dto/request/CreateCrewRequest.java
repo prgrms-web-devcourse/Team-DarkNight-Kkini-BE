@@ -14,7 +14,6 @@ public record CreateCrewRequest(
 	@NotBlank String latitude,
 	@NotNull LocalDateTime promiseTime,
 	@Min(value = 2) @Max(value = 8) Integer capacity,
-	@NotBlank String status,
 	@NotBlank String content,
 	@NotBlank String category
 ) {

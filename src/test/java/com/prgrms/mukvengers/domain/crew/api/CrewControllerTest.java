@@ -42,7 +42,7 @@ class CrewControllerTest extends ControllerTest {
 	public static final Schema FIND_BY_USER_ID_CREW_REQUEST = new Schema("findByUserIdCrewRequest");
 
 	@Test
-	@DisplayName("[성공]밥 모임을 저장한다.")
+	@DisplayName("[성공]밥 모임을 저장하고 모임을 만든 유저는 모임원이 되며 방장 역할을 가진다.")
 	void create_success() throws Exception {
 
 		CreateCrewRequest createCrewRequest = CrewObjectProvider.getCreateCrewRequest(savedStore.getMapStoreId());
@@ -62,7 +62,7 @@ class CrewControllerTest extends ControllerTest {
 					builder()
 						.tag(CREW)
 						.summary("모임 생성 API")
-						.description("모임을 생성합니다.")
+						.description("모임을 생성합니다. 생성한 유저는 모임원이 되고 방장 역할을 가집니다.")
 						.requestSchema(CREATE_CREW_REQUEST)
 						.requestFields(
 							fieldWithPath("latitude").type(STRING).description("위도"),
@@ -71,7 +71,6 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("name").type(STRING).description("밥 모임 이름"),
 							fieldWithPath("capacity").type(NUMBER).description("밥 모임 정원"),
 							fieldWithPath("promiseTime").type(STRING).description("약속 시간"),
-							fieldWithPath("status").type(STRING).description("밥 모임 상태"),
 							fieldWithPath("content").type(STRING).description("밥 모임 설명"),
 							fieldWithPath("category").type(STRING).description("밥 모임 카테고리"))
 						.responseHeaders(

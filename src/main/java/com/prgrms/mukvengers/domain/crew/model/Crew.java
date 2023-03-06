@@ -81,14 +81,14 @@ public class Crew extends BaseEntity {
 	private LocalDateTime promiseTime;
 
 	@Builder
-	protected Crew(Store store, String name, Point location, Integer capacity, Status status,
+	protected Crew(Store store, String name, Point location, Integer capacity,
 		String content, Category category, LocalDateTime promiseTime) {
 
 		this.store = validateStore(store);
 		this.name = validateName(name);
 		this.location = validatePosition(location);
 		this.capacity = validateCapacity(capacity);
-		this.status = validateStatus(status);
+		this.status = Status.RECRUITING;
 		this.category = validateCategory(category);
 		this.content = validateContent(content);
 		this.promiseTime = validatePromiseTime(promiseTime);

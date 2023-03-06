@@ -40,7 +40,6 @@ public class CrewObjectProvider {
 			.location(LOCATION)
 			.promiseTime(PROMISE_TIME)
 			.capacity(CAPACITY)
-			.status(status)
 			.content(CONTENT)
 			.category(CATEGORY)
 			.build();
@@ -60,7 +59,6 @@ public class CrewObjectProvider {
 			LATITUDE,
 			PROMISE_TIME,
 			CAPACITY,
-			STATUS_RECRUITING.getStatus(),
 			CONTENT,
 			CATEGORY.getCategory()
 		);
