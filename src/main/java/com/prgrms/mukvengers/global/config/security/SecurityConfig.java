@@ -1,5 +1,7 @@
 package com.prgrms.mukvengers.global.config.security;
 
+import static org.springframework.http.HttpMethod.*;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -42,6 +44,7 @@ public class SecurityConfig {
 			.antMatchers("/api/v1/sample").permitAll()
 			.antMatchers("/api/v1/stores/**").permitAll()
 			.antMatchers("/").permitAll()
+			.antMatchers(OPTIONS, "/**").permitAll()
 			.anyRequest().authenticated()
 			.and()
 			.httpBasic().disable()
