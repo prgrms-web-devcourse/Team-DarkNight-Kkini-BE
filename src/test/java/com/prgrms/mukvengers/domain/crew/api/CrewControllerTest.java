@@ -3,7 +3,7 @@ package com.prgrms.mukvengers.domain.crew.api;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
 import static com.epages.restdocs.apispec.ResourceDocumentation.*;
 import static com.epages.restdocs.apispec.ResourceSnippetParameters.*;
-import static com.prgrms.mukvengers.domain.crew.model.vo.Status.*;
+import static com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus.*;
 import static com.prgrms.mukvengers.utils.CrewMemberObjectProvider.*;
 import static com.prgrms.mukvengers.utils.CrewObjectProvider.*;
 import static org.hamcrest.Matchers.*;
@@ -67,7 +67,7 @@ class CrewControllerTest extends ControllerTest {
 						.requestFields(
 							fieldWithPath("latitude").type(STRING).description("위도"),
 							fieldWithPath("longitude").type(STRING).description("경도"),
-							fieldWithPath("mapStoreId").type(STRING).description("지도 api 제공 id"),
+							fieldWithPath("placeId").type(STRING).description("지도 api 제공 id"),
 							fieldWithPath("name").type(STRING).description("밥 모임 이름"),
 							fieldWithPath("capacity").type(NUMBER).description("밥 모임 정원"),
 							fieldWithPath("promiseTime").type(STRING).description("약속 시간"),

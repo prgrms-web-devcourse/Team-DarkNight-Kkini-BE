@@ -25,7 +25,7 @@ import org.hibernate.annotations.Where;
 import org.locationtech.jts.geom.Point;
 
 import com.prgrms.mukvengers.domain.crew.model.vo.Category;
-import com.prgrms.mukvengers.domain.crew.model.vo.Status;
+import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.store.model.Store;
 import com.prgrms.mukvengers.global.common.domain.BaseEntity;
@@ -68,7 +68,7 @@ public class Crew extends BaseEntity {
 
 	@Column(nullable = false, length = 255)
 	@Enumerated(STRING)
-	private Status status;
+	private CrewStatus status;
 
 	@Column(nullable = false)
 	private String content;
@@ -88,7 +88,7 @@ public class Crew extends BaseEntity {
 		this.name = validateName(name);
 		this.location = validatePosition(location);
 		this.capacity = validateCapacity(capacity);
-		this.status = Status.RECRUITING;
+		this.status = CrewStatus.RECRUITING;
 		this.category = validateCategory(category);
 		this.content = validateContent(content);
 		this.promiseTime = validatePromiseTime(promiseTime);
@@ -99,7 +99,7 @@ public class Crew extends BaseEntity {
 	}
 
 	public void changeStatus(String status) {
-		this.status = validateStatus(Status.of(status));
+		this.status = validateStatus(CrewStatus.of(status));
 	}
 
 	private Store validateStore(Store store) {
@@ -134,7 +134,7 @@ public class Crew extends BaseEntity {
 		return capacity;
 	}
 
-	private Status validateStatus(Status status) {
+	private CrewStatus validateStatus(CrewStatus status) {
 		notNull(status, "유효하지 않는 상태입니다.");
 		return status;
 	}

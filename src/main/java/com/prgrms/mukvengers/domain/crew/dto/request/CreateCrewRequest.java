@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public record CreateCrewRequest(
-	@NotBlank String mapStoreId,
+	@NotBlank String placeId,
 	@NotBlank String name,
 	@NotBlank String longitude,
 	@NotBlank String latitude,

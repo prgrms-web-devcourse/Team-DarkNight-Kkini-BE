@@ -3,7 +3,6 @@ package com.prgrms.mukvengers.domain.review.api;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
 import static com.epages.restdocs.apispec.ResourceDocumentation.*;
 import static com.epages.restdocs.apispec.ResourceSnippetParameters.*;
-import static com.prgrms.mukvengers.domain.crew.model.vo.Status.*;
 import static com.prgrms.mukvengers.utils.CrewObjectProvider.*;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -24,6 +23,7 @@ import org.springframework.util.MultiValueMap;
 
 import com.prgrms.mukvengers.base.ControllerTest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
+import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.Role;
 import com.prgrms.mukvengers.domain.review.dto.request.CreateLeaderReviewRequest;
@@ -51,7 +51,7 @@ class ReviewControllerTest extends ControllerTest {
 	void setCrew() {
 		reviewer = savedUser;
 		reviewee = userRepository.save(UserObjectProvider.createUser("kakao_1212"));
-		crew = crewRepository.save(createCrew(savedStore, RECRUITING));
+		crew = crewRepository.save(createCrew(savedStore, CrewStatus.RECRUITING));
 	}
 
 	@Test
@@ -66,7 +66,8 @@ class ReviewControllerTest extends ControllerTest {
 			CrewMemberObjectProvider.createCrewMember(reviewer.getId(), crew, Role.MEMBER));
 		crew.addCrewMember(crewMemberOfMember);
 
-		CreateLeaderReviewRequest leaderReviewRequest = ReviewObjectProvider.createLeaderReviewRequest(reviewee.getId());
+		CreateLeaderReviewRequest leaderReviewRequest = ReviewObjectProvider.createLeaderReviewRequest(
+			reviewee.getId());
 
 		String jsonRequest = objectMapper.writeValueAsString(leaderReviewRequest);
 
@@ -271,23 +272,38 @@ class ReviewControllerTest extends ControllerTest {
 						.tag(REVIEW)
 						.summary("내가 작성한 한든 리뷰를 조회합니다.")
 						.responseFields(
-							fieldWithPath("data.content.[].reviewer.id").type(NUMBER).description("리뷰를 작성하고자 하는 사용자의 아이디"),
-							fieldWithPath("data.content.[].reviewer.nickname").type(STRING).description("리뷰를 작성하고자 하는 사용자의 닉네임"),
-							fieldWithPath("data.content.[].reviewer.profileImgUrl").type(STRING).description("리뷰를 작성하고자 하는 사용자의 프로필 URL"),
-							fieldWithPath("data.content.[].reviewer.introduction").type(STRING).description("리뷰를 작성하고자 하는 사용자의 자기 소개"),
-							fieldWithPath("data.content.[].reviewer.leaderCount").type(NUMBER).description("리뷰를 작성하고자 하는 사용자의 리더 횟수"),
-							fieldWithPath("data.content.[].reviewer.crewCount").type(NUMBER).description("리뷰를 작성하고자 하는 사용자의 밥모임 참여 횟수"),
-							fieldWithPath("data.content.[].reviewer.tasteScore").type(NUMBER).description("리뷰를 작성하고자 하는 사용자의 맛잘알 점수"),
-							fieldWithPath("data.content.[].reviewer.mannerScore").type(NUMBER).description("리뷰를 작성하고자 하는 사용자의 매너 온도 점수"),
+							fieldWithPath("data.content.[].reviewer.id").type(NUMBER)
+								.description("리뷰를 작성하고자 하는 사용자의 아이디"),
+							fieldWithPath("data.content.[].reviewer.nickname").type(STRING)
+								.description("리뷰를 작성하고자 하는 사용자의 닉네임"),
+							fieldWithPath("data.content.[].reviewer.profileImgUrl").type(STRING)
+								.description("리뷰를 작성하고자 하는 사용자의 프로필 URL"),
+							fieldWithPath("data.content.[].reviewer.introduction").type(STRING)
+								.description("리뷰를 작성하고자 하는 사용자의 자기 소개"),
+							fieldWithPath("data.content.[].reviewer.leaderCount").type(NUMBER)
+								.description("리뷰를 작성하고자 하는 사용자의 리더 횟수"),
+							fieldWithPath("data.content.[].reviewer.crewCount").type(NUMBER)
+								.description("리뷰를 작성하고자 하는 사용자의 밥모임 참여 횟수"),
+							fieldWithPath("data.content.[].reviewer.tasteScore").type(NUMBER)
+								.description("리뷰를 작성하고자 하는 사용자의 맛잘알 점수"),
+							fieldWithPath("data.content.[].reviewer.mannerScore").type(NUMBER)
+								.description("리뷰를 작성하고자 하는 사용자의 매너 온도 점수"),
 
 							fieldWithPath("data.content.[].reviewee.id").type(NUMBER).description("리뷰 남기고자하는 사용자의 아이디"),
-							fieldWithPath("data.content.[].reviewee.nickname").type(STRING).description("리뷰 남기고자하는 사용자의 닉네임"),
-							fieldWithPath("data.content.[].reviewee.profileImgUrl").type(STRING).description("리뷰 남기고자하는 사용자의 프로필 URL"),
-							fieldWithPath("data.content.[].reviewee.introduction").type(STRING).description("리뷰 남기고자하는 사용자의 자기 소개"),
-							fieldWithPath("data.content.[].reviewee.leaderCount").type(NUMBER).description("리뷰 남기고자하는 사용자의 리더 횟수"),
-							fieldWithPath("data.content.[].reviewee.crewCount").type(NUMBER).description("리뷰 남기고자하는 사용자의 밥모임 참여 횟수"),
-							fieldWithPath("data.content.[].reviewee.tasteScore").type(NUMBER).description("리뷰 남기고자하는 사용자의 맛잘알 점수"),
-							fieldWithPath("data.content.[].reviewee.mannerScore").type(NUMBER).description("리뷰 남기고자하는 사용자의 매너 온도 점수"),
+							fieldWithPath("data.content.[].reviewee.nickname").type(STRING)
+								.description("리뷰 남기고자하는 사용자의 닉네임"),
+							fieldWithPath("data.content.[].reviewee.profileImgUrl").type(STRING)
+								.description("리뷰 남기고자하는 사용자의 프로필 URL"),
+							fieldWithPath("data.content.[].reviewee.introduction").type(STRING)
+								.description("리뷰 남기고자하는 사용자의 자기 소개"),
+							fieldWithPath("data.content.[].reviewee.leaderCount").type(NUMBER)
+								.description("리뷰 남기고자하는 사용자의 리더 횟수"),
+							fieldWithPath("data.content.[].reviewee.crewCount").type(NUMBER)
+								.description("리뷰 남기고자하는 사용자의 밥모임 참여 횟수"),
+							fieldWithPath("data.content.[].reviewee.tasteScore").type(NUMBER)
+								.description("리뷰 남기고자하는 사용자의 맛잘알 점수"),
+							fieldWithPath("data.content.[].reviewee.mannerScore").type(NUMBER)
+								.description("리뷰 남기고자하는 사용자의 매너 온도 점수"),
 
 							fieldWithPath("data.content.[].crew.id").type(NUMBER).description("리뷰하고자하는 밥 모임 아이디"),
 							fieldWithPath("data.content.[].crew.name").type(STRING).description("리뷰하고자하는 밥 모임 이름"),
@@ -296,12 +312,15 @@ class ReviewControllerTest extends ControllerTest {
 							fieldWithPath("data.content.[].crew.status").type(STRING).description("리뷰하고자하는 밥 모임 상태"),
 							fieldWithPath("data.content.[].crew.currentMember").description("리뷰하고자하는 밥 모임 현재 인원 수"),
 							fieldWithPath("data.content.[].crew.content").type(STRING).description("리뷰하고자하는 밥 모임 내용"),
-							fieldWithPath("data.content.[].crew.category").type(STRING).description("리뷰하고자하는 밥 모임 카테고리"),
+							fieldWithPath("data.content.[].crew.category").type(STRING)
+								.description("리뷰하고자하는 밥 모임 카테고리"),
 
 							fieldWithPath("data.content.[].promiseTime").type(ARRAY).description("리뷰하고자 하는 밥 모임 약속 시간"),
 							fieldWithPath("data.content.[].content").type(STRING).description("리뷰하고자 하는 리뷰이에 대한 설명"),
-							fieldWithPath("data.content.[].mannerPoint").type(NUMBER).description("리뷰하고자 하는 리뷰이에 대한 매너 점수"),
-							fieldWithPath("data.content.[].tastePoint").type(NUMBER).description("리뷰하고자 하는 리뷰이에 대한 맛잘알 점수"),
+							fieldWithPath("data.content.[].mannerPoint").type(NUMBER)
+								.description("리뷰하고자 하는 리뷰이에 대한 매너 점수"),
+							fieldWithPath("data.content.[].tastePoint").type(NUMBER)
+								.description("리뷰하고자 하는 리뷰이에 대한 맛잘알 점수"),
 
 							fieldWithPath("data.pageable.sort.empty").type(BOOLEAN).description("빈 페이지 여부"),
 							fieldWithPath("data.pageable.sort.sorted").type(BOOLEAN).description("페이지 정렬 여부"),
