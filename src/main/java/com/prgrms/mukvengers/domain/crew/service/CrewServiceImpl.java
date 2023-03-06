@@ -13,10 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.SearchCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
-import com.prgrms.mukvengers.domain.crew.dto.response.CrewAndCrewMemberResponse;
+import com.prgrms.mukvengers.domain.crew.dto.response.CrewDetailResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
-import com.prgrms.mukvengers.domain.crew.dto.response.MyCrewResponse;
 import com.prgrms.mukvengers.domain.crew.exception.CrewNotFoundException;
 import com.prgrms.mukvengers.domain.crew.mapper.CrewMapper;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
@@ -65,9 +64,9 @@ public class CrewServiceImpl implements CrewService {
 	}
 
 	@Override
-	public MyCrewResponse getByUserId(Long userId) {
+	public CrewResponses getByUserId(Long userId) {
 
-		List<CrewAndCrewMemberResponse> responses = crewMemberRepository.findAllByUserIdOrderByStatus(userId)
+		List<CrewDetailResponse> responses = crewMemberRepository.findAllByUserIdOrderByStatus(userId)
 			.stream()
 			.map(crew -> crewMapper.toCrewAndCrewMemberResponse(
 				crew,
@@ -84,11 +83,11 @@ public class CrewServiceImpl implements CrewService {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException(userId));
 
-		return new MyCrewResponse(responses);
+		return new CrewResponses(responses);
 	}
 
 	@Override
-	public CrewAndCrewMemberResponse getById(Long crewId) {
+	public CrewDetailResponse getById(Long crewId) {
 
 		Crew crew = crewRepository.findById(crewId)
 			.orElseThrow(() -> new CrewNotFoundException(crewId));
@@ -109,7 +108,7 @@ public class CrewServiceImpl implements CrewService {
 	@Override
 	public CrewPageResponse getByPlaceId(String placeId, Pageable pageable) {
 
-		Page<CrewAndCrewMemberResponse> responses = crewRepository.findAllByPlaceId(placeId, pageable)
+		Page<CrewDetailResponse> responses = crewRepository.findAllByPlaceId(placeId, pageable)
 			.map(crew -> crewMapper.toCrewAndCrewMemberResponse(crew,
 				crewMemberRepository.countCrewMemberByCrewId(crew.getId())
 				, crewMemberRepository.findAllByCrewId(crew.getId())
@@ -130,7 +129,7 @@ public class CrewServiceImpl implements CrewService {
 
 		Point location = gf.createPoint(new Coordinate(distanceRequest.longitude(), distanceRequest.latitude()));
 
-		List<CrewAndCrewMemberResponse> responses = crewRepository.findAllByLocation(location,
+		List<CrewDetailResponse> responses = crewRepository.findAllByLocation(location,
 				distanceRequest.distance())
 			.stream()
 			.map(crew -> crewMapper.toCrewAndCrewMemberResponse(crew,

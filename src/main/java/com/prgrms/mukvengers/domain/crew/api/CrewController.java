@@ -24,10 +24,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.SearchCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
-import com.prgrms.mukvengers.domain.crew.dto.response.CrewAndCrewMemberResponse;
+import com.prgrms.mukvengers.domain.crew.dto.response.CrewDetailResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
-import com.prgrms.mukvengers.domain.crew.dto.response.MyCrewResponse;
 import com.prgrms.mukvengers.domain.crew.facade.CrewFacadeService;
 import com.prgrms.mukvengers.domain.crew.service.CrewService;
 import com.prgrms.mukvengers.global.common.dto.ApiResponse;
@@ -71,12 +70,12 @@ public class CrewController {
 	 * @return status : 200, body : 조회된 밥 모임 데이터 DTO
 	 */
 	@GetMapping(value = "/{crewId}", produces = APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponse<CrewAndCrewMemberResponse>> getById
+	public ResponseEntity<ApiResponse<CrewDetailResponse>> getById
 	(
 		@PathVariable Long crewId,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		CrewAndCrewMemberResponse response = crewService.getById(crewId);
+		CrewDetailResponse response = crewService.getById(crewId);
 		return ResponseEntity.ok().body(new ApiResponse<>(response));
 	}
 
@@ -88,10 +87,10 @@ public class CrewController {
 	 * @return status : 200, body : 조회된 모임 데이터
 	 */
 	@GetMapping(value = "/me", produces = APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponse<MyCrewResponse>> getByUserId(
+	public ResponseEntity<ApiResponse<CrewResponses>> getByUserId(
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		MyCrewResponse responses = crewService.getByUserId(user.id());
+		CrewResponses responses = crewService.getByUserId(user.id());
 		return ResponseEntity.ok().body(new ApiResponse<>(responses));
 	}
 

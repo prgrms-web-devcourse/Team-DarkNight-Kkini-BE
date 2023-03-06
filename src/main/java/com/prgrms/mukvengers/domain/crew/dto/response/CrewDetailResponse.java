@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.prgrms.mukvengers.domain.crewmember.dto.response.CrewMemberResponse;
 
-public record CrewAndCrewMemberResponse(
+public record CrewDetailResponse(
 	Long id,
 	String name,
 	Integer currentMember,

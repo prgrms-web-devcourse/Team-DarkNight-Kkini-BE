@@ -20,10 +20,9 @@ import com.prgrms.mukvengers.base.ServiceTest;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.SearchCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
-import com.prgrms.mukvengers.domain.crew.dto.response.CrewAndCrewMemberResponse;
+import com.prgrms.mukvengers.domain.crew.dto.response.CrewDetailResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
-import com.prgrms.mukvengers.domain.crew.dto.response.MyCrewResponse;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crew.model.vo.Category;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
@@ -74,7 +73,7 @@ class CrewServiceImplTest extends ServiceTest {
 			crewMemberRepository.save(crewMember);
 		});
 
-		MyCrewResponse responses = crewService.getByUserId(savedUserId);
+		CrewResponses responses = crewService.getByUserId(savedUserId);
 		assertThat(responses.responses()).hasSize(crews.size());
 	}
 
@@ -88,7 +87,7 @@ class CrewServiceImplTest extends ServiceTest {
 		crewRepository.save(crew);
 
 		//when
-		CrewAndCrewMemberResponse response = crewService.getById(crew.getId());
+		CrewDetailResponse response = crewService.getById(crew.getId());
 
 		//then
 		assertThat(response)
@@ -118,7 +117,7 @@ class CrewServiceImplTest extends ServiceTest {
 		CrewPageResponse crewSliceResponse = crewService.getByPlaceId(savedStore.getPlaceId(), pageable);
 
 		//then
-		Slice<CrewAndCrewMemberResponse> responses = crewSliceResponse.responses();
+		Slice<CrewDetailResponse> responses = crewSliceResponse.responses();
 		assertThat(responses).hasSize(size);
 
 	}
@@ -142,7 +141,7 @@ class CrewServiceImplTest extends ServiceTest {
 		CrewResponses crewResponses = crewService.getByLocation(distanceRequest);
 
 		//then
-		List<CrewAndCrewMemberResponse> responses = crewResponses.responses();
+		List<CrewDetailResponse> responses = crewResponses.responses();
 		assertThat(responses).hasSize(1);
 
 	}

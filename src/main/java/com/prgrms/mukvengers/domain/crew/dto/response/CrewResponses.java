@@ -3,6 +3,6 @@ package com.prgrms.mukvengers.domain.crew.dto.response;
 import java.util.List;
 
 public record CrewResponses(
-	List<CrewAndCrewMemberResponse> responses
+	List<CrewDetailResponse> responses
 ) {
 }

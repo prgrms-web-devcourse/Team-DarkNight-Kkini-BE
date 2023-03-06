@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
-import com.prgrms.mukvengers.domain.crew.dto.response.CrewAndCrewMemberResponse;
+import com.prgrms.mukvengers.domain.crew.dto.response.CrewDetailResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crew.model.vo.Category;
@@ -28,7 +28,7 @@ public interface CrewMapper {
 	CrewResponse toCrewResponse(Crew crew, Integer currentMember);
 
 	@Mapping(target = "promiseTime", source = "crew.promiseTime")
-	CrewAndCrewMemberResponse toCrewAndCrewMemberResponse(Crew crew, Integer currentMember,
+	CrewDetailResponse toCrewAndCrewMemberResponse(Crew crew, Integer currentMember,
 		List<CrewMemberResponse> members);
 
 	@Named("categoryMethod")
