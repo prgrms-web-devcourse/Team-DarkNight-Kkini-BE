@@ -10,6 +10,17 @@ CREATE TABLE proposal
     updated_at dateTime     NOT NULL DEFAULT now(),
     deleted    boolean      NOT NULL DEFAULT false,
 
-    FOREIGN KEY fk_proposal_user_id (user_id) REFERENCES users (id),
-    FOREIGN KEY fk_proposal_crew_id (crew_id) REFERENCES crew (id)
+    FOREIGN KEY fk_proposal_user_id (user_id) REFERENCES users (id)
 );
+
+ALTER TABLE review
+    CHANGE reviewer reviewer_id bigint;
+
+ALTER TABLE review
+    CHANGE reviewee reviewee_id bigint;
+
+ALTER TABLE review
+    CHANGE manner_point manner_score int;
+
+ALTER TABLE review
+    CHANGE taste_point taste_score int;
