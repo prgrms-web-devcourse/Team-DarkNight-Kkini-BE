@@ -1,5 +1,6 @@
 package com.prgrms.mukvengers.global.websocket.api;
 
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -16,22 +17,22 @@ import lombok.extern.slf4j.Slf4j;
 public class ChatController {
 	/**
 	 * 웹소켓 테스트용 임시 Endpoint
-	 *
 	 */
 	@GetMapping("/")
 	public String home() {
 		return "index";
 	}
 
-	@MessageMapping("/chat.sendMessage")
-	@SendTo("/topic/public")
-	public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
+	@MessageMapping("/chat.sendMessage/{crewId}")
+	@SendTo("/topic/public/{crewId}")
+	public ChatMessage sendMessage(@DestinationVariable String crewId, @Payload ChatMessage chatMessage) {
 		return chatMessage;
 	}
 
-	@MessageMapping("/chat.addUser")
-	@SendTo("/topic/public")
-	public ChatMessage addUser(@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
+	@MessageMapping("/chat.addUser/{crewId}")
+	@SendTo("/topic/public/{crewId}")
+	public ChatMessage addUser(@DestinationVariable String crewId, @Payload ChatMessage chatMessage,
+		SimpMessageHeaderAccessor headerAccessor) {
 		headerAccessor.getSessionAttributes().put("username", chatMessage.sender());
 		return chatMessage;
 	}
