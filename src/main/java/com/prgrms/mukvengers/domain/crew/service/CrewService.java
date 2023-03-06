@@ -19,7 +19,7 @@ public interface CrewService {
 
 	CrewResponse getById(Long crewId);
 
-	CrewPageResponse getByMapStoreId(String mapStoreId, Pageable pageable);
+	CrewPageResponse getByPlaceId(String mapStoreId, Pageable pageable);
 
 	CrewResponses getByLocation(SearchCrewRequest distanceRequest);
 

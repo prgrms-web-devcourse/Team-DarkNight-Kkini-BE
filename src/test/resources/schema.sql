@@ -35,11 +35,10 @@ CREATE TABLE store
 (
     id                bigint       NOT NULL PRIMARY KEY AUTO_INCREMENT,
     location          point        NOT NULL,
-    map_store_id      varchar(255) NOT NULL,
+    place_id          varchar(255) NOT NULL,
     place_name        varchar(255) NULL,
     categories        varchar(255) NULL,
     road_address_name varchar(255) NULL,
-    rating            varchar(255) NULL,
     photo_urls        varchar(255) NULL,
     kakao_place_url   varchar(255) NULL,
     phone_number      varchar(255) NULL,

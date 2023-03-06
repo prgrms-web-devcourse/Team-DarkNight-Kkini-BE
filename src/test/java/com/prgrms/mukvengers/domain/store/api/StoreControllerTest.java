@@ -50,11 +50,10 @@ class StoreControllerTest extends ControllerTest {
 						.requestFields(
 							fieldWithPath("latitude").type(NUMBER).description("위도"),
 							fieldWithPath("longitude").type(NUMBER).description("경도"),
-							fieldWithPath("mapStoreId").type(STRING).description("지도 api 제공 id"),
+							fieldWithPath("placeId").type(STRING).description("지도 api 제공 id"),
 							fieldWithPath("placeName").type(STRING).description("가게 이름"),
 							fieldWithPath("categories").type(STRING).description("가게 카테고리"),
 							fieldWithPath("roadAddressName").type(STRING).description("가게 도로명 주소"),
-							fieldWithPath("rating").type(NUMBER).description("가게 평점"),
 							fieldWithPath("photoUrls").type(STRING).description("가게 사진 URL"),
 							fieldWithPath("kakaoPlaceUrl").type(STRING).description("가게 상세 페이지 URL"),
 							fieldWithPath("phoneNumber").type(STRING).description("가게 전화번호"))
@@ -69,11 +68,11 @@ class StoreControllerTest extends ControllerTest {
 	@DisplayName("[성공] 맵 api 아이디로 Store 조회를 성공한다.")
 	void getByMapStoreId_success() throws Exception {
 
-		mockMvc.perform(get("/api/v1/stores/{mapStoreId}", savedStore.getMapStoreId())
+		mockMvc.perform(get("/api/v1/stores/{placeId}", savedStore.getPlaceId())
 				.accept(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(print())
-			.andDo(document("store-getByMapStoreId",
+			.andDo(document("store-getByPlaceId",
 				resource(
 					builder()
 						.tags(STORE)
@@ -81,17 +80,16 @@ class StoreControllerTest extends ControllerTest {
 						.responseSchema(STORE_RESPONSE)
 						.description("가게 정보를 조회합니다.")
 						.pathParameters(
-							parameterWithName("mapStoreId").description("맵 api id")
+							parameterWithName("placeId").description("맵 api id")
 						)
 						.responseFields(
 							fieldWithPath("data.id").type(NUMBER).description("가게 아이디"),
 							fieldWithPath("data.latitude").type(NUMBER).description("위도"),
 							fieldWithPath("data.longitude").type(NUMBER).description("경도"),
-							fieldWithPath("data.mapStoreId").type(STRING).description("지도 api 제공 id"),
+							fieldWithPath("data.placeId").type(STRING).description("지도 api 제공 id"),
 							fieldWithPath("data.placeName").type(STRING).description("가게 이름"),
 							fieldWithPath("data.categories").type(STRING).description("가게 카테고리"),
 							fieldWithPath("data.roadAddressName").type(STRING).description("가게 도로명 주소"),
-							fieldWithPath("data.rating").type(NUMBER).description("가게 평점"),
 							fieldWithPath("data.photoUrls").type(STRING).description("가게 사진 URL"),
 							fieldWithPath("data.kakaoPlaceUrl").type(STRING).description("가게 상세 페이지 URL"),
 							fieldWithPath("data.phoneNumber").type(STRING).description("가게 전화번호")

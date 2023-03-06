@@ -45,7 +45,7 @@ class CrewControllerTest extends ControllerTest {
 	@DisplayName("[성공]밥 모임을 저장하고 모임을 만든 유저는 모임원이 되며 방장 역할을 가진다.")
 	void create_success() throws Exception {
 
-		CreateCrewRequest createCrewRequest = CrewObjectProvider.getCreateCrewRequest(savedStore.getMapStoreId());
+		CreateCrewRequest createCrewRequest = CrewObjectProvider.getCreateCrewRequest(savedStore.getPlaceId());
 
 		String jsonRequest = objectMapper.writeValueAsString(createCrewRequest);
 
@@ -180,21 +180,21 @@ class CrewControllerTest extends ControllerTest {
 		params.add("page", String.valueOf(page));
 		params.add("size", String.valueOf(size));
 
-		mockMvc.perform(get("/api/v1/crews/page/{mapStoreId}", savedStore.getMapStoreId())
+		mockMvc.perform(get("/api/v1/crews/page/{placeId}", savedStore.getPlaceId())
 				.params(params)
 				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
 				.accept(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data").exists())
 			.andDo(print())
-			.andDo(document("crew-getByMapStoreId",
+			.andDo(document("crew-getByPlaceId",
 				resource(
 					builder()
 						.tag(CREW)
 						.summary("가게 기반 밥 모임 조회 API")
 						.description("맵 api 아이디로 밥 모임을 조회합니다.")
 						.pathParameters(
-							parameterWithName("mapStoreId").description("api에서 사용하는 가게 아이디"))
+							parameterWithName("placeId").description("api에서 사용하는 가게 아이디"))
 						.requestParameters(
 							parameterWithName("page").description("현재 페이지 번호"),
 							parameterWithName("size").description("한번에 가져올 데이터 사이즈"))

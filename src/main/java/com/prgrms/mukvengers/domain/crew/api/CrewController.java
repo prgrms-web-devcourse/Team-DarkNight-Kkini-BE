@@ -103,7 +103,7 @@ public class CrewController {
 		@PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable
 	) {
 
-		CrewPageResponse responses = crewService.getByMapStoreId(mapStoreId, pageable);
+		CrewPageResponse responses = crewService.getByPlaceId(mapStoreId, pageable);
 		return ResponseEntity.ok().body(new ApiResponse<>(responses));
 	}
 
