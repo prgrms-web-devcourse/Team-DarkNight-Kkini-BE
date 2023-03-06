@@ -41,8 +41,8 @@ public class StoreController {
 	public ResponseEntity<IdResponse> create(
 		@RequestBody @Valid CreateStoreRequest createStoreRequest
 	) {
-		String mapStoreId = storeService.create(createStoreRequest);
-		URI location = UriComponentsBuilder.fromUriString("/api/v1/stores/" + mapStoreId).build().toUri();
+		String placeId = storeService.create(createStoreRequest);
+		URI location = UriComponentsBuilder.fromUriString("/api/v1/stores/" + placeId).build().toUri();
 		return ResponseEntity.created(location).build();
 	}
 
@@ -50,14 +50,14 @@ public class StoreController {
 	 * <pre>
 	 *     맵 api 아이디를 사용하여 단건 조회
 	 * </pre>
-	 * @param mapStoreId 구글 맵 api 아이디
+	 * @param placeId 구글 맵 api 아이디
 	 * @return status : 200, body : 조회된 가게 데이터
 	 */
-	@GetMapping(value = "{mapStoreId}", produces = APPLICATION_JSON_VALUE)
+	@GetMapping(value = "{placeId}", produces = APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponse<StoreResponse>> getByMapStoreId(
-		@PathVariable String mapStoreId
+		@PathVariable String placeId
 	) {
-		StoreResponse response = storeService.getByMapStoreId(mapStoreId);
+		StoreResponse response = storeService.getByPlaceId(placeId);
 		return ResponseEntity.ok(new ApiResponse<>(response));
 	}
 }

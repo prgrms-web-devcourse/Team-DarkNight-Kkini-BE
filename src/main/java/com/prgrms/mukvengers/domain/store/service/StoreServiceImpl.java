@@ -27,14 +27,14 @@ public class StoreServiceImpl implements StoreService {
 		Store store = storeMapper.toStore(createStoreRequest);
 		storeRepository.save(store);
 
-		return store.getMapStoreId();
+		return store.getPlaceId();
 	}
 
 	@Override
-	public StoreResponse getByMapStoreId(String mapStoreId) {
+	public StoreResponse getByPlaceId(String placeId) {
 
-		Store store = storeRepository.findByMapStoreId(mapStoreId)
-			.orElseThrow(() -> new StoreNotFoundException(mapStoreId));
+		Store store = storeRepository.findByPlaceId(placeId)
+			.orElseThrow(() -> new StoreNotFoundException(placeId));
 
 		return storeMapper.toStoreResponse(store);
 	}

@@ -41,7 +41,7 @@ class CrewRepositoryTest extends RepositoryTest {
 
 		Pageable pageable = PageRequest.of(page, size);
 
-		Slice<Crew> savedCrews = crewRepository.findAllByMapStoreId(savedStore.getMapStoreId(), pageable);
+		Slice<Crew> savedCrews = crewRepository.findAllByPlaceId(savedStore.getPlaceId(), pageable);
 
 		assertThat(savedCrews).hasSize(size);
 	}

@@ -38,7 +38,7 @@ class CrewServiceImplTest extends ServiceTest {
 	void create_success() { //given when then 쓰면 좋을듯?
 
 		//given
-		CreateCrewRequest createCrewRequest = CrewObjectProvider.getCreateCrewRequest(savedStore.getMapStoreId());
+		CreateCrewRequest createCrewRequest = CrewObjectProvider.getCreateCrewRequest(savedStore.getPlaceId());
 
 		double parseLatitude = Double.parseDouble(createCrewRequest.latitude());
 		double parseLongitude = Double.parseDouble(createCrewRequest.longitude());
@@ -116,7 +116,7 @@ class CrewServiceImplTest extends ServiceTest {
 		Pageable pageable = PageRequest.of(page, size);
 
 		//when
-		CrewPageResponse crewSliceResponse = crewService.getByMapStoreId(savedStore.getMapStoreId(), pageable);
+		CrewPageResponse crewSliceResponse = crewService.getByPlaceId(savedStore.getPlaceId(), pageable);
 
 		//then
 		Slice<CrewResponse> responses = crewSliceResponse.responses();

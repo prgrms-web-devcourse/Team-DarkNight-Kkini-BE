@@ -17,10 +17,10 @@ public interface CrewRepository extends JpaRepository<Crew, Long> {
 		SELECT c 
 		FROM Crew c
 		JOIN FETCH c.store s
-		WHERE s.mapStoreId = :mapStoreId
+		WHERE s.placeId = :placeId
 		""",
-		countQuery = "SELECT count(c) FROM Crew c WHERE c.store.mapStoreId = :mapStoreId")
-	Page<Crew> findAllByMapStoreId(@Param(value = "mapStoreId") String mapStoreId, Pageable pageable);
+		countQuery = "SELECT count(c) FROM Crew c WHERE c.store.placeId = :placeId")
+	Page<Crew> findAllByPlaceId(@Param(value = "placeId") String placeId, Pageable pageable);
 
 	@Query(nativeQuery = true, value =
 		"SELECT * FROM crew c "

@@ -7,5 +7,5 @@ public interface StoreService {
 
 	String create(CreateStoreRequest createStoreRequest);
 
-	StoreResponse getByMapStoreId(String mapStoreId);
+	StoreResponse getByPlaceId(String placeId);
 }

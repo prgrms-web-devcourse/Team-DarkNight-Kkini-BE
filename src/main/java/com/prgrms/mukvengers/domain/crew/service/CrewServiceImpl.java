@@ -50,7 +50,7 @@ public class CrewServiceImpl implements CrewService {
 		userRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException(userId));
 
-		Store store = storeRepository.findByMapStoreId(createCrewRequest.mapStoreId())
+		Store store = storeRepository.findByPlaceId(createCrewRequest.mapStoreId())
 			.orElseThrow(() -> new StoreNotFoundException(createCrewRequest.mapStoreId()));
 
 		Crew crew = crewMapper.toCrew(createCrewRequest, store);
@@ -88,9 +88,9 @@ public class CrewServiceImpl implements CrewService {
 	}
 
 	@Override
-	public CrewPageResponse getByMapStoreId(String mapStoreId, Pageable pageable) {
+	public CrewPageResponse getByPlaceId(String placeId, Pageable pageable) {
 
-		Page<CrewResponse> responses = crewRepository.findAllByMapStoreId(mapStoreId, pageable)
+		Page<CrewResponse> responses = crewRepository.findAllByPlaceId(placeId, pageable)
 			.map(crew -> crewMapper.toCrewResponse(crew, crewMemberRepository.countCrewMemberByCrewId(crew.getId())));
 
 		return new CrewPageResponse(responses);

@@ -9,6 +9,6 @@ import com.prgrms.mukvengers.domain.store.model.Store;
 
 public interface StoreRepository extends JpaRepository<Store, Long> {
 
-	Optional<Store> findByMapStoreId(@Param("mapStoreId") String mapStoreId);
+	Optional<Store> findByPlaceId(@Param("placeId") String placeId);
 
 }
