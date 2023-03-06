@@ -14,11 +14,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
 public class ChatController {
+	/**
+	 * 웹소켓 테스트용 임시 Endpoint
+	 *
+	 */
 	@GetMapping("/")
 	public String home() {
 		return "index";
 	}
-	
+
 	@MessageMapping("/chat.sendMessage")
 	@SendTo("/topic/public")
 	public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
