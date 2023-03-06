@@ -75,7 +75,7 @@ public class ReviewController {
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
 		IdResponse reviewIdResponse = reviewService.createMemberReview(createMemberReviewRequest, user.id(), crewId);
-		URI location = UriComponentsBuilder.fromUriString("/api/v1/posts/" + reviewIdResponse.id()).build().toUri();
+		URI location = UriComponentsBuilder.fromUriString("/api/v1/reviews/" + reviewIdResponse.id()).build().toUri();
 		return ResponseEntity.created(location).build();
 	}
 
