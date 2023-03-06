@@ -1,6 +1,6 @@
 package com.prgrms.mukvengers.domain.crew.service;
 
-import static com.prgrms.mukvengers.domain.crew.model.vo.Status.*;
+import static com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus.*;
 import static com.prgrms.mukvengers.utils.CrewMemberObjectProvider.*;
 import static com.prgrms.mukvengers.utils.CrewObjectProvider.*;
 import static org.assertj.core.api.Assertions.*;

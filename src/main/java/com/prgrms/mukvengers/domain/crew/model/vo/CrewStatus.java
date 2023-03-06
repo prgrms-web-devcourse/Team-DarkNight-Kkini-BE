@@ -6,19 +6,19 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum Status {
+public enum CrewStatus {
 	RECRUITING("모집중"),
 	CLOSE("모집종료");
 
 	private final String status;
 
-	Status(String status) {
+	CrewStatus(String status) {
 		this.status = status;
 	}
 
 	@JsonCreator
-	public static Status of(String statusName) {
-		return Arrays.stream(Status.values())
+	public static CrewStatus of(String statusName) {
+		return Arrays.stream(CrewStatus.values())
 			.filter(status -> Objects.equals(status.getStatus(), statusName))
 			.findFirst()
 			.orElseThrow();
