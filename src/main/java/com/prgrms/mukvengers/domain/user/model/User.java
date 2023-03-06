@@ -114,4 +114,11 @@ public class User extends BaseEntity {
 		return Objects.equals(this.id, userId);
 	}
 
+	public void addMannerScore(Integer mannerScore) {
+		this.mannerScore = (0.1 * mannerScore);
+	}
+
+	public void addTasteScore(Integer tasteScore) {
+		this.tasteScore += tasteScore;
+	}
 }
