@@ -67,7 +67,7 @@ class CrewControllerTest extends ControllerTest {
 						.requestFields(
 							fieldWithPath("latitude").type(STRING).description("위도"),
 							fieldWithPath("longitude").type(STRING).description("경도"),
-							fieldWithPath("mapStoreId").type(STRING).description("지도 api 제공 id"),
+							fieldWithPath("placeId").type(STRING).description("지도 api 제공 id"),
 							fieldWithPath("name").type(STRING).description("밥 모임 이름"),
 							fieldWithPath("capacity").type(NUMBER).description("밥 모임 정원"),
 							fieldWithPath("promiseTime").type(STRING).description("약속 시간"),

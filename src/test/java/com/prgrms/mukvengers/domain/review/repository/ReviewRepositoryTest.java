@@ -1,6 +1,5 @@
 package com.prgrms.mukvengers.domain.review.repository;
 
-import static com.prgrms.mukvengers.domain.crew.model.vo.Status.*;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.prgrms.mukvengers.base.RepositoryTest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
+import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.review.model.Review;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.utils.CrewObjectProvider;
@@ -18,7 +18,6 @@ import com.prgrms.mukvengers.utils.ReviewObjectProvider;
 import com.prgrms.mukvengers.utils.UserObjectProvider;
 
 class ReviewRepositoryTest extends RepositoryTest {
-
 
 	@Test
 	@DisplayName("[성공] 리뷰이 아이디가 사용자 아이디와 같으면 나에 대한 리뷰를 조회할 수 있다.")
@@ -28,7 +27,7 @@ class ReviewRepositoryTest extends RepositoryTest {
 		User createUser = UserObjectProvider.createUser("kakao_1234");
 		User reviewer = userRepository.save(createUser);
 
-		Crew createCrew = CrewObjectProvider.createCrew(savedStore, RECRUITING);
+		Crew createCrew = CrewObjectProvider.createCrew(savedStore, CrewStatus.RECRUITING);
 		Crew crew = crewRepository.save(createCrew);
 
 		Integer page = 0;
@@ -55,7 +54,7 @@ class ReviewRepositoryTest extends RepositoryTest {
 		User createUser = UserObjectProvider.createUser("kakao_1234");
 		User reviewee = userRepository.save(createUser);
 
-		Crew createCrew = CrewObjectProvider.createCrew(savedStore, RECRUITING);
+		Crew createCrew = CrewObjectProvider.createCrew(savedStore, CrewStatus.RECRUITING);
 		Crew crew = crewRepository.save(createCrew);
 
 		Integer page = 0;
