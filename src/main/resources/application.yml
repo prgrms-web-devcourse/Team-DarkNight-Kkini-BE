@@ -25,6 +25,10 @@ spring:
     encoding: UTF-8
     basename: messages/exceptions/exception
 
+# front server
+front:
+  server: "https://kkini.vercel.app"
+
 # Actuator 설정
 management:
   endpoints:
