@@ -27,8 +27,8 @@ import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
-import com.prgrms.mukvengers.domain.crew.facade.CrewFacadeService;
 import com.prgrms.mukvengers.domain.crew.dto.response.MyCrewResponse;
+import com.prgrms.mukvengers.domain.crew.facade.CrewFacadeService;
 import com.prgrms.mukvengers.domain.crew.service.CrewService;
 import com.prgrms.mukvengers.global.common.dto.ApiResponse;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
@@ -92,18 +92,18 @@ public class CrewController {
 	 * <pre>
 	 *     맵 api 가게 아이디로 가게의 밥 모임 조회
 	 * </pre>
-	 * @param mapStoreId 맵 api 가게 아이디
+	 * @param placeId 맵 api 가게 아이디
 	 * @param pageable 페이징 데이터
 	 * @return status : 200, body : 해당 가게의 현재 모집 중인 밥 모임 데이터
 	 */
-	@GetMapping(value = "/page/{mapStoreId}", produces = APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponse<CrewPageResponse>> getByMapStoreId
+	@GetMapping(value = "/page/{placeId}", produces = APPLICATION_JSON_VALUE)
+	public ResponseEntity<ApiResponse<CrewPageResponse>> getByPlaceId
 	(
-		@PathVariable String mapStoreId,
+		@PathVariable String placeId,
 		@PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable
 	) {
 
-		CrewPageResponse responses = crewService.getByPlaceId(mapStoreId, pageable);
+		CrewPageResponse responses = crewService.getByPlaceId(placeId, pageable);
 		return ResponseEntity.ok().body(new ApiResponse<>(responses));
 	}
 

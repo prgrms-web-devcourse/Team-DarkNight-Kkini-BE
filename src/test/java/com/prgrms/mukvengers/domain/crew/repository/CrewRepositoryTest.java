@@ -33,7 +33,7 @@ class CrewRepositoryTest extends RepositoryTest {
 
 	@Test
 	@DisplayName("[성공] 맵 api 아이디로 해당 가게의 밥 모임을 조회한다.")
-	void joinStoreByMapStoreId_success() {
+	void joinStoreByPlaceId_success() {
 
 		Integer page = 0;
 

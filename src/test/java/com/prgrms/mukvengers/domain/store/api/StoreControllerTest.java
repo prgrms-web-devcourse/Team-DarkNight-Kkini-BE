@@ -66,7 +66,7 @@ class StoreControllerTest extends ControllerTest {
 
 	@Test
 	@DisplayName("[성공] 맵 api 아이디로 Store 조회를 성공한다.")
-	void getByMapStoreId_success() throws Exception {
+	void getByPlaceId_success() throws Exception {
 
 		mockMvc.perform(get("/api/v1/stores/{placeId}", savedStore.getPlaceId())
 				.accept(APPLICATION_JSON))

@@ -166,7 +166,7 @@ class CrewControllerTest extends ControllerTest {
 
 	@Test
 	@DisplayName("[성공] 맵 api 아이디로 해당 가게의 밥 모임을 전부 조회한다.")
-	void findByMapStoreId_success() throws Exception {
+	void findByPlaceId_success() throws Exception {
 
 		List<Crew> crews = CrewObjectProvider.createCrews(savedStore);
 

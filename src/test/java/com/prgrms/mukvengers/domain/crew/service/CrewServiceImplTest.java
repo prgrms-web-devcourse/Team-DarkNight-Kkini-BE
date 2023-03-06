@@ -104,7 +104,7 @@ class CrewServiceImplTest extends ServiceTest {
 
 	@Test
 	@DisplayName("[성공] map api 아이디로 Crew 조회를 한다")
-	void findByMapStoreId_success() {
+	void findByPlaceId_success() {
 
 		//given
 		List<Crew> crews = CrewObjectProvider.createCrews(savedStore);

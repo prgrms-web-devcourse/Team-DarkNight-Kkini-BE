@@ -45,7 +45,7 @@ class StoreServiceTest extends ServiceTest {
 
 	@Test
 	@DisplayName("[성공] 맵 api 아이디로 Store 조회를 성공한다.")
-	void getByMapStoreId_success() {
+	void getByPlaceId_success() {
 
 		StoreResponse storeResponse = storeService.getByPlaceId(savedStore.getPlaceId());
 

@@ -54,7 +54,7 @@ public class StoreController {
 	 * @return status : 200, body : 조회된 가게 데이터
 	 */
 	@GetMapping(value = "{placeId}", produces = APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponse<StoreResponse>> getByMapStoreId(
+	public ResponseEntity<ApiResponse<StoreResponse>> getByPlaceId(
 		@PathVariable String placeId
 	) {
 		StoreResponse response = storeService.getByPlaceId(placeId);
