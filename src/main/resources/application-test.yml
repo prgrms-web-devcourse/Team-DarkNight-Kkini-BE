@@ -34,6 +34,9 @@ jwt:
   expiry-seconds:
     access-token: 5
 
+front:
+  server: "https://kkini.vercel.app"
+
 decorator:
   datasource:
     p6spy:
