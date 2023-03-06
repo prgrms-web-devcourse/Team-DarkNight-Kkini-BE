@@ -8,6 +8,10 @@ spring:
     username: root
     password: team-kkini
 
+  redis:
+    host: localhost
+    port: 6379
+
   jpa:
     database: mysql
     generate-ddl: false
@@ -29,6 +33,9 @@ spring:
 jwt:
   expiry-seconds:
     access-token: 5
+
+front:
+  server: "https://kkini.vercel.app"
 
 decorator:
   datasource:

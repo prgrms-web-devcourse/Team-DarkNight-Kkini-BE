@@ -25,7 +25,10 @@ import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.SearchCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
+import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
+import com.prgrms.mukvengers.domain.crew.dto.response.MyCrewResponse;
+import com.prgrms.mukvengers.domain.crew.facade.CrewFacadeService;
 import com.prgrms.mukvengers.domain.crew.service.CrewService;
 import com.prgrms.mukvengers.global.common.dto.ApiResponse;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
@@ -39,6 +42,7 @@ import lombok.RequiredArgsConstructor;
 public class CrewController {
 
 	private final CrewService crewService;
+	private final CrewFacadeService crewFacadeService;
 
 	/**
 	 * <pre>
@@ -54,26 +58,52 @@ public class CrewController {
 		@RequestBody @Valid CreateCrewRequest createCrewRequest,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		IdResponse idResponse = crewService.create(createCrewRequest, user.id());
+		IdResponse idResponse = crewFacadeService.create(createCrewRequest, user.id());
 		URI location = UriComponentsBuilder.fromUriString("/api/v1/crews/" + idResponse.id()).build().toUri();
 		return ResponseEntity.created(location).build();
 	}
 
 	/**
 	 * <pre>
+	 *     밥 모임 조회
+	 * </pre>
+	 * @param crewId 밥 모임 아이디
+	 * @return status : 200, body : 조회된 밥 모임 데이터 DTO
+	 */
+	@GetMapping(value = "/{crewId}", produces = APPLICATION_JSON_VALUE)
+	public ResponseEntity<ApiResponse<CrewResponse>> getById
+	(
+		@PathVariable Long crewId,
+		@AuthenticationPrincipal JwtAuthentication user
+	) {
+		CrewResponse response = crewService.getById(crewId);
+		return ResponseEntity.ok().body(new ApiResponse<>(response));
+	}
+
+	@GetMapping(value = "/me", produces = APPLICATION_JSON_VALUE)
+	public ResponseEntity<ApiResponse<MyCrewResponse>> getByUserId(
+		@AuthenticationPrincipal JwtAuthentication user
+	) {
+		MyCrewResponse responses = crewService.getByUserId(user.id());
+		return ResponseEntity.ok().body(new ApiResponse<>(responses));
+	}
+
+	/**
+	 * <pre>
 	 *     맵 api 가게 아이디로 가게의 밥 모임 조회
 	 * </pre>
-	 * @param mapStoreId 맵 api 가게 아이디
+	 * @param placeId 맵 api 가게 아이디
 	 * @param pageable 페이징 데이터
 	 * @return status : 200, body : 해당 가게의 현재 모집 중인 밥 모임 데이터
 	 */
-	@GetMapping(value = "/{mapStoreId}", produces = APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponse<CrewPageResponse>> getByMapStoreId
+	@GetMapping(value = "/page/{placeId}", produces = APPLICATION_JSON_VALUE)
+	public ResponseEntity<ApiResponse<CrewPageResponse>> getByPlaceId
 	(
-		@PathVariable String mapStoreId,
+		@PathVariable String placeId,
 		@PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable
 	) {
-		CrewPageResponse responses = crewService.getByMapStoreId(mapStoreId, pageable);
+
+		CrewPageResponse responses = crewService.getByPlaceId(placeId, pageable);
 		return ResponseEntity.ok().body(new ApiResponse<>(responses));
 	}
 

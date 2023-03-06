@@ -1,11 +1,9 @@
 package com.prgrms.mukvengers.domain.crew.repository;
 
-import static com.prgrms.mukvengers.utils.UserObjectProvider.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
@@ -17,23 +15,12 @@ import org.springframework.data.domain.Slice;
 
 import com.prgrms.mukvengers.base.RepositoryTest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
-import com.prgrms.mukvengers.domain.user.model.User;
 
 class CrewRepositoryTest extends RepositoryTest {
 
-	User reviewer;
-
-	User reviewee;
-
-	@BeforeEach
-	void setCrews() {
-		reviewer = savedUser;
-		reviewee = userRepository.save(createUser());
-	}
-
 	@Test
 	@DisplayName("[성공] 맵 api 아이디로 해당 가게의 밥 모임을 조회한다.")
-	void joinStoreByMapStoreId_success() {
+	void joinStoreByPlaceId_success() {
 
 		Integer page = 0;
 
@@ -41,7 +28,7 @@ class CrewRepositoryTest extends RepositoryTest {
 
 		Pageable pageable = PageRequest.of(page, size);
 
-		Slice<Crew> savedCrews = crewRepository.findAllByMapStoreId(savedStore.getMapStoreId(), pageable);
+		Slice<Crew> savedCrews = crewRepository.findAllByPlaceId(savedStore.getPlaceId(), pageable);
 
 		assertThat(savedCrews).hasSize(size);
 	}

@@ -37,8 +37,8 @@ public interface StoreMapper {
 		GeometryFactory gf = new GeometryFactory();
 
 		return gf.createPoint(new Coordinate(
-			Double.parseDouble(request.longitude()),
-			Double.parseDouble(request.latitude())));
+			request.longitude(),
+			request.latitude()));
 
 	}
 

@@ -13,6 +13,14 @@ services:
       - ./mysqldata:/var/lib/mysql
     restart: always
 
+  redis:
+    container_name: kkini-redis
+    image: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+
   web:
     container_name: web
     image: kiseo/kkini
@@ -33,3 +41,6 @@ services:
       KAKAO_REDIRECT_URI: ${KAKAO_REDIRECT_URI}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}

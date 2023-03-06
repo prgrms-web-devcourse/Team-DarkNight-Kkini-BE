@@ -40,12 +40,37 @@ public class Store extends BaseEntity {
 	private Point location;
 
 	@Column(nullable = false)
-	private String mapStoreId;
+	private String placeId;
+
+	@Column(nullable = false)
+	private String placeName;
+
+	@Column(nullable = false)
+	private String categories;
+
+	@Column(nullable = false)
+	private String roadAddressName;
+
+	@Column(nullable = false)
+	private String photoUrls;
+
+	@Column(nullable = false)
+	private String kakaoPlaceUrl;
+
+	@Column(nullable = false)
+	private String phoneNumber;
 
 	@Builder
-	protected Store(Point location, String mapStoreId) {
+	protected Store(Point location, String placeId, String placeName, String categories, String roadAddressName,
+		String photoUrls, String kakaoPlaceUrl, String phoneNumber) {
 		this.location = validatePosition(location);
-		this.mapStoreId = validateMapStoreId(mapStoreId);
+		this.placeId = validatePlaceId(placeId);
+		this.placeName = validatePlaceName(placeName);
+		this.categories = validateCategories(categories);
+		this.roadAddressName = validateRoadAddressName(roadAddressName);
+		this.photoUrls = validatePhotoUrls(photoUrls);
+		this.kakaoPlaceUrl = validateKakaoPlaceUrl(kakaoPlaceUrl);
+		this.phoneNumber = validatePhoneNumber(phoneNumber);
 	}
 
 	private Point validatePosition(Point location) {
@@ -65,9 +90,39 @@ public class Store extends BaseEntity {
 		isTrue(location.getY() >= MIN_LATITUDE && location.getY() <= MAX_LATITUDE, "유효하지 않는 위도 값입니다.");
 	}
 
-	private String validateMapStoreId(String mapStoreId) {
-		checkText(mapStoreId, "유효하지 않는 가게 아이디입니다.");
-		return mapStoreId;
+	private String validatePlaceId(String placeId) {
+		checkText(placeId, "유효하지 않는 가게 아이디입니다.");
+		return placeId;
+	}
+
+	private String validatePlaceName(String placeName) {
+		checkText(placeName, "유효하지 않는 가게 이름입니다.");
+		return placeName;
+	}
+
+	private String validateCategories(String categories) {
+		checkText(categories, "유효하지 않는 가게 카테고리입니다.");
+		return categories;
+	}
+
+	private String validateRoadAddressName(String roadAddressName) {
+		checkText(roadAddressName, "유효하지 않는 가게 도로명 주소입니다.");
+		return roadAddressName;
+	}
+
+	private String validatePhotoUrls(String photoUrls) {
+		checkText(photoUrls, "유효하지 않는 가게 사진 URL입니다.");
+		return photoUrls;
+	}
+
+	private String validateKakaoPlaceUrl(String kakaoPlaceUrl) {
+		checkText(kakaoPlaceUrl, "유효하지 않는 가게 상세페이지 URL입니다.");
+		return kakaoPlaceUrl;
+	}
+
+	private String validatePhoneNumber(String phoneNumber) {
+		checkText(phoneNumber, "유효하지 않는 가게 전화번호입니다.");
+		return phoneNumber;
 	}
 
 }

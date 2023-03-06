@@ -25,35 +25,35 @@ class StoreServiceTest extends ServiceTest {
 		//given
 		CreateStoreRequest createStoreRequest = StoreObjectProvider.getCreateStoreRequest("1234567899");
 
-		double latitude = Double.parseDouble(createStoreRequest.latitude());
-		double longitude = Double.parseDouble(createStoreRequest.longitude());
+		double latitude = createStoreRequest.latitude();
+		double longitude = createStoreRequest.longitude();
 		Point location = gf.createPoint(new Coordinate(longitude, latitude));
 
 		//when
 		String mapStoreId = storeService.create(createStoreRequest);
 
 		//then
-		Optional<Store> optionalStore = storeRepository.findByMapStoreId(mapStoreId);
+		Optional<Store> optionalStore = storeRepository.findByPlaceId(mapStoreId);
 
 		assertThat(storeRepository.count()).isNotZero();
 		assertThat(optionalStore).isPresent();
 		Store store = optionalStore.get();
 		assertThat(store)
 			.hasFieldOrPropertyWithValue("location", location)
-			.hasFieldOrPropertyWithValue("mapStoreId", createStoreRequest.mapStoreId());
+			.hasFieldOrPropertyWithValue("placeId", createStoreRequest.placeId());
 	}
 
 	@Test
 	@DisplayName("[성공] 맵 api 아이디로 Store 조회를 성공한다.")
-	void getByMapStoreId_success() {
+	void getByPlaceId_success() {
 
-		StoreResponse storeResponse = storeService.getByMapStoreId(savedStore.getMapStoreId());
+		StoreResponse storeResponse = storeService.getByPlaceId(savedStore.getPlaceId());
 
 		assertThat(storeResponse)
 			.hasFieldOrPropertyWithValue("id", savedStore.getId())
 			.hasFieldOrPropertyWithValue("longitude", savedStore.getLocation().getX())
 			.hasFieldOrPropertyWithValue("latitude", savedStore.getLocation().getY())
-			.hasFieldOrPropertyWithValue("mapStoreId", savedStore.getMapStoreId());
+			.hasFieldOrPropertyWithValue("placeId", savedStore.getPlaceId());
 	}
 
 }

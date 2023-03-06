@@ -28,6 +28,14 @@ public enum ErrorCode {
 	// Crew
 	CREW_NOT_FOUND(HttpStatus.NOT_FOUND, "CR001", "존재하지 않는 모임입니다."),
 
+	// CrewMember
+	LEADER_NOT_FOUND(HttpStatus.NOT_FOUND, "CM001", "해당 밥모임에 존재하지 않는 리더입니다."),
+	MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "CM002", "해당 밥모임에 존재하지 않는 밥모임원입니다."),
+
+	// Review
+	REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "R001", "존재하지 않는 리뷰입니다."),
+	REVIEW_NO_ACCESS(HttpStatus.UNAUTHORIZED, "R002", "해당 리뷰를 볼 수 있는 접근 권한이 없습니다."),
+
 	// Auth
 	INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "A001", "유효하지 않은 토큰입니다."),
 	EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "A002", "만료된 토큰입니다."),

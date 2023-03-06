@@ -1,5 +1,7 @@
 package com.prgrms.mukvengers.global.config.security;
 
+import static org.springframework.http.HttpMethod.*;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -35,6 +37,7 @@ public class SecurityConfig {
 			.cors()
 			.and()
 			.authorizeHttpRequests()
+			.antMatchers(OPTIONS, "/api/*").permitAll()
 			.antMatchers("/tokens").permitAll()
 			.antMatchers("/docs/**").permitAll()
 			.antMatchers("/oauth2/**").permitAll()

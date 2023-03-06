@@ -54,6 +54,7 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     // DB
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     // Test & Config
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -81,16 +82,17 @@ dependencies {
     // MapStruct
     implementation 'org.mapstruct:mapstruct:1.5.3.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
-    // p6spy
+    // P6spy
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.1'
 
     // https://mvnrepository.com/artifact/org.hibernate/hibernate-spatial
     implementation 'org.hibernate:hibernate-spatial'
     //https://mvnrepository.com/artifact/org.locationtech.jts/jts-core
     implementation 'org.locationtech.jts:jts-core:1.19.0'
-
     //logback - cloudwatch
     implementation group: 'ca.pjer', name: 'logback-awslogs-appender', version: '1.6.0'
+    // AWS
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 

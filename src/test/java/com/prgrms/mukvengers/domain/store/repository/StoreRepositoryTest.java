@@ -17,7 +17,7 @@ class StoreRepositoryTest extends RepositoryTest {
 	void findByApiId_success() {
 
 		//when
-		Optional<Store> optionalStore = storeRepository.findByMapStoreId(savedStore.getMapStoreId());
+		Optional<Store> optionalStore = storeRepository.findByPlaceId(savedStore.getPlaceId());
 
 		//then
 		assertThat(optionalStore).isPresent();

@@ -1,5 +1,7 @@
 package com.prgrms.mukvengers.domain.review.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +13,10 @@ import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
 import com.prgrms.mukvengers.domain.review.dto.request.CreateLeaderReviewRequest;
 import com.prgrms.mukvengers.domain.review.dto.request.CreateMemberReviewRequest;
 import com.prgrms.mukvengers.domain.review.dto.response.ReviewResponse;
+import com.prgrms.mukvengers.domain.crewmember.exception.LeaderNotFoundException;
+import com.prgrms.mukvengers.domain.crewmember.exception.MemberNotFoundException;
+import com.prgrms.mukvengers.domain.review.exception.ReviewNotAccessException;
+import com.prgrms.mukvengers.domain.review.exception.ReviewNotFoundException;
 import com.prgrms.mukvengers.domain.review.mapper.ReviewMapper;
 import com.prgrms.mukvengers.domain.review.model.Review;
 import com.prgrms.mukvengers.domain.review.repository.ReviewRepository;
@@ -48,15 +54,19 @@ public class ReviewServiceImpl implements ReviewService {
 
 		crewMemberRepository.findCrewMemberByCrewIdAndUserId(crewId, reviewee.getId())
 			.filter(crewMember -> crewMember.getRole() == Role.LEADER)
-			.orElseThrow(() -> new IllegalArgumentException("해당 밥모임원의 리더가 아닙니다."));
+			.orElseThrow(() -> new LeaderNotFoundException(reviewee.getId()));
 
 		crewMemberRepository.findCrewMemberByCrewIdAndUserId(crewId, reviewer.getId())
 			.filter(crewMember -> crewMember.getRole() == Role.MEMBER)
-			.orElseThrow(() -> new IllegalArgumentException("해당 밥모임원의 참여자가 아닙니다."));
+			.orElseThrow(() -> new MemberNotFoundException(reviewer.getId()));
 
 		Review review = reviewMapper.toReview(leaderReviewRequest, reviewer, reviewee, crew);
 
 		Review saveReview = reviewRepository.save(review);
+
+		reviewee.addMannerScore(saveReview.getMannerPoint());
+		reviewee.addTasteScore(saveReview.getTastePoint());
+
 		return new IdResponse(saveReview.getId());
 	}
 
@@ -75,15 +85,18 @@ public class ReviewServiceImpl implements ReviewService {
 
 		crewMemberRepository.findCrewMemberByCrewIdAndUserId(crewId, reviewee.getId())
 			.filter(crewMember -> crewMember.getRole() == Role.MEMBER)
-			.orElseThrow(() -> new IllegalArgumentException("해당 밥모임원의 참여자가 아닙니다."));
+			.orElseThrow(() -> new MemberNotFoundException(reviewee.getId()));
 
 		crewMemberRepository.findCrewMemberByCrewIdAndUserId(crewId, reviewer.getId())
 			.filter(crewMember -> crewMember.getRole() == Role.MEMBER)
-			.orElseThrow(() -> new IllegalArgumentException("해당 밥모임원의 참여자가 아닙니다."));
+			.orElseThrow(() -> new MemberNotFoundException(reviewee.getId()));
 
 		Review review = reviewMapper.toReview(memberReviewRequest, reviewer, reviewee, crew);
 
 		Review saveReview = reviewRepository.save(review);
+
+		reviewee.addMannerScore(saveReview.getMannerPoint());
+
 		return new IdResponse(saveReview.getId());
 	}
 
@@ -91,12 +104,26 @@ public class ReviewServiceImpl implements ReviewService {
 	public ReviewResponse getSingleReview(Long reviewId, Long userId) {
 
 		Review review = reviewRepository.findById(reviewId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 리뷰는 존재하지 않는 리뷰입니다."));
+			.orElseThrow(() -> new ReviewNotFoundException(reviewId));
 
 		if (!review.getReviewer().isSameUser(userId) && !review.getReviewee().isSameUser(userId)) {
-			throw new IllegalArgumentException("해당 리뷰를 볼 수 있는 접근 권한이 없습니다.");
+			throw new ReviewNotAccessException(userId);
 		}
 
 		return reviewMapper.toReviewResponse(review);
+	}
+
+	@Override
+	public Page<ReviewResponse> getAllReceivedReview(Long userId, Pageable pageable) {
+
+		return reviewRepository.findByReviewee(userId, pageable)
+			.map(reviewMapper::toReviewResponse);
+	}
+
+	@Override
+	public Page<ReviewResponse> getAllWroteReview(Long userId, Pageable pageable) {
+
+		return reviewRepository.findByReviewer(userId, pageable)
+			.map(reviewMapper::toReviewResponse);
 	}
 }

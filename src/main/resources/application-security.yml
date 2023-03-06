@@ -4,6 +4,7 @@ jwt:
   secret-key: ${JWT_SECRET_KEY}
   expiry-seconds:
     access-token: 3600
+    refresh-token: 360000
 
 # OAuth 2.0 설정
 spring:
@@ -14,6 +15,7 @@ spring:
           google:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
+            redirect-uri: ${GOOGLE_REDIRECT_URI}
             scope: profile
           kakao:
             client-name: kakao

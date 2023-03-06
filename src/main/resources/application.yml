@@ -15,6 +15,7 @@ spring:
     include:
       - db
       - security
+      - aws
   # ResourceHandler 설정 (Static Resource Mapping)
   web:
     resources:
@@ -23,6 +24,10 @@ spring:
   messages:
     encoding: UTF-8
     basename: messages/exceptions/exception
+
+# front server
+front:
+  server: "https://kkini.vercel.app"
 
 # Actuator 설정
 management:
