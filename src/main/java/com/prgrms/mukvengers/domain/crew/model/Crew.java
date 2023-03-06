@@ -1,6 +1,5 @@
 package com.prgrms.mukvengers.domain.crew.model;
 
-import static com.prgrms.mukvengers.domain.crew.model.vo.Status.*;
 import static com.prgrms.mukvengers.global.utils.ValidateUtil.*;
 import static javax.persistence.EnumType.*;
 import static javax.persistence.FetchType.*;
@@ -89,7 +88,7 @@ public class Crew extends BaseEntity {
 		this.name = validateName(name);
 		this.location = validatePosition(location);
 		this.capacity = validateCapacity(capacity);
-		this.status = RECRUITING;
+		this.status = Status.RECRUITING;
 		this.category = validateCategory(category);
 		this.content = validateContent(content);
 		this.promiseTime = validatePromiseTime(promiseTime);
@@ -100,7 +99,7 @@ public class Crew extends BaseEntity {
 	}
 
 	public void changeStatus(String status) {
-		this.status = validateStatus(of(status));
+		this.status = validateStatus(Status.of(status));
 	}
 
 	private Store validateStore(Store store) {

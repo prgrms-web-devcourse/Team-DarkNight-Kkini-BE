@@ -3,6 +3,7 @@ package com.prgrms.mukvengers.domain.crew.facade;
 import static com.prgrms.mukvengers.domain.crewmember.model.vo.Role.*;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.service.CrewService;
@@ -18,6 +19,7 @@ public class CrewFacadeService {
 	private final CrewService crewService;
 	private final CrewMemberService crewMemberService;
 
+	@Transactional
 	public IdResponse create(CreateCrewRequest createCrewRequest, Long userId) {
 
 		IdResponse idResponse = crewService.create(createCrewRequest, userId);
