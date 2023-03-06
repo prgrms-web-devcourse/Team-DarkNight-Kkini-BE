@@ -28,7 +28,7 @@ class CrewFacadeServiceTest extends ServiceTest {
 	@Test
 	@DisplayName("[성공] 모임을 생성하고 해당 모임의 모임원을 생성하며 모임원은 방장 역할을 가진다.")
 	void create() {
-		CreateCrewRequest createCrewRequest = getCreateCrewRequest(savedStore.getMapStoreId());
+		CreateCrewRequest createCrewRequest = getCreateCrewRequest(savedStore.getPlaceId());
 		IdResponse idResponse = crewFacadeService.create(createCrewRequest, savedUserId);
 
 		double parseLatitude = Double.parseDouble(createCrewRequest.latitude());
