@@ -1,9 +1,15 @@
 package com.prgrms.mukvengers.domain.review.api;
 
+import static org.springframework.http.MediaType.*;
+
 import java.net.URI;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,7 +46,7 @@ public class ReviewController {
 	 * @param crewId 리뷰 작성자가 참여한 모임
 	 * @return status :201, body : 생성된 리뷰 조회 redirectUri
 	 */
-	@PostMapping("/crews/{crewId}/reviews/leader")
+	@PostMapping(value = "/crews/{crewId}/reviews/leader", consumes = APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponse> createLeaderReview
 	(
 		@PathVariable Long crewId,
@@ -61,7 +67,7 @@ public class ReviewController {
 	 * @param crewId 리뷰 작성자가 참여한 모임
 	 * @return status :201, body : 생성된 리뷰 조회 redirectUri
 	 */
-	@PostMapping("/crews/{crewId}/reviews/member")
+	@PostMapping(value = "/crews/{crewId}/reviews/member", consumes = APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponse> createMemberReview
 	(
 		@PathVariable Long crewId,
@@ -69,7 +75,7 @@ public class ReviewController {
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
 		IdResponse reviewIdResponse = reviewService.createMemberReview(createMemberReviewRequest, user.id(), crewId);
-		URI location = UriComponentsBuilder.fromUriString("/api/v1/posts/" + reviewIdResponse.id()).build().toUri();
+		URI location = UriComponentsBuilder.fromUriString("/api/v1/reviews/" + reviewIdResponse.id()).build().toUri();
 		return ResponseEntity.created(location).build();
 	}
 
@@ -81,7 +87,7 @@ public class ReviewController {
 	 * @param user 사용자 정보
 	 * @return status : 200 body : 조회된 리뷰 데이터
 	 */
-	@GetMapping("/reviews/{reviewId}")
+	@GetMapping(value = "/reviews/{reviewId}", produces = APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponse<ReviewResponse>> getSingleReview
 	(
 		@PathVariable Long reviewId,
@@ -89,5 +95,41 @@ public class ReviewController {
 	) {
 		ReviewResponse findReview = reviewService.getSingleReview(reviewId, user.id());
 		return ResponseEntity.ok().body(new ApiResponse<>(findReview));
+	}
+
+	/**
+	 * <pre>
+	 *     자신에게 작성된 리뷰 전체 조회
+	 * </pre>
+	 * @param user 사용자 정보
+	 * @param pageable 페이징 데이터
+	 * @return status : 200 body : 자신에게 작성된 리뷰 전체 데이터
+	 */
+	@GetMapping(value = "/reviews/me", produces = APPLICATION_JSON_VALUE)
+	public ResponseEntity<ApiResponse<Page<ReviewResponse>>> getAllReceivedReview
+		(
+			@AuthenticationPrincipal JwtAuthentication user,
+			@PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable
+		) {
+		Page<ReviewResponse> reviews = reviewService.getAllReceivedReview(user.id(), pageable);
+		return ResponseEntity.ok().body(new ApiResponse<>(reviews));
+	}
+
+	/**
+	 * <pre>
+	 *     자신이 작성한 리뷰 전체 조회
+	 * </pre>
+	 * @param user 사용자 정보
+	 * @param pageable 페이징 데이터
+	 * @return status : 200 body : 자신이 작성한 리뷰 전체 데이터
+	 */
+	@GetMapping(value = "/reviews", produces = APPLICATION_JSON_VALUE)
+	public ResponseEntity<ApiResponse<Page<ReviewResponse>>> getAllWroteReview
+	(
+		@AuthenticationPrincipal JwtAuthentication user,
+		@PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable
+	) {
+		Page<ReviewResponse> reviews = reviewService.getAllWroteReview(user.id(), pageable);
+		return ResponseEntity.ok().body(new ApiResponse<>(reviews));
 	}
 }

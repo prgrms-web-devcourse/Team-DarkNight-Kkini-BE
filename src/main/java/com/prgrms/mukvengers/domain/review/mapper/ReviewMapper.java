@@ -1,9 +1,8 @@
 package com.prgrms.mukvengers.domain.review.mapper;
 
-import static org.mapstruct.ReportingPolicy.*;
-
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.review.dto.request.CreateLeaderReviewRequest;
@@ -12,7 +11,7 @@ import com.prgrms.mukvengers.domain.review.dto.response.ReviewResponse;
 import com.prgrms.mukvengers.domain.review.model.Review;
 import com.prgrms.mukvengers.domain.user.model.User;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = IGNORE)
+@Mapper(componentModel = "spring")
 public interface ReviewMapper {
 
 	@Mapping(source = "reviewer", target = "reviewer")
@@ -30,6 +29,7 @@ public interface ReviewMapper {
 	@Mapping(source = "crew.promiseTime", target = "promiseTime")
 	@Mapping(source = "request.content", target = "content")
 	@Mapping(source = "request.mannerPoint", target = "mannerPoint")
+	@Mapping(source = "request", target = "tastePoint", qualifiedByName = "tasteScoreToZero")
 	Review toReview(CreateMemberReviewRequest request, User reviewer, User reviewee, Crew crew);
 
 	@Mapping(source = "reviewer", target = "reviewer")
@@ -40,4 +40,9 @@ public interface ReviewMapper {
 	@Mapping(source = "mannerPoint", target = "mannerPoint")
 	@Mapping(source = "tastePoint", target = "tastePoint")
 	ReviewResponse toReviewResponse(Review review);
+
+	@Named("tasteScoreToZero")
+	default Integer tasteScoreNullToZero(CreateMemberReviewRequest request) {
+		return 0;
+	}
 }

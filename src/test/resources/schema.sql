@@ -87,7 +87,7 @@ CREATE TABLE review
     promise_time dateTime     NOT NULL,
     content      varchar(255) NULL,
     manner_point int          NOT NULL,
-    taste_point  int          NULL,
+    taste_point  int          NOT NULL DEFAULT 0,
     created_at   dateTime     NOT NULL DEFAULT now(),
     updated_at   dateTime     NOT NULL DEFAULT now(),
     deleted      boolean      NOT NULL DEFAULT false,

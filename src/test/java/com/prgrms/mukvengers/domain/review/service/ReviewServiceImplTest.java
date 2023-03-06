@@ -12,6 +12,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import com.prgrms.mukvengers.base.ServiceTest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
@@ -94,12 +97,12 @@ class ReviewServiceImplTest extends ServiceTest {
 		// then
 		assertThat(findReview).isPresent();
 		assertThat(findReview.get().getMannerPoint()).isEqualTo(MANNER_POINT);
-		assertThat(findReview.get().getTastePoint()).isNull();
+		assertThat(findReview.get().getTastePoint()).isZero();
 	}
 
 	@Test
 	@DisplayName("[성공] reviewer가 본인이면 단건 리뷰 조회할 수 있다.")
-	void getSingleLeaderReview() {
+	void getSingleLeaderReview_success() {
 		// given
 		Review review = reviewRepository.save(createLeaderReview(reviewer, reviewee, crew));
 
@@ -108,5 +111,37 @@ class ReviewServiceImplTest extends ServiceTest {
 
 		// then
 		assertThat(singleReview.reviewer().id()).isEqualTo(reviewer.getId());
+	}
+
+	@Test
+	@DisplayName("[성공] 리뷰이 아이디가 사용자 아이디와 같으면 본인에 대한 리뷰를 조회할 수 있다.")
+	void getAllReceivedReview_success() {
+		// given
+		Review review = createLeaderReview(reviewer, reviewee, crew);
+		reviewRepository.save(review);
+
+		Pageable pageable = PageRequest.of(0, 10);
+
+		// when
+		Page<ReviewResponse> reviews = reviewService.getAllReceivedReview(reviewee.getId(), pageable);
+
+		assertThat(reviews).hasSize(1);
+		assertThat(reviews.getContent().get(0).reviewee().id()).isEqualTo(reviewee.getId());
+	}
+
+	@Test
+	@DisplayName("[성공] 리뷰어 아이디가 사용자 아이디와 같으면 본인이 작성한 리뷰를 조회할 수 있다.")
+	void getAllWroteReview_success() {
+		// given
+		Review review = createMemberReview(reviewer, reviewee, crew);
+		reviewRepository.save(review);
+
+		Pageable pageable = PageRequest.of(0, 10);
+
+		// when
+		Page<ReviewResponse> reviews = reviewService.getAllWroteReview(reviewer.getId(), pageable);
+
+		assertThat(reviews).hasSize(1);
+		assertThat(reviews.getContent().get(0).reviewer().id()).isEqualTo(reviewer.getId());
 	}
 }

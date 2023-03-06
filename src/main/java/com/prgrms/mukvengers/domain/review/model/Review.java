@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -29,6 +30,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PROTECTED)
 @Where(clause = "deleted = false")
 @SQLDelete(sql = "UPDATE review SET deleted = true where id=?")
+@DynamicInsert
 public class Review extends BaseEntity {
 
 	@Id
@@ -69,7 +71,7 @@ public class Review extends BaseEntity {
 		this.promiseTime = validatePromiseTime(promiseTime);
 		this.content = content;
 		this.mannerPoint = validateMannerPoint(mannerPoint);
-		this.tastePoint = tastePoint;
+		this.tastePoint =  validateTastePoint(tastePoint);
 	}
 
 	private LocalDateTime validatePromiseTime(LocalDateTime promiseTime) {
@@ -90,5 +92,10 @@ public class Review extends BaseEntity {
 	private Integer validateMannerPoint(Integer mannerPoint) {
 		notNull(mannerPoint, "유효하지 않는 매너점수입니다.");
 		return mannerPoint;
+	}
+
+	private Integer validateTastePoint(Integer tastePoint) {
+		notNull(tastePoint, "유효하지 않는 맛 점수입니다.");
+		return tastePoint;
 	}
 }
