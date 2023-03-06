@@ -4,10 +4,7 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
 import static com.epages.restdocs.apispec.ResourceDocumentation.*;
 import static com.epages.restdocs.apispec.ResourceSnippetParameters.*;
 import static com.prgrms.mukvengers.domain.crew.model.vo.Status.*;
-import static com.prgrms.mukvengers.utils.CrewMemberObjectProvider.*;
 import static com.prgrms.mukvengers.utils.CrewObjectProvider.*;
-import static com.prgrms.mukvengers.utils.ReviewObjectProvider.*;
-import static com.prgrms.mukvengers.utils.UserObjectProvider.*;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.JsonFieldType.*;
@@ -15,11 +12,15 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import com.prgrms.mukvengers.base.ControllerTest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
@@ -30,6 +31,9 @@ import com.prgrms.mukvengers.domain.review.dto.request.CreateMemberReviewRequest
 import com.prgrms.mukvengers.domain.review.model.Review;
 import com.prgrms.mukvengers.domain.review.repository.ReviewRepository;
 import com.prgrms.mukvengers.domain.user.model.User;
+import com.prgrms.mukvengers.utils.CrewMemberObjectProvider;
+import com.prgrms.mukvengers.utils.ReviewObjectProvider;
+import com.prgrms.mukvengers.utils.UserObjectProvider;
 
 class ReviewControllerTest extends ControllerTest {
 
@@ -42,38 +46,37 @@ class ReviewControllerTest extends ControllerTest {
 	User reviewer;
 	User reviewee;
 	Crew crew;
-	CrewMember crewMemberOfReviewer;
 
 	@BeforeEach
 	void setCrew() {
 		reviewer = savedUser;
-		reviewee = userRepository.save(createUser("kakao_1212"));
+		reviewee = userRepository.save(UserObjectProvider.createUser("kakao_1212"));
 		crew = crewRepository.save(createCrew(savedStore, RECRUITING));
-
-		crewMemberOfReviewer = crewMemberRepository.save(
-			createCrewMember(reviewer.getId(), crew, Role.MEMBER));
-		crew.addCrewMember(crewMemberOfReviewer);
 	}
 
 	@Test
 	@DisplayName("[성공] 밥모임 방장에 대해 리뷰를 생성할 수 있다")
 	void createReviewOfLeader_success() throws Exception {
 		// given
-		CrewMember leader = crewMemberRepository.save(
-			createCrewMember(reviewee.getId(), crew, Role.LEADER));
+		CrewMember crewMemberOfLeader = crewMemberRepository.save(
+			CrewMemberObjectProvider.createCrewMember(reviewee.getId(), crew, Role.LEADER));
+		crew.addCrewMember(crewMemberOfLeader);
 
-		crew.addCrewMember(leader);
+		CrewMember crewMemberOfMember = crewMemberRepository.save(
+			CrewMemberObjectProvider.createCrewMember(reviewer.getId(), crew, Role.MEMBER));
+		crew.addCrewMember(crewMemberOfMember);
 
-		CreateLeaderReviewRequest leaderReviewRequest = createLeaderReviewRequest(reviewee.getId());
+		CreateLeaderReviewRequest leaderReviewRequest = ReviewObjectProvider.createLeaderReviewRequest(reviewee.getId());
 
 		String jsonRequest = objectMapper.writeValueAsString(leaderReviewRequest);
 
 		mockMvc.perform(post("/api/v1/crews/{crewId}/reviews/leader", crew.getId())
 				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken)
-				.contentType(APPLICATION_JSON)
-				.content(jsonRequest))
+				.content(jsonRequest)
+				.contentType(APPLICATION_JSON))
+			// when & then
 			.andExpect(status().isCreated())
-			.andDo(document("reviewOfLeader-create",
+			.andDo(document("review-createReviewOfLeader",
 				resource(
 					builder()
 						.tag(REVIEW)
@@ -92,23 +95,27 @@ class ReviewControllerTest extends ControllerTest {
 	@Test
 	@DisplayName("[성공] 방장이 아닌 밥모임원에 대해 리뷰를 생성할 수 있다")
 	void createReviewOfMember_success() throws Exception {
-
 		// given
-		CrewMember member = crewMemberRepository.save(
-			createCrewMember(reviewee.getId(), crew, Role.MEMBER));
+		CrewMember crewMemberOfMember1 = crewMemberRepository.save(
+			CrewMemberObjectProvider.createCrewMember(reviewee.getId(), crew, Role.MEMBER));
+		crew.addCrewMember(crewMemberOfMember1);
 
-		crew.addCrewMember(member);
+		CrewMember crewMemberOfMember2 = crewMemberRepository.save(
+			CrewMemberObjectProvider.createCrewMember(reviewer.getId(), crew, Role.MEMBER));
+		crew.addCrewMember(crewMemberOfMember2);
 
-		CreateMemberReviewRequest memberReviewRequest = createMemberReviewRequest(reviewee.getId());
+		CreateMemberReviewRequest memberReviewRequest = ReviewObjectProvider.createMemberReviewRequest(
+			reviewee.getId());
 
 		String jsonRequest = objectMapper.writeValueAsString(memberReviewRequest);
 
 		mockMvc.perform(post("/api/v1/crews/{crewId}/reviews/member", crew.getId())
 				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken)
-				.contentType(APPLICATION_JSON)
-				.content(jsonRequest))
+				.content(jsonRequest)
+				.contentType(APPLICATION_JSON))
+			// when & then
 			.andExpect(status().isCreated())
-			.andDo(document("reviewOfMember-create",
+			.andDo(document("review-createReviewOfMember",
 				resource(
 					builder()
 						.tag(REVIEW)
@@ -126,16 +133,17 @@ class ReviewControllerTest extends ControllerTest {
 	@Test
 	@DisplayName("[성공] 리뷰 단건 조회할 수 있다.")
 	void getSingleReview() throws Exception {
-
-		Review createReview = createLeaderReview(reviewer, reviewee, crew);
+		// given
+		Review createReview = ReviewObjectProvider.createLeaderReview(reviewer, reviewee, crew);
 		Review review = reviewRepository.save(createReview);
 
 		mockMvc.perform(get("/api/v1/reviews/{reviewId}", review.getId())
 				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken)
 				.contentType(APPLICATION_JSON))
+			// when & then
 			.andExpect(status().isOk())
 			.andDo(print())
-			.andDo(document("singleReview",
+			.andDo(document("review-getSingleReview",
 				resource(
 					builder()
 						.tag(REVIEW)
@@ -173,6 +181,149 @@ class ReviewControllerTest extends ControllerTest {
 							fieldWithPath("data.mannerPoint").type(NUMBER).description("리뷰하고자 하는 밥모임 매너 온도"),
 							fieldWithPath("data.tastePoint").type(NUMBER).description("리뷰하고자 하는 밥모임 맛잘알 점수")
 						)
+						.build()
+				)
+			));
+	}
+
+	@Test
+	@DisplayName("[성공] 리뷰이 아이디가 사용자 아이디와 같다면 본인에게 작성된 모든 리뷰를 조회할 수 있다.")
+	void getAllReceivedReview() throws Exception {
+		// given
+		List<Review> reviews = ReviewObjectProvider.createReviews(reviewer, reviewee, crew);
+
+		reviewRepository.saveAll(reviews);
+
+		Integer page = 0;
+
+		Integer size = 10;
+
+		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+		params.add("page", String.valueOf(page));
+		params.add("size", String.valueOf(size));
+
+		mockMvc.perform(get("/api/v1/reviews/me")
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken)
+				.params(params)
+				.contentType(APPLICATION_JSON))
+			// when & then
+			.andExpect(status().isOk())
+			.andDo(print())
+			.andDo(document("review-getAllReceivedReview",
+				resource(
+					builder()
+						.tag(REVIEW)
+						.summary("나에게 작성된 모든 리뷰를 조회합니다.")
+						.responseFields(
+							fieldWithPath("data.content.[]").type(ARRAY).description("전체 리뷰"),
+							fieldWithPath("data.pageable.sort.empty").type(BOOLEAN).description("빈 페이지 여부"),
+							fieldWithPath("data.pageable.sort.sorted").type(BOOLEAN).description("페이지 정렬 여부"),
+							fieldWithPath("data.pageable.sort.unsorted").type(BOOLEAN)
+								.description("페이지 비정렬 여부"),
+							fieldWithPath("data.pageable.offset").type(NUMBER).description("페이지 오프셋"),
+							fieldWithPath("data.pageable.pageNumber").type(NUMBER).description("페이지 번호"),
+							fieldWithPath("data.pageable.pageSize").type(NUMBER)
+								.description("한 원소 수"),
+							fieldWithPath("data.pageable.paged").type(BOOLEAN).description("페이지 정보 포함 여부"),
+							fieldWithPath("data.pageable.unpaged").type(BOOLEAN).description("페이지 정보 비포함 여부"),
+							fieldWithPath("data.last").type(BOOLEAN).description("마지막 페이지 여부"),
+							fieldWithPath("data.size").type(NUMBER).description("페이지 사이즈"),
+							fieldWithPath("data.number").type(NUMBER).description("페이지 번호"),
+							fieldWithPath("data.sort.empty").type(BOOLEAN).description("빈 페이지 여부"),
+							fieldWithPath("data.sort.sorted").type(BOOLEAN).description("페이지 정렬 여부"),
+							fieldWithPath("data.sort.unsorted").type(BOOLEAN).description("페이지 비정렬 여부"),
+							fieldWithPath("data.first").type(BOOLEAN).description("첫 번째 페이지 여부"),
+							fieldWithPath("data.numberOfElements").type(NUMBER).description("페이지 원소 개수"),
+							fieldWithPath("data.empty").type(BOOLEAN).description("빈 페이지 여부"),
+							fieldWithPath("data.totalPages").type(NUMBER).description("전체 페이지 개수"),
+							fieldWithPath("data.totalElements").type(NUMBER).description("전체 데이터 개수"))
+						.build()
+				)
+			));
+	}
+
+	@Test
+	@DisplayName("[성공] 리뷰어 아이디가 사용자 아이디와 같다면 사용자가 다른 사람에게 작성한 모든 리뷰를 조회할 수 있다.")
+	void getAllWroteReview() throws Exception {
+		// given
+		List<Review> reviews = ReviewObjectProvider.createReviews(reviewer, reviewee, crew);
+
+		reviewRepository.saveAll(reviews);
+
+		Integer page = 0;
+
+		Integer size = 10;
+
+		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+		params.add("page", String.valueOf(page));
+		params.add("size", String.valueOf(size));
+
+		mockMvc.perform(get("/api/v1/reviews")
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken)
+				.params(params)
+				.contentType(APPLICATION_JSON))
+			// when & then
+			.andExpect(status().isOk())
+			.andDo(print())
+			.andDo(document("review-getAllWroteReview",
+				resource(
+					builder()
+						.tag(REVIEW)
+						.summary("내가 작성한 한든 리뷰를 조회합니다.")
+						.responseFields(
+							fieldWithPath("data.content.[].reviewer.id").type(NUMBER).description("리뷰를 작성하고자 하는 사용자의 아이디"),
+							fieldWithPath("data.content.[].reviewer.nickname").type(STRING).description("리뷰를 작성하고자 하는 사용자의 닉네임"),
+							fieldWithPath("data.content.[].reviewer.profileImgUrl").type(STRING).description("리뷰를 작성하고자 하는 사용자의 프로필 URL"),
+							fieldWithPath("data.content.[].reviewer.introduction").type(STRING).description("리뷰를 작성하고자 하는 사용자의 자기 소개"),
+							fieldWithPath("data.content.[].reviewer.leaderCount").type(NUMBER).description("리뷰를 작성하고자 하는 사용자의 리더 횟수"),
+							fieldWithPath("data.content.[].reviewer.crewCount").type(NUMBER).description("리뷰를 작성하고자 하는 사용자의 밥모임 참여 횟수"),
+							fieldWithPath("data.content.[].reviewer.tasteScore").type(NUMBER).description("리뷰를 작성하고자 하는 사용자의 맛잘알 점수"),
+							fieldWithPath("data.content.[].reviewer.mannerScore").type(NUMBER).description("리뷰를 작성하고자 하는 사용자의 매너 온도 점수"),
+
+							fieldWithPath("data.content.[].reviewee.id").type(NUMBER).description("리뷰 남기고자하는 사용자의 아이디"),
+							fieldWithPath("data.content.[].reviewee.nickname").type(STRING).description("리뷰 남기고자하는 사용자의 닉네임"),
+							fieldWithPath("data.content.[].reviewee.profileImgUrl").type(STRING).description("리뷰 남기고자하는 사용자의 프로필 URL"),
+							fieldWithPath("data.content.[].reviewee.introduction").type(STRING).description("리뷰 남기고자하는 사용자의 자기 소개"),
+							fieldWithPath("data.content.[].reviewee.leaderCount").type(NUMBER).description("리뷰 남기고자하는 사용자의 리더 횟수"),
+							fieldWithPath("data.content.[].reviewee.crewCount").type(NUMBER).description("리뷰 남기고자하는 사용자의 밥모임 참여 횟수"),
+							fieldWithPath("data.content.[].reviewee.tasteScore").type(NUMBER).description("리뷰 남기고자하는 사용자의 맛잘알 점수"),
+							fieldWithPath("data.content.[].reviewee.mannerScore").type(NUMBER).description("리뷰 남기고자하는 사용자의 매너 온도 점수"),
+
+							fieldWithPath("data.content.[].crew.id").type(NUMBER).description("리뷰하고자하는 밥 모임 아이디"),
+							fieldWithPath("data.content.[].crew.name").type(STRING).description("리뷰하고자하는 밥 모임 이름"),
+							fieldWithPath("data.content.[].crew.capacity").type(NUMBER).description("리뷰하고자하는 밥 모임 정원"),
+							fieldWithPath("data.content.[].crew.promiseTime").type(ARRAY).description("리뷰하고자하는 약속 시간"),
+							fieldWithPath("data.content.[].crew.status").type(STRING).description("리뷰하고자하는 밥 모임 상태"),
+							fieldWithPath("data.content.[].crew.currentMember").description("리뷰하고자하는 밥 모임 현재 인원 수"),
+							fieldWithPath("data.content.[].crew.content").type(STRING).description("리뷰하고자하는 밥 모임 내용"),
+							fieldWithPath("data.content.[].crew.category").type(STRING).description("리뷰하고자하는 밥 모임 카테고리"),
+
+							fieldWithPath("data.content.[].promiseTime").type(ARRAY).description("리뷰하고자 하는 밥 모임 약속 시간"),
+							fieldWithPath("data.content.[].content").type(STRING).description("리뷰하고자 하는 리뷰이에 대한 설명"),
+							fieldWithPath("data.content.[].mannerPoint").type(NUMBER).description("리뷰하고자 하는 리뷰이에 대한 매너 점수"),
+							fieldWithPath("data.content.[].tastePoint").type(NUMBER).description("리뷰하고자 하는 리뷰이에 대한 맛잘알 점수"),
+
+							fieldWithPath("data.pageable.sort.empty").type(BOOLEAN).description("빈 페이지 여부"),
+							fieldWithPath("data.pageable.sort.sorted").type(BOOLEAN).description("페이지 정렬 여부"),
+							fieldWithPath("data.pageable.sort.unsorted").type(BOOLEAN)
+								.description("페이지 비정렬 여부"),
+							fieldWithPath("data.pageable.offset").type(NUMBER).description("페이지 오프셋"),
+							fieldWithPath("data.pageable.pageNumber").type(NUMBER).description("페이지 번호"),
+							fieldWithPath("data.pageable.pageSize").type(NUMBER)
+								.description("한 원소 수"),
+							fieldWithPath("data.pageable.paged").type(BOOLEAN).description("페이지 정보 포함 여부"),
+							fieldWithPath("data.pageable.unpaged").type(BOOLEAN).description("페이지 정보 비포함 여부"),
+							fieldWithPath("data.last").type(BOOLEAN).description("마지막 페이지 여부"),
+							fieldWithPath("data.size").type(NUMBER).description("페이지 사이즈"),
+							fieldWithPath("data.number").type(NUMBER).description("페이지 번호"),
+							fieldWithPath("data.sort.empty").type(BOOLEAN).description("빈 페이지 여부"),
+							fieldWithPath("data.sort.sorted").type(BOOLEAN).description("페이지 정렬 여부"),
+							fieldWithPath("data.sort.unsorted").type(BOOLEAN).description("페이지 비정렬 여부"),
+							fieldWithPath("data.first").type(BOOLEAN).description("첫 번째 페이지 여부"),
+							fieldWithPath("data.numberOfElements").type(NUMBER).description("페이지 원소 개수"),
+							fieldWithPath("data.empty").type(BOOLEAN).description("빈 페이지 여부"),
+							fieldWithPath("data.totalPages").type(NUMBER).description("전체 페이지 개수"),
+							fieldWithPath("data.totalElements").type(NUMBER).description("전체 데이터 개수"))
 						.build()
 				)
 			));
