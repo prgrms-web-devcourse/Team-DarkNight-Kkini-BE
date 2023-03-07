@@ -11,4 +11,6 @@ public interface ProposalRepository extends JpaRepository<Proposal, Long> {
 
 	List<Proposal> findAllByLeaderId(@Param("userId") Long userId);
 
+	List<Proposal> findAllByUserId(@Param("userId") Long userId);
+
 }
