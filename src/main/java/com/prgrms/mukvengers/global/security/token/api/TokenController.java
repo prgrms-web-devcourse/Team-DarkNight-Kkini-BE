@@ -1,19 +1,14 @@
 package com.prgrms.mukvengers.global.security.token.api;
 
-import static org.springframework.http.HttpStatus.*;
-
-import javax.validation.Valid;
+import static org.springframework.http.HttpHeaders.*;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.prgrms.mukvengers.global.common.dto.ApiResponse;
-import com.prgrms.mukvengers.global.security.token.dto.request.RefreshTokenRequest;
 import com.prgrms.mukvengers.global.security.token.dto.response.TokenResponse;
 import com.prgrms.mukvengers.global.security.token.service.TokenService;
 
@@ -27,19 +22,22 @@ public class TokenController {
 	private final TokenService tokenService;
 
 	@PostMapping
-	public ResponseEntity<ApiResponse<TokenResponse>> getTokensByRefreshToken(
-		@RequestBody @Valid RefreshTokenRequest refreshTokenRequest
+	public ResponseEntity<TokenResponse> refreshAccessToken(
+		@CookieValue("refreshToken") String refreshToken
 	) {
-		TokenResponse response = tokenService.renewTokens(refreshTokenRequest);
+		String accessToken = tokenService.getAccessTokensByRefreshToken(refreshToken);
 
-		return ResponseEntity.ok().body(new ApiResponse<>(response));
+		return ResponseEntity.ok()
+			.body(new TokenResponse(accessToken));
 	}
 
 	@DeleteMapping
-	@ResponseStatus(NO_CONTENT)
-	public void deleteRefreshToken(
-		@RequestBody @Valid RefreshTokenRequest refreshTokenRequest
+	public ResponseEntity<Void> expireRefreshToken(
+		@CookieValue("refreshToken") String refreshToken
 	) {
-		tokenService.deleteRefreshToken(refreshTokenRequest);
+		tokenService.deleteRefreshToken(refreshToken);
+
+		return ResponseEntity.noContent()
+			.header(SET_COOKIE, "").build();
 	}
 }
