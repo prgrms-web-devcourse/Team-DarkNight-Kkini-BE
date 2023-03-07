@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.prgrms.mukvengers.base.ServiceTest;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
-import com.prgrms.mukvengers.domain.crew.model.vo.Category;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
 
@@ -48,7 +47,7 @@ class CrewFacadeServiceTest extends ServiceTest {
 			.hasFieldOrPropertyWithValue("capacity", createCrewRequest.capacity())
 			.hasFieldOrPropertyWithValue("status", RECRUITING)
 			.hasFieldOrPropertyWithValue("content", createCrewRequest.content())
-			.hasFieldOrPropertyWithValue("category", Category.of(createCrewRequest.category()))
+			.hasFieldOrPropertyWithValue("category", createCrewRequest.category())
 			.hasFieldOrPropertyWithValue("promiseTime", createCrewRequest.promiseTime());
 
 		CrewMember crewMember = crewMemberRepository.findAll().get(0);

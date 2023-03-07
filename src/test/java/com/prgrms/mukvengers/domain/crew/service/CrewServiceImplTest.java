@@ -25,7 +25,6 @@ import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
 import com.prgrms.mukvengers.domain.crew.dto.response.MyCrewResponse;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
-import com.prgrms.mukvengers.domain.crew.model.vo.Category;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.Role;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
@@ -59,7 +58,7 @@ class CrewServiceImplTest extends ServiceTest {
 			.hasFieldOrPropertyWithValue("capacity", createCrewRequest.capacity())
 			.hasFieldOrPropertyWithValue("status", RECRUITING)
 			.hasFieldOrPropertyWithValue("content", createCrewRequest.content())
-			.hasFieldOrPropertyWithValue("category", Category.of(createCrewRequest.category()));
+			.hasFieldOrPropertyWithValue("category", createCrewRequest.category());
 	}
 
 	@Test
@@ -98,7 +97,7 @@ class CrewServiceImplTest extends ServiceTest {
 			.hasFieldOrPropertyWithValue("capacity", crew.getCapacity())
 			.hasFieldOrPropertyWithValue("status", crew.getStatus().name())
 			.hasFieldOrPropertyWithValue("content", crew.getContent())
-			.hasFieldOrPropertyWithValue("category", crew.getCategory().name())
+			.hasFieldOrPropertyWithValue("category", crew.getCategory())
 			.hasFieldOrPropertyWithValue("promiseTime", crew.getPromiseTime());
 	}
 

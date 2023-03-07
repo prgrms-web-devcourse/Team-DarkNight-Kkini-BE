@@ -24,7 +24,6 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.locationtech.jts.geom.Point;
 
-import com.prgrms.mukvengers.domain.crew.model.vo.Category;
 import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.store.model.Store;
@@ -73,16 +72,15 @@ public class Crew extends BaseEntity {
 	@Column(nullable = false)
 	private String content;
 
-	@Enumerated(STRING)
 	@Column(nullable = false)
-	private Category category;
+	private String category;
 
 	@Column(nullable = false)
 	private LocalDateTime promiseTime;
 
 	@Builder
 	protected Crew(Store store, String name, Point location, Integer capacity,
-		String content, Category category, LocalDateTime promiseTime) {
+		String content, String category, LocalDateTime promiseTime) {
 
 		this.store = validateStore(store);
 		this.name = validateName(name);
@@ -139,7 +137,7 @@ public class Crew extends BaseEntity {
 		return status;
 	}
 
-	private Category validateCategory(Category category) {
+	private String validateCategory(String category) {
 		notNull(category, "유효하지 않는 카테고리입니다.");
 		return category;
 	}
