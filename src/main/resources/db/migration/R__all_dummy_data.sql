@@ -3,19 +3,13 @@ insert into users (nickname, introduction, profile_img_url, provider, oauth_id)
 values ("갓용철", "안녕하세요 인프라 마스터 갓용철입니다.", "https://defaultImg.jpg", "kakao", "test");
 
 insert into users (nickname, introduction, profile_img_url, provider, oauth_id)
-values ("꼬미", "안녕하세요 귀여운 꼬미입니다.", "https://defaultImg.jpg", "kakao", "test2");
+values ("갓헤나", "안녕하세요 우테코 헤나입니다.", "https://defaultImg.jpg", "kakao", "test2");
 
 insert into users (nickname, introduction, profile_img_url, provider, oauth_id)
-values ("이슬", "안녕하세요 귀여운 이슬입니다.", "https://defaultImg.jpg", "kakao", "test4");
-
-insert into users (nickname, introduction, profile_img_url, provider, oauth_id)
-values ("김치찌개", "안녕하세요 김치찌개입니다.", "https://defaultImg.jpg", "kakao", "test5");
+values ("참이슬", "안녕하세요 참 귀여운 이슬입니다.", "https://defaultImg.jpg", "kakao", "test4");
 
 insert into users (nickname, introduction, profile_img_url, provider, oauth_id)
 values ("용용선생님", "안녕하세요 용용선생님입니다.", "https://defaultImg.jpg", "kakao", "test6");
-
-insert into users (nickname, introduction, profile_img_url, provider, oauth_id)
-values ("거지", "안녕하세요 거지입니다.", "https://defaultImg.jpg", "kakao", "test7");
 
 insert into users (nickname, introduction, profile_img_url, provider, oauth_id)
 values ("노기서", "안녕하세요 노기서 입니다.", "https://defaultImg.jpg", "google", "test8");
@@ -39,42 +33,44 @@ insert into users (nickname, introduction, profile_img_url, provider, oauth_id)
 values ("이비실", "안녕하세요 이비실입니다.", "https://defaultImg.jpg", "kakao", "test14");
 
 # Store(가게) Dummy Data
-INSERT INTO store (location, map_store_id, place_name, categories, road_address_name, rating, photo_urls, phone_number)
-VALUES (ST_GeomFromText('POINT(-147.4654321321 35.75413579)'), '123456789', '담뿍 된장찌개', '음식점 한식', '서울 서초구 서초대로74길 51', '4.3',
-        'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20200207_268%2F15810535080016cY9H_JPEG%2FIMG_5851.JPG', '02-3486-8585');
+INSERT INTO store (location, place_id, place_name, categories, road_address_name, photo_urls, phone_number)
+VALUES (ST_GeomFromText('POINT(-147.4654321321 35.75413579)'), '123456789', '담뿍 된장찌개', '음식점 한식', '서울 서초구 서초대로74길 51',
+        'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20200207_268%2F15810535080016cY9H_JPEG%2FIMG_5851.JPG',
+        '02-3486-8585');
 
-INSERT INTO store (location, map_store_id, place_name, categories, road_address_name, rating, photo_urls, phone_number)
-VALUES (ST_GeomFromText('POINT(-147.4754321321 36.75413579)'), '223456789', '맥도날드 강남역점', '음식점', '서울 강남구 테헤란로 107', '4.2',
-        'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20200207_268%2F15810535080016cY9H_JPEG%2FIMG_5851.JPG', '070-7017-6865');
+INSERT INTO store (location, place_id, place_name, categories, road_address_name, photo_urls, phone_number)
+VALUES (ST_GeomFromText('POINT(-147.4754321321 36.75413579)'), '223456789', '맥도날드 강남역점', '음식점', '서울 강남구 테헤란로 107',
+        'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20200207_268%2F15810535080016cY9H_JPEG%2FIMG_5851.JPG',
+        '070-7017-6865');
 
 
 # Crew(밥모임) Dummy Data
 INSERT INTO crew (store_id, name, location,
                   capacity, status, promise_time, content, category)
 VALUES (1, '담뿍 된찌 뿌시는 모임', ST_GeomFromText('POINT(-147.4654321321 35.75413579)'),
-        6, '모집 중', '2023-03-06 17:00:00', '퇴근하고 든든하게 한끼 같이 먹어요', '조용한');
+        6, 'RECRUITING', '2023-03-06 17:00:00', '퇴근하고 든든하게 한끼 같이 먹어요', 'QUIET');
 
 INSERT INTO crew (store_id, name, location,
                   capacity, status, promise_time, content, category)
 VALUES (2, '맥도날드 갈 사람', ST_GeomFromText('POINT(-147.4654321321 35.75413579)'),
-        8, '모집 중', '2023-03-08 17:00:00', '가볍게 한끼 같이 먹어요', '수다스러운');
+        8, 'RECRUITING', '2023-03-08 17:00:00', '가볍게 한끼 같이 먹어요', 'QUIET');
 
 
 # CrewMember(밥모임원) Dummy data
 INSERT INTO crew_member(user_id, crew_id, role)
-VALUES (1, 1, 'leader');
+VALUES (1, 1, 'LEADER');
 
 INSERT INTO crew_member(user_id, crew_id, role)
-VALUES (2, 1, 'member');
+VALUES (2, 1, 'MEMBER');
 
 INSERT INTO crew_member(user_id, crew_id, role)
-VALUES (3, 1, 'block');
+VALUES (3, 1, 'BLOCKED');
 
 INSERT INTO crew_member(user_id, crew_id, role)
-VALUES (5, 2, 'leader');
+VALUES (5, 2, 'LEADER');
 
 INSERT INTO crew_member(user_id, crew_id, role)
-VALUES (6, 2, 'member');
+VALUES (6, 2, 'MEMBER');
 
 
 # Review Dummy data
