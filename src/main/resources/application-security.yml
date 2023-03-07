@@ -3,8 +3,8 @@ jwt:
   issuer: KKINI
   secret-key: ${JWT_SECRET_KEY}
   expiry-seconds:
-    access-token: 3600
-    refresh-token: 360000
+    access-token: 1800
+    refresh-token: 604800
 
 # OAuth 2.0 설정
 spring:
