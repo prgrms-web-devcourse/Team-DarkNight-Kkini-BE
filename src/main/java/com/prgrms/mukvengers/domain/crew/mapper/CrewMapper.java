@@ -18,6 +18,7 @@ public interface CrewMapper {
 	@Mapping(target = "category", source = "createCrewRequest.category", qualifiedByName = "categoryMethod")
 	@Mapping(target = "promiseTime", source = "createCrewRequest.promiseTime")
 	@Mapping(target = "store", source = "store")
+	@Mapping(target = "location", source = "store.location")
 	Crew toCrew(CreateCrewRequest createCrewRequest, Store store);
 
 	@Mapping(target = "promiseTime", source = "crew.promiseTime")

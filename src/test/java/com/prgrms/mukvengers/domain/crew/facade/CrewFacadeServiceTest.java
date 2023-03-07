@@ -31,8 +31,8 @@ class CrewFacadeServiceTest extends ServiceTest {
 		CreateCrewRequest createCrewRequest = getCreateCrewRequest(savedStore.getPlaceId());
 		IdResponse idResponse = crewFacadeService.create(createCrewRequest, savedUserId);
 
-		double parseLatitude = Double.parseDouble(createCrewRequest.latitude());
-		double parseLongitude = Double.parseDouble(createCrewRequest.longitude());
+		double parseLatitude = createCrewRequest.createStoreRequest().latitude();
+		double parseLongitude = createCrewRequest.createStoreRequest().longitude();
 		Point location = gf.createPoint(new Coordinate(parseLongitude, parseLatitude));
 
 		Optional<Crew> optionalCrew = crewRepository.findById(idResponse.id());

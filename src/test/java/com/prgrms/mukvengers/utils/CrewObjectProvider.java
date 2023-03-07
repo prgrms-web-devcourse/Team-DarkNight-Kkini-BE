@@ -2,6 +2,7 @@ package com.prgrms.mukvengers.utils;
 
 import static com.prgrms.mukvengers.domain.crew.model.vo.Category.*;
 import static com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus.*;
+import static com.prgrms.mukvengers.utils.StoreObjectProvider.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -51,12 +52,10 @@ public class CrewObjectProvider {
 			.collect(Collectors.toList());
 	}
 
-	public static CreateCrewRequest getCreateCrewRequest(String mapStoreId) {
+	public static CreateCrewRequest getCreateCrewRequest(String placeId) {
 		return new CreateCrewRequest(
-			mapStoreId,
+			getCreateStoreRequest(placeId),
 			NAME,
-			LONGITUDE,
-			LATITUDE,
 			PROMISE_TIME,
 			CAPACITY,
 			CONTENT,
