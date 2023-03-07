@@ -75,15 +75,15 @@ VALUES (6, 2, 'MEMBER');
 
 # Review Dummy data
 # 리더에 대한 리뷰
-INSERT INTO review(reviewer, reviewee, crew_id, promise_time, content, manner_point, taste_point)
+INSERT INTO review(reviewer_id, reviewee_id, crew_id, promise_time, content, manner_score, taste_score)
 VALUES (2, 1, 1, '2023-03-08 13:00:00', '맛잘알 인정합니다', 5, 5);
 
-INSERT INTO review(reviewer, reviewee, crew_id, promise_time, manner_point, taste_point)
+INSERT INTO review(reviewer_id, reviewee_id, crew_id, promise_time, manner_score, taste_score)
 VALUES (6, 5, 2, '2023-03-08 14:00:00', 5, 3);
 
 # 리더가 아닌 밥모임원에 대한 리뷰
-INSERT INTO review(reviewer, reviewee, crew_id, promise_time, content, manner_point)
+INSERT INTO review(reviewer_id, reviewee_id, crew_id, promise_time, content, manner_score)
 VALUES (3, 2, 1, '2023-03-08 13:00:00', '다음에 또 보고싶어요~', 5);
 
-INSERT INTO review(reviewer, reviewee, crew_id, promise_time, content, manner_point)
+INSERT INTO review(reviewer_id, reviewee_id, crew_id, promise_time, content, manner_score)
 VALUES (5, 6, 2, '2023-03-08 14:00:00', '친절하시네요', 5);
