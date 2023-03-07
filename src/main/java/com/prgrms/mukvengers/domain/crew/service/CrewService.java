@@ -5,8 +5,8 @@ import org.springframework.data.domain.Pageable;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.SearchCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
+import com.prgrms.mukvengers.domain.crew.dto.response.CrewAndCrewMemberResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
-import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
 import com.prgrms.mukvengers.domain.crew.dto.response.MyCrewResponse;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
@@ -17,7 +17,7 @@ public interface CrewService {
 
 	MyCrewResponse getByUserId(Long userId);
 
-	CrewResponse getById(Long crewId);
+	CrewAndCrewMemberResponse getById(Long crewId);
 
 	CrewPageResponse getByPlaceId(String mapStoreId, Pageable pageable);
 

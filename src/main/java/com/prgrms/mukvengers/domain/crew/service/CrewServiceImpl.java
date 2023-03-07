@@ -13,14 +13,16 @@ import org.springframework.transaction.annotation.Transactional;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.SearchCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
+import com.prgrms.mukvengers.domain.crew.dto.response.CrewAndCrewMemberResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
-import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
 import com.prgrms.mukvengers.domain.crew.dto.response.MyCrewResponse;
 import com.prgrms.mukvengers.domain.crew.exception.CrewNotFoundException;
 import com.prgrms.mukvengers.domain.crew.mapper.CrewMapper;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
+import com.prgrms.mukvengers.domain.crewmember.dto.response.CrewMemberResponse;
+import com.prgrms.mukvengers.domain.crewmember.mapper.CrewMemberMapper;
 import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
 import com.prgrms.mukvengers.domain.store.exception.StoreNotFoundException;
 import com.prgrms.mukvengers.domain.store.model.Store;
@@ -43,6 +45,8 @@ public class CrewServiceImpl implements CrewService {
 	private final CrewMemberRepository crewMemberRepository;
 	private final CrewMapper crewMapper;
 
+	private final CrewMemberMapper crewMemberMapper;
+
 	@Override
 	@Transactional
 	public IdResponse create(CreateCrewRequest createCrewRequest, Long userId) {
@@ -63,35 +67,58 @@ public class CrewServiceImpl implements CrewService {
 	@Override
 	public MyCrewResponse getByUserId(Long userId) {
 
-		List<CrewResponse> responses = crewMemberRepository.findAllByUserIdOrderByStatus(userId)
+		List<CrewAndCrewMemberResponse> responses = crewMemberRepository.findAllByUserIdOrderByStatus(userId)
 			.stream()
-			.map(crew -> crewMapper.toCrewResponse(
+			.map(crew -> crewMapper.toCrewAndCrewMemberResponse(
 				crew,
-				crewMemberRepository.countCrewMemberByCrewId(crew.getId())))
+				crewMemberRepository.countCrewMemberByCrewId(crew.getId()), crewMemberRepository.findAllByCrewId(
+						crew.getId())
+					.stream()
+					.map(CrewMember -> crewMemberMapper.toCrewMemberResponse(
+						userRepository.findById(CrewMember.getUserId())
+							.orElseThrow(() -> new UserNotFoundException(CrewMember.getUserId())),
+						CrewMember.getRole()))
+					.toList()))
 			.toList();
 
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException(userId));
 
-		return new MyCrewResponse(responses, user.getProfileImgUrl());
+		return new MyCrewResponse(responses);
 	}
 
 	@Override
-	public CrewResponse getById(Long crewId) {
+	public CrewAndCrewMemberResponse getById(Long crewId) {
 
 		Crew crew = crewRepository.findById(crewId)
 			.orElseThrow(() -> new CrewNotFoundException(crewId));
 
 		Integer currentMember = crewMemberRepository.countCrewMemberByCrewId(crewId);
 
-		return crewMapper.toCrewResponse(crew, currentMember);
+		List<CrewMemberResponse> members = crewMemberRepository.findAllByCrewId(crewId)
+			.stream()
+			.map(CrewMember -> crewMemberMapper.toCrewMemberResponse(
+				userRepository.findById(CrewMember.getUserId())
+					.orElseThrow(() -> new UserNotFoundException(CrewMember.getUserId())),
+				CrewMember.getRole()))
+			.toList();
+
+		return crewMapper.toCrewAndCrewMemberResponse(crew, currentMember, members);
 	}
 
 	@Override
 	public CrewPageResponse getByPlaceId(String placeId, Pageable pageable) {
 
-		Page<CrewResponse> responses = crewRepository.findAllByPlaceId(placeId, pageable)
-			.map(crew -> crewMapper.toCrewResponse(crew, crewMemberRepository.countCrewMemberByCrewId(crew.getId())));
+		Page<CrewAndCrewMemberResponse> responses = crewRepository.findAllByPlaceId(placeId, pageable)
+			.map(crew -> crewMapper.toCrewAndCrewMemberResponse(crew,
+				crewMemberRepository.countCrewMemberByCrewId(crew.getId())
+				, crewMemberRepository.findAllByCrewId(crew.getId())
+					.stream()
+					.map(CrewMember -> crewMemberMapper.toCrewMemberResponse(
+						userRepository.findById(CrewMember.getUserId())
+							.orElseThrow(() -> new UserNotFoundException(CrewMember.getUserId())),
+						CrewMember.getRole()))
+					.toList()));
 
 		return new CrewPageResponse(responses);
 	}
@@ -103,9 +130,19 @@ public class CrewServiceImpl implements CrewService {
 
 		Point location = gf.createPoint(new Coordinate(distanceRequest.longitude(), distanceRequest.latitude()));
 
-		List<CrewResponse> responses = crewRepository.findAllByLocation(location, distanceRequest.distance())
+		List<CrewAndCrewMemberResponse> responses = crewRepository.findAllByLocation(location,
+				distanceRequest.distance())
 			.stream()
-			.map(crew -> crewMapper.toCrewResponse(crew, crewMemberRepository.countCrewMemberByCrewId(crew.getId())))
+			.map(crew -> crewMapper.toCrewAndCrewMemberResponse(crew,
+				crewMemberRepository.countCrewMemberByCrewId(crew.getId()),
+				crewMemberRepository.findAllByCrewId(
+						crew.getId())
+					.stream()
+					.map(CrewMember -> crewMemberMapper.toCrewMemberResponse(
+						userRepository.findById(CrewMember.getUserId())
+							.orElseThrow(() -> new UserNotFoundException(CrewMember.getUserId())),
+						CrewMember.getRole()))
+					.toList()))
 			.toList();
 
 		return new CrewResponses(responses);
