@@ -42,7 +42,6 @@ public class CrewServiceImpl implements CrewService {
 	private final StoreRepository storeRepository;
 	private final CrewMemberRepository crewMemberRepository;
 	private final CrewMapper crewMapper;
-
 	private final StoreMapper storeMapper;
 
 	@Override
