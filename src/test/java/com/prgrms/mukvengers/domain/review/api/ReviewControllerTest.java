@@ -85,8 +85,8 @@ class ReviewControllerTest extends ControllerTest {
 						.requestFields(
 							fieldWithPath("leaderId").description("방장의 아이디"),
 							fieldWithPath("content").description("추가로 작성하고 싶은 내용"),
-							fieldWithPath("mannerPoint").description("방장에 대한 매너 온도"),
-							fieldWithPath("tastePoint").description("방장에 대한 맛잘알 점수"))
+							fieldWithPath("mannerScore").description("방장에 대한 매너 온도"),
+							fieldWithPath("tasteScore").description("방장에 대한 맛잘알 점수"))
 						.responseFields()
 						.build()
 				)
@@ -124,7 +124,7 @@ class ReviewControllerTest extends ControllerTest {
 						.requestFields(
 							fieldWithPath("revieweeId").description("리뷰이 아이디"),
 							fieldWithPath("content").description("추가로 작성하고 싶은 내용"),
-							fieldWithPath("mannerPoint").description("리뷰이에 대한 매너 온도"))
+							fieldWithPath("mannerScore").description("리뷰이에 대한 매너 온도"))
 						.responseFields()
 						.build()
 				)
@@ -179,8 +179,8 @@ class ReviewControllerTest extends ControllerTest {
 
 							fieldWithPath("data.promiseTime").type(ARRAY).description("리뷰하고자 하는 밥모임 약속 시간"),
 							fieldWithPath("data.content").type(STRING).description("리뷰하고자 하는 밥모임 간단 한줄 리뷰 "),
-							fieldWithPath("data.mannerPoint").type(NUMBER).description("리뷰하고자 하는 밥모임 매너 온도"),
-							fieldWithPath("data.tastePoint").type(NUMBER).description("리뷰하고자 하는 밥모임 맛잘알 점수")
+							fieldWithPath("data.mannerScore").type(NUMBER).description("리뷰하고자 하는 밥모임 매너 온도"),
+							fieldWithPath("data.tasteScore").type(NUMBER).description("리뷰하고자 하는 밥모임 맛잘알 점수")
 						)
 						.build()
 				)
@@ -317,9 +317,9 @@ class ReviewControllerTest extends ControllerTest {
 
 							fieldWithPath("data.content.[].promiseTime").type(ARRAY).description("리뷰하고자 하는 밥 모임 약속 시간"),
 							fieldWithPath("data.content.[].content").type(STRING).description("리뷰하고자 하는 리뷰이에 대한 설명"),
-							fieldWithPath("data.content.[].mannerPoint").type(NUMBER)
+							fieldWithPath("data.content.[].mannerScore").type(NUMBER)
 								.description("리뷰하고자 하는 리뷰이에 대한 매너 점수"),
-							fieldWithPath("data.content.[].tastePoint").type(NUMBER)
+							fieldWithPath("data.content.[].tasteScore").type(NUMBER)
 								.description("리뷰하고자 하는 리뷰이에 대한 맛잘알 점수"),
 
 							fieldWithPath("data.pageable.sort.empty").type(BOOLEAN).description("빈 페이지 여부"),

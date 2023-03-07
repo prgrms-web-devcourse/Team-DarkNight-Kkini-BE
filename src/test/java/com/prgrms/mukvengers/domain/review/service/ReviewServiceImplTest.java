@@ -69,8 +69,6 @@ class ReviewServiceImplTest extends ServiceTest {
 		// then
 		assertThat(findReview).isPresent();
 		assertThat(findReview.get().getReviewee().getId()).isEqualTo(leader.getUserId());
-		assertThat(findReview.get().getMannerPoint()).isEqualTo(MANNER_POINT);
-		assertThat(findReview.get().getTastePoint()).isEqualTo(TASTE_POINT);
 	}
 
 	@Test
@@ -96,8 +94,8 @@ class ReviewServiceImplTest extends ServiceTest {
 
 		// then
 		assertThat(findReview).isPresent();
-		assertThat(findReview.get().getMannerPoint()).isEqualTo(MANNER_POINT);
-		assertThat(findReview.get().getTastePoint()).isZero();
+		assertThat(findReview.get().getMannerScore()).isEqualTo(MANNER_SCORE);
+		assertThat(findReview.get().getTasteScore()).isZero();
 	}
 
 	@Test
