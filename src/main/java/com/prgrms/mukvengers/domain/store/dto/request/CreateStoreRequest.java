@@ -12,6 +12,6 @@ public record CreateStoreRequest(
 	@NotBlank String roadAddressName,
 	@NotBlank String photoUrls,
 	@NotBlank String kakaoPlaceUrl,
-	@NotBlank String phoneNumber
+	String phoneNumber
 ) {
 }
