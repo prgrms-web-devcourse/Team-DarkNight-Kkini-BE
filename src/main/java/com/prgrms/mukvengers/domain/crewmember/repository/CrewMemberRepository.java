@@ -32,4 +32,5 @@ public interface CrewMemberRepository extends JpaRepository<CrewMember, Long> {
 
 	Integer countCrewMemberByCrewId(@Param(value = "crewId") Long crewId);
 
+	List<CrewMember> findAllByCrewId(@Param(value = "crewId") Long crewId);
 }
