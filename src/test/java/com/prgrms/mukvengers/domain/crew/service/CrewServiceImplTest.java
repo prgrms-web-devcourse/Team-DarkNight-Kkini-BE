@@ -40,8 +40,8 @@ class CrewServiceImplTest extends ServiceTest {
 		//given
 		CreateCrewRequest createCrewRequest = CrewObjectProvider.getCreateCrewRequest(savedStore.getPlaceId());
 
-		double parseLatitude = Double.parseDouble(createCrewRequest.latitude());
-		double parseLongitude = Double.parseDouble(createCrewRequest.longitude());
+		double parseLatitude = createCrewRequest.createStoreRequest().latitude();
+		double parseLongitude = createCrewRequest.createStoreRequest().longitude();
 		Point location = gf.createPoint(new Coordinate(parseLongitude, parseLatitude));
 		IdResponse idResponse = crewService.create(createCrewRequest, savedUser.getId());
 
