@@ -40,4 +40,25 @@ class ProposalServiceImplTest extends ServiceTest {
 		assertThat(responses.responses()).hasSize(proposals.size());
 	}
 
+	@Test
+	@DisplayName("[성공] 사용자가 방장인 아니고 참여자인 모임의 신청서를 모두 조회합니다.")
+	void getProposalsByMemberId_success() {
+
+		//given
+		User user = createUser("1232456789");
+		userRepository.save(user);
+
+		Crew crew = createCrew(savedStore, CrewStatus.RECRUITING);
+		crewRepository.save(crew);
+
+		List<Proposal> proposals = createProposals(savedUser, user.getId(), crew.getId());
+		proposalRepository.saveAll(proposals);
+
+		//when
+		ProposalResponses responses = proposalService.getProposalsByMemberId(savedUser.getId());
+
+		//then
+		assertThat(responses.responses()).hasSize(proposals.size());
+	}
+
 }
