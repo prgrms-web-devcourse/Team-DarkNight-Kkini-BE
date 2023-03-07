@@ -39,7 +39,7 @@ CREATE TABLE store
     place_name        varchar(255) NULL,
     categories        varchar(255) NULL,
     road_address_name varchar(255) NULL,
-    photo_urls        varchar(255) NULL,
+    photo_urls        TEXT NULL,
     kakao_place_url   varchar(255) NULL,
     phone_number      varchar(255) NULL,
     created_at        dateTime     NOT NULL DEFAULT now(),
