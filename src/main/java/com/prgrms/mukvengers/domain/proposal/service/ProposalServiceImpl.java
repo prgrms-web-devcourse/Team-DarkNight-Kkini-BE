@@ -32,4 +32,15 @@ public class ProposalServiceImpl implements ProposalService {
 		return new ProposalResponses(proposals);
 	}
 
+	@Override
+	public ProposalResponses getProposalsByMemberId(Long userId) {
+
+		List<ProposalResponse> proposals = proposalRepository.findAllByUserId(userId)
+			.stream()
+			.map(proposalMapper::toProposalResponse)
+			.collect(Collectors.toList());
+
+		return new ProposalResponses(proposals);
+	}
+
 }
