@@ -370,30 +370,20 @@
             usernamePage.classList.add('hidden');
             chatPage.classList.remove('hidden');
 
-            //  '/ws'로 소켓에 연결한다.
             var socket = new SockJS('/ws');
-            //  stomp 프로토콜 위에서 SockJS가 돌아가도록 하는 명령어
             stompClient = Stomp.over(socket);
 
-            //서버에 connect 프레임을 전송한다. {}에는 같이 전송하고 싶은 헤더를 넣을 수 있다.
-            // 연결이 완료되면 아래 onConnected라는 콜백 함수가 실행된다.
-            // 실패 시 아래 onError라는 콜백 함수가 실행된다.
-            stompClient.connect({}, onConnected(), onError);
+            stompClient.connect({}, onConnected, onError);
         }
         event.preventDefault();
     }
 
 
     function onConnected() {
-        // 구독
-        // 상대방에게 메시지를 보내거나 받아야 할 경우 특정 URI를 구독해야 한다.
-        // 구독 후 상대방이 '/topic/public'으로 전송하는 메시지를 받을 수 있게 된다.
-        // 여기에서 특정 채팅방을 구독할 수 있는듯 하다. ex: '/topic/' + crewId
-        // 두번째 인자인 onMessageReceived는 구독 후 실행되는 콜백함수다.
-        stompClient.subscribe('/topic/public', onMessageReceived);
+        stompClient.subscribe('/topic/public/1', onMessageReceived);
 
         // Tell your username to the server
-        stompClient.send("/app/chat.addUser",
+        stompClient.send("/app/chat.addUser/1",
             {},
             JSON.stringify({sender: username, type: 'JOIN'})
         )
@@ -414,9 +404,10 @@
             var chatMessage = {
                 sender: username,
                 content: messageInput.value,
-                type: 'CHAT'
+                type: 'CHAT',
+                userId: 1
             };
-            stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
+            stompClient.send("/app/chat.sendMessage/1", {}, JSON.stringify(chatMessage));
             messageInput.value = '';
         }
         event.preventDefault();
@@ -472,7 +463,6 @@
 
     usernameForm.addEventListener('submit', connect, true)
     messageForm.addEventListener('submit', sendMessage, true)
-
 </script>
 
 </body>
