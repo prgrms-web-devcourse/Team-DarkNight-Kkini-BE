@@ -18,7 +18,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.prgrms.mukvengers.global.security.oauth.dto.AuthUserInfo;
 import com.prgrms.mukvengers.global.security.oauth.service.OAuthService;
-import com.prgrms.mukvengers.global.security.token.dto.response.TokenResponse;
 import com.prgrms.mukvengers.global.security.token.service.TokenService;
 import com.prgrms.mukvengers.global.utils.CookieUtil;
 
@@ -42,17 +41,18 @@ public class OAuthAuthenticationSuccessHandler
 			OAuth2User oauth2User = authenticationToken.getPrincipal();
 			String providerName = authenticationToken.getAuthorizedClientRegistrationId();
 			AuthUserInfo authUserInfo = oauthService.login(oauth2User, providerName);
-			TokenResponse token = tokenService.createToken(authUserInfo);
-			String redirectUrl = getRedirectUrl(request, token.accessToken());
-			setResponse(response, token.refreshToken());
-			getRedirectStrategy().sendRedirect(request, response, redirectUrl);
+			String accessToken = tokenService.createAccessToken(authUserInfo);
+			String refreshToken = tokenService.createRefreshToken(authUserInfo);
+			String targetUrl = determineTargetUrl(request, accessToken);
+			setRefreshTokenInCookie(response, refreshToken);
+			getRedirectStrategy().sendRedirect(request, response, targetUrl);
 
 		} else {
 			super.onAuthenticationSuccess(request, response, authentication);
 		}
 	}
 
-	private String getRedirectUrl(HttpServletRequest request, String accessToken) {
+	private String determineTargetUrl(HttpServletRequest request, String accessToken) {
 		String targetUrl = CookieUtil.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
 			.map(Cookie::getValue)
 			.orElse(getDefaultTargetUrl());
@@ -62,7 +62,12 @@ public class OAuthAuthenticationSuccessHandler
 			.build().toUriString();
 	}
 
-	private void setResponse(HttpServletResponse response, String refreshToken) {
-		response.addCookie(new Cookie("refreshToken", refreshToken)); // 임시로 쿠키에 담아서 보내기
+	private void setRefreshTokenInCookie(HttpServletResponse response, String refreshToken) {
+		final Cookie token = new Cookie("refreshToken", refreshToken);
+		token.setPath(getDefaultTargetUrl());
+		token.setSecure(true);
+		token.setHttpOnly(true);
+		token.setMaxAge(tokenService.getRefreshTokenExpirySeconds());
+		response.addCookie(token);
 	}
 }
