@@ -1,6 +1,9 @@
 package com.prgrms.mukvengers.global.security.token.service;
 
+import java.util.Objects;
 import java.util.UUID;
+
+import javax.validation.constraints.NotBlank;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -8,8 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.mukvengers.global.security.jwt.JwtTokenProvider;
 import com.prgrms.mukvengers.global.security.oauth.dto.AuthUserInfo;
-import com.prgrms.mukvengers.global.security.token.dto.request.RefreshTokenRequest;
-import com.prgrms.mukvengers.global.security.token.dto.response.TokenResponse;
+import com.prgrms.mukvengers.global.security.token.exception.NotFoundCookieException;
 import com.prgrms.mukvengers.global.security.token.exception.RefreshTokenNotFoundException;
 import com.prgrms.mukvengers.global.security.token.model.RefreshToken;
 import com.prgrms.mukvengers.global.security.token.repository.RefreshTokenRepository;
@@ -27,44 +29,44 @@ public class TokenService {
 	@Value("${jwt.expiry-seconds.refresh-token}")
 	private int refreshTokenExpirySeconds;
 
-	@Transactional
-	public TokenResponse createToken(AuthUserInfo user) {
+	public String createAccessToken(AuthUserInfo user) {
+		return jwtTokenProvider.createAccessToken(user.id(), user.role());
+	}
 
-		String accessToken = jwtTokenProvider.createAccessToken(user.id(), user.role());
+	@Transactional
+	public String createRefreshToken(AuthUserInfo user) {
 		RefreshToken refreshToken
-			= new RefreshToken(createRefreshToken(), user.id(), refreshTokenExpirySeconds);
+			= new RefreshToken(UUID.randomUUID().toString(), user.id(), user.role(), refreshTokenExpirySeconds);
 
-		refreshTokenRepository.save(refreshToken);
-
-		return new TokenResponse(user.id(), accessToken, refreshToken.getRefreshToken());
+		return refreshTokenRepository.save(refreshToken).getRefreshToken();
 	}
 
 	@Transactional
-	public TokenResponse renewTokens(RefreshTokenRequest refreshTokenRequest) {
-		String refreshToken = refreshTokenRequest.refreshToken();
+	public String getAccessTokensByRefreshToken(@NotBlank String refreshToken) {
 
-		RefreshToken token = refreshTokenRepository.findById(refreshToken)
-			.orElseThrow(() -> new RefreshTokenNotFoundException(refreshToken));
+		checkRefreshToken(refreshToken);
 
-		refreshTokenRepository.delete(token);
-		AuthUserInfo user = new AuthUserInfo(token.getUserId(), "USER");
-
-		return createToken(user);
+		return refreshTokenRepository.findById(refreshToken)
+			.map(token -> jwtTokenProvider.createAccessToken(token.getUserId(), token.getRole()))
+			.orElseThrow(RefreshTokenNotFoundException::new);
 	}
 
 	@Transactional
-	public void deleteRefreshToken(RefreshTokenRequest refreshTokenRequest) {
-		String refreshToken = refreshTokenRequest.refreshToken();
+	public void deleteRefreshToken(String refreshToken) {
+
+		checkRefreshToken(refreshToken);
 
 		refreshTokenRepository.findById(refreshToken)
-			.ifPresentOrElse(refreshTokenRepository::delete,
-				() -> {
-					throw new RefreshTokenNotFoundException(refreshToken);
-				});
+			.ifPresentOrElse(refreshTokenRepository::delete, RefreshTokenNotFoundException::new);
 	}
 
-	public String createRefreshToken() {
-		return UUID.randomUUID().toString();
+	public int getRefreshTokenExpirySeconds() {
+		return refreshTokenExpirySeconds;
 	}
 
+	private void checkRefreshToken(String refreshToken) {
+		if (Objects.isNull(refreshToken) || refreshToken.isBlank()) {
+			throw new NotFoundCookieException();
+		}
+	}
 }
