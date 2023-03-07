@@ -29,6 +29,10 @@ ext {
     set('snippetsDir', file("build/generated-snippets"))
 }
 
+jar {
+    enabled = false
+}
+
 swaggerSources {
     sample {
         setInputFile(file("${project.buildDir}/api-spec/openapi3.yaml"))
@@ -133,3 +137,8 @@ task copyDocument(type: Copy) {
 tasks.withType(BootJar).configureEach {
     dependsOn 'copySwaggerUI'
 }
+
+
+
+
+
