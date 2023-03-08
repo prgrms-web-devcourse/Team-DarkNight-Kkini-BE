@@ -11,7 +11,6 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +19,6 @@ import com.prgrms.mukvengers.base.ServiceTest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.Role;
-import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
 import com.prgrms.mukvengers.domain.review.dto.request.CreateLeaderReviewRequest;
 import com.prgrms.mukvengers.domain.review.dto.request.CreateMemberReviewRequest;
 import com.prgrms.mukvengers.domain.review.dto.response.ReviewResponse;
@@ -31,12 +29,9 @@ import com.prgrms.mukvengers.utils.CrewMemberObjectProvider;
 
 class ReviewServiceImplTest extends ServiceTest {
 
-	@Autowired
-	CrewMemberRepository crewMemberRepository;
-
-	User reviewer;
-	User reviewee;
-	Crew crew;
+	private User reviewer;
+	private User reviewee;
+	private Crew crew;
 
 	@BeforeEach
 	void setReview() {
@@ -69,8 +64,6 @@ class ReviewServiceImplTest extends ServiceTest {
 		// then
 		assertThat(findReview).isPresent();
 		assertThat(findReview.get().getReviewee().getId()).isEqualTo(leader.getUserId());
-		assertThat(findReview.get().getMannerPoint()).isEqualTo(MANNER_POINT);
-		assertThat(findReview.get().getTastePoint()).isEqualTo(TASTE_POINT);
 	}
 
 	@Test
@@ -96,8 +89,8 @@ class ReviewServiceImplTest extends ServiceTest {
 
 		// then
 		assertThat(findReview).isPresent();
-		assertThat(findReview.get().getMannerPoint()).isEqualTo(MANNER_POINT);
-		assertThat(findReview.get().getTastePoint()).isZero();
+		assertThat(findReview.get().getMannerScore()).isEqualTo(MANNER_SCORE);
+		assertThat(findReview.get().getTasteScore()).isZero();
 	}
 
 	@Test

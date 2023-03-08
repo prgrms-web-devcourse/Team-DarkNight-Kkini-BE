@@ -19,8 +19,8 @@ public interface ReviewMapper {
 	@Mapping(source = "crew", target = "crew")
 	@Mapping(source = "crew.promiseTime", target = "promiseTime")
 	@Mapping(source = "request.content", target = "content")
-	@Mapping(source = "request.mannerPoint", target = "mannerPoint")
-	@Mapping(source = "request.tastePoint", target = "tastePoint")
+	@Mapping(source = "request.mannerScore", target = "mannerScore")
+	@Mapping(source = "request.tasteScore", target = "tasteScore")
 	Review toReview(CreateLeaderReviewRequest request, User reviewer, User reviewee, Crew crew);
 
 	@Mapping(source = "reviewer", target = "reviewer")
@@ -28,8 +28,8 @@ public interface ReviewMapper {
 	@Mapping(source = "crew", target = "crew")
 	@Mapping(source = "crew.promiseTime", target = "promiseTime")
 	@Mapping(source = "request.content", target = "content")
-	@Mapping(source = "request.mannerPoint", target = "mannerPoint")
-	@Mapping(source = "request", target = "tastePoint", qualifiedByName = "tasteScoreToZero")
+	@Mapping(source = "request.mannerScore", target = "mannerScore")
+	@Mapping(source = "request", target = "tasteScore", qualifiedByName = "tasteScoreToZero")
 	Review toReview(CreateMemberReviewRequest request, User reviewer, User reviewee, Crew crew);
 
 	@Mapping(source = "reviewer", target = "reviewer")
@@ -37,8 +37,8 @@ public interface ReviewMapper {
 	@Mapping(source = "crew", target = "crew")
 	@Mapping(source = "promiseTime", target = "promiseTime")
 	@Mapping(source = "content", target = "content")
-	@Mapping(source = "mannerPoint", target = "mannerPoint")
-	@Mapping(source = "tastePoint", target = "tastePoint")
+	@Mapping(source = "mannerScore", target = "mannerScore")
+	@Mapping(source = "tasteScore", target = "tasteScore")
 	ReviewResponse toReviewResponse(Review review);
 
 	@Named("tasteScoreToZero")

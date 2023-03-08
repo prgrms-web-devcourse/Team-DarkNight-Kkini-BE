@@ -26,6 +26,7 @@ import com.prgrms.mukvengers.config.RestDocsConfig;
 import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
 import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
 import com.prgrms.mukvengers.domain.proposal.repository.ProposalRepository;
+import com.prgrms.mukvengers.domain.review.repository.ReviewRepository;
 import com.prgrms.mukvengers.domain.store.model.Store;
 import com.prgrms.mukvengers.domain.store.repository.StoreRepository;
 import com.prgrms.mukvengers.domain.user.model.User;
@@ -67,6 +68,9 @@ public abstract class ControllerTest {
 
 	@Autowired
 	protected CrewMemberRepository crewMemberRepository;
+
+	@Autowired
+	protected ReviewRepository reviewRepository;
 
 	@Autowired
 	protected ProposalRepository proposalRepository;

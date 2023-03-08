@@ -16,11 +16,11 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import com.epages.restdocs.apispec.Schema;
 import com.prgrms.mukvengers.base.ControllerTest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
@@ -29,7 +29,6 @@ import com.prgrms.mukvengers.domain.crewmember.model.vo.Role;
 import com.prgrms.mukvengers.domain.review.dto.request.CreateLeaderReviewRequest;
 import com.prgrms.mukvengers.domain.review.dto.request.CreateMemberReviewRequest;
 import com.prgrms.mukvengers.domain.review.model.Review;
-import com.prgrms.mukvengers.domain.review.repository.ReviewRepository;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.utils.CrewMemberObjectProvider;
 import com.prgrms.mukvengers.utils.ReviewObjectProvider;
@@ -37,15 +36,15 @@ import com.prgrms.mukvengers.utils.UserObjectProvider;
 
 class ReviewControllerTest extends ControllerTest {
 
-	@Autowired
-	ReviewController reviewController;
+	public static final Schema CREATE_LEADER_REVIEW_REQUEST = new Schema("createReviewOfLeaderRequest");
+	public static final Schema CREATE_MEMBER_REVIEW_REQUEST = new Schema("createReviewOfMemberRequest");
+	public static final Schema SINGLE_REVIEW_DETAIL = new Schema("singleReviewDetail");
+	public static final Schema ALL_RECEIVED_REVIEW = new Schema("allReceivedReview");
+	public static final Schema ALL_WROTE_REVIEW = new Schema("allWroteReview");
 
-	@Autowired
-	ReviewRepository reviewRepository;
-
-	User reviewer;
-	User reviewee;
-	Crew crew;
+	private User reviewer;
+	private User reviewee;
+	private Crew crew;
 
 	@BeforeEach
 	void setCrew() {
@@ -81,13 +80,16 @@ class ReviewControllerTest extends ControllerTest {
 				resource(
 					builder()
 						.tag(REVIEW)
-						.summary("방장에 대한 리뷰 생성")
+						.summary("방장에 대한 리뷰 생성 API")
+						.requestSchema(CREATE_LEADER_REVIEW_REQUEST)
+						.description("방장에 대한 리뷰를 작성합니다.")
 						.requestFields(
 							fieldWithPath("leaderId").description("방장의 아이디"),
 							fieldWithPath("content").description("추가로 작성하고 싶은 내용"),
-							fieldWithPath("mannerPoint").description("방장에 대한 매너 온도"),
-							fieldWithPath("tastePoint").description("방장에 대한 맛잘알 점수"))
-						.responseFields()
+							fieldWithPath("mannerScore").description("방장에 대한 매너 온도"),
+							fieldWithPath("tasteScore").description("방장에 대한 맛잘알 점수"))
+						.responseHeaders(
+							headerWithName("Location").description("조회해볼 수 있는 요청 주소"))
 						.build()
 				)
 			));
@@ -120,12 +122,15 @@ class ReviewControllerTest extends ControllerTest {
 				resource(
 					builder()
 						.tag(REVIEW)
-						.summary("방장이 아닌 밥모임원에 대한 리뷰 생성")
+						.summary("밥모임원에 대한 리뷰 생성 API")
+						.requestSchema(CREATE_MEMBER_REVIEW_REQUEST)
+						.description("방장이 아닌 밥모임원에 대한 리뷰를 작성합니다.")
 						.requestFields(
 							fieldWithPath("revieweeId").description("리뷰이 아이디"),
 							fieldWithPath("content").description("추가로 작성하고 싶은 내용"),
-							fieldWithPath("mannerPoint").description("리뷰이에 대한 매너 온도"))
-						.responseFields()
+							fieldWithPath("mannerScore").description("리뷰이에 대한 매너 온도"))
+						.responseHeaders(
+							headerWithName("Location").description("조회해볼 수 있는 요청 주소"))
 						.build()
 				)
 			));
@@ -148,7 +153,9 @@ class ReviewControllerTest extends ControllerTest {
 				resource(
 					builder()
 						.tag(REVIEW)
-						.summary("리뷰 단건 조회")
+						.summary("리뷰 단건 조회 API")
+						.responseSchema(SINGLE_REVIEW_DETAIL)
+						.description("하나의 리뷰를 상세 조회 합니다.")
 						.responseFields(
 							fieldWithPath("data.reviewer.id").description("리뷰어의 아이디"),
 							fieldWithPath("data.reviewer.nickname").description("리뷰어의 닉네임"),
@@ -179,8 +186,8 @@ class ReviewControllerTest extends ControllerTest {
 
 							fieldWithPath("data.promiseTime").type(ARRAY).description("리뷰하고자 하는 밥모임 약속 시간"),
 							fieldWithPath("data.content").type(STRING).description("리뷰하고자 하는 밥모임 간단 한줄 리뷰 "),
-							fieldWithPath("data.mannerPoint").type(NUMBER).description("리뷰하고자 하는 밥모임 매너 온도"),
-							fieldWithPath("data.tastePoint").type(NUMBER).description("리뷰하고자 하는 밥모임 맛잘알 점수")
+							fieldWithPath("data.mannerScore").type(NUMBER).description("리뷰하고자 하는 밥모임 매너 온도"),
+							fieldWithPath("data.tasteScore").type(NUMBER).description("리뷰하고자 하는 밥모임 맛잘알 점수")
 						)
 						.build()
 				)
@@ -191,7 +198,7 @@ class ReviewControllerTest extends ControllerTest {
 	@DisplayName("[성공] 리뷰이 아이디가 사용자 아이디와 같다면 본인에게 작성된 모든 리뷰를 조회할 수 있다.")
 	void getAllReceivedReview() throws Exception {
 		// given
-		List<Review> reviews = ReviewObjectProvider.createReviews(reviewer, reviewee, crew);
+		List<Review> reviews = ReviewObjectProvider.createReviews(reviewee, reviewer, crew);
 
 		reviewRepository.saveAll(reviews);
 
@@ -214,9 +221,60 @@ class ReviewControllerTest extends ControllerTest {
 				resource(
 					builder()
 						.tag(REVIEW)
-						.summary("나에게 작성된 모든 리뷰를 조회합니다.")
+						.summary("나에 대한 모든 리뷰 조회 API")
+						.responseSchema(ALL_RECEIVED_REVIEW)
+						.description("나에게 작성된 모든 리뷰를 조회합니다.")
 						.responseFields(
-							fieldWithPath("data.content.[]").type(ARRAY).description("전체 리뷰"),
+							fieldWithPath("data.content.[].reviewer.id").type(NUMBER)
+								.description("리뷰를 작성하고자 하는 사용자의 아이디"),
+							fieldWithPath("data.content.[].reviewer.nickname").type(STRING)
+								.description("리뷰를 작성하고자 하는 사용자의 닉네임"),
+							fieldWithPath("data.content.[].reviewer.profileImgUrl").type(STRING)
+								.description("리뷰를 작성하고자 하는 사용자의 프로필 URL"),
+							fieldWithPath("data.content.[].reviewer.introduction").type(STRING)
+								.description("리뷰를 작성하고자 하는 사용자의 자기 소개"),
+							fieldWithPath("data.content.[].reviewer.leaderCount").type(NUMBER)
+								.description("리뷰를 작성하고자 하는 사용자의 리더 횟수"),
+							fieldWithPath("data.content.[].reviewer.crewCount").type(NUMBER)
+								.description("리뷰를 작성하고자 하는 사용자의 밥모임 참여 횟수"),
+							fieldWithPath("data.content.[].reviewer.tasteScore").type(NUMBER)
+								.description("리뷰를 작성하고자 하는 사용자의 맛잘알 점수"),
+							fieldWithPath("data.content.[].reviewer.mannerScore").type(NUMBER)
+								.description("리뷰를 작성하고자 하는 사용자의 매너 온도 점수"),
+
+							fieldWithPath("data.content.[].reviewee.id").type(NUMBER).description("리뷰 남기고자하는 사용자의 아이디"),
+							fieldWithPath("data.content.[].reviewee.nickname").type(STRING)
+								.description("리뷰 남기고자하는 사용자의 닉네임"),
+							fieldWithPath("data.content.[].reviewee.profileImgUrl").type(STRING)
+								.description("리뷰 남기고자하는 사용자의 프로필 URL"),
+							fieldWithPath("data.content.[].reviewee.introduction").type(STRING)
+								.description("리뷰 남기고자하는 사용자의 자기 소개"),
+							fieldWithPath("data.content.[].reviewee.leaderCount").type(NUMBER)
+								.description("리뷰 남기고자하는 사용자의 리더 횟수"),
+							fieldWithPath("data.content.[].reviewee.crewCount").type(NUMBER)
+								.description("리뷰 남기고자하는 사용자의 밥모임 참여 횟수"),
+							fieldWithPath("data.content.[].reviewee.tasteScore").type(NUMBER)
+								.description("리뷰 남기고자하는 사용자의 맛잘알 점수"),
+							fieldWithPath("data.content.[].reviewee.mannerScore").type(NUMBER)
+								.description("리뷰 남기고자하는 사용자의 매너 온도 점수"),
+
+							fieldWithPath("data.content.[].crew.id").type(NUMBER).description("리뷰하고자하는 밥 모임 아이디"),
+							fieldWithPath("data.content.[].crew.name").type(STRING).description("리뷰하고자하는 밥 모임 이름"),
+							fieldWithPath("data.content.[].crew.capacity").type(NUMBER).description("리뷰하고자하는 밥 모임 정원"),
+							fieldWithPath("data.content.[].crew.promiseTime").type(ARRAY).description("리뷰하고자하는 약속 시간"),
+							fieldWithPath("data.content.[].crew.status").type(STRING).description("리뷰하고자하는 밥 모임 상태"),
+							fieldWithPath("data.content.[].crew.currentMember").description("리뷰하고자하는 밥 모임 현재 인원 수"),
+							fieldWithPath("data.content.[].crew.content").type(STRING).description("리뷰하고자하는 밥 모임 내용"),
+							fieldWithPath("data.content.[].crew.category").type(STRING)
+								.description("리뷰하고자하는 밥 모임 카테고리"),
+
+							fieldWithPath("data.content.[].promiseTime").type(ARRAY).description("리뷰하고자 하는 밥 모임 약속 시간"),
+							fieldWithPath("data.content.[].content").type(STRING).description("리뷰하고자 하는 리뷰이에 대한 설명"),
+							fieldWithPath("data.content.[].mannerScore").type(NUMBER)
+								.description("리뷰하고자 하는 리뷰이에 대한 매너 점수"),
+							fieldWithPath("data.content.[].tasteScore").type(NUMBER)
+								.description("리뷰하고자 하는 리뷰이에 대한 맛잘알 점수"),
+
 							fieldWithPath("data.pageable.sort.empty").type(BOOLEAN).description("빈 페이지 여부"),
 							fieldWithPath("data.pageable.sort.sorted").type(BOOLEAN).description("페이지 정렬 여부"),
 							fieldWithPath("data.pageable.sort.unsorted").type(BOOLEAN)
@@ -270,7 +328,9 @@ class ReviewControllerTest extends ControllerTest {
 				resource(
 					builder()
 						.tag(REVIEW)
-						.summary("내가 작성한 한든 리뷰를 조회합니다.")
+						.summary("내가 작성한 모든 리뷰 조회 API")
+						.responseSchema(ALL_WROTE_REVIEW)
+						.description("다른 밥모임원에게 작성한 모든 리뷰를 조회합니다.")
 						.responseFields(
 							fieldWithPath("data.content.[].reviewer.id").type(NUMBER)
 								.description("리뷰를 작성하고자 하는 사용자의 아이디"),
@@ -317,9 +377,9 @@ class ReviewControllerTest extends ControllerTest {
 
 							fieldWithPath("data.content.[].promiseTime").type(ARRAY).description("리뷰하고자 하는 밥 모임 약속 시간"),
 							fieldWithPath("data.content.[].content").type(STRING).description("리뷰하고자 하는 리뷰이에 대한 설명"),
-							fieldWithPath("data.content.[].mannerPoint").type(NUMBER)
+							fieldWithPath("data.content.[].mannerScore").type(NUMBER)
 								.description("리뷰하고자 하는 리뷰이에 대한 매너 점수"),
-							fieldWithPath("data.content.[].tastePoint").type(NUMBER)
+							fieldWithPath("data.content.[].tasteScore").type(NUMBER)
 								.description("리뷰하고자 하는 리뷰이에 대한 맛잘알 점수"),
 
 							fieldWithPath("data.pageable.sort.empty").type(BOOLEAN).description("빈 페이지 여부"),

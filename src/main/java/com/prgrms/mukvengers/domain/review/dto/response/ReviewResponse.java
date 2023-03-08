@@ -10,7 +10,7 @@ public record ReviewResponse(UserProfileResponse reviewer,
 							 CrewResponse crew,
 							 LocalDateTime promiseTime,
 							 String content,
-							 Integer mannerPoint,
-							 Integer tastePoint
+							 Integer mannerScore,
+							 Integer tasteScore
 							 ) {
 }

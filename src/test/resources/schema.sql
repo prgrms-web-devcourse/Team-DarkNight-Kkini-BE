@@ -39,7 +39,7 @@ CREATE TABLE store
     place_name        varchar(255) NULL,
     categories        varchar(255) NULL,
     road_address_name varchar(255) NULL,
-    photo_urls        TEXT NULL,
+    photo_urls        TEXT         NULL,
     kakao_place_url   varchar(255) NULL,
     phone_number      varchar(255) NULL,
     created_at        dateTime     NOT NULL DEFAULT now(),
@@ -81,19 +81,19 @@ CREATE TABLE crew_member
 CREATE TABLE review
 (
     id           bigint       NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    reviewer     bigint       NOT NULL,
-    reviewee     bigint       NOT NULL,
+    reviewer_id  bigint       NOT NULL,
+    reviewee_id  bigint       NOT NULL,
     crew_id      bigint       NOT NULL,
     promise_time dateTime     NOT NULL,
     content      varchar(255) NULL,
-    manner_point int          NOT NULL,
-    taste_point  int          NOT NULL DEFAULT 0,
+    manner_score int          NOT NULL,
+    taste_score  int          NOT NULL DEFAULT 0,
     created_at   dateTime     NOT NULL DEFAULT now(),
     updated_at   dateTime     NOT NULL DEFAULT now(),
     deleted      boolean      NOT NULL DEFAULT false,
 
-    FOREIGN KEY fk_review_reviewer (reviewer) REFERENCES users (id),
-    FOREIGN KEY fk_review_reviewee (reviewee) REFERENCES users (id),
+    FOREIGN KEY fk_review_reviewer (reviewer_id) REFERENCES users (id),
+    FOREIGN KEY fk_review_reviewee (reviewee_id) REFERENCES users (id),
     FOREIGN KEY fk_review_crew_id (crew_id) REFERENCES crew (id)
 );
 
