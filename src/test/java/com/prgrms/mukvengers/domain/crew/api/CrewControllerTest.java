@@ -34,6 +34,7 @@ import com.prgrms.mukvengers.utils.CrewObjectProvider;
 class CrewControllerTest extends ControllerTest {
 
 	public static final Schema CREATE_CREW_REQUEST = new Schema("createCrewRequest");
+	public static final Schema CREATE_CREW_RESPONSE = new Schema("createCrewResponse");
 	public static final Schema FIND_BY_CREW_ID_CREW_REQUEST = new Schema("findByCrewIdCrewRequest");
 	public static final Schema CREW_PAGE_RESPONSE = new Schema("crewPageResponse");
 	public static final Schema FIND_BY_USER_LOCATION_CREW_REQUEST = new Schema("findByUserLocationCrewRequest");
@@ -64,6 +65,7 @@ class CrewControllerTest extends ControllerTest {
 						.summary("모임 생성 API")
 						.description("모임을 생성합니다. 생성한 유저는 모임원이 되고 방장 역할을 가집니다.")
 						.requestSchema(CREATE_CREW_REQUEST)
+						.responseSchema(CREATE_CREW_RESPONSE)
 						.requestFields(
 							fieldWithPath("createStoreRequest.latitude").type(NUMBER).description("위도"),
 							fieldWithPath("createStoreRequest.longitude").type(NUMBER).description("경도"),
@@ -81,6 +83,9 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("category").type(STRING).description("밥 모임 카테고리"))
 						.responseHeaders(
 							headerWithName("Location").description("조회해볼 수 있는 요청 주소"))
+						.responseFields(
+							fieldWithPath("id").type(NUMBER).description("밥 모임 아이디")
+						)
 						.build()
 				)
 			));
