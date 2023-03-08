@@ -15,10 +15,10 @@ public interface CrewMemberRepository extends JpaRepository<CrewMember, Long> {
 	@Query("""
 		SELECT cm
 		FROM CrewMember cm
-		WHERE cm.crew.id= :crewId AND cm.userId= :revieweeId
+		WHERE cm.crew.id= :crewId AND cm.userId= :userId
 		""")
 	Optional<CrewMember> findCrewMemberByCrewIdAndUserId(@Param(value = "crewId") Long crewId,
-		@Param(value = "revieweeId") Long revieweeId);
+		@Param(value = "userId") Long userId);
 
 	@Query(value = """
 		SELECT cm.crew
