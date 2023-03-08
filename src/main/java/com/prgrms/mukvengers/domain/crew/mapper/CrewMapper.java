@@ -15,6 +15,7 @@ import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crewmember.dto.response.CrewMemberResponse;
+import com.prgrms.mukvengers.domain.store.dto.response.StoreResponse;
 import com.prgrms.mukvengers.domain.store.model.Store;
 
 @Mapper(componentModel = "spring", unmappedSourcePolicy = IGNORE)
@@ -29,9 +30,11 @@ public interface CrewMapper {
 	@Mapping(target = "promiseTime", source = "crew.promiseTime")
 	CrewResponse toCrewResponse(Crew crew, Integer currentMember);
 
+	@Mapping(target = "response", source = "storeResponse")
 	@Mapping(target = "promiseTime", source = "crew.promiseTime")
-	CrewDetailResponse toCrewAndCrewMemberResponse(Crew crew, Integer currentMember,
-		List<CrewMemberResponse> members);
+	@Mapping(target = "id", source = "crew.id")
+	CrewDetailResponse toCrewDetailResponse(Crew crew, Integer currentMember,
+		List<CrewMemberResponse> members, StoreResponse storeResponse);
 
 	@Mapping(target = "latitude", source = "location", qualifiedByName = "latitudeMethod")
 	@Mapping(target = "longitude", source = "location", qualifiedByName = "longitudeMethod")
@@ -39,12 +42,12 @@ public interface CrewMapper {
 
 	@Named("latitudeMethod")
 	default Double mapLatitude(Point location) {
-		return location.getX();
+		return location.getY();
 	}
 
 	@Named("longitudeMethod")
 	default Double mapLongitude(Point location) {
-		return location.getY();
+		return location.getX();
 	}
 }
 
