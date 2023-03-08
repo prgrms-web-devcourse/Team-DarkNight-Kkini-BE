@@ -28,7 +28,6 @@ import com.prgrms.mukvengers.domain.crew.dto.response.CrewDetailResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponses;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
-import com.prgrms.mukvengers.domain.crew.facade.CrewFacadeService;
 import com.prgrms.mukvengers.domain.crew.service.CrewService;
 import com.prgrms.mukvengers.global.common.dto.ApiResponse;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
@@ -42,7 +41,6 @@ import lombok.RequiredArgsConstructor;
 public class CrewController {
 
 	private final CrewService crewService;
-	private final CrewFacadeService crewFacadeService;
 
 	/**
 	 * <pre>
@@ -58,7 +56,7 @@ public class CrewController {
 		@RequestBody @Valid CreateCrewRequest createCrewRequest,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		IdResponse idResponse = crewFacadeService.create(createCrewRequest, user.id());
+		IdResponse idResponse = crewService.create(createCrewRequest, user.id());
 		URI location = UriComponentsBuilder.fromUriString("/api/v1/crews/" + idResponse.id()).build().toUri();
 		return ResponseEntity.created(location).body(idResponse);
 	}
