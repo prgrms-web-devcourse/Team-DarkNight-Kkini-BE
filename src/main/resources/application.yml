@@ -11,7 +11,7 @@ server:
 spring:
   profiles:
     active:
-      - prod
+      - ${ACTIVE_PROFILE}
     include:
       - db
       - security
