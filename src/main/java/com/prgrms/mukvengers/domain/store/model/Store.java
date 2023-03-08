@@ -68,7 +68,7 @@ public class Store extends BaseEntity {
 		this.placeName = validatePlaceName(placeName);
 		this.categories = validateCategories(categories);
 		this.roadAddressName = validateRoadAddressName(roadAddressName);
-		this.photoUrls = validatePhotoUrls(photoUrls);
+		this.photoUrls = photoUrls;
 		this.kakaoPlaceUrl = validateKakaoPlaceUrl(kakaoPlaceUrl);
 		this.phoneNumber = phoneNumber;
 	}
@@ -108,11 +108,6 @@ public class Store extends BaseEntity {
 	private String validateRoadAddressName(String roadAddressName) {
 		checkText(roadAddressName, "유효하지 않는 가게 도로명 주소입니다.");
 		return roadAddressName;
-	}
-
-	private String validatePhotoUrls(String photoUrls) {
-		checkText(photoUrls, "유효하지 않는 가게 사진 URL입니다.");
-		return photoUrls;
 	}
 
 	private String validateKakaoPlaceUrl(String kakaoPlaceUrl) {

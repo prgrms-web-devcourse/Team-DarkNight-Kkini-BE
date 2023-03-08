@@ -55,7 +55,7 @@ public class CrewServiceImpl implements CrewService {
 			.orElseThrow(() -> new UserNotFoundException(userId));
 
 		Store store = storeRepository.findByPlaceId(createCrewRequest.createStoreRequest().placeId())
-			.orElse(storeRepository.save(storeMapper.toStore(createCrewRequest.createStoreRequest())));
+			.orElseGet(() -> storeRepository.save(storeMapper.toStore(createCrewRequest.createStoreRequest())));
 
 		Crew crew = crewMapper.toCrew(createCrewRequest, store);
 

@@ -10,7 +10,7 @@ public record CreateStoreRequest(
 	@NotBlank String placeName,
 	@NotBlank String categories,
 	@NotBlank String roadAddressName,
-	@NotBlank String photoUrls,
+	String photoUrls,
 	@NotBlank String kakaoPlaceUrl,
 	String phoneNumber
 ) {
