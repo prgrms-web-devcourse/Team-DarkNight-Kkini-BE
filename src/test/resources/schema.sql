@@ -67,13 +67,13 @@ CREATE TABLE crew
 
 CREATE TABLE crew_member
 (
-    id         bigint      NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    user_id    bigint      NOT NULL,
-    crew_id    bigint      NOT NULL,
-    role       varchar(50) NOT NULL,
-    created_at dateTime    NOT NULL DEFAULT now(),
-    updated_at dateTime    NOT NULL DEFAULT now(),
-    deleted    boolean     NOT NULL DEFAULT false,
+    id               bigint      NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    user_id          bigint      NOT NULL,
+    crew_id          bigint      NOT NULL,
+    crew_member_role varchar(50) NOT NULL,
+    created_at       dateTime    NOT NULL DEFAULT now(),
+    updated_at       dateTime    NOT NULL DEFAULT now(),
+    deleted          boolean     NOT NULL DEFAULT false,
 
     FOREIGN KEY fk_crew_member_crew_id (crew_id) REFERENCES crew (id)
 );

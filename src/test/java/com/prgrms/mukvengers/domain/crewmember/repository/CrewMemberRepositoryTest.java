@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import com.prgrms.mukvengers.base.RepositoryTest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
-import com.prgrms.mukvengers.domain.crewmember.model.vo.Role;
+import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.domain.user.model.User;
 
 class CrewMemberRepositoryTest extends RepositoryTest {
@@ -35,7 +35,7 @@ class CrewMemberRepositoryTest extends RepositoryTest {
 	@DisplayName("[성공] 해당 리더는 밥모임에 참여한 사용자이어야한다.")
 	void findCrewMemberByCrewIdAndUserIdOfLeader_success() {
 		// given
-		CrewMember crewMemberOfLeader = createCrewMember(reviewee.getId(), crew, Role.LEADER);
+		CrewMember crewMemberOfLeader = createCrewMember(reviewee.getId(), crew, CrewMemberRole.LEADER);
 		CrewMember leader = crewMemberRepository.save(crewMemberOfLeader);
 		crew.addCrewMember(leader);
 
@@ -45,14 +45,14 @@ class CrewMemberRepositoryTest extends RepositoryTest {
 
 		// then
 		assertThat(result).isPresent();
-		assertThat(result.get().getRole()).isEqualTo(Role.LEADER);
+		assertThat(result.get().getCrewMemberRole()).isEqualTo(CrewMemberRole.LEADER);
 	}
 
 	@Test
 	@DisplayName("[성공] 방장이 아닌 해당 멤버는 밥모임에 참여한 사용자이어야한다")
 	void findCrewMemberByCrewIdAndUserIdOfMember_success() {
 		// given
-		CrewMember crewMemberOfMember = createCrewMember(reviewee.getId(), crew, Role.MEMBER);
+		CrewMember crewMemberOfMember = createCrewMember(reviewee.getId(), crew, CrewMemberRole.MEMBER);
 		CrewMember member = crewMemberRepository.save(crewMemberOfMember);
 		crew.addCrewMember(member);
 
@@ -62,7 +62,7 @@ class CrewMemberRepositoryTest extends RepositoryTest {
 
 		// then
 		assertThat(result).isPresent();
-		assertThat(result.get().getRole()).isEqualTo(Role.MEMBER);
+		assertThat(result.get().getCrewMemberRole()).isEqualTo(CrewMemberRole.MEMBER);
 	}
 
 	@Test
@@ -70,7 +70,7 @@ class CrewMemberRepositoryTest extends RepositoryTest {
 	void findCrewMemberByCrewIdAndUserId_success() {
 		// given
 		Crew otherCrew = crewRepository.save(createCrew(savedStore, RECRUITING));
-		CrewMember crewMemberOfMember = createCrewMember(reviewee.getId(), otherCrew, Role.MEMBER);
+		CrewMember crewMemberOfMember = createCrewMember(reviewee.getId(), otherCrew, CrewMemberRole.MEMBER);
 		CrewMember member = crewMemberRepository.save(crewMemberOfMember);
 		otherCrew.addCrewMember(member);
 

@@ -18,7 +18,8 @@ import org.springframework.data.domain.Pageable;
 import com.prgrms.mukvengers.base.ServiceTest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
-import com.prgrms.mukvengers.domain.crewmember.model.vo.Role;
+import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
+import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
 import com.prgrms.mukvengers.domain.review.dto.request.CreateLeaderReviewRequest;
 import com.prgrms.mukvengers.domain.review.dto.request.CreateMemberReviewRequest;
 import com.prgrms.mukvengers.domain.review.dto.response.ReviewResponse;
@@ -45,9 +46,9 @@ class ReviewServiceImplTest extends ServiceTest {
 	void createLeaderReviewTest_success() {
 		// given
 		CrewMember createMemberOfLeader = CrewMemberObjectProvider.createCrewMember(reviewee.getId(), crew,
-			Role.LEADER);
+			CrewMemberRole.LEADER);
 		CrewMember createMemberOfMember = CrewMemberObjectProvider.createCrewMember(reviewer.getId(), crew,
-			Role.MEMBER);
+			CrewMemberRole.MEMBER);
 
 		CrewMember leader = crewMemberRepository.save(createMemberOfLeader);
 		CrewMember member = crewMemberRepository.save(createMemberOfMember);
@@ -71,9 +72,9 @@ class ReviewServiceImplTest extends ServiceTest {
 	void createMemberReviewTest_success() {
 		// given
 		CrewMember createMemberOfReviewer = CrewMemberObjectProvider.createCrewMember(reviewer.getId(), crew,
-			Role.MEMBER);
+			CrewMemberRole.MEMBER);
 		CrewMember createMemberOfReviewee = CrewMemberObjectProvider.createCrewMember(reviewee.getId(), crew,
-			Role.MEMBER);
+			CrewMemberRole.MEMBER);
 
 		CrewMember crewMemberOfReviewer = crewMemberRepository.save(createMemberOfReviewer);
 		CrewMember crewMemberOfReviewee = crewMemberRepository.save(createMemberOfReviewee);

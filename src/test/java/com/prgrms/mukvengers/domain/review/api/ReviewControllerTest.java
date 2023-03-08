@@ -25,7 +25,7 @@ import com.prgrms.mukvengers.base.ControllerTest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
-import com.prgrms.mukvengers.domain.crewmember.model.vo.Role;
+import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.domain.review.dto.request.CreateLeaderReviewRequest;
 import com.prgrms.mukvengers.domain.review.dto.request.CreateMemberReviewRequest;
 import com.prgrms.mukvengers.domain.review.model.Review;
@@ -58,11 +58,11 @@ class ReviewControllerTest extends ControllerTest {
 	void createReviewOfLeader_success() throws Exception {
 		// given
 		CrewMember crewMemberOfLeader = crewMemberRepository.save(
-			CrewMemberObjectProvider.createCrewMember(reviewee.getId(), crew, Role.LEADER));
+			CrewMemberObjectProvider.createCrewMember(reviewee.getId(), crew, CrewMemberRole.LEADER));
 		crew.addCrewMember(crewMemberOfLeader);
 
 		CrewMember crewMemberOfMember = crewMemberRepository.save(
-			CrewMemberObjectProvider.createCrewMember(reviewer.getId(), crew, Role.MEMBER));
+			CrewMemberObjectProvider.createCrewMember(reviewer.getId(), crew, CrewMemberRole.MEMBER));
 		crew.addCrewMember(crewMemberOfMember);
 
 		CreateLeaderReviewRequest leaderReviewRequest = ReviewObjectProvider.createLeaderReviewRequest(
@@ -100,11 +100,11 @@ class ReviewControllerTest extends ControllerTest {
 	void createReviewOfMember_success() throws Exception {
 		// given
 		CrewMember crewMemberOfMember1 = crewMemberRepository.save(
-			CrewMemberObjectProvider.createCrewMember(reviewee.getId(), crew, Role.MEMBER));
+			CrewMemberObjectProvider.createCrewMember(reviewee.getId(), crew, CrewMemberRole.MEMBER));
 		crew.addCrewMember(crewMemberOfMember1);
 
 		CrewMember crewMemberOfMember2 = crewMemberRepository.save(
-			CrewMemberObjectProvider.createCrewMember(reviewer.getId(), crew, Role.MEMBER));
+			CrewMemberObjectProvider.createCrewMember(reviewer.getId(), crew, CrewMemberRole.MEMBER));
 		crew.addCrewMember(crewMemberOfMember2);
 
 		CreateMemberReviewRequest memberReviewRequest = ReviewObjectProvider.createMemberReviewRequest(

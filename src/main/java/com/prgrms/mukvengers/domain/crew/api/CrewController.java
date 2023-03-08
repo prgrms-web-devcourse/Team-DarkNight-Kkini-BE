@@ -24,10 +24,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.SearchCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
+import com.prgrms.mukvengers.domain.crew.dto.response.CrewDetailResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
-import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
-import com.prgrms.mukvengers.domain.crew.dto.response.MyCrewResponse;
 import com.prgrms.mukvengers.domain.crew.facade.CrewFacadeService;
 import com.prgrms.mukvengers.domain.crew.service.CrewService;
 import com.prgrms.mukvengers.global.common.dto.ApiResponse;
@@ -65,26 +64,33 @@ public class CrewController {
 
 	/**
 	 * <pre>
-	 *     밥 모임 조회
+	 *     밥 모임 단건 조회
 	 * </pre>
 	 * @param crewId 밥 모임 아이디
 	 * @return status : 200, body : 조회된 밥 모임 데이터 DTO
 	 */
 	@GetMapping(value = "/{crewId}", produces = APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponse<CrewResponse>> getById
+	public ResponseEntity<ApiResponse<CrewDetailResponse>> getById
 	(
 		@PathVariable Long crewId,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		CrewResponse response = crewService.getById(crewId);
+		CrewDetailResponse response = crewService.getById(crewId);
 		return ResponseEntity.ok().body(new ApiResponse<>(response));
 	}
 
+	/**
+	 * <pre>
+	 *     사용자가 참여한 모든 모임 조회
+	 * </pre>
+	 * @param user 사용자 정보
+	 * @return status : 200, body : 조회된 모임 데이터
+	 */
 	@GetMapping(value = "/me", produces = APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponse<MyCrewResponse>> getByUserId(
+	public ResponseEntity<ApiResponse<CrewResponses>> getByUserId(
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		MyCrewResponse responses = crewService.getByUserId(user.id());
+		CrewResponses responses = crewService.getByUserId(user.id());
 		return ResponseEntity.ok().body(new ApiResponse<>(responses));
 	}
 

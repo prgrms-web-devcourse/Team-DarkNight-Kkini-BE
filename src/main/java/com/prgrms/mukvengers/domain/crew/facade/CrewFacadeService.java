@@ -1,6 +1,6 @@
 package com.prgrms.mukvengers.domain.crew.facade;
 
-import static com.prgrms.mukvengers.domain.crewmember.model.vo.Role.*;
+import static com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole.*;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

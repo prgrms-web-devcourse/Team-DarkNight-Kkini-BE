@@ -20,13 +20,12 @@ import com.prgrms.mukvengers.base.ServiceTest;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.SearchCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
+import com.prgrms.mukvengers.domain.crew.dto.response.CrewDetailResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
-import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
-import com.prgrms.mukvengers.domain.crew.dto.response.MyCrewResponse;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
-import com.prgrms.mukvengers.domain.crewmember.model.vo.Role;
+import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
 import com.prgrms.mukvengers.utils.CrewObjectProvider;
 
@@ -69,13 +68,12 @@ class CrewServiceImplTest extends ServiceTest {
 		crewRepository.saveAll(crews);
 
 		crews.forEach(crew -> {
-			CrewMember crewMember = createCrewMember(savedUserId, crew, Role.MEMBER);
+			CrewMember crewMember = createCrewMember(savedUserId, crew, CrewMemberRole.MEMBER);
 			crewMemberRepository.save(crewMember);
 		});
 
-		MyCrewResponse responses = crewService.getByUserId(savedUserId);
+		CrewResponses responses = crewService.getByUserId(savedUserId);
 		assertThat(responses.responses()).hasSize(crews.size());
-		assertThat(responses.profileImgUrl()).isEqualTo(savedUser.getProfileImgUrl());
 	}
 
 	@Test
@@ -88,7 +86,7 @@ class CrewServiceImplTest extends ServiceTest {
 		crewRepository.save(crew);
 
 		//when
-		CrewResponse response = crewService.getById(crew.getId());
+		CrewDetailResponse response = crewService.getById(crew.getId());
 
 		//then
 		assertThat(response)
@@ -118,7 +116,7 @@ class CrewServiceImplTest extends ServiceTest {
 		CrewPageResponse crewSliceResponse = crewService.getByPlaceId(savedStore.getPlaceId(), pageable);
 
 		//then
-		Slice<CrewResponse> responses = crewSliceResponse.responses();
+		Slice<CrewDetailResponse> responses = crewSliceResponse.responses();
 		assertThat(responses).hasSize(size);
 
 	}
@@ -142,7 +140,7 @@ class CrewServiceImplTest extends ServiceTest {
 		CrewResponses crewResponses = crewService.getByLocation(distanceRequest);
 
 		//then
-		List<CrewResponse> responses = crewResponses.responses();
+		List<CrewDetailResponse> responses = crewResponses.responses();
 		assertThat(responses).hasSize(1);
 
 	}

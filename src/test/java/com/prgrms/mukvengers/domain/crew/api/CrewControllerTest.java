@@ -28,7 +28,8 @@ import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
-import com.prgrms.mukvengers.domain.crewmember.model.vo.Role;
+import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
+import com.prgrms.mukvengers.utils.CrewMemberObjectProvider;
 import com.prgrms.mukvengers.utils.CrewObjectProvider;
 
 class CrewControllerTest extends ControllerTest {
@@ -100,6 +101,10 @@ class CrewControllerTest extends ControllerTest {
 
 		crewRepository.save(crew);
 
+		CrewMember crewMember = CrewMemberObjectProvider.createCrewMember(savedUserId, crew, CrewMemberRole.LEADER);
+
+		crewMemberRepository.save(crewMember);
+
 		Long crewId = crew.getId();
 
 		mockMvc.perform(get("/api/v1/crews/{crewId}", crewId)
@@ -126,7 +131,11 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("data.promiseTime").type(ARRAY).description("약속 시간"),
 							fieldWithPath("data.status").type(STRING).description("밥 모임 상태"),
 							fieldWithPath("data.content").type(STRING).description("밥 모임 내용"),
-							fieldWithPath("data.category").type(STRING).description("밥 모임 카테고리"))
+							fieldWithPath("data.category").type(STRING).description("밥 모임 카테고리"),
+							fieldWithPath("data.members.[].userId").type(NUMBER).description("유저 ID"),
+							fieldWithPath("data.members.[].nickname").type(STRING).description("닉네임"),
+							fieldWithPath("data.members.[].profileImgUrl").type(STRING).description("프로필 이미지"),
+							fieldWithPath("data.members.[].crewMemberRole").type(STRING).description("사용자의 권한"))
 						.build()
 				)
 			));
@@ -140,7 +149,7 @@ class CrewControllerTest extends ControllerTest {
 		crewRepository.saveAll(crews);
 
 		crews.forEach(crew -> {
-			CrewMember crewMember = createCrewMember(savedUserId, crew, Role.MEMBER);
+			CrewMember crewMember = createCrewMember(savedUserId, crew, CrewMemberRole.MEMBER);
 			crewMemberRepository.save(crewMember);
 		});
 
@@ -161,7 +170,6 @@ class CrewControllerTest extends ControllerTest {
 						.requestSchema(FIND_BY_USER_ID_CREW_REQUEST)
 						.responseSchema(CREW_RESPONSE)
 						.responseFields(
-							fieldWithPath("data.profileImgUrl").type(STRING).description("사용자의 프로필 이미지"),
 							fieldWithPath("data.responses.[].currentMember").type(NUMBER).description("밥 모임 현재 인원"),
 							fieldWithPath("data.responses.[].id").type(NUMBER).description("밥 모임 아이디"),
 							fieldWithPath("data.responses.[].name").type(STRING).description("밥 모임 이름"),
@@ -169,7 +177,13 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("data.responses.[].promiseTime").type(ARRAY).description("약속 시간"),
 							fieldWithPath("data.responses.[].status").type(STRING).description("밥 모임 상태"),
 							fieldWithPath("data.responses.[].content").type(STRING).description("밥 모임 내용"),
-							fieldWithPath("data.responses.[].category").type(STRING).description("밥 모임 카테고리"))
+							fieldWithPath("data.responses.[].category").type(STRING).description("밥 모임 카테고리"),
+							fieldWithPath("data.responses.[].members.[].userId").type(NUMBER).description("유저 ID"),
+							fieldWithPath("data.responses.[].members.[].nickname").type(STRING).description("닉네임"),
+							fieldWithPath("data.responses.[].members.[].profileImgUrl").type(STRING)
+								.description("프로필 이미지"),
+							fieldWithPath("data.responses.[].members.[].crewMemberRole").type(STRING)
+								.description("사용자의 권한"))
 						.build()
 				)
 			));
@@ -182,6 +196,11 @@ class CrewControllerTest extends ControllerTest {
 		List<Crew> crews = CrewObjectProvider.createCrews(savedStore);
 
 		crewRepository.saveAll(crews);
+
+		crews.forEach(crew -> {
+			CrewMember crewMember = createCrewMember(savedUserId, crew, CrewMemberRole.MEMBER);
+			crewMemberRepository.save(crewMember);
+		});
 
 		Integer page = 0;
 
@@ -220,6 +239,14 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("data.responses.content.[]currentMember").type(NUMBER)
 								.description("밥 모임 현재 인원"),
 							fieldWithPath("data.responses.content.[].category").type(STRING).description("밥 모임 카테고리"),
+							fieldWithPath("data.responses.content.[].members.[].userId").type(NUMBER)
+								.description("유저 ID"),
+							fieldWithPath("data.responses.content.[].members.[].nickname").type(STRING)
+								.description("닉네임"),
+							fieldWithPath("data.responses.content.[].members.[].profileImgUrl").type(STRING)
+								.description("프로필 이미지"),
+							fieldWithPath("data.responses.content.[].members.[].crewMemberRole").type(STRING)
+								.description("사용자의 권한"),
 							fieldWithPath("data.responses.pageable.sort.empty").type(BOOLEAN).description("빈 페이지 여부"),
 							fieldWithPath("data.responses.pageable.sort.sorted").type(BOOLEAN).description("페이지 정렬 여부"),
 							fieldWithPath("data.responses.pageable.sort.unsorted").type(BOOLEAN)
@@ -254,6 +281,11 @@ class CrewControllerTest extends ControllerTest {
 		List<Crew> crews = CrewObjectProvider.createCrews(savedStore);
 
 		crewRepository.saveAll(crews);
+
+		crews.forEach(crew -> {
+			CrewMember crewMember = createCrewMember(savedUserId, crew, CrewMemberRole.MEMBER);
+			crewMemberRepository.save(crewMember);
+		});
 
 		String latitude = "35.75413579";
 		String longitude = "-147.4654321321";
@@ -291,7 +323,14 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("data.responses.[].promiseTime").type(ARRAY).description("약속 시간"),
 							fieldWithPath("data.responses.[].status").type(STRING).description("밥 모임 상태"),
 							fieldWithPath("data.responses.[].content").type(STRING).description("밥 모임 내용"),
-							fieldWithPath("data.responses.[].category").type(STRING).description("밥 모임 카테고리"))
+							fieldWithPath("data.responses.[].category").type(STRING).description("밥 모임 카테고리"),
+							fieldWithPath("data.responses.[].members.[].userId").type(NUMBER).description("유저 ID"),
+							fieldWithPath("data.responses.[].members.[].nickname").type(STRING).description("닉네임"),
+							fieldWithPath("data.responses.[].members.[].profileImgUrl").type(STRING)
+								.description("프로필 이미지"),
+							fieldWithPath("data.responses.[].members.[].crewMemberRole").type(STRING)
+								.description("사용자의 권한"))
+
 						.build()
 				)
 			));

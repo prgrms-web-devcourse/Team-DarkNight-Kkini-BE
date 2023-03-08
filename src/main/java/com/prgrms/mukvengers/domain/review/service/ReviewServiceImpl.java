@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.prgrms.mukvengers.domain.crew.exception.CrewNotFoundException;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
-import com.prgrms.mukvengers.domain.crewmember.model.vo.Role;
+import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
 import com.prgrms.mukvengers.domain.review.dto.request.CreateLeaderReviewRequest;
 import com.prgrms.mukvengers.domain.review.dto.request.CreateMemberReviewRequest;
@@ -53,11 +53,11 @@ public class ReviewServiceImpl implements ReviewService {
 			.orElseThrow(() -> new CrewNotFoundException(crewId));
 
 		crewMemberRepository.findCrewMemberByCrewIdAndUserId(crewId, reviewee.getId())
-			.filter(crewMember -> crewMember.getRole() == Role.LEADER)
+			.filter(crewMember -> crewMember.getCrewMemberRole() == CrewMemberRole.LEADER)
 			.orElseThrow(() -> new LeaderNotFoundException(reviewee.getId()));
 
 		crewMemberRepository.findCrewMemberByCrewIdAndUserId(crewId, reviewer.getId())
-			.filter(crewMember -> crewMember.getRole() == Role.MEMBER)
+			.filter(crewMember -> crewMember.getCrewMemberRole() == CrewMemberRole.MEMBER)
 			.orElseThrow(() -> new MemberNotFoundException(reviewer.getId()));
 
 		Review review = reviewMapper.toReview(leaderReviewRequest, reviewer, reviewee, crew);
@@ -81,11 +81,11 @@ public class ReviewServiceImpl implements ReviewService {
 			.orElseThrow(() -> new CrewNotFoundException(crewId));
 
 		crewMemberRepository.findCrewMemberByCrewIdAndUserId(crewId, reviewee.getId())
-			.filter(crewMember -> crewMember.getRole() == Role.MEMBER)
+			.filter(crewMember -> crewMember.getCrewMemberRole() == CrewMemberRole.MEMBER)
 			.orElseThrow(() -> new MemberNotFoundException(reviewee.getId()));
 
 		crewMemberRepository.findCrewMemberByCrewIdAndUserId(crewId, reviewer.getId())
-			.filter(crewMember -> crewMember.getRole() == Role.MEMBER)
+			.filter(crewMember -> crewMember.getCrewMemberRole() == CrewMemberRole.MEMBER)
 			.orElseThrow(() -> new MemberNotFoundException(reviewee.getId()));
 
 		Review review = reviewMapper.toReview(memberReviewRequest, reviewer, reviewee, crew);

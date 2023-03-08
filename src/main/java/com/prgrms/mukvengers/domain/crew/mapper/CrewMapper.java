@@ -2,12 +2,16 @@ package com.prgrms.mukvengers.domain.crew.mapper;
 
 import static org.mapstruct.ReportingPolicy.*;
 
+import java.util.List;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
+import com.prgrms.mukvengers.domain.crew.dto.response.CrewDetailResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
+import com.prgrms.mukvengers.domain.crewmember.dto.response.CrewMemberResponse;
 import com.prgrms.mukvengers.domain.store.model.Store;
 
 @Mapper(componentModel = "spring", unmappedSourcePolicy = IGNORE)
@@ -21,6 +25,10 @@ public interface CrewMapper {
 
 	@Mapping(target = "promiseTime", source = "crew.promiseTime")
 	CrewResponse toCrewResponse(Crew crew, Integer currentMember);
+
+	@Mapping(target = "promiseTime", source = "crew.promiseTime")
+	CrewDetailResponse toCrewAndCrewMemberResponse(Crew crew, Integer currentMember,
+		List<CrewMemberResponse> members);
 
 }
 
