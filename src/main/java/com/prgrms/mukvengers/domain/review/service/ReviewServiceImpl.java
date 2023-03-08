@@ -64,9 +64,6 @@ public class ReviewServiceImpl implements ReviewService {
 
 		Review saveReview = reviewRepository.save(review);
 
-		reviewee.addMannerScore(saveReview.getMannerPoint());
-		reviewee.addTasteScore(saveReview.getTastePoint());
-
 		return new IdResponse(saveReview.getId());
 	}
 
@@ -95,7 +92,7 @@ public class ReviewServiceImpl implements ReviewService {
 
 		Review saveReview = reviewRepository.save(review);
 
-		reviewee.addMannerScore(saveReview.getMannerPoint());
+		reviewee.addMannerScore(saveReview.getMannerScore());
 
 		return new IdResponse(saveReview.getId());
 	}

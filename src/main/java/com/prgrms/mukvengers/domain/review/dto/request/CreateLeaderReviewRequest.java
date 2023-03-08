@@ -2,10 +2,12 @@ package com.prgrms.mukvengers.domain.review.dto.request;
 
 import javax.validation.constraints.NotNull;
 
+import org.springframework.lang.Nullable;
+
 public record CreateLeaderReviewRequest(
 	@NotNull Long leaderId,
-	@NotNull String content,
-	@NotNull Integer mannerPoint,
-	@NotNull Integer tastePoint
+	@Nullable String content,
+	@NotNull Integer mannerScore,
+	@NotNull Integer tasteScore
 ) {
 }

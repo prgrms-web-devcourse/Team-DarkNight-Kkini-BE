@@ -15,8 +15,8 @@ public class ReviewObjectProvider {
 
 	public static final LocalDateTime PROMISE_TIME = LocalDateTime.now();
 	public static final String CONTENT = "추가로 작성하고 싶은 내용을 입력해주세요.";
-	public static final Integer MANNER_POINT = 5;
-	public static final Integer TASTE_POINT = 5;
+	public static final Integer MANNER_SCORE = 5;
+	public static final Integer TASTE_SCORE = 5;
 
 	public static Review createLeaderReview(User reviewer, User reviewee, Crew crew) {
 		return Review.builder()
@@ -25,8 +25,8 @@ public class ReviewObjectProvider {
 			.crew(crew)
 			.promiseTime(PROMISE_TIME)
 			.content(CONTENT)
-			.mannerPoint(MANNER_POINT)
-			.tastePoint(TASTE_POINT)
+			.mannerScore(MANNER_SCORE)
+			.tasteScore(TASTE_SCORE)
 			.build();
 	}
 
@@ -37,8 +37,8 @@ public class ReviewObjectProvider {
 			.crew(crew)
 			.promiseTime(PROMISE_TIME)
 			.content(CONTENT)
-			.mannerPoint(MANNER_POINT)
-			.tastePoint(0)
+			.mannerScore(MANNER_SCORE)
+			.tasteScore(0)
 			.build();
 	}
 
@@ -52,8 +52,8 @@ public class ReviewObjectProvider {
 		return new CreateLeaderReviewRequest(
 			revieweeId,
 			CONTENT,
-			MANNER_POINT,
-			TASTE_POINT
+			MANNER_SCORE,
+			TASTE_SCORE
 		);
 	}
 
@@ -61,7 +61,7 @@ public class ReviewObjectProvider {
 		return new CreateMemberReviewRequest(
 			revieweeId,
 			CONTENT,
-			MANNER_POINT
+			MANNER_SCORE
 		);
 	}
 }

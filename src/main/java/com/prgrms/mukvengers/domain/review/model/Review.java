@@ -38,11 +38,11 @@ public class Review extends BaseEntity {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "reviewer", referencedColumnName = "id")
+	@JoinColumn(name = "reviewer_id", referencedColumnName = "id")
 	private User reviewer;
 
 	@ManyToOne
-	@JoinColumn(name = "reviewee", referencedColumnName = "id")
+	@JoinColumn(name = "reviewee_id", referencedColumnName = "id")
 	private User reviewee;
 
 	@ManyToOne
@@ -56,22 +56,22 @@ public class Review extends BaseEntity {
 	private String content;
 
 	@Column(nullable = false)
-	private Integer mannerPoint;
+	private Integer mannerScore;
 
 	@Column
-	private Integer tastePoint;
+	private Integer tasteScore;
 
 	@Builder
 	protected Review(User reviewer, User reviewee, Crew crew, LocalDateTime promiseTime,
-		String content, Integer mannerPoint, Integer tastePoint) {
+		String content, Integer mannerScore, Integer tasteScore) {
 
 		this.reviewer = validateUser(reviewer);
 		this.reviewee = validateUser(reviewee);
 		this.crew = validateCrew(crew);
 		this.promiseTime = validatePromiseTime(promiseTime);
 		this.content = content;
-		this.mannerPoint = validateMannerPoint(mannerPoint);
-		this.tastePoint =  validateTastePoint(tastePoint);
+		this.mannerScore = validateMannerScore(mannerScore);
+		this.tasteScore =  validateTasteScore(tasteScore);
 	}
 
 	private LocalDateTime validatePromiseTime(LocalDateTime promiseTime) {
@@ -89,13 +89,13 @@ public class Review extends BaseEntity {
 		return crew;
 	}
 
-	private Integer validateMannerPoint(Integer mannerPoint) {
-		notNull(mannerPoint, "유효하지 않는 매너점수입니다.");
-		return mannerPoint;
+	private Integer validateMannerScore(Integer mannerScore) {
+		notNull(mannerScore, "유효하지 않는 매너점수입니다.");
+		return mannerScore;
 	}
 
-	private Integer validateTastePoint(Integer tastePoint) {
-		notNull(tastePoint, "유효하지 않는 맛 점수입니다.");
-		return tastePoint;
+	private Integer validateTasteScore(Integer tasteScore) {
+		notNull(tasteScore, "유효하지 않는 맛 점수입니다.");
+		return tasteScore;
 	}
 }
