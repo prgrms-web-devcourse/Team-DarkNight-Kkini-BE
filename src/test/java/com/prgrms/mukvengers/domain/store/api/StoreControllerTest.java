@@ -65,14 +65,14 @@ class StoreControllerTest extends ControllerTest {
 	}
 
 	@Test
-	@DisplayName("[성공] 맵 api 아이디로 Store 조회를 성공한다.")
+	@DisplayName("[성공] 가게 아이디로 Store 조회를 성공한다.")
 	void getByPlaceId_success() throws Exception {
 
-		mockMvc.perform(get("/api/v1/stores/{placeId}", savedStore.getPlaceId())
+		mockMvc.perform(get("/api/v1/stores/{storeId}", savedStore.getId())
 				.accept(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(print())
-			.andDo(document("store-getByPlaceId",
+			.andDo(document("store-getByStoreId",
 				resource(
 					builder()
 						.tags(STORE)
@@ -80,7 +80,7 @@ class StoreControllerTest extends ControllerTest {
 						.responseSchema(STORE_RESPONSE)
 						.description("가게 정보를 조회합니다.")
 						.pathParameters(
-							parameterWithName("placeId").description("맵 api id")
+							parameterWithName("storeId").description("가게 아이디")
 						)
 						.responseFields(
 							fieldWithPath("data.id").type(NUMBER).description("가게 아이디"),

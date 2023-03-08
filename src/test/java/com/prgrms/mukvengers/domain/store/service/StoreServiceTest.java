@@ -44,10 +44,10 @@ class StoreServiceTest extends ServiceTest {
 	}
 
 	@Test
-	@DisplayName("[성공] 맵 api 아이디로 Store 조회를 성공한다.")
+	@DisplayName("[성공] 가게 아이디로 Store 조회를 성공한다.")
 	void getByPlaceId_success() {
 
-		StoreResponse storeResponse = storeService.getByPlaceId(savedStore.getPlaceId());
+		StoreResponse storeResponse = storeService.getId(savedStore.getId());
 
 		assertThat(storeResponse)
 			.hasFieldOrPropertyWithValue("id", savedStore.getId())
