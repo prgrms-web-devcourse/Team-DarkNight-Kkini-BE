@@ -50,14 +50,14 @@ public class StoreController {
 	 * <pre>
 	 *     맵 api 아이디를 사용하여 단건 조회
 	 * </pre>
-	 * @param placeId 구글 맵 api 아이디
+	 * @param storeId 가게 아이디(DB Pk)
 	 * @return status : 200, body : 조회된 가게 데이터
 	 */
-	@GetMapping(value = "{placeId}", produces = APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponse<StoreResponse>> getByPlaceId(
-		@PathVariable String placeId
+	@GetMapping(value = "/{storeId}", produces = APPLICATION_JSON_VALUE)
+	public ResponseEntity<ApiResponse<StoreResponse>> getById(
+		@PathVariable Long storeId
 	) {
-		StoreResponse response = storeService.getByPlaceId(placeId);
+		StoreResponse response = storeService.getId(storeId);
 		return ResponseEntity.ok(new ApiResponse<>(response));
 	}
 }

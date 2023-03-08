@@ -7,5 +7,5 @@ public interface StoreService {
 
 	String create(CreateStoreRequest createStoreRequest);
 
-	StoreResponse getByPlaceId(String placeId);
+	StoreResponse getId(Long placeId);
 }

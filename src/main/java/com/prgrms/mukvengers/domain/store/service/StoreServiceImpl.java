@@ -31,10 +31,10 @@ public class StoreServiceImpl implements StoreService {
 	}
 
 	@Override
-	public StoreResponse getByPlaceId(String placeId) {
+	public StoreResponse getId(Long storeId) {
 
-		Store store = storeRepository.findByPlaceId(placeId)
-			.orElseThrow(() -> new StoreNotFoundException(placeId));
+		Store store = storeRepository.findById(storeId)
+			.orElseThrow(() -> new StoreNotFoundException(storeId));
 
 		return storeMapper.toStoreResponse(store);
 	}
