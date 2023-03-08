@@ -135,7 +135,20 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("data.members.[].userId").type(NUMBER).description("유저 ID"),
 							fieldWithPath("data.members.[].nickname").type(STRING).description("닉네임"),
 							fieldWithPath("data.members.[].profileImgUrl").type(STRING).description("프로필 이미지"),
-							fieldWithPath("data.members.[].crewMemberRole").type(STRING).description("사용자의 권한"))
+							fieldWithPath("data.members.[].crewMemberRole").type(STRING).description("사용자의 권한"),
+							fieldWithPath("data.response.id").type(NUMBER).description("가게 아이디"),
+							fieldWithPath("data.response.latitude").type(NUMBER).description("위도"),
+							fieldWithPath("data.response.longitude").type(NUMBER).description("경도"),
+							fieldWithPath("data.response.placeId").type(STRING)
+								.description("지도 api 제공 id"),
+							fieldWithPath("data.response.placeName").type(STRING).description("가게 이름"),
+							fieldWithPath("data.response.categories").type(STRING).description("가게 카테고리"),
+							fieldWithPath("data.response.roadAddressName").type(STRING)
+								.description("가게 도로명 주소"),
+							fieldWithPath("data.response.photoUrls").type(STRING).description("가게 사진 URL"),
+							fieldWithPath("data.response.kakaoPlaceUrl").type(STRING)
+								.description("가게 상세 페이지 URL"),
+							fieldWithPath("data.response.phoneNumber").type(STRING).description("가게 전화번호"))
 						.build()
 				)
 			));
@@ -183,7 +196,20 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("data.responses.[].members.[].profileImgUrl").type(STRING)
 								.description("프로필 이미지"),
 							fieldWithPath("data.responses.[].members.[].crewMemberRole").type(STRING)
-								.description("사용자의 권한"))
+								.description("사용자의 권한"),
+							fieldWithPath("data.responses.[].response.id").type(NUMBER).description("가게 아이디"),
+							fieldWithPath("data.responses.[].response.latitude").type(NUMBER).description("위도"),
+							fieldWithPath("data.responses.[].response.longitude").type(NUMBER).description("경도"),
+							fieldWithPath("data.responses.[].response.placeId").type(STRING)
+								.description("지도 api 제공 id"),
+							fieldWithPath("data.responses.[].response.placeName").type(STRING).description("가게 이름"),
+							fieldWithPath("data.responses.[].response.categories").type(STRING).description("가게 카테고리"),
+							fieldWithPath("data.responses.[].response.roadAddressName").type(STRING)
+								.description("가게 도로명 주소"),
+							fieldWithPath("data.responses.[].response.photoUrls").type(STRING).description("가게 사진 URL"),
+							fieldWithPath("data.responses.[].response.kakaoPlaceUrl").type(STRING)
+								.description("가게 상세 페이지 URL"),
+							fieldWithPath("data.responses.[].response.phoneNumber").type(STRING).description("가게 전화번호"))
 						.build()
 				)
 			));
@@ -267,7 +293,25 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("data.responses.numberOfElements").type(NUMBER).description("페이지 원소 개수"),
 							fieldWithPath("data.responses.empty").type(BOOLEAN).description("빈 페이지 여부"),
 							fieldWithPath("data.responses.totalPages").type(NUMBER).description("전체 페이지 개수"),
-							fieldWithPath("data.responses.totalElements").type(NUMBER).description("전체 데이터 개수"))
+							fieldWithPath("data.responses.totalElements").type(NUMBER).description("전체 데이터 개수"),
+							fieldWithPath("data.responses.content.[].response.id").type(NUMBER).description("가게 아이디"),
+							fieldWithPath("data.responses.content.[].response.latitude").type(NUMBER).description("위도"),
+							fieldWithPath("data.responses.content.[].response.longitude").type(NUMBER)
+								.description("경도"),
+							fieldWithPath("data.responses.content.[].response.placeId").type(STRING)
+								.description("지도 api 제공 id"),
+							fieldWithPath("data.responses.content.[].response.placeName").type(STRING)
+								.description("가게 이름"),
+							fieldWithPath("data.responses.content.[].response.categories").type(STRING)
+								.description("가게 카테고리"),
+							fieldWithPath("data.responses.content.[].response.roadAddressName").type(STRING)
+								.description("가게 도로명 주소"),
+							fieldWithPath("data.responses.content.[].response.photoUrls").type(STRING)
+								.description("가게 사진 URL"),
+							fieldWithPath("data.responses.content.[].response.kakaoPlaceUrl").type(STRING)
+								.description("가게 상세 페이지 URL"),
+							fieldWithPath("data.responses.content.[].response.phoneNumber").type(STRING)
+								.description("가게 전화번호"))
 						.build()
 				)
 			));
