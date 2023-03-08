@@ -9,6 +9,8 @@ import com.prgrms.mukvengers.domain.proposal.model.Proposal;
 
 public interface ProposalRepository extends JpaRepository<Proposal, Long> {
 
-	List<Proposal> findAllByLeaderId(@Param("userId") Long userId);
+	List<Proposal> findAllByLeaderIdOrderByCreatedAtDesc(@Param("userId") Long userId);
+
+	List<Proposal> findAllByUserIdOrderByCreatedAtDesc(@Param("userId") Long userId);
 
 }

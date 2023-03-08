@@ -78,4 +78,52 @@ class ProposalControllerTest extends ControllerTest {
 			));
 
 	}
+
+	@Test
+	@DisplayName("[성공] 사용자가 방장인 아니고 참여자인 모임의 신청서를 모두 조회합니다.")
+	void getProposalsByMemberId_success() throws Exception {
+
+		User user = createUser("1232456789");
+		userRepository.save(user);
+
+		Crew crew = createCrew(savedStore, CrewStatus.RECRUITING);
+		crewRepository.save(crew);
+
+		List<Proposal> proposals = createProposals(savedUser, user.getId(), crew.getId());
+		proposalRepository.saveAll(proposals);
+
+		mockMvc.perform(get("/api/v1/proposals/member")
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
+				.accept(APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.data").exists())
+			.andDo(print())
+			.andDo(document("proposal-getProposalsByLeaderId",
+				resource(
+					builder()
+						.tag(PROPOSAL)
+						.summary("사용자가 방장인 모임의 모든 신청서 조회")
+						.description("사용자가 방장인 모임에서 모임 신청을 위해 작서된 신청서를 모두 조회를 위한 API 입니다.")
+						.responseSchema(GET_PROPOSALS_BY_LEADER_ID_PROPOSAL_RESPONSE)
+						.responseFields(
+							fieldWithPath("data.responses.[].user.id").type(NUMBER).description("유저 ID"),
+							fieldWithPath("data.responses.[].user.nickname").type(STRING).description("닉네임"),
+							fieldWithPath("data.responses.[].user.profileImgUrl").type(STRING).description("프로필 이미지"),
+							fieldWithPath("data.responses.[].user.introduction").type(STRING).description("한줄 소개"),
+							fieldWithPath("data.responses.[].user.leaderCount").type(NUMBER).description("방장 횟수"),
+							fieldWithPath("data.responses.[].user.crewCount").type(NUMBER).description("모임 참여 횟수"),
+							fieldWithPath("data.responses.[].user.tasteScore").type(NUMBER).description("맛잘알 점수"),
+							fieldWithPath("data.responses.[].user.mannerScore").type(NUMBER).description("매너 온도"),
+							fieldWithPath("data.responses.[].user.mannerScore").type(NUMBER).description("매너 온도"),
+							fieldWithPath("data.responses.[].id").type(NUMBER).description("신청서 아이디"),
+							fieldWithPath("data.responses.[].content").type(STRING).description("신청서 내용"),
+							fieldWithPath("data.responses.[].status").type(STRING).description("신청서 상태"),
+							fieldWithPath("data.responses.[].leaderId").type(NUMBER).description("모임의 방장 아이디"),
+							fieldWithPath("data.responses.[].crewId").type(NUMBER).description("모임 아이디")
+						)
+						.build()
+				)
+			));
+
+	}
 }

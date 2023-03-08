@@ -24,7 +24,18 @@ public class ProposalServiceImpl implements ProposalService {
 	@Override
 	public ProposalResponses getProposalsByLeaderId(Long userId) {
 
-		List<ProposalResponse> proposals = proposalRepository.findAllByLeaderId(userId)
+		List<ProposalResponse> proposals = proposalRepository.findAllByLeaderIdOrderByCreatedAtDesc(userId)
+			.stream()
+			.map(proposalMapper::toProposalResponse)
+			.collect(Collectors.toList());
+
+		return new ProposalResponses(proposals);
+	}
+
+	@Override
+	public ProposalResponses getProposalsByMemberId(Long userId) {
+
+		List<ProposalResponse> proposals = proposalRepository.findAllByUserIdOrderByCreatedAtDesc(userId)
 			.stream()
 			.map(proposalMapper::toProposalResponse)
 			.collect(Collectors.toList());
