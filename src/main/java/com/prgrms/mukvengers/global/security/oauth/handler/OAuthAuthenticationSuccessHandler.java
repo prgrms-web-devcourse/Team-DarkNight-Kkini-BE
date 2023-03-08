@@ -9,6 +9,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -63,11 +64,14 @@ public class OAuthAuthenticationSuccessHandler
 	}
 
 	private void setRefreshTokenInCookie(HttpServletResponse response, String refreshToken) {
-		final Cookie token = new Cookie("refreshToken", refreshToken);
-		token.setPath(getDefaultTargetUrl());
-		token.setSecure(true);
-		token.setHttpOnly(true);
-		token.setMaxAge(tokenService.getRefreshTokenExpirySeconds());
-		response.addCookie(token);
+		ResponseCookie token = ResponseCookie.from("refreshToken", refreshToken)
+			.path(getDefaultTargetUrl())
+			.sameSite("None")
+			.httpOnly(true)
+			.secure(true)
+			.maxAge(tokenService.getRefreshTokenExpirySeconds())
+			.build();
+
+		response.addHeader("Set-Cookie", token.toString());
 	}
 }
