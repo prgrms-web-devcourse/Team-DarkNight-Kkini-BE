@@ -4,7 +4,6 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
 import static com.epages.restdocs.apispec.ResourceDocumentation.*;
 import static com.epages.restdocs.apispec.ResourceSnippetParameters.*;
 import static com.prgrms.mukvengers.utils.CrewObjectProvider.*;
-import static com.prgrms.mukvengers.utils.ProposalObjectProvider.*;
 import static com.prgrms.mukvengers.utils.UserObjectProvider.*;
 import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.http.MediaType.*;
@@ -23,13 +22,53 @@ import com.epages.restdocs.apispec.Schema;
 import com.prgrms.mukvengers.base.ControllerTest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
+import com.prgrms.mukvengers.domain.proposal.dto.request.CreateProposalRequest;
 import com.prgrms.mukvengers.domain.proposal.model.Proposal;
 import com.prgrms.mukvengers.domain.user.model.User;
+import com.prgrms.mukvengers.utils.ProposalObjectProvider;
 
 class ProposalControllerTest extends ControllerTest {
 
 	public static final Schema GET_PROPOSALS_BY_LEADER_ID_PROPOSAL_RESPONSE = new Schema(
 		"getProposalsByLeaderIdResponse");
+	public static final Schema CREATE_PROPOSAL_REQUEST = new Schema("createProposal");
+
+	@Test
+	@DisplayName("[성공] 사용자는 신청서를 작성할 수 있다.")
+	void createProposal_success() throws Exception {
+
+		// given
+		User leader = userRepository.save(createUser("1232456789"));
+
+		Crew crew = crewRepository.save(createCrew(savedStore, CrewStatus.RECRUITING));
+
+		CreateProposalRequest proposalRequest = ProposalObjectProvider.createProposalRequest(leader.getId());
+
+		String jsonRequest = objectMapper.writeValueAsString(proposalRequest);
+
+		mockMvc.perform(post("/api/v1/crews/{crewId}/proposals", crew.getId())
+				.contentType(APPLICATION_JSON)
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
+				.content(jsonRequest))
+			.andExpect(status().isCreated())
+			.andDo(print())
+			.andDo(document("proposal-create",
+				resource(
+					builder()
+						.tag(PROPOSAL)
+						.summary("신청서 생성 API")
+						.description("사용자는 신청서를 작성할 수 있다.")
+						.requestSchema(CREATE_PROPOSAL_REQUEST)
+						.requestFields(
+							fieldWithPath("leaderId").type(NUMBER).description("해당 밥모임의 리더 아이디"),
+							fieldWithPath("content").type(STRING).description("신청서 내용")
+							)
+						.responseHeaders(
+							headerWithName("Location").description("조회해볼 수 있는 요청 주소"))
+						.build()
+				)
+			));
+	}
 
 	@Test
 	@DisplayName("[성공] 사용자가 방장인 모임의 모든 신청서를 조회한다.")
@@ -41,7 +80,7 @@ class ProposalControllerTest extends ControllerTest {
 		Crew crew = createCrew(savedStore, CrewStatus.RECRUITING);
 		crewRepository.save(crew);
 
-		List<Proposal> proposals = createProposals(user, savedUser.getId(), crew.getId());
+		List<Proposal> proposals = ProposalObjectProvider.createProposals(user, savedUser.getId(), crew.getId());
 		proposalRepository.saveAll(proposals);
 
 		mockMvc.perform(get("/api/v1/proposals/leader")
@@ -89,7 +128,7 @@ class ProposalControllerTest extends ControllerTest {
 		Crew crew = createCrew(savedStore, CrewStatus.RECRUITING);
 		crewRepository.save(crew);
 
-		List<Proposal> proposals = createProposals(savedUser, user.getId(), crew.getId());
+		List<Proposal> proposals = ProposalObjectProvider.createProposals(savedUser, user.getId(), crew.getId());
 		proposalRepository.saveAll(proposals);
 
 		mockMvc.perform(get("/api/v1/proposals/member")
