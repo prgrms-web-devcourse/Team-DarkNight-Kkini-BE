@@ -35,6 +35,7 @@ import com.prgrms.mukvengers.utils.CrewObjectProvider;
 class CrewControllerTest extends ControllerTest {
 
 	public static final Schema CREATE_CREW_REQUEST = new Schema("createCrewRequest");
+	public static final Schema CREATE_CREW_RESPONSE = new Schema("createCrewResponse");
 	public static final Schema FIND_BY_CREW_ID_CREW_REQUEST = new Schema("findByCrewIdCrewRequest");
 	public static final Schema CREW_PAGE_RESPONSE = new Schema("crewPageResponse");
 	public static final Schema FIND_BY_USER_LOCATION_CREW_REQUEST = new Schema("findByUserLocationCrewRequest");
@@ -65,10 +66,17 @@ class CrewControllerTest extends ControllerTest {
 						.summary("모임 생성 API")
 						.description("모임을 생성합니다. 생성한 유저는 모임원이 되고 방장 역할을 가집니다.")
 						.requestSchema(CREATE_CREW_REQUEST)
+						.responseSchema(CREATE_CREW_RESPONSE)
 						.requestFields(
-							fieldWithPath("latitude").type(STRING).description("위도"),
-							fieldWithPath("longitude").type(STRING).description("경도"),
-							fieldWithPath("placeId").type(STRING).description("지도 api 제공 id"),
+							fieldWithPath("createStoreRequest.latitude").type(NUMBER).description("위도"),
+							fieldWithPath("createStoreRequest.longitude").type(NUMBER).description("경도"),
+							fieldWithPath("createStoreRequest.placeId").type(STRING).description("지도 api 제공 id"),
+							fieldWithPath("createStoreRequest.placeName").type(STRING).description("가게 이름"),
+							fieldWithPath("createStoreRequest.categories").type(STRING).description("가게 카테고리"),
+							fieldWithPath("createStoreRequest.roadAddressName").type(STRING).description("가게 도로명 주소"),
+							fieldWithPath("createStoreRequest.photoUrls").type(STRING).description("가게 사진 URL"),
+							fieldWithPath("createStoreRequest.kakaoPlaceUrl").type(STRING).description("가게 상세 페이지 URL"),
+							fieldWithPath("createStoreRequest.phoneNumber").type(STRING).description("가게 전화번호"),
 							fieldWithPath("name").type(STRING).description("밥 모임 이름"),
 							fieldWithPath("capacity").type(NUMBER).description("밥 모임 정원"),
 							fieldWithPath("promiseTime").type(STRING).description("약속 시간"),
@@ -76,6 +84,9 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("category").type(STRING).description("밥 모임 카테고리"))
 						.responseHeaders(
 							headerWithName("Location").description("조회해볼 수 있는 요청 주소"))
+						.responseFields(
+							fieldWithPath("id").type(NUMBER).description("밥 모임 아이디")
+						)
 						.build()
 				)
 			));

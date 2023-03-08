@@ -12,7 +12,7 @@ plugins {
 }
 
 group = 'com.prgrms'
-version = '1.0.0'
+version = '1.0.0-SNAPSHOT'
 sourceCompatibility = '17'
 
 configurations {
@@ -29,6 +29,10 @@ ext {
     set('snippetsDir', file("build/generated-snippets"))
 }
 
+jar {
+    enabled = false
+}
+
 swaggerSources {
     sample {
         setInputFile(file("${project.buildDir}/api-spec/openapi3.yaml"))
@@ -39,7 +43,7 @@ openapi3 {
     setServer(env.MY_SERVER.orElse("http://localhost:8080")) // Swagger 서버 설정
     title = "KKINI API Document"
     description = "Spring REST Docs with SwaggerUI."
-    version = "1.0.0"
+    version = "1.0.0 - SNAPSHOT"
     format = "yaml"
 }
 
@@ -133,3 +137,8 @@ task copyDocument(type: Copy) {
 tasks.withType(BootJar).configureEach {
     dependsOn 'copySwaggerUI'
 }
+
+
+
+
+

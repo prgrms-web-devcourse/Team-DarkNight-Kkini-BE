@@ -1,7 +1,7 @@
 package com.prgrms.mukvengers.utils;
 
-import static com.prgrms.mukvengers.domain.crew.model.vo.Category.*;
 import static com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus.*;
+import static com.prgrms.mukvengers.utils.StoreObjectProvider.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,7 +14,6 @@ import org.locationtech.jts.geom.Point;
 
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
-import com.prgrms.mukvengers.domain.crew.model.vo.Category;
 import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.store.model.Store;
 
@@ -28,7 +27,7 @@ public class CrewObjectProvider {
 	private static final CrewStatus STATUS_RECRUITING = RECRUITING;
 	private static final CrewStatus STATUS_CLOSE = CLOSE;
 	private static final String CONTENT = "저는 백엔드 개발자 입니다. 프론트 엔드 개발자 구해요";
-	private static final Category CATEGORY = QUIET;
+	private static final String CATEGORY = "조용한";
 	private static final LocalDateTime PROMISE_TIME = LocalDateTime.now();
 	private static final Point LOCATION = GF.createPoint(
 		new Coordinate(Double.parseDouble(LONGITUDE), Double.parseDouble(LATITUDE)));
@@ -51,16 +50,14 @@ public class CrewObjectProvider {
 			.collect(Collectors.toList());
 	}
 
-	public static CreateCrewRequest getCreateCrewRequest(String mapStoreId) {
+	public static CreateCrewRequest getCreateCrewRequest(String placeId) {
 		return new CreateCrewRequest(
-			mapStoreId,
+			getCreateStoreRequest(placeId),
 			NAME,
-			LONGITUDE,
-			LATITUDE,
 			PROMISE_TIME,
 			CAPACITY,
 			CONTENT,
-			CATEGORY.getCategory()
+			CATEGORY
 		);
 	}
 }

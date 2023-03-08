@@ -19,6 +19,7 @@ public class StoreObjectProvider {
 	private final static String STORE_PHOTO_URLS = "'https://~', 'https://~'";
 	private final static String STORE_KAKAO_PLACE_URL = "http://place.map.kakao.com/24199893";
 	private final static String STORE_PHONE_NUMBER = "02-017-3495";
+	private final static String STORE_PHONE_NUMBER_NULL = null;
 
 	public static Store createStore() {
 

@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.prgrms.mukvengers.base.ServiceTest;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
-import com.prgrms.mukvengers.domain.crew.model.vo.Category;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
 
@@ -31,8 +30,8 @@ class CrewFacadeServiceTest extends ServiceTest {
 		CreateCrewRequest createCrewRequest = getCreateCrewRequest(savedStore.getPlaceId());
 		IdResponse idResponse = crewFacadeService.create(createCrewRequest, savedUserId);
 
-		double parseLatitude = Double.parseDouble(createCrewRequest.latitude());
-		double parseLongitude = Double.parseDouble(createCrewRequest.longitude());
+		double parseLatitude = createCrewRequest.createStoreRequest().latitude();
+		double parseLongitude = createCrewRequest.createStoreRequest().longitude();
 		Point location = gf.createPoint(new Coordinate(parseLongitude, parseLatitude));
 
 		Optional<Crew> optionalCrew = crewRepository.findById(idResponse.id());
@@ -48,7 +47,7 @@ class CrewFacadeServiceTest extends ServiceTest {
 			.hasFieldOrPropertyWithValue("capacity", createCrewRequest.capacity())
 			.hasFieldOrPropertyWithValue("status", RECRUITING)
 			.hasFieldOrPropertyWithValue("content", createCrewRequest.content())
-			.hasFieldOrPropertyWithValue("category", Category.of(createCrewRequest.category()))
+			.hasFieldOrPropertyWithValue("category", createCrewRequest.category())
 			.hasFieldOrPropertyWithValue("promiseTime", createCrewRequest.promiseTime());
 
 		CrewMember crewMember = crewMemberRepository.findAll().get(0);

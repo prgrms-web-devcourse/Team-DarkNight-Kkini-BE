@@ -23,7 +23,7 @@ import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
 import com.prgrms.mukvengers.domain.crewmember.dto.response.CrewMemberResponse;
 import com.prgrms.mukvengers.domain.crewmember.mapper.CrewMemberMapper;
 import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
-import com.prgrms.mukvengers.domain.store.exception.StoreNotFoundException;
+import com.prgrms.mukvengers.domain.store.mapper.StoreMapper;
 import com.prgrms.mukvengers.domain.store.model.Store;
 import com.prgrms.mukvengers.domain.store.repository.StoreRepository;
 import com.prgrms.mukvengers.domain.user.exception.UserNotFoundException;
@@ -43,6 +43,7 @@ public class CrewServiceImpl implements CrewService {
 	private final StoreRepository storeRepository;
 	private final CrewMemberRepository crewMemberRepository;
 	private final CrewMapper crewMapper;
+	private final StoreMapper storeMapper;
 
 	private final CrewMemberMapper crewMemberMapper;
 
@@ -53,8 +54,8 @@ public class CrewServiceImpl implements CrewService {
 		userRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException(userId));
 
-		Store store = storeRepository.findByPlaceId(createCrewRequest.placeId())
-			.orElseThrow(() -> new StoreNotFoundException(createCrewRequest.placeId()));
+		Store store = storeRepository.findByPlaceId(createCrewRequest.createStoreRequest().placeId())
+			.orElse(storeRepository.save(storeMapper.toStore(createCrewRequest.createStoreRequest())));
 
 		Crew crew = crewMapper.toCrew(createCrewRequest, store);
 

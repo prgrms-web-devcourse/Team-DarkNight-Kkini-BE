@@ -24,7 +24,6 @@ import com.prgrms.mukvengers.domain.crew.dto.response.CrewDetailResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
-import com.prgrms.mukvengers.domain.crew.model.vo.Category;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.Role;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
@@ -39,8 +38,8 @@ class CrewServiceImplTest extends ServiceTest {
 		//given
 		CreateCrewRequest createCrewRequest = CrewObjectProvider.getCreateCrewRequest(savedStore.getPlaceId());
 
-		double parseLatitude = Double.parseDouble(createCrewRequest.latitude());
-		double parseLongitude = Double.parseDouble(createCrewRequest.longitude());
+		double parseLatitude = createCrewRequest.createStoreRequest().latitude();
+		double parseLongitude = createCrewRequest.createStoreRequest().longitude();
 		Point location = gf.createPoint(new Coordinate(parseLongitude, parseLatitude));
 		IdResponse idResponse = crewService.create(createCrewRequest, savedUser.getId());
 
@@ -58,7 +57,7 @@ class CrewServiceImplTest extends ServiceTest {
 			.hasFieldOrPropertyWithValue("capacity", createCrewRequest.capacity())
 			.hasFieldOrPropertyWithValue("status", RECRUITING)
 			.hasFieldOrPropertyWithValue("content", createCrewRequest.content())
-			.hasFieldOrPropertyWithValue("category", Category.of(createCrewRequest.category()));
+			.hasFieldOrPropertyWithValue("category", createCrewRequest.category());
 	}
 
 	@Test
@@ -96,7 +95,7 @@ class CrewServiceImplTest extends ServiceTest {
 			.hasFieldOrPropertyWithValue("capacity", crew.getCapacity())
 			.hasFieldOrPropertyWithValue("status", crew.getStatus().name())
 			.hasFieldOrPropertyWithValue("content", crew.getContent())
-			.hasFieldOrPropertyWithValue("category", crew.getCategory().name())
+			.hasFieldOrPropertyWithValue("category", crew.getCategory())
 			.hasFieldOrPropertyWithValue("promiseTime", crew.getPromiseTime());
 	}
 

@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.mukvengers.config.RestDocsConfig;
 import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
 import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
+import com.prgrms.mukvengers.domain.proposal.repository.ProposalRepository;
 import com.prgrms.mukvengers.domain.store.model.Store;
 import com.prgrms.mukvengers.domain.store.repository.StoreRepository;
 import com.prgrms.mukvengers.domain.user.model.User;
@@ -42,6 +43,7 @@ public abstract class ControllerTest {
 	protected final String STORE = "가게 API";
 	protected final String USER = "유저 API";
 	protected final String REVIEW = "리뷰 API";
+	protected final String PROPOSAL = "신청서 API";
 
 	protected final String BEARER_TYPE = "Bearer ";
 
@@ -65,6 +67,9 @@ public abstract class ControllerTest {
 
 	@Autowired
 	protected CrewMemberRepository crewMemberRepository;
+
+	@Autowired
+	protected ProposalRepository proposalRepository;
 
 	protected MockMvc mockMvc;
 
