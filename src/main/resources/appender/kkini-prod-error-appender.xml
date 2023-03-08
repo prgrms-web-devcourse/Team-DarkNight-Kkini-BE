@@ -7,7 +7,7 @@
             <pattern>[%thread] [%date] [%level] [%file:%line] - %msg%n</pattern>
         </layout>
         <logGroupName>kkini-prod-error</logGroupName>
-        <logStreamUuidPrefix>hkini-prod-error-</logStreamUuidPrefix>
+        <logStreamUuidPrefix>kkini-prod-error-</logStreamUuidPrefix>
         <logRegion>ap-northeast-2</logRegion>
         <maxBatchLogEvents>50</maxBatchLogEvents>
         <maxFlushTimeMillis>30000</maxFlushTimeMillis>

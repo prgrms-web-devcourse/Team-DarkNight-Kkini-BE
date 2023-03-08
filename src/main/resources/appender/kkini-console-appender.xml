@@ -1,7 +1,7 @@
 <included>
     <appender name="CONSOLE_APPENDER" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <Pattern>${console_log_pattern}</Pattern>
+            <Pattern>${CONSOLE_LOG_PATTERN}</Pattern>
         </encoder>
     </appender>
 </included>

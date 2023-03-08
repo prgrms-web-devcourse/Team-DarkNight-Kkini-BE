@@ -1,4 +1,5 @@
 <configuration packagingData="true">
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
     <springProperty name="AWS_ACCESS_KEY" source="cloud.aws.credentials.access-key"/>
     <springProperty name="AWS_SECRET_KEY" source="cloud.aws.credentials.secret-key"/>
 
@@ -8,11 +9,12 @@
     <property name="AWS_LOG_PATTERN"
               value="[%thread] [%date] [%level] [%file:%line] - %msg%n"/>
 
-    <appender name="console_log_pattern" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>[%thread] [%date] [%level] [%file:%line] - %msg%n</pattern>
-        </encoder>
-    </appender>
+    <springProfile name="local">
+        <include resource="appender/kkini-console-appender.xml"/>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE_APPENDER"/>
+        </root>
+    </springProfile>
 
     <springProfile name="dev">
         <include resource="appender/kkini-console-appender.xml"/>
