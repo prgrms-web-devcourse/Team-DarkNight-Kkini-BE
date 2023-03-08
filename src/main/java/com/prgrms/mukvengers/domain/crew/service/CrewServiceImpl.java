@@ -1,6 +1,7 @@
 package com.prgrms.mukvengers.domain.crew.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -14,6 +15,8 @@ import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.SearchCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewDetailResponse;
+import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponse;
+import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponses;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
 import com.prgrms.mukvengers.domain.crew.exception.CrewNotFoundException;
@@ -124,28 +127,18 @@ public class CrewServiceImpl implements CrewService {
 	}
 
 	@Override
-	public CrewResponses getByLocation(SearchCrewRequest distanceRequest) {
+	public CrewLocationResponses getByLocation(SearchCrewRequest distanceRequest) {
 
 		GeometryFactory gf = new GeometryFactory();
 
 		Point location = gf.createPoint(new Coordinate(distanceRequest.longitude(), distanceRequest.latitude()));
 
-		List<CrewDetailResponse> responses = crewRepository.findAllByLocation(location,
-				distanceRequest.distance())
+		List<CrewLocationResponse> responses = crewRepository.findAllByLocation(location, distanceRequest.distance())
 			.stream()
-			.map(crew -> crewMapper.toCrewAndCrewMemberResponse(crew,
-				crewMemberRepository.countCrewMemberByCrewId(crew.getId()),
-				crewMemberRepository.findAllByCrewId(
-						crew.getId())
-					.stream()
-					.map(CrewMember -> crewMemberMapper.toCrewMemberResponse(
-						userRepository.findById(CrewMember.getUserId())
-							.orElseThrow(() -> new UserNotFoundException(CrewMember.getUserId())),
-						CrewMember.getCrewMemberRole()))
-					.toList()))
-			.toList();
+			.map(crew -> crewMapper.toCrewLocationResponse(crew.getLocation(), crew.getStore().getId()))
+			.collect(Collectors.toList());
 
-		return new CrewResponses(responses);
+		return new CrewLocationResponses(responses);
 	}
 
 	@Override

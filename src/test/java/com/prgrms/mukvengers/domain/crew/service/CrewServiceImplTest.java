@@ -21,6 +21,8 @@ import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.SearchCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewDetailResponse;
+import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponse;
+import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponses;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
@@ -137,10 +139,10 @@ class CrewServiceImplTest extends ServiceTest {
 		SearchCrewRequest distanceRequest = new SearchCrewRequest(longitude, latitude, distance);
 
 		//when
-		CrewResponses crewResponses = crewService.getByLocation(distanceRequest);
+		CrewLocationResponses crewLocationResponse = crewService.getByLocation(distanceRequest);
 
 		//then
-		List<CrewDetailResponse> responses = crewResponses.responses();
+		List<CrewLocationResponse> responses = crewLocationResponse.responses();
 		assertThat(responses).hasSize(1);
 
 	}

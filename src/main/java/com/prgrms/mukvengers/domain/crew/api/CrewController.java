@@ -25,6 +25,7 @@ import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.SearchCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewDetailResponse;
+import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponses;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
 import com.prgrms.mukvengers.domain.crew.facade.CrewFacadeService;
@@ -121,11 +122,11 @@ public class CrewController {
 	 * @return status : 200, body : 사용자 위치를 기반으로 특정 거리 안에 있는 밥 모임 데이터
 	 */
 	@GetMapping(produces = APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponse<CrewResponses>> getByLocation
+	public ResponseEntity<ApiResponse<CrewLocationResponses>> getByLocation
 	(
 		@ModelAttribute @Valid SearchCrewRequest distanceRequest
 	) {
-		CrewResponses responses = crewService.getByLocation(distanceRequest);
+		CrewLocationResponses responses = crewService.getByLocation(distanceRequest);
 		return ResponseEntity.ok().body(new ApiResponse<>(responses));
 	}
 
