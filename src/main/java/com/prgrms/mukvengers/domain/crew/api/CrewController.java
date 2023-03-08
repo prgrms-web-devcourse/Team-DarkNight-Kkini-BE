@@ -60,7 +60,7 @@ public class CrewController {
 	) {
 		IdResponse idResponse = crewFacadeService.create(createCrewRequest, user.id());
 		URI location = UriComponentsBuilder.fromUriString("/api/v1/crews/" + idResponse.id()).build().toUri();
-		return ResponseEntity.created(location).build();
+		return ResponseEntity.created(location).body(idResponse);
 	}
 
 	/**
