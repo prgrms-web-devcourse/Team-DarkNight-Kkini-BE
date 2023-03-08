@@ -2,48 +2,33 @@
     <springProperty name="AWS_ACCESS_KEY" source="cloud.aws.credentials.access-key"/>
     <springProperty name="AWS_SECRET_KEY" source="cloud.aws.credentials.secret-key"/>
 
-    <appender name="aws_cloud_watch_log" class="ca.pjer.logback.AwsLogsAppender">
-        <layout>
-            <pattern>[%thread] [%date] [%level] [%file:%line] - %msg%n</pattern>
-        </layout>
-        <logGroupName>kkini-log</logGroupName>
-        <logStreamUuidPrefix>kkini</logStreamUuidPrefix>
-        <logRegion>ap-northeast-2</logRegion>
-        <maxBatchLogEvents>50</maxBatchLogEvents>
-        <maxFlushTimeMillis>30000</maxFlushTimeMillis>
-        <maxBlockTimeMillis>5000</maxBlockTimeMillis>
-        <retentionTimeDays>7</retentionTimeDays>
-        <accessKeyId>${AWS_ACCESS_KEY}</accessKeyId>
-        <secretAccessKey>${AWS_SECRET_KEY}</secretAccessKey>
-    </appender>
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%clr(%d{yyyyMMdd HH:mm:ss.SSS}){magenta} %clr([%thread]){blue} %clr(%-5level){} %clr([%logger{0}:%line]){cyan} : %msg %n"/>
 
-    <appender name="application_log" class="ch.qos.logback.core.ConsoleAppender">
+    <property name="AWS_LOG_PATTERN"
+              value="[%thread] [%date] [%level] [%file:%line] - %msg%n"/>
+
+    <appender name="console_log_pattern" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>[%thread] [%date] [%level] [%file:%line] - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <springProfile name="local">
-        <root level="INFO">
-            <appender-ref ref="application_log"/>
-        </root>
-    </springProfile>
-
     <springProfile name="dev">
-        <root level="INFO">
-            <appender-ref ref="application_log"/>
+        <include resource="appender/kkini-console-appender.xml"/>
+        <root level="DEBUG">
+            <appender-ref ref="CONSOLE_APPENDER"/>
         </root>
-        <logger name="dev-error" level="ERROR">
-            <appender-ref ref="aws_cloud_watch_log"/>
-        </logger>
     </springProfile>
 
     <springProfile name="prod">
+        <include resource="appender/kkini-console-appender.xml"/>
+        <include resource="appender/kkini-prod-info-appender.xml"/>
+        <include resource="appender/kkini-prod-error-appender.xml"/>
         <root level="INFO">
-            <appender-ref ref="application_log"/>
+            <appender-ref ref="CONSOLE_APPENDER"/>
+            <appender-ref ref="AWS_INFO_LOG"/>
+            <appender-ref ref="AWS_ERROR_LOG"/>
         </root>
-        <logger name="prod-error" level="ERROR">
-            <appender-ref ref="aws_cloud_watch_log"/>
-        </logger>
     </springProfile>
 </configuration>
