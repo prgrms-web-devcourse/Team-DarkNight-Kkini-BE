@@ -11,9 +11,7 @@ import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewDetailResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
-import com.prgrms.mukvengers.domain.crew.model.vo.Category;
 import com.prgrms.mukvengers.domain.crewmember.dto.response.CrewMemberResponse;
-
 import com.prgrms.mukvengers.domain.store.model.Store;
 
 @Mapper(componentModel = "spring", unmappedSourcePolicy = IGNORE)
@@ -31,11 +29,6 @@ public interface CrewMapper {
 	@Mapping(target = "promiseTime", source = "crew.promiseTime")
 	CrewDetailResponse toCrewAndCrewMemberResponse(Crew crew, Integer currentMember,
 		List<CrewMemberResponse> members);
-
-	@Named("categoryMethod")
-	default Category mapCategory(String category) {
-		return Category.of(category);
-	}
 
 }
 

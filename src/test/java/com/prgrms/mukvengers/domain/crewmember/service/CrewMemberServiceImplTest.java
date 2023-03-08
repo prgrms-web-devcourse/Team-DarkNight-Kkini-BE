@@ -1,7 +1,7 @@
 package com.prgrms.mukvengers.domain.crewmember.service;
 
 import static com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus.*;
-import static com.prgrms.mukvengers.domain.crewmember.model.vo.Role.*;
+import static com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole.*;
 import static com.prgrms.mukvengers.utils.CrewObjectProvider.*;
 import static org.assertj.core.api.Assertions.*;
 
@@ -46,6 +46,6 @@ class CrewMemberServiceImplTest extends ServiceTest {
 		assertThat(crewMember)
 			.hasFieldOrPropertyWithValue("userId", savedUserId)
 			.hasFieldOrPropertyWithValue("crew", crew)
-			.hasFieldOrPropertyWithValue("role", LEADER);
+			.hasFieldOrPropertyWithValue("crewMemberRole", LEADER);
 	}
 }

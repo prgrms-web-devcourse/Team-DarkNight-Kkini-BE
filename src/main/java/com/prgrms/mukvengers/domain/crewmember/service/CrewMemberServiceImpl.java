@@ -8,7 +8,7 @@ import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
 import com.prgrms.mukvengers.domain.crewmember.mapper.CrewMemberMapper;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
-import com.prgrms.mukvengers.domain.crewmember.model.vo.Role;
+import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
 import com.prgrms.mukvengers.domain.user.exception.UserNotFoundException;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
@@ -28,7 +28,7 @@ public class CrewMemberServiceImpl implements CrewMemberService {
 
 	@Override
 	@Transactional
-	public IdResponse create(Long crewId, Long userId, Role role) {
+	public IdResponse create(Long crewId, Long userId, CrewMemberRole crewMemberRole) {
 
 		userRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException(userId));
@@ -36,7 +36,7 @@ public class CrewMemberServiceImpl implements CrewMemberService {
 		Crew crew = crewRepository.findById(crewId)
 			.orElseThrow(() -> new CrewNotFoundException(crewId));
 
-		CrewMember crewMember = crewMemberMapper.toCrewMember(crew, userId, role);
+		CrewMember crewMember = crewMemberMapper.toCrewMember(crew, userId, crewMemberRole);
 
 		crewMemberRepository.save(crewMember);
 

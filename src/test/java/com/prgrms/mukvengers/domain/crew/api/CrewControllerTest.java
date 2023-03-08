@@ -28,7 +28,7 @@ import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
-import com.prgrms.mukvengers.domain.crewmember.model.vo.Role;
+import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.utils.CrewMemberObjectProvider;
 import com.prgrms.mukvengers.utils.CrewObjectProvider;
 
@@ -101,7 +101,7 @@ class CrewControllerTest extends ControllerTest {
 
 		crewRepository.save(crew);
 
-		CrewMember crewMember = CrewMemberObjectProvider.createCrewMember(savedUserId, crew, Role.LEADER);
+		CrewMember crewMember = CrewMemberObjectProvider.createCrewMember(savedUserId, crew, CrewMemberRole.LEADER);
 
 		crewMemberRepository.save(crewMember);
 
@@ -135,7 +135,7 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("data.members.[].userId").type(NUMBER).description("유저 ID"),
 							fieldWithPath("data.members.[].nickname").type(STRING).description("닉네임"),
 							fieldWithPath("data.members.[].profileImgUrl").type(STRING).description("프로필 이미지"),
-							fieldWithPath("data.members.[].role").type(STRING).description("사용자의 권한"))
+							fieldWithPath("data.members.[].crewMemberRole").type(STRING).description("사용자의 권한"))
 						.build()
 				)
 			));
@@ -149,7 +149,7 @@ class CrewControllerTest extends ControllerTest {
 		crewRepository.saveAll(crews);
 
 		crews.forEach(crew -> {
-			CrewMember crewMember = createCrewMember(savedUserId, crew, Role.MEMBER);
+			CrewMember crewMember = createCrewMember(savedUserId, crew, CrewMemberRole.MEMBER);
 			crewMemberRepository.save(crewMember);
 		});
 
@@ -182,7 +182,8 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("data.responses.[].members.[].nickname").type(STRING).description("닉네임"),
 							fieldWithPath("data.responses.[].members.[].profileImgUrl").type(STRING)
 								.description("프로필 이미지"),
-							fieldWithPath("data.responses.[].members.[].role").type(STRING).description("사용자의 권한"))
+							fieldWithPath("data.responses.[].members.[].crewMemberRole").type(STRING)
+								.description("사용자의 권한"))
 						.build()
 				)
 			));
@@ -197,7 +198,7 @@ class CrewControllerTest extends ControllerTest {
 		crewRepository.saveAll(crews);
 
 		crews.forEach(crew -> {
-			CrewMember crewMember = createCrewMember(savedUserId, crew, Role.MEMBER);
+			CrewMember crewMember = createCrewMember(savedUserId, crew, CrewMemberRole.MEMBER);
 			crewMemberRepository.save(crewMember);
 		});
 
@@ -244,7 +245,7 @@ class CrewControllerTest extends ControllerTest {
 								.description("닉네임"),
 							fieldWithPath("data.responses.content.[].members.[].profileImgUrl").type(STRING)
 								.description("프로필 이미지"),
-							fieldWithPath("data.responses.content.[].members.[].role").type(STRING)
+							fieldWithPath("data.responses.content.[].members.[].crewMemberRole").type(STRING)
 								.description("사용자의 권한"),
 							fieldWithPath("data.responses.pageable.sort.empty").type(BOOLEAN).description("빈 페이지 여부"),
 							fieldWithPath("data.responses.pageable.sort.sorted").type(BOOLEAN).description("페이지 정렬 여부"),
@@ -282,7 +283,7 @@ class CrewControllerTest extends ControllerTest {
 		crewRepository.saveAll(crews);
 
 		crews.forEach(crew -> {
-			CrewMember crewMember = createCrewMember(savedUserId, crew, Role.MEMBER);
+			CrewMember crewMember = createCrewMember(savedUserId, crew, CrewMemberRole.MEMBER);
 			crewMemberRepository.save(crewMember);
 		});
 
@@ -327,7 +328,8 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("data.responses.[].members.[].nickname").type(STRING).description("닉네임"),
 							fieldWithPath("data.responses.[].members.[].profileImgUrl").type(STRING)
 								.description("프로필 이미지"),
-							fieldWithPath("data.responses.[].members.[].role").type(STRING).description("사용자의 권한"))
+							fieldWithPath("data.responses.[].members.[].crewMemberRole").type(STRING)
+								.description("사용자의 권한"))
 
 						.build()
 				)

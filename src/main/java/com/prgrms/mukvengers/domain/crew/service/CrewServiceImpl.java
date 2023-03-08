@@ -77,7 +77,7 @@ public class CrewServiceImpl implements CrewService {
 					.map(CrewMember -> crewMemberMapper.toCrewMemberResponse(
 						userRepository.findById(CrewMember.getUserId())
 							.orElseThrow(() -> new UserNotFoundException(CrewMember.getUserId())),
-						CrewMember.getRole()))
+						CrewMember.getCrewMemberRole()))
 					.toList()))
 			.toList();
 
@@ -100,7 +100,7 @@ public class CrewServiceImpl implements CrewService {
 			.map(CrewMember -> crewMemberMapper.toCrewMemberResponse(
 				userRepository.findById(CrewMember.getUserId())
 					.orElseThrow(() -> new UserNotFoundException(CrewMember.getUserId())),
-				CrewMember.getRole()))
+				CrewMember.getCrewMemberRole()))
 			.toList();
 
 		return crewMapper.toCrewAndCrewMemberResponse(crew, currentMember, members);
@@ -117,7 +117,7 @@ public class CrewServiceImpl implements CrewService {
 					.map(CrewMember -> crewMemberMapper.toCrewMemberResponse(
 						userRepository.findById(CrewMember.getUserId())
 							.orElseThrow(() -> new UserNotFoundException(CrewMember.getUserId())),
-						CrewMember.getRole()))
+						CrewMember.getCrewMemberRole()))
 					.toList()));
 
 		return new CrewPageResponse(responses);
@@ -141,7 +141,7 @@ public class CrewServiceImpl implements CrewService {
 					.map(CrewMember -> crewMemberMapper.toCrewMemberResponse(
 						userRepository.findById(CrewMember.getUserId())
 							.orElseThrow(() -> new UserNotFoundException(CrewMember.getUserId())),
-						CrewMember.getRole()))
+						CrewMember.getCrewMemberRole()))
 					.toList()))
 			.toList();
 

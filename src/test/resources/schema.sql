@@ -67,30 +67,30 @@ CREATE TABLE crew
 
 CREATE TABLE crew_member
 (
-    id         bigint      NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    user_id    bigint      NOT NULL,
-    crew_id    bigint      NOT NULL,
-    role       varchar(50) NOT NULL,
-    created_at dateTime    NOT NULL DEFAULT now(),
-    updated_at dateTime    NOT NULL DEFAULT now(),
-    deleted    boolean     NOT NULL DEFAULT false,
+    id               bigint      NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    user_id          bigint      NOT NULL,
+    crew_id          bigint      NOT NULL,
+    crew_member_role varchar(50) NOT NULL,
+    created_at       dateTime    NOT NULL DEFAULT now(),
+    updated_at       dateTime    NOT NULL DEFAULT now(),
+    deleted          boolean     NOT NULL DEFAULT false,
 
     FOREIGN KEY fk_crew_member_crew_id (crew_id) REFERENCES crew (id)
 );
 
 CREATE TABLE review
 (
-    id           bigint       NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    reviewer     bigint       NOT NULL,
-    reviewee     bigint       NOT NULL,
-    crew_id      bigint       NOT NULL,
-    promise_time dateTime     NOT NULL,
+    id           bigint   NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    reviewer     bigint   NOT NULL,
+    reviewee     bigint   NOT NULL,
+    crew_id      bigint   NOT NULL,
+    promise_time dateTime NOT NULL,
     content      varchar(255) NULL,
-    manner_point int          NOT NULL,
-    taste_point  int          NOT NULL DEFAULT 0,
-    created_at   dateTime     NOT NULL DEFAULT now(),
-    updated_at   dateTime     NOT NULL DEFAULT now(),
-    deleted      boolean      NOT NULL DEFAULT false,
+    manner_point int      NOT NULL,
+    taste_point  int      NOT NULL DEFAULT 0,
+    created_at   dateTime NOT NULL DEFAULT now(),
+    updated_at   dateTime NOT NULL DEFAULT now(),
+    deleted      boolean  NOT NULL DEFAULT false,
 
     FOREIGN KEY fk_review_reviewer (reviewer) REFERENCES users (id),
     FOREIGN KEY fk_review_reviewee (reviewee) REFERENCES users (id),

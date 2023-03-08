@@ -17,7 +17,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import com.prgrms.mukvengers.domain.crew.model.Crew;
-import com.prgrms.mukvengers.domain.crewmember.model.vo.Role;
+import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.global.common.domain.BaseEntity;
 
 import lombok.Builder;
@@ -44,12 +44,12 @@ public class CrewMember extends BaseEntity {
 
 	@Enumerated(STRING)
 	@Column(nullable = false)
-	private Role role;
+	private CrewMemberRole crewMemberRole;
 
 	@Builder
-	protected CrewMember(Long userId, Crew crew, Role role) {
+	protected CrewMember(Long userId, Crew crew, CrewMemberRole crewMemberRole) {
 		this.userId = userId;
 		this.crew = crew;
-		this.role = role;
+		this.crewMemberRole = crewMemberRole;
 	}
 }

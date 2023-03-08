@@ -25,7 +25,7 @@ import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
-import com.prgrms.mukvengers.domain.crewmember.model.vo.Role;
+import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
 import com.prgrms.mukvengers.utils.CrewObjectProvider;
 
@@ -68,7 +68,7 @@ class CrewServiceImplTest extends ServiceTest {
 		crewRepository.saveAll(crews);
 
 		crews.forEach(crew -> {
-			CrewMember crewMember = createCrewMember(savedUserId, crew, Role.MEMBER);
+			CrewMember crewMember = createCrewMember(savedUserId, crew, CrewMemberRole.MEMBER);
 			crewMemberRepository.save(crewMember);
 		});
 
