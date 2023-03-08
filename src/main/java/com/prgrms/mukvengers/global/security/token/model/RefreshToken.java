@@ -22,13 +22,16 @@ public class RefreshToken {
 
 	private Long userId;
 
+	private String role;
+
 	@TimeToLive
 	private long expiration;
 
 	@Builder
-	public RefreshToken(String refreshToken, Long userId, long expiration) {
+	public RefreshToken(String refreshToken, Long userId, String role, long expiration) {
 		this.refreshToken = checkRefreshToken(refreshToken);
 		this.userId = checkUserId(userId);
+		this.role = checkRole(role);
 		this.expiration = checkExpiration(expiration);
 	}
 
@@ -46,10 +49,18 @@ public class RefreshToken {
 		return userId;
 	}
 
+	private String checkRole(String role) {
+		if (!Objects.nonNull(role) || role.isBlank()) {
+			throw new IllegalArgumentException("올바르지 않은 권한");
+		}
+		return role;
+	}
+
 	private long checkExpiration(long expiration) {
 		if (expiration < 1) {
 			throw new IllegalArgumentException("올바르지 않은 만료 시간");
 		}
 		return expiration;
 	}
+
 }

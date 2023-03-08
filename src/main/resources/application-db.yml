@@ -27,6 +27,7 @@ spring:
       hibernate:
         dialect: org.hibernate.spatial.dialect.mysql.MySQL8SpatialDialect
         format_sql: true
+        default_batch_fetch_size: 1000
 
   # flyway 설정
   flyway:
