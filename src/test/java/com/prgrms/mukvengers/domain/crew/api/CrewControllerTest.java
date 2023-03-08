@@ -311,26 +311,14 @@ class CrewControllerTest extends ControllerTest {
 						.description("사용자 위치로 특정 거리 안에 있는 모임을 조회합니다.")
 						.requestSchema(FIND_BY_USER_LOCATION_CREW_REQUEST)
 						.requestParameters(
-							parameterWithName("latitude").description("사용자의 위도"),
 							parameterWithName("longitude").description("사용자의 경도"),
+							parameterWithName("latitude").description("사용자의 위도"),
 							parameterWithName("distance").description("모임을 찾을 범위 거리"))
 						.responseSchema(CREW_RESPONSE)
 						.responseFields(
-							fieldWithPath("data.responses.[].currentMember").type(NUMBER).description("밥 모임 현재 인원"),
-							fieldWithPath("data.responses.[].id").type(NUMBER).description("밥 모임 아이디"),
-							fieldWithPath("data.responses.[].name").type(STRING).description("밥 모임 이름"),
-							fieldWithPath("data.responses.[].capacity").type(NUMBER).description("밥 모임 정원"),
-							fieldWithPath("data.responses.[].promiseTime").type(ARRAY).description("약속 시간"),
-							fieldWithPath("data.responses.[].status").type(STRING).description("밥 모임 상태"),
-							fieldWithPath("data.responses.[].content").type(STRING).description("밥 모임 내용"),
-							fieldWithPath("data.responses.[].category").type(STRING).description("밥 모임 카테고리"),
-							fieldWithPath("data.responses.[].members.[].userId").type(NUMBER).description("유저 ID"),
-							fieldWithPath("data.responses.[].members.[].nickname").type(STRING).description("닉네임"),
-							fieldWithPath("data.responses.[].members.[].profileImgUrl").type(STRING)
-								.description("프로필 이미지"),
-							fieldWithPath("data.responses.[].members.[].crewMemberRole").type(STRING)
-								.description("사용자의 권한"))
-
+							fieldWithPath("data.responses.[].longitude").type(NUMBER).description("가게 경도"),
+							fieldWithPath("data.responses.[].latitude").type(NUMBER).description("가게 위도"),
+							fieldWithPath("data.responses.[].storeId").type(NUMBER).description("가게 아이디"))
 						.build()
 				)
 			));
