@@ -95,7 +95,7 @@ class CrewServiceImplTest extends ServiceTest {
 			.hasFieldOrPropertyWithValue("id", crew.getId())
 			.hasFieldOrPropertyWithValue("name", crew.getName())
 			.hasFieldOrPropertyWithValue("capacity", crew.getCapacity())
-			.hasFieldOrPropertyWithValue("status", crew.getStatus().name())
+			.hasFieldOrPropertyWithValue("status", crew.getStatus())
 			.hasFieldOrPropertyWithValue("content", crew.getContent())
 			.hasFieldOrPropertyWithValue("category", crew.getCategory())
 			.hasFieldOrPropertyWithValue("promiseTime", crew.getPromiseTime());
