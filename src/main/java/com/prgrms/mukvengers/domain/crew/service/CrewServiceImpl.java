@@ -13,18 +13,23 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.SearchCrewRequest;
-import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewDetailResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponses;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
 import com.prgrms.mukvengers.domain.crew.exception.CrewNotFoundException;
+import com.prgrms.mukvengers.domain.crew.exception.CrewStatusException;
 import com.prgrms.mukvengers.domain.crew.mapper.CrewMapper;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
+import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
 import com.prgrms.mukvengers.domain.crewmember.dto.response.CrewMemberResponse;
+import com.prgrms.mukvengers.domain.crewmember.exception.MemberNotFoundException;
+import com.prgrms.mukvengers.domain.crewmember.exception.NotLeaderException;
 import com.prgrms.mukvengers.domain.crewmember.mapper.CrewMemberMapper;
+import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
+import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
 import com.prgrms.mukvengers.domain.store.mapper.StoreMapper;
 import com.prgrms.mukvengers.domain.store.model.Store;
@@ -139,12 +144,23 @@ public class CrewServiceImpl implements CrewService {
 	}
 
 	@Override
-	public void updateStatus(UpdateStatusRequest updateStatusRequest) {
+	public void closeStatus(Long crewId, Long userId) {
 
-		Crew crew = crewRepository.findById(updateStatusRequest.crewId())
-			.orElseThrow(() -> new CrewNotFoundException(updateStatusRequest.crewId()));
+		Crew crew = crewRepository.findById(crewId)
+			.orElseThrow(() -> new CrewNotFoundException(crewId));
 
-		crew.changeStatus(updateStatusRequest.status());
+		CrewMember crewMember = crewMemberRepository.findCrewMemberByCrewIdAndUserId(crewId, userId)
+			.orElseThrow(() -> new MemberNotFoundException(userId));
+
+		if (!crewMember.getCrewMemberRole().equals(CrewMemberRole.LEADER)) {
+			throw new NotLeaderException(CrewMemberRole.LEADER);
+		}
+
+		if (!crew.getStatus().equals(CrewStatus.RECRUITING)) {
+			throw new CrewStatusException(crew.getStatus());
+		}
+
+		crew.changeStatus(CrewStatus.CLOSE);
 
 	}
 
