@@ -2,6 +2,7 @@ package com.prgrms.mukvengers.global.security.token.api;
 
 import static org.springframework.http.HttpHeaders.*;
 
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.mukvengers.global.security.token.dto.response.TokenResponse;
 import com.prgrms.mukvengers.global.security.token.service.TokenService;
+import com.prgrms.mukvengers.global.utils.CookieUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -37,7 +39,9 @@ public class TokenController {
 	) {
 		tokenService.deleteRefreshToken(refreshToken);
 
+		ResponseCookie emptyCookie = CookieUtil.getEmptyCookie("refreshToken");
+
 		return ResponseEntity.noContent()
-			.header(SET_COOKIE, "").build();
+			.header(SET_COOKIE, emptyCookie.toString()).build();
 	}
 }
