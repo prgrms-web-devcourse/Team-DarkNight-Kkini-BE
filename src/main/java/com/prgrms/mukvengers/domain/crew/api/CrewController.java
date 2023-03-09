@@ -133,7 +133,7 @@ public class CrewController {
 	 * <pre>
 	 *     밥 모임 모집 종료로 상태 변경
 	 * </pre>
-	 * @param crewId 밤 모임 아이디와
+	 * @param crewId 밤 모임 아이디와 모임 아이디
 	 * @param user 사용자 정보
 	 * @return status : 200
 	 */
@@ -144,6 +144,24 @@ public class CrewController {
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
 		crewService.closeStatus(crewId, user.id());
+		return ResponseEntity.ok().build();
+	}
+
+	/**
+	 * <pre>
+	 *     밥 모임 모집 종료로 상태 변경
+	 * </pre>
+	 * @param crewId 밤 모임 아이디와 모임 아이디
+	 * @param user 사용자 정보
+	 * @return status : 200
+	 */
+	@PatchMapping(value = "/{crewId}/finish")
+	public ResponseEntity<Void> finishStatus
+	(
+		@PathVariable Long crewId,
+		@AuthenticationPrincipal JwtAuthentication user
+	) {
+		crewService.finishStatus(crewId, user.id());
 		return ResponseEntity.ok().build();
 	}
 

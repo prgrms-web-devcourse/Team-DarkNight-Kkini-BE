@@ -24,4 +24,5 @@ public interface CrewService {
 
 	void closeStatus(Long crewId, Long userId);
 
+	void finishStatus(Long crewId, Long userId);
 }

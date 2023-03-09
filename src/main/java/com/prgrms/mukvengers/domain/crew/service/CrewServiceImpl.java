@@ -164,4 +164,24 @@ public class CrewServiceImpl implements CrewService {
 
 	}
 
+	@Override
+	public void finishStatus(Long crewId, Long userId) {
+
+		Crew crew = crewRepository.findById(crewId)
+			.orElseThrow(() -> new CrewNotFoundException(crewId));
+
+		CrewMember crewMember = crewMemberRepository.findCrewMemberByCrewIdAndUserId(crewId, userId)
+			.orElseThrow(() -> new MemberNotFoundException(userId));
+
+		if (!crewMember.getCrewMemberRole().equals(CrewMemberRole.LEADER)) {
+			throw new NotLeaderException(CrewMemberRole.LEADER);
+		}
+
+		if (!crew.getStatus().equals(CrewStatus.CLOSE)) {
+			throw new CrewStatusException(crew.getStatus());
+		}
+
+		crew.changeStatus(CrewStatus.FINISH);
+
+	}
 }
