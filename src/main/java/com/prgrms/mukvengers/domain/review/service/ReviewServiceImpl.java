@@ -1,6 +1,7 @@
 package com.prgrms.mukvengers.domain.review.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -134,7 +135,8 @@ public class ReviewServiceImpl implements ReviewService {
 
 	private RevieweeListResponse toRevieweeListResponse(Long crewId, User reviewer, CrewMember crewMember) {
 		User crewMemberUser = getUserByUserId(crewMember.getUserId());
-		boolean isReviewed = reviewRepository.existReview(crewId, reviewer.getId(), crewMemberUser.getId());
+		Optional<Review> reviewResult = reviewRepository.findByReview(crewId, reviewer.getId(), crewMemberUser.getId());
+		boolean isReviewed = reviewResult.isPresent();
 		return reviewMapper.toRevieweeListResponse(crewMemberUser, crewMember.getCrewMemberRole(), isReviewed);
 	}
 
