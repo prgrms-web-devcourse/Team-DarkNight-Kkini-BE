@@ -65,6 +65,10 @@ public class Proposal extends BaseEntity {
 		this.status = ProposalStatus.WAITING;
 	}
 
+	public void changeProposalStatus(ProposalStatus status) {
+		this.status = status;
+	}
+
 	private User validateUser(User user) {
 		notNull(user, "유효하지 않는 User");
 		return user;
