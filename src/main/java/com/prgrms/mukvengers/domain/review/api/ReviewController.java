@@ -3,6 +3,7 @@ package com.prgrms.mukvengers.domain.review.api;
 import static org.springframework.http.MediaType.*;
 
 import java.net.URI;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -23,6 +24,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.prgrms.mukvengers.domain.review.dto.request.CreateLeaderReviewRequest;
 import com.prgrms.mukvengers.domain.review.dto.request.CreateMemberReviewRequest;
 import com.prgrms.mukvengers.domain.review.dto.response.ReviewResponse;
+import com.prgrms.mukvengers.domain.review.dto.response.RevieweeListResponse;
 import com.prgrms.mukvengers.domain.review.service.ReviewService;
 import com.prgrms.mukvengers.global.common.dto.ApiResponse;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
@@ -107,10 +109,10 @@ public class ReviewController {
 	 */
 	@GetMapping(value = "/reviews/me", produces = APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponse<Page<ReviewResponse>>> getAllReceivedReview
-		(
-			@AuthenticationPrincipal JwtAuthentication user,
-			@PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable
-		) {
+	(
+		@AuthenticationPrincipal JwtAuthentication user,
+		@PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable
+	) {
 		Page<ReviewResponse> reviews = reviewService.getAllReceivedReview(user.id(), pageable);
 		return ResponseEntity.ok().body(new ApiResponse<>(reviews));
 	}
@@ -132,4 +134,23 @@ public class ReviewController {
 		Page<ReviewResponse> reviews = reviewService.getAllWroteReview(user.id(), pageable);
 		return ResponseEntity.ok().body(new ApiResponse<>(reviews));
 	}
+
+	/**
+	 * 자신이 작성할 수 있는 리뷰이 조회
+	 * @param user 사용자 정보
+	 * @param crewId 크루 아이디
+	 * @return status : 200 body : 자신이 작성한 리뷰 전체 데이터
+	 */
+	@GetMapping(value = "/crews/{crewId}/reviews", produces = APPLICATION_JSON_VALUE)
+	public ResponseEntity<ApiResponse<List<RevieweeListResponse>>> getMyReviewList
+	(
+		@PathVariable Long crewId,
+		@AuthenticationPrincipal JwtAuthentication user
+	) {
+		List<RevieweeListResponse> myCrewRevieweeList
+			= reviewService.getRevieweeListFromCrew(user.id(), crewId);
+
+		return ResponseEntity.ok().body(new ApiResponse<>(myCrewRevieweeList));
+	}
+
 }
