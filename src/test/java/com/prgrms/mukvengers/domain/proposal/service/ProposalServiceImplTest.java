@@ -18,6 +18,7 @@ import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.domain.proposal.dto.request.CreateProposalRequest;
+import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponse;
 import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponses;
 import com.prgrms.mukvengers.domain.proposal.model.Proposal;
 import com.prgrms.mukvengers.domain.user.model.User;
@@ -64,10 +65,12 @@ class ProposalServiceImplTest extends ServiceTest {
 		Crew createCrew = createCrew(savedStore, CrewStatus.RECRUITING);
 		Crew crew = crewRepository.save(createCrew);
 
-		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(leader.getId(), crew, CrewMemberRole.LEADER);
+		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(leader.getId(), crew,
+			CrewMemberRole.LEADER);
 		crewMemberRepository.save(createCrewMember);
 
-		List<CrewMember> crewMembers = CrewMemberObjectProvider.createCrewMembers(savedUserId, crew, CrewMemberRole.MEMBER,
+		List<CrewMember> crewMembers = CrewMemberObjectProvider.createCrewMembers(savedUserId, crew,
+			CrewMemberRole.MEMBER,
 			crew.getCapacity());
 
 		crewMemberRepository.saveAll(crewMembers);
@@ -91,7 +94,8 @@ class ProposalServiceImplTest extends ServiceTest {
 		Crew createCrew = createCrew(savedStore, CrewStatus.RECRUITING);
 		Crew crew = crewRepository.save(createCrew);
 
-		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(savedUserId, crew, CrewMemberRole.BLOCKED);
+		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(savedUserId, crew,
+			CrewMemberRole.BLOCKED);
 		crewMemberRepository.save(createCrewMember);
 
 		CreateProposalRequest proposalRequest = ProposalObjectProvider.createProposalRequest(savedUserId);
@@ -113,7 +117,8 @@ class ProposalServiceImplTest extends ServiceTest {
 		Crew createCrew = createCrew(savedStore, CrewStatus.RECRUITING);
 		Crew crew = crewRepository.save(createCrew);
 
-		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(savedUserId, crew, CrewMemberRole.LEADER);
+		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(savedUserId, crew,
+			CrewMemberRole.LEADER);
 		crewMemberRepository.save(createCrewMember);
 
 		CreateProposalRequest proposalRequest = ProposalObjectProvider.createProposalRequest(savedUserId);
@@ -135,7 +140,8 @@ class ProposalServiceImplTest extends ServiceTest {
 		Crew createCrew = createCrew(savedStore, CrewStatus.RECRUITING);
 		Crew crew = crewRepository.save(createCrew);
 
-		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(savedUserId, crew, CrewMemberRole.MEMBER);
+		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(savedUserId, crew,
+			CrewMemberRole.MEMBER);
 		crewMemberRepository.save(createCrewMember);
 
 		CreateProposalRequest proposalRequest = ProposalObjectProvider.createProposalRequest(savedUserId);
@@ -147,6 +153,40 @@ class ProposalServiceImplTest extends ServiceTest {
 			)
 			.isInstanceOf(IllegalStateException.class)
 			.hasMessageContaining(DUPLICATE_USER_EXCEPTION_MESSAGE);
+	}
+
+	@Test
+	@DisplayName("[성공] 신청서 아이디로 신청서를 조회한다.")
+	void getById() {
+		//given
+		User user = createUser("1232456789");
+		userRepository.save(user);
+
+		Crew crew = createCrew(savedStore, CrewStatus.RECRUITING);
+		crewRepository.save(crew);
+
+		Proposal proposal = ProposalObjectProvider.createProposal(user, savedUser.getId(), crew.getId());
+		proposalRepository.save(proposal);
+
+		//when
+		ProposalResponse response = proposalService.getById(proposal.getId());
+
+		assertThat(response)
+			.hasFieldOrPropertyWithValue("id", proposal.getId())
+			.hasFieldOrPropertyWithValue("leaderId", savedUserId)
+			.hasFieldOrPropertyWithValue("crewId", crew.getId())
+			.hasFieldOrPropertyWithValue("content", proposal.getContent())
+			.hasFieldOrPropertyWithValue("status", proposal.getStatus());
+		
+		assertThat(response.user())
+			.hasFieldOrPropertyWithValue("id", user.getId())
+			.hasFieldOrPropertyWithValue("nickname", user.getNickname())
+			.hasFieldOrPropertyWithValue("profileImgUrl", user.getProfileImgUrl())
+			.hasFieldOrPropertyWithValue("introduction", user.getIntroduction())
+			.hasFieldOrPropertyWithValue("leaderCount", user.getLeaderCount())
+			.hasFieldOrPropertyWithValue("crewCount", user.getCrewCount())
+			.hasFieldOrPropertyWithValue("tasteScore", user.getTasteScore())
+			.hasFieldOrPropertyWithValue("mannerScore", user.getMannerScore());
 	}
 
 	@Test
