@@ -23,4 +23,13 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 		WHERE r.reviewer.id = :userId
 		""")
 	Page<Review> findByReviewer(@Param(value = "userId") Long userId, Pageable pageable);
+
+	@Query(value = """
+		SELECT EXISTS
+		(SELECT 1
+		FROM Review r
+		WHERE r.crew.id = :crewId AND r.reviewee.id = :revieweeId AND r.reviewer.id = :reviewerId )
+		""")
+	boolean existReview(@Param(value = "crewId") Long crewId,
+		@Param(value = "revieweeId") Long revieweeId, @Param(value = "reviewerId") Long reviewerId);
 }
