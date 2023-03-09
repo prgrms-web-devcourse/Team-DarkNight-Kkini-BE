@@ -177,6 +177,16 @@ class ProposalServiceImplTest extends ServiceTest {
 			.hasFieldOrPropertyWithValue("crewId", crew.getId())
 			.hasFieldOrPropertyWithValue("content", proposal.getContent())
 			.hasFieldOrPropertyWithValue("status", proposal.getStatus());
+		
+		assertThat(response.user())
+			.hasFieldOrPropertyWithValue("id", user.getId())
+			.hasFieldOrPropertyWithValue("nickname", user.getNickname())
+			.hasFieldOrPropertyWithValue("profileImgUrl", user.getProfileImgUrl())
+			.hasFieldOrPropertyWithValue("introduction", user.getIntroduction())
+			.hasFieldOrPropertyWithValue("leaderCount", user.getLeaderCount())
+			.hasFieldOrPropertyWithValue("crewCount", user.getCrewCount())
+			.hasFieldOrPropertyWithValue("tasteScore", user.getTasteScore())
+			.hasFieldOrPropertyWithValue("mannerScore", user.getMannerScore());
 	}
 
 	@Test
