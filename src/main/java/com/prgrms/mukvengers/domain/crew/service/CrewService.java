@@ -4,7 +4,6 @@ import org.springframework.data.domain.Pageable;
 
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.SearchCrewRequest;
-import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewDetailResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponses;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
@@ -23,6 +22,6 @@ public interface CrewService {
 
 	CrewLocationResponses getByLocation(SearchCrewRequest distanceRequest);
 
-	void updateStatus(UpdateStatusRequest updateStatusRequest);
+	void closeStatus(Long crewId, Long userId);
 
 }

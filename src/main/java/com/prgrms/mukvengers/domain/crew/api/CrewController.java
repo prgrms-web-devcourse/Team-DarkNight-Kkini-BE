@@ -23,7 +23,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.SearchCrewRequest;
-import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewDetailResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponses;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
@@ -132,19 +131,19 @@ public class CrewController {
 
 	/**
 	 * <pre>
-	 *     밥 모임 상태 변경
+	 *     밥 모임 모집 종료로 상태 변경
 	 * </pre>
-	 * @param updateStatusRequest 밤 모임 아이디와, 변경할 상태 DTO
+	 * @param crewId 밤 모임 아이디와
 	 * @param user 사용자 정보
 	 * @return status : 200
 	 */
-	@PatchMapping
-	public ResponseEntity<Void> updateStatus
+	@PatchMapping(value = "/{crewId}/close")
+	public ResponseEntity<Void> closeStatus
 	(
-		@RequestBody @Valid UpdateStatusRequest updateStatusRequest,
+		@PathVariable Long crewId,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		crewService.updateStatus(updateStatusRequest);
+		crewService.closeStatus(crewId, user.id());
 		return ResponseEntity.ok().build();
 	}
 

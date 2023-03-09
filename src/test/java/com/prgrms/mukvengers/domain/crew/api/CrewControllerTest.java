@@ -25,7 +25,6 @@ import org.springframework.util.MultiValueMap;
 import com.epages.restdocs.apispec.Schema;
 import com.prgrms.mukvengers.base.ControllerTest;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
-import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
@@ -342,7 +341,6 @@ class CrewControllerTest extends ControllerTest {
 
 		mockMvc.perform(get("/api/v1/crews")
 				.params(params)
-				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
 				.accept(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data").exists())
@@ -370,22 +368,19 @@ class CrewControllerTest extends ControllerTest {
 
 	@Test
 	@DisplayName("[성공]밥 모임 상태를 변경한다.")
-	void updateStatus_success() throws Exception {
+	void closeStatus_success() throws Exception {
 
 		Crew crew = CrewObjectProvider.createCrew(savedStore, RECRUITING);
 
 		crewRepository.save(crew);
 
-		String status = "모집종료";
+		CrewMember crewMember = createCrewMember(savedUserId, crew, CrewMemberRole.LEADER);
 
-		UpdateStatusRequest updateStatusRequest = new UpdateStatusRequest(crew.getId(), status);
+		crewMemberRepository.save(crewMember);
 
-		String jsonRequest = objectMapper.writeValueAsString(updateStatusRequest);
-
-		mockMvc.perform(patch("/api/v1/crews")
+		mockMvc.perform(patch("/api/v1/crews/{crewId}/close", crew.getId())
 				.contentType(APPLICATION_JSON)
-				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
-				.content(jsonRequest))
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken))
 			.andExpect(status().isOk())
 			.andDo(print())
 			.andDo(document("crew-updateStatus",
@@ -394,10 +389,6 @@ class CrewControllerTest extends ControllerTest {
 						.tag(CREW)
 						.summary("모임 상태 변경 API")
 						.description("밥 모임의 상태를 변경합니다.")
-						.requestSchema(UPDATE_CREW_REQUEST)
-						.requestFields(
-							fieldWithPath("crewId").type(NUMBER).description("밥 모임 아이디"),
-							fieldWithPath("status").type(STRING).description("밥 모임 상태"))
 						.build()
 				)
 			));
