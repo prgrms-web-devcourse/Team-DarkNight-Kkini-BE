@@ -19,7 +19,6 @@ import org.springframework.data.domain.Slice;
 import com.prgrms.mukvengers.base.ServiceTest;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.SearchCrewRequest;
-import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewDetailResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponses;
@@ -149,25 +148,26 @@ class CrewServiceImplTest extends ServiceTest {
 
 	@Test
 	@DisplayName("[성공] 모임의 상태를 받아 변경한다.")
-	void updateStatus_success() {
+	void closeStatus_success() {
 
 		//given
 		Crew crew = CrewObjectProvider.createCrew(savedStore, RECRUITING);
 
 		crewRepository.save(crew);
 
-		String status = "모집종료";
-		UpdateStatusRequest updateStatusRequest = new UpdateStatusRequest(crew.getId(), status);
+		CrewMember crewMember = createCrewMember(savedUserId, crew, CrewMemberRole.LEADER);
+
+		crewMemberRepository.save(crewMember);
 
 		//when
-		crewService.updateStatus(updateStatusRequest);
+		crewService.closeStatus(crew.getId(), savedUserId);
 
 		//then
 		Optional<Crew> optionalCrew = crewRepository.findById(crew.getId());
 
 		assertThat(optionalCrew).isPresent();
 		Crew savedCrew = optionalCrew.get();
-		assertThat(savedCrew.getStatus()).isEqualTo(of(status));
+		assertThat(savedCrew.getStatus()).isEqualTo(CLOSE);
 	}
 
 }
