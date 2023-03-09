@@ -407,4 +407,44 @@ class ReviewControllerTest extends ControllerTest {
 				)
 			));
 	}
+
+	@Test
+	@DisplayName("[성공] 리뷰어 아이디가 사용자 아이디와 같다면 사용자가 다른 사람에게 작성한 모든 리뷰를 조회할 수 있다.")
+	void getMyReviewList() throws Exception {
+		// given
+
+		CrewMember crewMemberOfMember1 = crewMemberRepository.save(
+			CrewMemberObjectProvider.createCrewMember(reviewee.getId(), crew, CrewMemberRole.MEMBER));
+		crew.addCrewMember(crewMemberOfMember1);
+
+		CrewMember crewMemberOfMember2 = crewMemberRepository.save(
+			CrewMemberObjectProvider.createCrewMember(reviewer.getId(), crew, CrewMemberRole.MEMBER));
+		crew.addCrewMember(crewMemberOfMember2);
+
+		List<Review> reviews = ReviewObjectProvider.createReviews(reviewer, reviewee, crew);
+
+		reviewRepository.saveAll(reviews);
+
+		mockMvc.perform(get("/api/v1/crews/{crewId}/reviews", crew.getId())
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken))
+			// when & then
+			.andExpect(status().isOk())
+			.andDo(print())
+			.andDo(document("review-getMyReviewList",
+				resource(
+					builder()
+						.tag(REVIEW)
+						.summary("자신이 작성할 수 있는 리뷰이 조회 API")
+						.responseSchema(ALL_WROTE_REVIEW)
+						.description("사용자가 작성할 수 있는 리뷰이를 조회합니다.")
+						.responseFields(
+							fieldWithPath("data.[].userId").type(NUMBER).description("사용자 아이디"),
+							fieldWithPath("data.[].nickname").type(STRING).description("사용자 닉네임"),
+							fieldWithPath("data.[].profileImgUrl").type(STRING).description("사용자 프로필 이미지 주소"),
+							fieldWithPath("data.[].crewMemberRole").type(STRING).description("사용자 권한"),
+							fieldWithPath("data.[].isReviewed").type(BOOLEAN).description("리뷰 여부"))
+						.build()
+				)
+			));
+	}
 }

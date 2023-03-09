@@ -48,7 +48,7 @@ public interface ReviewMapper {
 	@Mapping(target = "profileImgUrl", source = "user.profileImgUrl")
 	@Mapping(target = "crewMemberRole", source = "crewMemberRole")
 	@Mapping(target = "isReviewed", source = "isReviewed")
-	RevieweeListResponse toRevieweeListResponse(User reviewee, CrewMemberRole crewMemberRole, boolean isReviewed);
+	RevieweeListResponse toRevieweeListResponse(User user, CrewMemberRole crewMemberRole, boolean isReviewed);
 
 	@Named("tasteScoreToZero")
 	default Integer tasteScoreNullToZero(CreateMemberReviewRequest request) {
