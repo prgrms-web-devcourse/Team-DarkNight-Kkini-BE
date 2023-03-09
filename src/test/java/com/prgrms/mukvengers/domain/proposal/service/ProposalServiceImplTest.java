@@ -18,8 +18,11 @@ import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.domain.proposal.dto.request.CreateProposalRequest;
+import com.prgrms.mukvengers.domain.proposal.dto.request.UpdateProposalRequest;
 import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponses;
+import com.prgrms.mukvengers.domain.proposal.exception.InvalidProposalStatusException;
 import com.prgrms.mukvengers.domain.proposal.model.Proposal;
+import com.prgrms.mukvengers.domain.proposal.model.vo.ProposalStatus;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
 import com.prgrms.mukvengers.utils.CrewMemberObjectProvider;
@@ -148,6 +151,96 @@ class ProposalServiceImplTest extends ServiceTest {
 			.isInstanceOf(IllegalStateException.class)
 			.hasMessageContaining(DUPLICATE_USER_EXCEPTION_MESSAGE);
 	}
+
+	@Test
+	@DisplayName("[성공] 방장이 신청서를 '승인'하는 경우 밥모임원에 등록된다.")
+	void update_proposalStatus_approve_success() {
+
+		//given
+		String inputProposalStatus = "승인";
+		User createUser = createUser("1232456789");
+		User user = userRepository.save(createUser);
+
+		Crew creatCrew = createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew crew = crewRepository.save(creatCrew);
+
+		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(savedUserId, crew, CrewMemberRole.LEADER);
+		CrewMember leader = crewMemberRepository.save(crewMemberOfLeader);
+
+		Proposal createProposal = ProposalObjectProvider.createProposal(user, leader.getId(), crew.getId());
+		Proposal proposal = proposalRepository.save(createProposal);
+
+		UpdateProposalRequest proposalRequest = new UpdateProposalRequest(inputProposalStatus);
+
+		// when
+		proposalService.approve(proposalRequest, user.getId(), proposal.getId());
+		Optional<CrewMember> saveCrewMember = crewMemberRepository.findCrewMemberByCrewIdAndUserId(
+			crew.getId(), user.getId());
+
+		// then
+		assertThat(proposal.getStatus()).isEqualTo(ProposalStatus.APPROVE);
+		assertThat(saveCrewMember).isPresent();
+		assertThat(saveCrewMember.get().getUserId()).isEqualTo(user.getId());
+	}
+
+	@Test
+	@DisplayName("[성공] 방장이 신청서를 '거절'하는 경우 밥모임원에 등록되지 않는다.")
+	void update_proposalStatus_refuse_success() {
+
+		//given
+		String inputProposalStatus = "거절";
+		User createUser = createUser("1232456789");
+		User user = userRepository.save(createUser);
+
+		Crew creatCrew = createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew crew = crewRepository.save(creatCrew);
+
+		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(savedUserId, crew, CrewMemberRole.LEADER);
+		CrewMember leader = crewMemberRepository.save(crewMemberOfLeader);
+
+		Proposal createProposal = ProposalObjectProvider.createProposal(user, leader.getId(), crew.getId());
+		Proposal proposal = proposalRepository.save(createProposal);
+
+		UpdateProposalRequest proposalRequest = new UpdateProposalRequest(inputProposalStatus);
+
+		// when
+		proposalService.approve(proposalRequest, user.getId(), proposal.getId());
+		Optional<CrewMember> saveCrewMember = crewMemberRepository.findCrewMemberByCrewIdAndUserId(
+			crew.getId(), user.getId());
+
+		// then
+		assertThat(proposal.getStatus()).isEqualTo(ProposalStatus.REFUSE);
+		assertThat(saveCrewMember).isEmpty();
+	}
+
+	@Test
+	@DisplayName("[실패] 방장이 올바르지 않은 상태를 응답하면 에러가 발생한다.")
+	void update_proposalStatus_fail_otherProposalStatus() {
+
+		//given
+		String inputProposalStatus = "모름";
+		User createUser = createUser("1232456789");
+		User user = userRepository.save(createUser);
+
+		Crew creatCrew = createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew crew = crewRepository.save(creatCrew);
+
+		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(savedUserId, crew, CrewMemberRole.LEADER);
+		CrewMember leader = crewMemberRepository.save(crewMemberOfLeader);
+
+		Proposal createProposal = ProposalObjectProvider.createProposal(user, leader.getId(), crew.getId());
+		Proposal proposal = proposalRepository.save(createProposal);
+
+		UpdateProposalRequest proposalRequest = new UpdateProposalRequest(inputProposalStatus);
+
+		// when & then
+		assertThatThrownBy
+			(
+				() -> proposalService.approve(proposalRequest, user.getId(), proposal.getId())
+			)
+			.isInstanceOf(InvalidProposalStatusException.class);
+	}
+
 
 	@Test
 	@DisplayName("[성공] 사용자가 방장인 모임의 모든 신청서를 조회한다.")
