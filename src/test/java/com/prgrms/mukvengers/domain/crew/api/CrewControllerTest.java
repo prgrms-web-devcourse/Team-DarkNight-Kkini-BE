@@ -378,7 +378,7 @@ class CrewControllerTest extends ControllerTest {
 
 		crewMemberRepository.save(crewMember);
 
-		mockMvc.perform(patch("/api/v1/crews/{crewId}", crew.getId())
+		mockMvc.perform(patch("/api/v1/crews/{crewId}/close", crew.getId())
 				.contentType(APPLICATION_JSON)
 				.header(AUTHORIZATION, BEARER_TYPE + accessToken))
 			.andExpect(status().isOk())

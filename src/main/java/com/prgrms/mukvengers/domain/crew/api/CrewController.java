@@ -137,7 +137,7 @@ public class CrewController {
 	 * @param user 사용자 정보
 	 * @return status : 200
 	 */
-	@PatchMapping(value = "/{crewId}")
+	@PatchMapping(value = "/{crewId}/close")
 	public ResponseEntity<Void> closeStatus
 	(
 		@PathVariable Long crewId,
