@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 
 import com.prgrms.mukvengers.base.ServiceTest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
-import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.domain.proposal.dto.request.CreateProposalRequest;
@@ -35,7 +34,7 @@ class ProposalServiceImplTest extends ServiceTest {
 		User createUser = createUser("12121212");
 		User leader = userRepository.save(createUser);
 
-		Crew createCrew = createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew createCrew = createCrew(savedStore);
 		Crew crew = crewRepository.save(createCrew);
 
 		CreateProposalRequest proposalRequest = ProposalObjectProvider.createProposalRequest(leader.getId());
@@ -61,13 +60,15 @@ class ProposalServiceImplTest extends ServiceTest {
 		User createUser = createUser("12121212");
 		User leader = userRepository.save(createUser);
 
-		Crew createCrew = createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew createCrew = createCrew(savedStore);
 		Crew crew = crewRepository.save(createCrew);
 
-		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(leader.getId(), crew, CrewMemberRole.LEADER);
+		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(leader.getId(), crew,
+			CrewMemberRole.LEADER);
 		crewMemberRepository.save(createCrewMember);
 
-		List<CrewMember> crewMembers = CrewMemberObjectProvider.createCrewMembers(savedUserId, crew, CrewMemberRole.MEMBER,
+		List<CrewMember> crewMembers = CrewMemberObjectProvider.createCrewMembers(savedUserId, crew,
+			CrewMemberRole.MEMBER,
 			crew.getCapacity());
 
 		crewMemberRepository.saveAll(crewMembers);
@@ -88,10 +89,11 @@ class ProposalServiceImplTest extends ServiceTest {
 	void createProposal_fail_blockedUser() {
 
 		//given
-		Crew createCrew = createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew createCrew = createCrew(savedStore);
 		Crew crew = crewRepository.save(createCrew);
 
-		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(savedUserId, crew, CrewMemberRole.BLOCKED);
+		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(savedUserId, crew,
+			CrewMemberRole.BLOCKED);
 		crewMemberRepository.save(createCrewMember);
 
 		CreateProposalRequest proposalRequest = ProposalObjectProvider.createProposalRequest(savedUserId);
@@ -110,10 +112,11 @@ class ProposalServiceImplTest extends ServiceTest {
 	void createProposal_fail_LeaderUser() {
 
 		//given
-		Crew createCrew = createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew createCrew = createCrew(savedStore);
 		Crew crew = crewRepository.save(createCrew);
 
-		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(savedUserId, crew, CrewMemberRole.LEADER);
+		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(savedUserId, crew,
+			CrewMemberRole.LEADER);
 		crewMemberRepository.save(createCrewMember);
 
 		CreateProposalRequest proposalRequest = ProposalObjectProvider.createProposalRequest(savedUserId);
@@ -132,10 +135,11 @@ class ProposalServiceImplTest extends ServiceTest {
 	void createProposal_fail_DuplicatedUser() {
 
 		//given
-		Crew createCrew = createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew createCrew = createCrew(savedStore);
 		Crew crew = crewRepository.save(createCrew);
 
-		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(savedUserId, crew, CrewMemberRole.MEMBER);
+		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(savedUserId, crew,
+			CrewMemberRole.MEMBER);
 		crewMemberRepository.save(createCrewMember);
 
 		CreateProposalRequest proposalRequest = ProposalObjectProvider.createProposalRequest(savedUserId);
@@ -157,7 +161,7 @@ class ProposalServiceImplTest extends ServiceTest {
 		User user = createUser("1232456789");
 		userRepository.save(user);
 
-		Crew crew = createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew crew = createCrew(savedStore);
 		crewRepository.save(crew);
 
 		List<Proposal> proposals = createProposals(user, savedUser.getId(), crew.getId());
@@ -178,7 +182,7 @@ class ProposalServiceImplTest extends ServiceTest {
 		User user = createUser("1232456789");
 		userRepository.save(user);
 
-		Crew crew = createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew crew = createCrew(savedStore);
 		crewRepository.save(crew);
 
 		List<Proposal> proposals = createProposals(savedUser, user.getId(), crew.getId());

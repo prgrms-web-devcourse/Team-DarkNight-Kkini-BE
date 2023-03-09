@@ -1,6 +1,5 @@
 package com.prgrms.mukvengers.domain.review.service;
 
-import static com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus.*;
 import static com.prgrms.mukvengers.utils.CrewObjectProvider.*;
 import static com.prgrms.mukvengers.utils.ReviewObjectProvider.*;
 import static com.prgrms.mukvengers.utils.UserObjectProvider.*;
@@ -19,7 +18,6 @@ import com.prgrms.mukvengers.base.ServiceTest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
-import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
 import com.prgrms.mukvengers.domain.review.dto.request.CreateLeaderReviewRequest;
 import com.prgrms.mukvengers.domain.review.dto.request.CreateMemberReviewRequest;
 import com.prgrms.mukvengers.domain.review.dto.response.ReviewResponse;
@@ -38,7 +36,7 @@ class ReviewServiceImplTest extends ServiceTest {
 	void setReview() {
 		reviewer = savedUser;
 		reviewee = userRepository.save(createUser("kakao_1212"));
-		crew = crewRepository.save(createCrew(savedStore, RECRUITING));
+		crew = crewRepository.save(createCrew(savedStore));
 	}
 
 	@Test
