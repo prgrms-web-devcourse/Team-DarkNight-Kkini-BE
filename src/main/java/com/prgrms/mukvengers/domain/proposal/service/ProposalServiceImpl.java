@@ -129,7 +129,7 @@ public class ProposalServiceImpl implements ProposalService {
 
 		proposal.changeProposalStatus(proposalStatus);
 
-		if (proposal.isApprove(proposalStatus)) return;
+		if (!proposal.isApprove(proposalStatus)) return;
 
 		CrewMember createCrewMember = crewMemberMapper.toCrewMember(crew, userId, CrewMemberRole.MEMBER);
 
