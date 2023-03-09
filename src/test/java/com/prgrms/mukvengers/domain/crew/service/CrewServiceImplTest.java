@@ -82,7 +82,7 @@ class CrewServiceImplTest extends ServiceTest {
 	void getById_success() {
 
 		//given
-		Crew crew = CrewObjectProvider.createCrew(savedStore, RECRUITING);
+		Crew crew = CrewObjectProvider.createCrew(savedStore);
 
 		crewRepository.save(crew);
 
@@ -127,7 +127,7 @@ class CrewServiceImplTest extends ServiceTest {
 	void findByLocation_success() {
 
 		//given
-		Crew crew = CrewObjectProvider.createCrew(savedStore, RECRUITING);
+		Crew crew = CrewObjectProvider.createCrew(savedStore);
 
 		crewRepository.save(crew);
 
@@ -151,7 +151,7 @@ class CrewServiceImplTest extends ServiceTest {
 	void closeStatus_success() {
 
 		//given
-		Crew crew = CrewObjectProvider.createCrew(savedStore, RECRUITING);
+		Crew crew = CrewObjectProvider.createCrew(savedStore);
 
 		crewRepository.save(crew);
 
@@ -168,6 +168,32 @@ class CrewServiceImplTest extends ServiceTest {
 		assertThat(optionalCrew).isPresent();
 		Crew savedCrew = optionalCrew.get();
 		assertThat(savedCrew.getStatus()).isEqualTo(CLOSE);
+	}
+
+	@Test
+	@DisplayName("[성공] 모임의 상태를 받아 변경한다.")
+	void finishStatus_success() {
+
+		//given
+		Crew crew = CrewObjectProvider.createCrew(savedStore);
+
+		crew.changeStatus(CLOSE);
+
+		crewRepository.save(crew);
+
+		CrewMember crewMember = createCrewMember(savedUserId, crew, CrewMemberRole.LEADER);
+
+		crewMemberRepository.save(crewMember);
+
+		//when
+		crewService.finishStatus(crew.getId(), savedUserId);
+
+		//then
+		Optional<Crew> optionalCrew = crewRepository.findById(crew.getId());
+
+		assertThat(optionalCrew).isPresent();
+		Crew savedCrew = optionalCrew.get();
+		assertThat(savedCrew.getStatus()).isEqualTo(FINISH);
 	}
 
 }

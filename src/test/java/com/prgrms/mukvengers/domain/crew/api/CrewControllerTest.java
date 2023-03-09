@@ -3,7 +3,6 @@ package com.prgrms.mukvengers.domain.crew.api;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
 import static com.epages.restdocs.apispec.ResourceDocumentation.*;
 import static com.epages.restdocs.apispec.ResourceSnippetParameters.*;
-import static com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus.*;
 import static com.prgrms.mukvengers.utils.CrewMemberObjectProvider.*;
 import static com.prgrms.mukvengers.utils.CrewObjectProvider.*;
 import static org.hamcrest.Matchers.*;
@@ -26,6 +25,7 @@ import com.epages.restdocs.apispec.Schema;
 import com.prgrms.mukvengers.base.ControllerTest;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
+import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.utils.CrewMemberObjectProvider;
@@ -96,7 +96,7 @@ class CrewControllerTest extends ControllerTest {
 	@DisplayName("[성공] 모임 아이디로 모임을 조회한다.")
 	void getById_success() throws Exception {
 
-		Crew crew = CrewObjectProvider.createCrew(savedStore, RECRUITING);
+		Crew crew = CrewObjectProvider.createCrew(savedStore);
 
 		crewRepository.save(crew);
 
@@ -367,10 +367,10 @@ class CrewControllerTest extends ControllerTest {
 	}
 
 	@Test
-	@DisplayName("[성공]밥 모임 상태를 변경한다.")
+	@DisplayName("[성공] 모임 상태를 모집 중 -> 모집 완료로 변경한다.")
 	void closeStatus_success() throws Exception {
 
-		Crew crew = CrewObjectProvider.createCrew(savedStore, RECRUITING);
+		Crew crew = CrewObjectProvider.createCrew(savedStore);
 
 		crewRepository.save(crew);
 
@@ -383,12 +383,43 @@ class CrewControllerTest extends ControllerTest {
 				.header(AUTHORIZATION, BEARER_TYPE + accessToken))
 			.andExpect(status().isOk())
 			.andDo(print())
-			.andDo(document("crew-updateStatus",
+			.andDo(document("crew-closeStatus",
 				resource(
 					builder()
 						.tag(CREW)
-						.summary("모임 상태 변경 API")
-						.description("밥 모임의 상태를 변경합니다.")
+						.summary("모임 상태 모집 중 -> 모집 완료 변경 API")
+						.description("모집 중인 상태를 모집 완료 상태로 변경합니다.")
+						.build()
+				)
+			));
+
+	}
+
+	@Test
+	@DisplayName("[성공] 모임 상태를 모집 완료 -> 식사 완료로 변경한다.")
+	void finishStatus_success() throws Exception {
+
+		Crew crew = CrewObjectProvider.createCrew(savedStore);
+
+		crew.changeStatus(CrewStatus.CLOSE);
+
+		crewRepository.save(crew);
+
+		CrewMember crewMember = createCrewMember(savedUserId, crew, CrewMemberRole.LEADER);
+
+		crewMemberRepository.save(crewMember);
+
+		mockMvc.perform(patch("/api/v1/crews/{crewId}/finish", crew.getId())
+				.contentType(APPLICATION_JSON)
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken))
+			.andExpect(status().isOk())
+			.andDo(print())
+			.andDo(document("crew-finishStatus",
+				resource(
+					builder()
+						.tag(CREW)
+						.summary("모임 상태 모집 완료 -> 식사 완료 변경 API")
+						.description("모집 완료인 상태를 식사 완료 상태로 변경합니다.")
 						.build()
 				)
 			));
