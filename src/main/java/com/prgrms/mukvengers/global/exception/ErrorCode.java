@@ -49,7 +49,10 @@ public enum ErrorCode {
 	EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "A002", "만료된 토큰입니다."),
 	NOT_FOUND_TOKEN(HttpStatus.UNAUTHORIZED, "A003", "로그인이 필요합니다."),
 	NOT_FOUND_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "A004", "유효하지 않은 리프레쉬 토큰입니다."),
-	NOT_FOUND_COOKIE(HttpStatus.UNAUTHORIZED, "A005", "쿠키를 찾을 수 없습니다.");
+	NOT_FOUND_COOKIE(HttpStatus.UNAUTHORIZED, "A005", "쿠키를 찾을 수 없습니다."),
+
+	//WebSocket
+	EXCEPTION_IN_WEBSOCKET(HttpStatus.UNAUTHORIZED, "W001", "웹 소켓 연결 중에 예외가 발생하였습니다.");
 
 	private final HttpStatus status;
 	private final String code;
