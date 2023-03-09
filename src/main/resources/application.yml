@@ -16,6 +16,7 @@ spring:
       - db
       - security
       - aws
+      - slack
   # ResourceHandler 설정 (Static Resource Mapping)
   web:
     resources:

@@ -93,6 +93,9 @@ dependencies {
     implementation group: 'ca.pjer', name: 'logback-awslogs-appender', version: '1.6.0'
     // AWS
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+    //Slack appender
+    implementation 'com.github.maricn:logback-slack-appender:1.4.0'
 }
 
 
