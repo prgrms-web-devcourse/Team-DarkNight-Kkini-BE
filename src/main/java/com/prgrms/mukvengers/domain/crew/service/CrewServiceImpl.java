@@ -150,7 +150,9 @@ public class CrewServiceImpl implements CrewService {
 
 	@Override
 	@Transactional
-	public CrewStatusResponse updateStatus(Long crewId, Long userId, CrewStatus crewStatus) {
+	public CrewStatusResponse updateStatus(Long crewId, Long userId, String crewStatus) {
+
+		CrewStatus status = CrewStatus.of(crewStatus);
 
 		Crew crew = crewRepository.findById(crewId)
 			.orElseThrow(() -> new CrewNotFoundException(crewId));
@@ -162,7 +164,7 @@ public class CrewServiceImpl implements CrewService {
 			throw new NotLeaderException(CrewMemberRole.LEADER);
 		}
 
-		switch (crewStatus) {
+		switch (status) {
 			case CLOSE -> {
 				if (!crew.getStatus().equals(CrewStatus.RECRUITING)) {
 					throw new CrewStatusException(crew.getStatus());
@@ -176,11 +178,11 @@ public class CrewServiceImpl implements CrewService {
 			}
 
 			default -> {
-				throw new CrewStatusException(crewStatus);
+				throw new CrewStatusException(status);
 			}
 		}
 
-		crew.changeStatus(crewStatus);
+		crew.changeStatus(status);
 
 		return new CrewStatusResponse(crew.getStatus());
 	}

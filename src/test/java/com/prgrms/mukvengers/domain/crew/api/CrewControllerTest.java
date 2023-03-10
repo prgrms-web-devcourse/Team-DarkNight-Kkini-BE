@@ -24,6 +24,7 @@ import org.springframework.util.MultiValueMap;
 import com.epages.restdocs.apispec.Schema;
 import com.prgrms.mukvengers.base.ControllerTest;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
+import com.prgrms.mukvengers.domain.crew.dto.request.UpdateCrewStatusRequest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
@@ -377,7 +378,9 @@ class CrewControllerTest extends ControllerTest {
 
 		crewMemberRepository.save(crewMember);
 
-		String jsonRequest = objectMapper.writeValueAsString("close");
+		UpdateCrewStatusRequest updateCrewStatusRequest = new UpdateCrewStatusRequest("close");
+		
+		String jsonRequest = objectMapper.writeValueAsString(updateCrewStatusRequest);
 
 		mockMvc.perform(patch("/api/v1/crews/{crewId}", crew.getId())
 				.content(jsonRequest)

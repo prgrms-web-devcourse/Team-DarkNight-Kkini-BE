@@ -23,12 +23,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.SearchCrewRequest;
+import com.prgrms.mukvengers.domain.crew.dto.request.UpdateCrewStatusRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewDetailResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponses;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewStatusResponse;
-import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.crew.service.CrewService;
 import com.prgrms.mukvengers.global.common.dto.ApiResponse;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
@@ -134,7 +134,7 @@ public class CrewController {
 	 *     밥 모임 모집 종료로 상태 변경
 	 * </pre>
 	 * @param crewId 밤 모임 아이디
-	 * @param crewStatus 변경할 모임 상태
+	 * @param updateCrewStatusRequest 변경할 모임 상태
 	 * @param user 사용자 정보
 	 * @return status : 200
 	 */
@@ -142,10 +142,11 @@ public class CrewController {
 	public ResponseEntity<ApiResponse<CrewStatusResponse>> updateStatus
 	(
 		@PathVariable Long crewId,
-		@RequestBody CrewStatus crewStatus,
+		@RequestBody UpdateCrewStatusRequest updateCrewStatusRequest,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		CrewStatusResponse crewStatusResponse = crewService.updateStatus(crewId, user.id(), crewStatus);
+		CrewStatusResponse crewStatusResponse = crewService.updateStatus(crewId, user.id(),
+			updateCrewStatusRequest.crewStatus());
 		return ResponseEntity.ok().body(new ApiResponse<>(crewStatusResponse));
 	}
 
