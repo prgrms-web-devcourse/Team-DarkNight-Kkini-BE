@@ -82,7 +82,7 @@ class ReviewRepositoryTest extends RepositoryTest {
 		User createUser = UserObjectProvider.createUser("kakao_1");
 		User reviewer = userRepository.save(createUser);
 
-		Crew createCrew = CrewObjectProvider.createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew createCrew = CrewObjectProvider.createCrew(savedStore);
 		Crew crew = crewRepository.save(createCrew);
 
 		Review review = ReviewObjectProvider.createLeaderReview(reviewer, savedUser, crew);

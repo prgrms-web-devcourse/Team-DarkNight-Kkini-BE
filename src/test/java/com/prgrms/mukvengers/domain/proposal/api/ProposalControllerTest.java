@@ -78,7 +78,7 @@ class ProposalControllerTest extends ControllerTest {
 		User user = createUser("1232456789");
 		userRepository.save(user);
 
-		Crew crew = createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew crew = createCrew(savedStore);
 		crewRepository.save(crew);
 
 		Proposal proposal = ProposalObjectProvider.createProposal(user, savedUser.getId(), crew.getId());
