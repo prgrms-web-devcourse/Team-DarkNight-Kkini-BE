@@ -4,3 +4,4 @@ spring:
       - test
       - security
       - aws
+      - slack

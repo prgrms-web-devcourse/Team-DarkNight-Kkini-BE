@@ -1,4 +1,3 @@
-import org.hidetake.gradle.swagger.generator.GenerateSwaggerUI
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
@@ -93,9 +92,13 @@ dependencies {
     implementation 'org.hibernate:hibernate-spatial'
     //https://mvnrepository.com/artifact/org.locationtech.jts/jts-core
     implementation 'org.locationtech.jts:jts-core:1.19.0'
-
+    //logback - cloudwatch
+    implementation group: 'ca.pjer', name: 'logback-awslogs-appender', version: '1.6.0'
     // AWS
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+    //Slack Notification
+    implementation "net.gpedro.integrations.slack:slack-webhook:1.4.0"
 }
 
 

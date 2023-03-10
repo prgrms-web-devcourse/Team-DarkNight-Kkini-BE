@@ -1,0 +1,12 @@
+<included>
+    <appender name="SLACK_APPENDER" class="com.github.maricn.logback.SlackAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <webhookUri>${SLACK_WEBHOOK}</webhookUri>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level --- [%thread] %logger{35} : %msg %n</pattern>
+        </layout>
+    </appender>
+</included>
+

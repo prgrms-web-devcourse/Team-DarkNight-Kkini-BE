@@ -11,11 +11,12 @@ server:
 spring:
   profiles:
     active:
-      - prod
+      - ${ACTIVE_PROFILE}
     include:
       - db
       - security
       - aws
+      - slack
   # ResourceHandler 설정 (Static Resource Mapping)
   web:
     resources:

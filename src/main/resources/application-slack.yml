@@ -1,0 +1,6 @@
+spring:
+  config:
+    import: optional:file:.env[.properties]
+
+  slack:
+    webhook: ${SLACK_WEBHOOK}
