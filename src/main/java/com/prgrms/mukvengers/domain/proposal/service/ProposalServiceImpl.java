@@ -131,16 +131,16 @@ public class ProposalServiceImpl implements ProposalService {
 
 		ProposalStatus proposalStatus = ProposalStatus.of(status);
 
-		registerCrewMember(proposal, crew, userId, proposalStatus);
+		registerCrewMember(proposal, crew, proposalStatus);
 	}
 
-	private void registerCrewMember(Proposal proposal, Crew crew, Long userId, ProposalStatus proposalStatus) {
+	private void registerCrewMember(Proposal proposal, Crew crew, ProposalStatus proposalStatus) {
 
 		proposal.changeProposalStatus(proposalStatus);
 
 		if (!proposal.isApprove(proposalStatus)) return;
 
-		CrewMember createCrewMember = crewMemberMapper.toCrewMember(crew, userId, CrewMemberRole.MEMBER);
+		CrewMember createCrewMember = crewMemberMapper.toCrewMember(crew, proposal.getUser().getId(), CrewMemberRole.MEMBER);
 
 		CrewMember crewMember = crewMemberRepository.save(createCrewMember);
 

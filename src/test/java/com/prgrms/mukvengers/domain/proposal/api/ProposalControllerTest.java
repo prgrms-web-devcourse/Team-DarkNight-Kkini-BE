@@ -180,14 +180,20 @@ class ProposalControllerTest extends ControllerTest {
 		User user = userRepository.save(createUser);
 
 		Crew creatCrew = createCrew(savedStore);
+		Crew creatCrew = createCrew(savedStore, CrewStatus.RECRUITING);
 		Crew crew = crewRepository.save(creatCrew);
 
 		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(user.getId(), crew,
 			CrewMemberRole.LEADER);
+		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(savedUserId, crew, CrewMemberRole.LEADER);
 		CrewMember leader = crewMemberRepository.save(crewMemberOfLeader);
 
 		CrewMember crewMemberOfMember = CrewMemberObjectProvider.createCrewMember(user.getId(), crew,
 			CrewMemberRole.MEMBER);
+		User createUser = createUser("1232456789");
+		User user = userRepository.save(createUser);
+
+		CrewMember crewMemberOfMember = CrewMemberObjectProvider.createCrewMember(user.getId(), crew, CrewMemberRole.MEMBER);
 		crewMemberRepository.save(crewMemberOfMember);
 
 		Proposal createProposal = ProposalObjectProvider.createProposal(user, leader.getId(), crew.getId());

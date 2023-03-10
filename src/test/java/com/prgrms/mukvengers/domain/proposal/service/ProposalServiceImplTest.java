@@ -1,5 +1,6 @@
 package com.prgrms.mukvengers.domain.proposal.service;
 
+import static com.prgrms.mukvengers.domain.proposal.model.vo.ProposalStatus.*;
 import static com.prgrms.mukvengers.domain.proposal.service.ProposalServiceImpl.*;
 import static com.prgrms.mukvengers.utils.CrewObjectProvider.*;
 import static com.prgrms.mukvengers.utils.ProposalObjectProvider.*;
@@ -169,24 +170,26 @@ class ProposalServiceImplTest extends ServiceTest {
 		Crew creatCrew = createCrew(savedStore);
 		Crew crew = crewRepository.save(creatCrew);
 
-		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(savedUserId, crew,
-			CrewMemberRole.LEADER);
+		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(savedUserId, crew, CrewMemberRole.LEADER);
 		CrewMember leader = crewMemberRepository.save(crewMemberOfLeader);
 
-		Proposal createProposal = ProposalObjectProvider.createProposal(user, leader.getId(), crew.getId());
+		User createUser = createUser("1232456789");
+		User user = userRepository.save(createUser);
+
+		Proposal createProposal = ProposalObjectProvider.createProposal(user, leader.getUserId(), crew.getId());
 		Proposal proposal = proposalRepository.save(createProposal);
 
 		UpdateProposalRequest proposalRequest = new UpdateProposalRequest(inputProposalStatus);
 
 		// when
-		proposalService.approve(proposalRequest, user.getId(), proposal.getId());
-		Optional<CrewMember> saveCrewMember = crewMemberRepository.findCrewMemberByCrewIdAndUserId(
+		proposalService.approve(proposalRequest, leader.getUserId(), proposal.getId());
+		Optional<CrewMember> result = crewMemberRepository.findCrewMemberByCrewIdAndUserId(
 			crew.getId(), user.getId());
 
 		// then
-		assertThat(proposal.getStatus()).isEqualTo(ProposalStatus.APPROVE);
-		assertThat(saveCrewMember).isPresent();
-		assertThat(saveCrewMember.get().getUserId()).isEqualTo(user.getId());
+		assertThat(proposal.getStatus()).isEqualTo(APPROVE);
+		assertThat(result).isPresent();
+		assertThat(result.get().getUserId()).isEqualTo(user.getId());
 	}
 
 	@Test
@@ -201,17 +204,19 @@ class ProposalServiceImplTest extends ServiceTest {
 		Crew creatCrew = createCrew(savedStore);
 		Crew crew = crewRepository.save(creatCrew);
 
-		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(savedUserId, crew,
-			CrewMemberRole.LEADER);
+		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(savedUserId, crew, CrewMemberRole.LEADER);
 		CrewMember leader = crewMemberRepository.save(crewMemberOfLeader);
 
-		Proposal createProposal = ProposalObjectProvider.createProposal(user, leader.getId(), crew.getId());
+		User createUser = createUser("1232456789");
+		User user = userRepository.save(createUser);
+
+		Proposal createProposal = ProposalObjectProvider.createProposal(user, leader.getUserId(), crew.getId());
 		Proposal proposal = proposalRepository.save(createProposal);
 
 		UpdateProposalRequest proposalRequest = new UpdateProposalRequest(inputProposalStatus);
 
 		// when
-		proposalService.approve(proposalRequest, user.getId(), proposal.getId());
+		proposalService.approve(proposalRequest, leader.getUserId(), proposal.getId());
 		Optional<CrewMember> saveCrewMember = crewMemberRepository.findCrewMemberByCrewIdAndUserId(
 			crew.getId(), user.getId());
 
@@ -236,6 +241,9 @@ class ProposalServiceImplTest extends ServiceTest {
 			CrewMemberRole.LEADER);
 		CrewMember leader = crewMemberRepository.save(crewMemberOfLeader);
 
+		User createUser = createUser("1232456789");
+		User user = userRepository.save(createUser);
+
 		Proposal createProposal = ProposalObjectProvider.createProposal(user, leader.getId(), crew.getId());
 		Proposal proposal = proposalRepository.save(createProposal);
 
@@ -244,7 +252,7 @@ class ProposalServiceImplTest extends ServiceTest {
 		// when & then
 		assertThatThrownBy
 			(
-				() -> proposalService.approve(proposalRequest, user.getId(), proposal.getId())
+				() -> proposalService.approve(proposalRequest, leader.getUserId(), proposal.getId())
 			)
 			.isInstanceOf(InvalidProposalStatusException.class);
 	}
