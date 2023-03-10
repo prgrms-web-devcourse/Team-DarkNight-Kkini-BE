@@ -67,7 +67,7 @@ public class OAuthAuthenticationSuccessHandler
 		ResponseCookie token = ResponseCookie.from("refreshToken", refreshToken)
 			.path(getDefaultTargetUrl())
 			.sameSite("None")
-			.httpOnly(true)
+			.httpOnly(false)
 			.secure(true)
 			.maxAge(tokenService.getRefreshTokenExpirySeconds())
 			.build();

@@ -3,7 +3,6 @@ package com.prgrms.mukvengers.domain.crew.api;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
 import static com.epages.restdocs.apispec.ResourceDocumentation.*;
 import static com.epages.restdocs.apispec.ResourceSnippetParameters.*;
-import static com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus.*;
 import static com.prgrms.mukvengers.utils.CrewMemberObjectProvider.*;
 import static com.prgrms.mukvengers.utils.CrewObjectProvider.*;
 import static org.hamcrest.Matchers.*;
@@ -25,8 +24,8 @@ import org.springframework.util.MultiValueMap;
 import com.epages.restdocs.apispec.Schema;
 import com.prgrms.mukvengers.base.ControllerTest;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
-import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
+import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.utils.CrewMemberObjectProvider;
@@ -97,7 +96,7 @@ class CrewControllerTest extends ControllerTest {
 	@DisplayName("[성공] 모임 아이디로 모임을 조회한다.")
 	void getById_success() throws Exception {
 
-		Crew crew = CrewObjectProvider.createCrew(savedStore, RECRUITING);
+		Crew crew = CrewObjectProvider.createCrew(savedStore);
 
 		crewRepository.save(crew);
 
@@ -135,7 +134,20 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("data.members.[].userId").type(NUMBER).description("유저 ID"),
 							fieldWithPath("data.members.[].nickname").type(STRING).description("닉네임"),
 							fieldWithPath("data.members.[].profileImgUrl").type(STRING).description("프로필 이미지"),
-							fieldWithPath("data.members.[].crewMemberRole").type(STRING).description("사용자의 권한"))
+							fieldWithPath("data.members.[].crewMemberRole").type(STRING).description("사용자의 권한"),
+							fieldWithPath("data.response.id").type(NUMBER).description("가게 아이디"),
+							fieldWithPath("data.response.latitude").type(NUMBER).description("위도"),
+							fieldWithPath("data.response.longitude").type(NUMBER).description("경도"),
+							fieldWithPath("data.response.placeId").type(STRING)
+								.description("지도 api 제공 id"),
+							fieldWithPath("data.response.placeName").type(STRING).description("가게 이름"),
+							fieldWithPath("data.response.categories").type(STRING).description("가게 카테고리"),
+							fieldWithPath("data.response.roadAddressName").type(STRING)
+								.description("가게 도로명 주소"),
+							fieldWithPath("data.response.photoUrls").type(STRING).description("가게 사진 URL"),
+							fieldWithPath("data.response.kakaoPlaceUrl").type(STRING)
+								.description("가게 상세 페이지 URL"),
+							fieldWithPath("data.response.phoneNumber").type(STRING).description("가게 전화번호"))
 						.build()
 				)
 			));
@@ -183,7 +195,20 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("data.responses.[].members.[].profileImgUrl").type(STRING)
 								.description("프로필 이미지"),
 							fieldWithPath("data.responses.[].members.[].crewMemberRole").type(STRING)
-								.description("사용자의 권한"))
+								.description("사용자의 권한"),
+							fieldWithPath("data.responses.[].response.id").type(NUMBER).description("가게 아이디"),
+							fieldWithPath("data.responses.[].response.latitude").type(NUMBER).description("위도"),
+							fieldWithPath("data.responses.[].response.longitude").type(NUMBER).description("경도"),
+							fieldWithPath("data.responses.[].response.placeId").type(STRING)
+								.description("지도 api 제공 id"),
+							fieldWithPath("data.responses.[].response.placeName").type(STRING).description("가게 이름"),
+							fieldWithPath("data.responses.[].response.categories").type(STRING).description("가게 카테고리"),
+							fieldWithPath("data.responses.[].response.roadAddressName").type(STRING)
+								.description("가게 도로명 주소"),
+							fieldWithPath("data.responses.[].response.photoUrls").type(STRING).description("가게 사진 URL"),
+							fieldWithPath("data.responses.[].response.kakaoPlaceUrl").type(STRING)
+								.description("가게 상세 페이지 URL"),
+							fieldWithPath("data.responses.[].response.phoneNumber").type(STRING).description("가게 전화번호"))
 						.build()
 				)
 			));
@@ -267,7 +292,25 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("data.responses.numberOfElements").type(NUMBER).description("페이지 원소 개수"),
 							fieldWithPath("data.responses.empty").type(BOOLEAN).description("빈 페이지 여부"),
 							fieldWithPath("data.responses.totalPages").type(NUMBER).description("전체 페이지 개수"),
-							fieldWithPath("data.responses.totalElements").type(NUMBER).description("전체 데이터 개수"))
+							fieldWithPath("data.responses.totalElements").type(NUMBER).description("전체 데이터 개수"),
+							fieldWithPath("data.responses.content.[].response.id").type(NUMBER).description("가게 아이디"),
+							fieldWithPath("data.responses.content.[].response.latitude").type(NUMBER).description("위도"),
+							fieldWithPath("data.responses.content.[].response.longitude").type(NUMBER)
+								.description("경도"),
+							fieldWithPath("data.responses.content.[].response.placeId").type(STRING)
+								.description("지도 api 제공 id"),
+							fieldWithPath("data.responses.content.[].response.placeName").type(STRING)
+								.description("가게 이름"),
+							fieldWithPath("data.responses.content.[].response.categories").type(STRING)
+								.description("가게 카테고리"),
+							fieldWithPath("data.responses.content.[].response.roadAddressName").type(STRING)
+								.description("가게 도로명 주소"),
+							fieldWithPath("data.responses.content.[].response.photoUrls").type(STRING)
+								.description("가게 사진 URL"),
+							fieldWithPath("data.responses.content.[].response.kakaoPlaceUrl").type(STRING)
+								.description("가게 상세 페이지 URL"),
+							fieldWithPath("data.responses.content.[].response.phoneNumber").type(STRING)
+								.description("가게 전화번호"))
 						.build()
 				)
 			));
@@ -298,7 +341,6 @@ class CrewControllerTest extends ControllerTest {
 
 		mockMvc.perform(get("/api/v1/crews")
 				.params(params)
-				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
 				.accept(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data").exists())
@@ -325,38 +367,35 @@ class CrewControllerTest extends ControllerTest {
 	}
 
 	@Test
-	@DisplayName("[성공]밥 모임 상태를 변경한다.")
+	@DisplayName("[성공] 모임 상태를 모집 중 -> 모집 완료로 변경한다.")
 	void updateStatus_success() throws Exception {
 
-		Crew crew = CrewObjectProvider.createCrew(savedStore, RECRUITING);
+		Crew crew = CrewObjectProvider.createCrew(savedStore);
 
 		crewRepository.save(crew);
 
-		String status = "모집종료";
+		CrewMember crewMember = createCrewMember(savedUserId, crew, CrewMemberRole.LEADER);
 
-		UpdateStatusRequest updateStatusRequest = new UpdateStatusRequest(crew.getId(), status);
+		crewMemberRepository.save(crewMember);
 
-		String jsonRequest = objectMapper.writeValueAsString(updateStatusRequest);
+		String jsonRequest = objectMapper.writeValueAsString(CrewStatus.CLOSE);
 
-		mockMvc.perform(patch("/api/v1/crews")
+		mockMvc.perform(patch("/api/v1/crews/{crewId}", crew.getId())
+				.content(jsonRequest)
 				.contentType(APPLICATION_JSON)
-				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
-				.content(jsonRequest))
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken))
 			.andExpect(status().isOk())
 			.andDo(print())
 			.andDo(document("crew-updateStatus",
 				resource(
 					builder()
 						.tag(CREW)
-						.summary("모임 상태 변경 API")
-						.description("밥 모임의 상태를 변경합니다.")
-						.requestSchema(UPDATE_CREW_REQUEST)
-						.requestFields(
-							fieldWithPath("crewId").type(NUMBER).description("밥 모임 아이디"),
-							fieldWithPath("status").type(STRING).description("밥 모임 상태"))
+						.summary("모임 상태 변경")
+						.description("모임 상태를 변경합니다.")
 						.build()
 				)
 			));
 
 	}
+
 }

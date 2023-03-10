@@ -57,19 +57,19 @@ VALUES (2, '맥도날드 갈 사람', ST_GeomFromText('POINT(-147.4654321321 35.
 
 
 # CrewMember(밥모임원) Dummy data
-INSERT INTO crew_member(user_id, crew_id, role)
+INSERT INTO crew_member(user_id, crew_id, crew_member_role)
 VALUES (1, 1, 'LEADER');
 
-INSERT INTO crew_member(user_id, crew_id, role)
+INSERT INTO crew_member(user_id, crew_id, crew_member_role)
 VALUES (2, 1, 'MEMBER');
 
-INSERT INTO crew_member(user_id, crew_id, role)
+INSERT INTO crew_member(user_id, crew_id, crew_member_role)
 VALUES (3, 1, 'BLOCKED');
 
-INSERT INTO crew_member(user_id, crew_id, role)
+INSERT INTO crew_member(user_id, crew_id, crew_member_role)
 VALUES (5, 2, 'LEADER');
 
-INSERT INTO crew_member(user_id, crew_id, role)
+INSERT INTO crew_member(user_id, crew_id, crew_member_role)
 VALUES (6, 2, 'MEMBER');
 
 

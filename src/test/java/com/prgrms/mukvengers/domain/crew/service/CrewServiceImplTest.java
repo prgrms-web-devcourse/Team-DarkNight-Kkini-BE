@@ -19,7 +19,6 @@ import org.springframework.data.domain.Slice;
 import com.prgrms.mukvengers.base.ServiceTest;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.SearchCrewRequest;
-import com.prgrms.mukvengers.domain.crew.dto.request.UpdateStatusRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewDetailResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponses;
@@ -83,7 +82,7 @@ class CrewServiceImplTest extends ServiceTest {
 	void getById_success() {
 
 		//given
-		Crew crew = CrewObjectProvider.createCrew(savedStore, RECRUITING);
+		Crew crew = CrewObjectProvider.createCrew(savedStore);
 
 		crewRepository.save(crew);
 
@@ -95,7 +94,7 @@ class CrewServiceImplTest extends ServiceTest {
 			.hasFieldOrPropertyWithValue("id", crew.getId())
 			.hasFieldOrPropertyWithValue("name", crew.getName())
 			.hasFieldOrPropertyWithValue("capacity", crew.getCapacity())
-			.hasFieldOrPropertyWithValue("status", crew.getStatus().name())
+			.hasFieldOrPropertyWithValue("status", crew.getStatus())
 			.hasFieldOrPropertyWithValue("content", crew.getContent())
 			.hasFieldOrPropertyWithValue("category", crew.getCategory())
 			.hasFieldOrPropertyWithValue("promiseTime", crew.getPromiseTime());
@@ -128,7 +127,7 @@ class CrewServiceImplTest extends ServiceTest {
 	void findByLocation_success() {
 
 		//given
-		Crew crew = CrewObjectProvider.createCrew(savedStore, RECRUITING);
+		Crew crew = CrewObjectProvider.createCrew(savedStore);
 
 		crewRepository.save(crew);
 
@@ -149,25 +148,26 @@ class CrewServiceImplTest extends ServiceTest {
 
 	@Test
 	@DisplayName("[성공] 모임의 상태를 받아 변경한다.")
-	void updateStatus_success() {
+	void closeStatus_success() {
 
 		//given
-		Crew crew = CrewObjectProvider.createCrew(savedStore, RECRUITING);
+		Crew crew = CrewObjectProvider.createCrew(savedStore);
 
 		crewRepository.save(crew);
 
-		String status = "모집종료";
-		UpdateStatusRequest updateStatusRequest = new UpdateStatusRequest(crew.getId(), status);
+		CrewMember crewMember = createCrewMember(savedUserId, crew, CrewMemberRole.LEADER);
+
+		crewMemberRepository.save(crewMember);
 
 		//when
-		crewService.updateStatus(updateStatusRequest);
+		crewService.updateStatus(crew.getId(), savedUserId, CLOSE);
 
 		//then
 		Optional<Crew> optionalCrew = crewRepository.findById(crew.getId());
 
 		assertThat(optionalCrew).isPresent();
 		Crew savedCrew = optionalCrew.get();
-		assertThat(savedCrew.getStatus()).isEqualTo(of(status));
+		assertThat(savedCrew.getStatus()).isEqualTo(FINISH);
 	}
 
 }
