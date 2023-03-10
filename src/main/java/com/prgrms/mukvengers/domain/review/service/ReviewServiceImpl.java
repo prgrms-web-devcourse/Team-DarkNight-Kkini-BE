@@ -1,6 +1,7 @@
 package com.prgrms.mukvengers.domain.review.service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -129,6 +130,7 @@ public class ReviewServiceImpl implements ReviewService {
 
 		return crewMemberRepository.findAllByCrewId(crewId)
 			.stream()
+			.filter(crewMember -> !Objects.equals(crewMember.getUserId(), reviewer.getId()))
 			.map(crewMember -> toRevieweeListResponse(crewId, reviewer, crewMember))
 			.toList();
 	}
