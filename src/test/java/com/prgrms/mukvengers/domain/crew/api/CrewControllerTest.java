@@ -25,7 +25,6 @@ import com.epages.restdocs.apispec.Schema;
 import com.prgrms.mukvengers.base.ControllerTest;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
-import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.utils.CrewMemberObjectProvider;
@@ -368,7 +367,7 @@ class CrewControllerTest extends ControllerTest {
 
 	@Test
 	@DisplayName("[성공] 모임 상태를 모집 중 -> 모집 완료로 변경한다.")
-	void closeStatus_success() throws Exception {
+	void updateStatus_success() throws Exception {
 
 		Crew crew = CrewObjectProvider.createCrew(savedStore);
 
@@ -378,51 +377,25 @@ class CrewControllerTest extends ControllerTest {
 
 		crewMemberRepository.save(crewMember);
 
-		mockMvc.perform(patch("/api/v1/crews/{crewId}/close", crew.getId())
+		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+		params.add("crewStatus", "CLOSE");
+
+		mockMvc.perform(patch("/api/v1/crews/{crewId}", crew.getId())
+				.params(params)
 				.contentType(APPLICATION_JSON)
 				.header(AUTHORIZATION, BEARER_TYPE + accessToken))
 			.andExpect(status().isOk())
 			.andDo(print())
-			.andDo(document("crew-closeStatus",
+			.andDo(document("crew-updateStatus",
 				resource(
 					builder()
 						.tag(CREW)
-						.summary("모임 상태 모집 중 -> 모집 완료 변경 API")
-						.description("모집 중인 상태를 모집 완료 상태로 변경합니다.")
+						.summary("모임 상태 변경")
+						.description("모임 상태를 변경합니다.")
 						.build()
 				)
 			));
 
 	}
 
-	@Test
-	@DisplayName("[성공] 모임 상태를 모집 완료 -> 식사 완료로 변경한다.")
-	void finishStatus_success() throws Exception {
-
-		Crew crew = CrewObjectProvider.createCrew(savedStore);
-
-		crew.changeStatus(CrewStatus.CLOSE);
-
-		crewRepository.save(crew);
-
-		CrewMember crewMember = createCrewMember(savedUserId, crew, CrewMemberRole.LEADER);
-
-		crewMemberRepository.save(crewMember);
-
-		mockMvc.perform(patch("/api/v1/crews/{crewId}/finish", crew.getId())
-				.contentType(APPLICATION_JSON)
-				.header(AUTHORIZATION, BEARER_TYPE + accessToken))
-			.andExpect(status().isOk())
-			.andDo(print())
-			.andDo(document("crew-finishStatus",
-				resource(
-					builder()
-						.tag(CREW)
-						.summary("모임 상태 모집 완료 -> 식사 완료 변경 API")
-						.description("모집 완료인 상태를 식사 완료 상태로 변경합니다.")
-						.build()
-				)
-			));
-
-	}
 }
