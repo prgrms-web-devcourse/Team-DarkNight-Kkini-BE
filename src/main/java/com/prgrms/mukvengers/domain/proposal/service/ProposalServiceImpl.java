@@ -141,7 +141,8 @@ public class ProposalServiceImpl implements ProposalService {
 		if (!proposal.isApprove(proposalStatus))
 			return;
 
-		CrewMember createCrewMember = crewMemberMapper.toCrewMember(crew, proposal.getUser().getId(), CrewMemberRole.MEMBER);
+		CrewMember createCrewMember = crewMemberMapper.toCrewMember(crew, proposal.getUser().getId(),
+			CrewMemberRole.MEMBER);
 
 		CrewMember crewMember = crewMemberRepository.save(createCrewMember);
 
