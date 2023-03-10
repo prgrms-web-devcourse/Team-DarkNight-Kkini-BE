@@ -139,8 +139,16 @@ task copyDocument(type: Copy) {
 
 tasks.withType(BootJar).configureEach {
     dependsOn 'copySwaggerUI'
-}
+    doLast {
+        println('---replace \'full\' text to \'none\' ----')
+        def indexFile = file("${project.buildDir}/swagger-ui-sample/index.html")
 
+        def contents = indexFile.getText("UTF-8")
+        def newFileContents = contents.replace('full', 'none')
+        indexFile.write(newFileContents)
+        println('---- replace end.-----')
+    }
+}
 
 
 
