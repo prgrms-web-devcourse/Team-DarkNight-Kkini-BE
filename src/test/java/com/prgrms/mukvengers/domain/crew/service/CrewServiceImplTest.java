@@ -167,7 +167,7 @@ class CrewServiceImplTest extends ServiceTest {
 
 		assertThat(optionalCrew).isPresent();
 		Crew savedCrew = optionalCrew.get();
-		assertThat(savedCrew.getStatus()).isEqualTo(FINISH);
+		assertThat(savedCrew.getStatus()).isEqualTo(CLOSE);
 	}
 
 }

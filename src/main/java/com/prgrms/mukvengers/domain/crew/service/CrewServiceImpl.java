@@ -180,7 +180,7 @@ public class CrewServiceImpl implements CrewService {
 			}
 		}
 
-		crew.changeStatus(CrewStatus.FINISH);
+		crew.changeStatus(crewStatus);
 
 		return new CrewStatusResponse(crew.getStatus());
 	}
