@@ -7,7 +7,7 @@ import org.mapstruct.Mapping;
 
 import com.prgrms.mukvengers.domain.chat.dto.response.ChatResponse;
 import com.prgrms.mukvengers.domain.chat.model.Chat;
-import com.prgrms.mukvengers.global.websocket.ChatMessage;
+import com.prgrms.mukvengers.domain.chat.model.ChatMessage;
 
 @Mapper(componentModel = "spring", unmappedSourcePolicy = IGNORE)
 public interface ChatMapper {

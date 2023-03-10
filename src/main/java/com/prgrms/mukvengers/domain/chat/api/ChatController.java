@@ -1,4 +1,4 @@
-package com.prgrms.mukvengers.global.websocket.api;
+package com.prgrms.mukvengers.domain.chat.api;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.prgrms.mukvengers.domain.chat.dto.response.ChatsInCrew;
+import com.prgrms.mukvengers.domain.chat.model.ChatMessage;
 import com.prgrms.mukvengers.domain.chat.service.ChatService;
 import com.prgrms.mukvengers.global.common.dto.ApiResponse;
-import com.prgrms.mukvengers.global.websocket.ChatMessage;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

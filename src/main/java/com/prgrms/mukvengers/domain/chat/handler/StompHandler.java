@@ -1,4 +1,4 @@
-package com.prgrms.mukvengers.global.websocket;
+package com.prgrms.mukvengers.domain.chat.handler;
 
 import java.util.Map;
 import java.util.Objects;
@@ -10,13 +10,13 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Component;
 
+import com.prgrms.mukvengers.domain.chat.exception.WebSocketException;
 import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
 import com.prgrms.mukvengers.domain.user.exception.UserNotFoundException;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
 import com.prgrms.mukvengers.global.security.jwt.JwtTokenProvider;
 import com.prgrms.mukvengers.global.utils.ExtractUtil;
-import com.prgrms.mukvengers.global.websocket.exception.WebSocketException;
 
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
