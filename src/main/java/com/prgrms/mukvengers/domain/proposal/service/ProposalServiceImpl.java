@@ -115,7 +115,7 @@ public class ProposalServiceImpl implements ProposalService {
 
 	@Override
 	@Transactional
-	public void approve(UpdateProposalRequest proposalRequest, Long userId, Long proposalId) {
+	public void updateProposalStatus(UpdateProposalRequest proposalRequest, Long userId, Long proposalId) {
 
 		if (!userRepository.existsById(userId)) {
 			throw new UserNotFoundException(userId);
@@ -131,16 +131,18 @@ public class ProposalServiceImpl implements ProposalService {
 
 		ProposalStatus proposalStatus = ProposalStatus.of(status);
 
-		registerCrewMember(proposal, crew, userId, proposalStatus);
+		registerCrewMember(proposal, crew, proposalStatus);
 	}
 
-	private void registerCrewMember(Proposal proposal, Crew crew, Long userId, ProposalStatus proposalStatus) {
+	private void registerCrewMember(Proposal proposal, Crew crew, ProposalStatus proposalStatus) {
 
 		proposal.changeProposalStatus(proposalStatus);
 
-		if (!proposal.isApprove(proposalStatus)) return;
+		if (!proposal.isApprove(proposalStatus))
+			return;
 
-		CrewMember createCrewMember = crewMemberMapper.toCrewMember(crew, userId, CrewMemberRole.MEMBER);
+		CrewMember createCrewMember = crewMemberMapper.toCrewMember(crew, proposal.getUser().getId(),
+			CrewMemberRole.MEMBER);
 
 		CrewMember crewMember = crewMemberRepository.save(createCrewMember);
 

@@ -176,18 +176,16 @@ class ProposalControllerTest extends ControllerTest {
 	@DisplayName("[성공] 방장이 신청서를 승인하는 경우 신청서의 상태값이 'APPROVE' 로 변경되며 밥모임원에 저장된다.")
 	void update_proposalStatus_approve_success() throws Exception {
 
-		User createUser = createUser("1232456789");
-		User user = userRepository.save(createUser);
-
 		Crew creatCrew = createCrew(savedStore);
 		Crew crew = crewRepository.save(creatCrew);
 
-		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(user.getId(), crew,
-			CrewMemberRole.LEADER);
+		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(savedUserId, crew, CrewMemberRole.LEADER);
 		CrewMember leader = crewMemberRepository.save(crewMemberOfLeader);
 
-		CrewMember crewMemberOfMember = CrewMemberObjectProvider.createCrewMember(user.getId(), crew,
-			CrewMemberRole.MEMBER);
+		User createUser = createUser("1232456789");
+		User user = userRepository.save(createUser);
+
+		CrewMember crewMemberOfMember = CrewMemberObjectProvider.createCrewMember(user.getId(), crew, CrewMemberRole.MEMBER);
 		crewMemberRepository.save(crewMemberOfMember);
 
 		Proposal createProposal = ProposalObjectProvider.createProposal(user, leader.getId(), crew.getId());
