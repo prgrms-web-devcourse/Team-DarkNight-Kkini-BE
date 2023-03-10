@@ -29,8 +29,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 	@Query(value = """
 		SELECT r
 		FROM Review r
-		WHERE r.crew.id = :crewId AND r.reviewee.id = :revieweeId AND r.reviewer.id = :reviewerId
+		WHERE r.crew.id = :crewId AND r.reviewer.id = :reviewerId AND r.reviewee.id = :revieweeId
 		""")
 	Optional<Review> findByReview(@Param(value = "crewId") Long crewId,
-		@Param(value = "revieweeId") Long reviewerId, @Param(value = "reviewerId") Long revieweeId);
+		@Param(value = "reviewerId") Long reviewerId, @Param(value = "revieweeId") Long revieweeId);
 }
