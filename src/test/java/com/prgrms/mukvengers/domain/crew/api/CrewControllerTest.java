@@ -26,6 +26,7 @@ import com.prgrms.mukvengers.base.ControllerTest;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.UpdateCrewStatusRequest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
+import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.utils.CrewMemberObjectProvider;
@@ -378,8 +379,8 @@ class CrewControllerTest extends ControllerTest {
 
 		crewMemberRepository.save(crewMember);
 
-		UpdateCrewStatusRequest updateCrewStatusRequest = new UpdateCrewStatusRequest("close");
-		
+		UpdateCrewStatusRequest updateCrewStatusRequest = new UpdateCrewStatusRequest(CrewStatus.CLOSE);
+
 		String jsonRequest = objectMapper.writeValueAsString(updateCrewStatusRequest);
 
 		mockMvc.perform(patch("/api/v1/crews/{crewId}", crew.getId())

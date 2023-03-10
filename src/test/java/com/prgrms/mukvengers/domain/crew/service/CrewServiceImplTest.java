@@ -160,7 +160,7 @@ class CrewServiceImplTest extends ServiceTest {
 		crewMemberRepository.save(crewMember);
 
 		//when
-		crewService.updateStatus(crew.getId(), savedUserId, "close");
+		crewService.updateStatus(crew.getId(), savedUserId, CLOSE);
 
 		//then
 		Optional<Crew> optionalCrew = crewRepository.findById(crew.getId());

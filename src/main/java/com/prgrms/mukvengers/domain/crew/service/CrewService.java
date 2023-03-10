@@ -9,6 +9,7 @@ import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponses;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewStatusResponse;
+import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
 
 public interface CrewService {
@@ -23,5 +24,5 @@ public interface CrewService {
 
 	CrewLocationResponses getByLocation(SearchCrewRequest distanceRequest);
 
-	CrewStatusResponse updateStatus(Long crewId, Long userId, String crewStatus);
+	CrewStatusResponse updateStatus(Long crewId, Long userId, CrewStatus crewStatus);
 }
