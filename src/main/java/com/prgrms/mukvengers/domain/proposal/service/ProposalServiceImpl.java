@@ -83,6 +83,15 @@ public class ProposalServiceImpl implements ProposalService {
 	}
 
 	@Override
+	public ProposalResponse getById(Long proposalId) {
+
+		Proposal proposal = proposalRepository.findById(proposalId)
+			.orElseThrow(() -> new ProposalNotFoundException(proposalId));
+
+		return proposalMapper.toProposalResponse(proposal);
+	}
+
+	@Override
 	public ProposalResponses getProposalsByLeaderId(Long userId) {
 
 		List<ProposalResponse> proposals = proposalRepository.findAllByLeaderIdOrderByCreatedAtDesc(userId)

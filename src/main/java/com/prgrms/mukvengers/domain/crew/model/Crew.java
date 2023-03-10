@@ -96,8 +96,8 @@ public class Crew extends BaseEntity {
 		crewMembers.add(crewMember);
 	}
 
-	public void changeStatus(String status) {
-		this.status = validateStatus(CrewStatus.of(status));
+	public void changeStatus(CrewStatus status) {
+		this.status = validateStatus(status);
 	}
 
 	private Store validateStore(Store store) {

@@ -5,9 +5,11 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 import com.prgrms.mukvengers.domain.crew.model.Crew;
+import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.domain.review.dto.request.CreateLeaderReviewRequest;
 import com.prgrms.mukvengers.domain.review.dto.request.CreateMemberReviewRequest;
 import com.prgrms.mukvengers.domain.review.dto.response.ReviewResponse;
+import com.prgrms.mukvengers.domain.review.dto.response.RevieweeListResponse;
 import com.prgrms.mukvengers.domain.review.model.Review;
 import com.prgrms.mukvengers.domain.user.model.User;
 
@@ -40,6 +42,13 @@ public interface ReviewMapper {
 	@Mapping(source = "mannerScore", target = "mannerScore")
 	@Mapping(source = "tasteScore", target = "tasteScore")
 	ReviewResponse toReviewResponse(Review review);
+
+	@Mapping(target = "userId", source = "user.id")
+	@Mapping(target = "nickname", source = "user.nickname")
+	@Mapping(target = "profileImgUrl", source = "user.profileImgUrl")
+	@Mapping(target = "crewMemberRole", source = "crewMemberRole")
+	@Mapping(target = "isReviewed", source = "isReviewed")
+	RevieweeListResponse toRevieweeListResponse(User user, CrewMemberRole crewMemberRole, boolean isReviewed);
 
 	@Named("tasteScoreToZero")
 	default Integer tasteScoreNullToZero(CreateMemberReviewRequest request) {

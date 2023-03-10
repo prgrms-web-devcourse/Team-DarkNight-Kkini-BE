@@ -19,6 +19,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.epages.restdocs.apispec.Schema;
+import com.epages.restdocs.apispec.SimpleType;
 import com.prgrms.mukvengers.base.ControllerTest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
@@ -37,6 +38,7 @@ class ProposalControllerTest extends ControllerTest {
 		"getProposalsByLeaderIdResponse");
 	public static final Schema CREATE_PROPOSAL_REQUEST = new Schema("createProposal");
 	public static final Schema UPDATE_PROPOSAL_REQUEST = new Schema("updateProposal");
+	public static final Schema FIND_BY_PROPOSAL_ID_REQUEST = new Schema("findByProposalIdCRequest");
 
 	@Test
 	@DisplayName("[성공] 사용자는 신청서를 작성할 수 있다.")
@@ -44,7 +46,7 @@ class ProposalControllerTest extends ControllerTest {
 
 		User leader = userRepository.save(createUser("1232456789"));
 
-		Crew crew = crewRepository.save(createCrew(savedStore, CrewStatus.RECRUITING));
+		Crew crew = crewRepository.save(createCrew(savedStore));
 
 		CreateProposalRequest proposalRequest = ProposalObjectProvider.createProposalRequest(leader.getId());
 
@@ -75,13 +77,63 @@ class ProposalControllerTest extends ControllerTest {
 	}
 
 	@Test
+	@DisplayName("[성공] 신청서 아이디로 신청서를 조회한다.")
+	void getById_success() throws Exception {
+
+		User user = createUser("1232456789");
+		userRepository.save(user);
+
+		Crew crew = createCrew(savedStore);
+		crewRepository.save(crew);
+
+		Proposal proposal = ProposalObjectProvider.createProposal(user, savedUser.getId(), crew.getId());
+		proposalRepository.save(proposal);
+
+		mockMvc.perform(get("/api/v1/proposals/{proposalId}", proposal.getId())
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
+				.accept(APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.data").exists())
+			.andDo(print())
+			.andDo(document("proposal-getById",
+				resource(
+					builder()
+						.tag(PROPOSAL)
+						.summary("신청서 아이디로 신청서 조회")
+						.description("신청서의 아이디로 신청서를 조회합니다.")
+						.responseSchema(FIND_BY_PROPOSAL_ID_REQUEST)
+						.pathParameters(
+							parameterWithName("proposalId").type(SimpleType.STRING).description("신청서 아이디")
+						)
+						.responseFields(
+							fieldWithPath("data.id").type(NUMBER).description("신청서 아이디"),
+							fieldWithPath("data.content").type(STRING).description("신청서 내용"),
+							fieldWithPath("data.status").type(STRING).description("신청서 상태"),
+							fieldWithPath("data.leaderId").type(NUMBER).description("모임의 방장 아이디"),
+							fieldWithPath("data.crewId").type(NUMBER).description("모임 아이디"),
+							fieldWithPath("data.user.id").type(NUMBER).description("유저 ID"),
+							fieldWithPath("data.user.nickname").type(STRING).description("닉네임"),
+							fieldWithPath("data.user.profileImgUrl").type(STRING).description("프로필 이미지"),
+							fieldWithPath("data.user.introduction").type(STRING).description("한줄 소개"),
+							fieldWithPath("data.user.leaderCount").type(NUMBER).description("방장 횟수"),
+							fieldWithPath("data.user.crewCount").type(NUMBER).description("모임 참여 횟수"),
+							fieldWithPath("data.user.tasteScore").type(NUMBER).description("맛잘알 점수"),
+							fieldWithPath("data.user.mannerScore").type(NUMBER).description("매너 온도"),
+							fieldWithPath("data.user.mannerScore").type(NUMBER).description("매너 온도"))
+						.build()
+				)
+			));
+
+	}
+
+	@Test
 	@DisplayName("[성공] 사용자가 방장인 모임의 모든 신청서를 조회한다.")
 	void getProposalsByLeaderId_success() throws Exception {
 
 		User user = createUser("1232456789");
 		userRepository.save(user);
 
-		Crew crew = createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew crew = createCrew(savedStore);
 		crewRepository.save(crew);
 
 		List<Proposal> proposals = ProposalObjectProvider.createProposals(user, savedUser.getId(), crew.getId());
@@ -218,7 +270,7 @@ class ProposalControllerTest extends ControllerTest {
 		User user = createUser("1232456789");
 		userRepository.save(user);
 
-		Crew crew = createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew crew = createCrew(savedStore);
 		crewRepository.save(crew);
 
 		List<Proposal> proposals = ProposalObjectProvider.createProposals(savedUser, user.getId(), crew.getId());

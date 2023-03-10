@@ -2,6 +2,8 @@ package com.prgrms.mukvengers.domain.review.repository;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
@@ -10,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 
 import com.prgrms.mukvengers.base.RepositoryTest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
-import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.review.model.Review;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.utils.CrewObjectProvider;
@@ -27,7 +28,7 @@ class ReviewRepositoryTest extends RepositoryTest {
 		User createUser = UserObjectProvider.createUser("kakao_1234");
 		User reviewer = userRepository.save(createUser);
 
-		Crew createCrew = CrewObjectProvider.createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew createCrew = CrewObjectProvider.createCrew(savedStore);
 		Crew crew = crewRepository.save(createCrew);
 
 		Integer page = 0;
@@ -54,7 +55,7 @@ class ReviewRepositoryTest extends RepositoryTest {
 		User createUser = UserObjectProvider.createUser("kakao_1234");
 		User reviewee = userRepository.save(createUser);
 
-		Crew createCrew = CrewObjectProvider.createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew createCrew = CrewObjectProvider.createCrew(savedStore);
 		Crew crew = crewRepository.save(createCrew);
 
 		Integer page = 0;
@@ -71,5 +72,27 @@ class ReviewRepositoryTest extends RepositoryTest {
 
 		// then
 		assertThat(findReview.getContent().get(0).getReviewer().getId()).isEqualTo(savedUserId);
+	}
+
+	@Test
+	@DisplayName("[성공] 리뷰를 작성했는지 알 수 있다.")
+	void existReview_success() {
+
+		// given
+		User createUser = UserObjectProvider.createUser("kakao_1");
+		User reviewer = userRepository.save(createUser);
+
+		Crew createCrew = CrewObjectProvider.createCrew(savedStore);
+		Crew crew = crewRepository.save(createCrew);
+
+		Review review = ReviewObjectProvider.createLeaderReview(reviewer, savedUser, crew);
+		reviewRepository.save(review);
+
+		// when
+		Optional<Review> reviewResult = reviewRepository.findByReview(crew.getId(), savedUser.getId(),
+			reviewer.getId());
+
+		// then
+		assertThat(reviewResult).isPresent();
 	}
 }
