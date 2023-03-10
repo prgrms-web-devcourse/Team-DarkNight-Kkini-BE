@@ -2,6 +2,8 @@ package com.prgrms.mukvengers.domain.review.repository;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
@@ -71,5 +73,27 @@ class ReviewRepositoryTest extends RepositoryTest {
 
 		// then
 		assertThat(findReview.getContent().get(0).getReviewer().getId()).isEqualTo(savedUserId);
+	}
+
+	@Test
+	@DisplayName("[성공] 리뷰를 작성했는지 알 수 있다.")
+	void existReview_success() {
+
+		// given
+		User createUser = UserObjectProvider.createUser("kakao_1");
+		User reviewer = userRepository.save(createUser);
+
+		Crew createCrew = CrewObjectProvider.createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew crew = crewRepository.save(createCrew);
+
+		Review review = ReviewObjectProvider.createLeaderReview(reviewer, savedUser, crew);
+		reviewRepository.save(review);
+
+		// when
+		Optional<Review> reviewResult = reviewRepository.findByReview(crew.getId(), savedUser.getId(),
+			reviewer.getId());
+
+		// then
+		assertThat(reviewResult).isPresent();
 	}
 }
