@@ -42,7 +42,6 @@ import lombok.RequiredArgsConstructor;
 public class CrewController {
 
 	private final CrewService crewService;
-	private final CrewFacadeService crewFacadeService;
 
 	/**
 	 * <pre>
@@ -58,7 +57,7 @@ public class CrewController {
 		@RequestBody @Valid CreateCrewRequest createCrewRequest,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		IdResponse idResponse = crewFacadeService.create(createCrewRequest, user.id());
+		IdResponse idResponse = crewService.create(createCrewRequest, user.id());
 		URI location = UriComponentsBuilder.fromUriString("/api/v1/crews/" + idResponse.id()).build().toUri();
 		return ResponseEntity.created(location).body(idResponse);
 	}
