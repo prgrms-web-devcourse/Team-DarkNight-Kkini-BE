@@ -4,6 +4,7 @@ import static org.springframework.http.HttpStatus.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import net.gpedro.integrations.slack.SlackApi;
+
+import com.prgrms.mukvengers.global.common.annotation.SlackNotification;
 import com.prgrms.mukvengers.global.common.dto.ErrorResponse;
 import com.prgrms.mukvengers.global.utils.MessageUtil;
 
@@ -22,12 +26,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
+	private final SlackApi slackApi;
 	private static final String EXCEPTION_FORMAT = "[EXCEPTION]                   -----> ";
 	private static final String EXCEPTION_MESSAGE_FORMAT = "[EXCEPTION] EXCEPTION_MESSAGE -----> [{}]";
 	private static final String EXCEPTION_TYPE_FORMAT = "[EXCEPTION] EXCEPTION_TYPE    -----> [{}]";
 	private static final String EXCEPTION_REQUEST_URI = "[EXCEPTION] REQUEST_URI       -----> [{}]";
 	private static final String EXCEPTION_HTTP_METHOD_TYPE = "[EXCEPTION] HTTP_METHOD_TYPE  -----> [{}]";
+
+	public GlobalExceptionHandler(@Value("${spring.slack.webhook}") String webhook) {
+		this.slackApi = new SlackApi(webhook);
+	}
 
 	@ExceptionHandler(ServiceException.class) // custom 에러
 	public ResponseEntity<ErrorResponse> handleServiceException(HttpServletRequest request, ServiceException e) {
@@ -76,9 +84,10 @@ public class GlobalExceptionHandler {
 		return ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE);
 	}
 
+	@SlackNotification
 	@ResponseStatus(INTERNAL_SERVER_ERROR)
 	@ExceptionHandler(Exception.class)
-	public ErrorResponse handleException(Exception e) {
+	public ErrorResponse handleException(HttpServletRequest request, Exception e) {
 		logError(e);
 		return ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
 	}
@@ -109,5 +118,6 @@ public class GlobalExceptionHandler {
 		log.error(EXCEPTION_MESSAGE_FORMAT, e.getMessage());
 		log.error(EXCEPTION_FORMAT, e);
 	}
+
 }
 

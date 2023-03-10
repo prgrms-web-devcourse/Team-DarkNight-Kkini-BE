@@ -1,4 +1,3 @@
-import org.hidetake.gradle.swagger.generator.GenerateSwaggerUI
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
@@ -94,8 +93,8 @@ dependencies {
     // AWS
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
-    //Slack appender
-    implementation 'com.github.maricn:logback-slack-appender:1.4.0'
+    //Slack Notification
+    implementation "net.gpedro.integrations.slack:slack-webhook:1.4.0"
 }
 
 
