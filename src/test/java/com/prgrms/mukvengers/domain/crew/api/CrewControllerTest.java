@@ -25,6 +25,7 @@ import com.epages.restdocs.apispec.Schema;
 import com.prgrms.mukvengers.base.ControllerTest;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
+import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.utils.CrewMemberObjectProvider;
@@ -377,11 +378,10 @@ class CrewControllerTest extends ControllerTest {
 
 		crewMemberRepository.save(crewMember);
 
-		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-		params.add("crewStatus", "CLOSE");
+		String jsonRequest = objectMapper.writeValueAsString(CrewStatus.CLOSE);
 
 		mockMvc.perform(patch("/api/v1/crews/{crewId}", crew.getId())
-				.params(params)
+				.content(jsonRequest)
 				.contentType(APPLICATION_JSON)
 				.header(AUTHORIZATION, BEARER_TYPE + accessToken))
 			.andExpect(status().isOk())
