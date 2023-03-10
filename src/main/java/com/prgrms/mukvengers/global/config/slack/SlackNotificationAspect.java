@@ -24,9 +24,6 @@ import net.gpedro.integrations.slack.SlackMessage;
 
 import com.prgrms.mukvengers.global.common.dto.RequestInfo;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Aspect
 @Component
 public class SlackNotificationAspect {
@@ -49,7 +46,9 @@ public class SlackNotificationAspect {
 
 		RequestInfo requestInfo = new RequestInfo(request);
 
-		sendSlackMessage(requestInfo, e);
+		threadPoolTaskExecutor.execute(() -> {
+			sendSlackMessage(requestInfo, e);
+		});
 	}
 
 	private void sendSlackMessage(RequestInfo request, Exception e) {
