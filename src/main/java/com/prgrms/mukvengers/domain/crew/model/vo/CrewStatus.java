@@ -8,9 +8,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum CrewStatus {
 
-	RECRUITING("모집중"),
-	CLOSE("모집종료"),
-	FINISH("식사완료");
+	RECRUITING("recruiting"),
+	CLOSE("close"),
+	FINISH("finish");
 
 	private final String status;
 

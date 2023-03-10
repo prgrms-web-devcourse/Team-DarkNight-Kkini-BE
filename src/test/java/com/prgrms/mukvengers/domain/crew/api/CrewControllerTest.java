@@ -377,7 +377,7 @@ class CrewControllerTest extends ControllerTest {
 
 		crewMemberRepository.save(crewMember);
 
-		String jsonRequest = objectMapper.writeValueAsString("모집종료");
+		String jsonRequest = objectMapper.writeValueAsString("close");
 
 		mockMvc.perform(patch("/api/v1/crews/{crewId}", crew.getId())
 				.content(jsonRequest)
