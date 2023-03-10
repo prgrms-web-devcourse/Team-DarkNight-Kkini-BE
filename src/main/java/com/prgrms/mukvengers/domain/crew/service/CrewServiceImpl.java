@@ -144,7 +144,7 @@ public class CrewServiceImpl implements CrewService {
 	}
 
 	@Override
-	public void closeStatus(Long crewId, Long userId) {
+	public void updateStatus(Long crewId, Long userId, CrewStatus crewStatus) {
 
 		Crew crew = crewRepository.findById(crewId)
 			.orElseThrow(() -> new CrewNotFoundException(crewId));
@@ -156,29 +156,22 @@ public class CrewServiceImpl implements CrewService {
 			throw new NotLeaderException(CrewMemberRole.LEADER);
 		}
 
-		if (!crew.getStatus().equals(CrewStatus.RECRUITING)) {
-			throw new CrewStatusException(crew.getStatus());
-		}
+		switch (crewStatus) {
+			case CLOSE -> {
+				if (!crew.getStatus().equals(CrewStatus.RECRUITING)) {
+					throw new CrewStatusException(crew.getStatus());
+				}
+			}
 
-		crew.changeStatus(CrewStatus.CLOSE);
+			case FINISH -> {
+				if (!crew.getStatus().equals(CrewStatus.CLOSE)) {
+					throw new CrewStatusException(crew.getStatus());
+				}
+			}
 
-	}
-
-	@Override
-	public void finishStatus(Long crewId, Long userId) {
-
-		Crew crew = crewRepository.findById(crewId)
-			.orElseThrow(() -> new CrewNotFoundException(crewId));
-
-		CrewMember crewMember = crewMemberRepository.findCrewMemberByCrewIdAndUserId(crewId, userId)
-			.orElseThrow(() -> new MemberNotFoundException(userId));
-
-		if (!crewMember.getCrewMemberRole().equals(CrewMemberRole.LEADER)) {
-			throw new NotLeaderException(CrewMemberRole.LEADER);
-		}
-
-		if (!crew.getStatus().equals(CrewStatus.CLOSE)) {
-			throw new CrewStatusException(crew.getStatus());
+			default -> {
+				throw new CrewStatusException(crewStatus);
+			}
 		}
 
 		crew.changeStatus(CrewStatus.FINISH);
