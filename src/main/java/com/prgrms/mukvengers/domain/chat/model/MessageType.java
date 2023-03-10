@@ -1,4 +1,4 @@
-package com.prgrms.mukvengers.global.websocket;
+package com.prgrms.mukvengers.domain.chat.model;
 
 public enum MessageType {
 	CHAT,

@@ -1,4 +1,4 @@
-package com.prgrms.mukvengers.global.websocket.exception;
+package com.prgrms.mukvengers.domain.chat.exception;
 
 import com.prgrms.mukvengers.global.exception.ErrorCode;
 import com.prgrms.mukvengers.global.exception.ServiceException;

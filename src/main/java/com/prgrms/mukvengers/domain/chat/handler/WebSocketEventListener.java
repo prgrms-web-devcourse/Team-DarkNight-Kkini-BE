@@ -1,4 +1,4 @@
-package com.prgrms.mukvengers.global.websocket;
+package com.prgrms.mukvengers.domain.chat.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +8,9 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+
+import com.prgrms.mukvengers.domain.chat.model.ChatMessage;
+import com.prgrms.mukvengers.domain.chat.model.MessageType;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,13 +32,15 @@ public class WebSocketEventListener {
 		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 
 		String username = (String)headerAccessor.getSessionAttributes().get("username");
+		Long userId = (Long)headerAccessor.getSessionAttributes().get("userId");
+		Long crewId = (Long)headerAccessor.getSessionAttributes().get("crewId");
 
-		if (username != null) {
+		if (username != null && userId != null && crewId != null) {
 			logger.info("User Disconnected : " + username);
 
-			ChatMessage chatMessage = new ChatMessage(MessageType.LEAVE, username);
+			ChatMessage chatMessage = new ChatMessage(MessageType.LEAVE, username, userId);
 
-			messagingTemplate.convertAndSend("/topic/public/1", chatMessage);
+			messagingTemplate.convertAndSend("/topic/public/" + crewId, chatMessage);
 		}
 	}
 }
