@@ -1,10 +1,13 @@
 package com.prgrms.mukvengers.domain.proposal.model;
 
+import static com.prgrms.mukvengers.domain.proposal.model.vo.ProposalStatus.*;
 import static javax.persistence.EnumType.*;
 import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 import static org.springframework.util.Assert.*;
+
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -63,6 +66,14 @@ public class Proposal extends BaseEntity {
 		this.crewId = validateId(crewId);
 		this.content = validateContent(content);
 		this.status = ProposalStatus.WAITING;
+	}
+
+	public void changeProposalStatus(ProposalStatus status) {
+		this.status = status;
+	}
+
+	public boolean isApprove(ProposalStatus statusName) {
+		return Objects.equals(statusName, APPROVE);
 	}
 
 	private User validateUser(User user) {

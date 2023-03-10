@@ -3,9 +3,8 @@ package com.prgrms.mukvengers.domain.proposal.model.vo;
 import java.util.Arrays;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
+import com.prgrms.mukvengers.domain.proposal.exception.InvalidProposalStatusException;
 
 public enum ProposalStatus {
 	WAITING("대기중"),
@@ -18,12 +17,11 @@ public enum ProposalStatus {
 		this.status = status;
 	}
 
-	@JsonCreator
-	public static CrewStatus of(String statusName) {
-		return Arrays.stream(CrewStatus.values())
+	public static ProposalStatus of(String statusName) {
+		return Arrays.stream(ProposalStatus.values())
 			.filter(status -> Objects.equals(status.getStatus(), statusName))
 			.findFirst()
-			.orElseThrow();
+			.orElseThrow(() -> new InvalidProposalStatusException(statusName));
 	}
 
 	@JsonValue

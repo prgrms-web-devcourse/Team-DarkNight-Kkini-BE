@@ -22,9 +22,14 @@ import com.epages.restdocs.apispec.Schema;
 import com.epages.restdocs.apispec.SimpleType;
 import com.prgrms.mukvengers.base.ControllerTest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
+import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
+import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
+import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.domain.proposal.dto.request.CreateProposalRequest;
+import com.prgrms.mukvengers.domain.proposal.dto.request.UpdateProposalRequest;
 import com.prgrms.mukvengers.domain.proposal.model.Proposal;
 import com.prgrms.mukvengers.domain.user.model.User;
+import com.prgrms.mukvengers.utils.CrewMemberObjectProvider;
 import com.prgrms.mukvengers.utils.ProposalObjectProvider;
 
 class ProposalControllerTest extends ControllerTest {
@@ -32,13 +37,13 @@ class ProposalControllerTest extends ControllerTest {
 	public static final Schema GET_PROPOSALS_BY_LEADER_ID_PROPOSAL_RESPONSE = new Schema(
 		"getProposalsByLeaderIdResponse");
 	public static final Schema CREATE_PROPOSAL_REQUEST = new Schema("createProposal");
+	public static final Schema UPDATE_PROPOSAL_REQUEST = new Schema("updateProposal");
 	public static final Schema FIND_BY_PROPOSAL_ID_REQUEST = new Schema("findByProposalIdCRequest");
 
 	@Test
 	@DisplayName("[성공] 사용자는 신청서를 작성할 수 있다.")
 	void createProposal_success() throws Exception {
 
-		// given
 		User leader = userRepository.save(createUser("1232456789"));
 
 		Crew crew = crewRepository.save(createCrew(savedStore));
@@ -156,13 +161,102 @@ class ProposalControllerTest extends ControllerTest {
 							fieldWithPath("data.responses.[].user.crewCount").type(NUMBER).description("모임 참여 횟수"),
 							fieldWithPath("data.responses.[].user.tasteScore").type(NUMBER).description("맛잘알 점수"),
 							fieldWithPath("data.responses.[].user.mannerScore").type(NUMBER).description("매너 온도"),
-							fieldWithPath("data.responses.[].user.mannerScore").type(NUMBER).description("매너 온도"),
 							fieldWithPath("data.responses.[].id").type(NUMBER).description("신청서 아이디"),
 							fieldWithPath("data.responses.[].content").type(STRING).description("신청서 내용"),
 							fieldWithPath("data.responses.[].status").type(STRING).description("신청서 상태"),
 							fieldWithPath("data.responses.[].leaderId").type(NUMBER).description("모임의 방장 아이디"),
 							fieldWithPath("data.responses.[].crewId").type(NUMBER).description("모임 아이디")
 						)
+						.build()
+				)
+			));
+
+	}
+
+	@Test
+	@DisplayName("[성공] 방장이 신청서를 승인하는 경우 신청서의 상태값이 'APPROVE' 로 변경되며 밥모임원에 저장된다.")
+	void update_proposalStatus_approve_success() throws Exception {
+
+		User createUser = createUser("1232456789");
+		User user = userRepository.save(createUser);
+
+		Crew creatCrew = createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew crew = crewRepository.save(creatCrew);
+
+		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(user.getId(), crew, CrewMemberRole.LEADER);
+		CrewMember leader = crewMemberRepository.save(crewMemberOfLeader);
+
+		CrewMember crewMemberOfMember = CrewMemberObjectProvider.createCrewMember(user.getId(), crew, CrewMemberRole.MEMBER);
+		crewMemberRepository.save(crewMemberOfMember);
+
+		Proposal createProposal = ProposalObjectProvider.createProposal(user, leader.getId(), crew.getId());
+		Proposal proposal = proposalRepository.save(createProposal);
+
+		UpdateProposalRequest proposalRequest = new UpdateProposalRequest("승인");
+
+		String jsonRequest = objectMapper.writeValueAsString(proposalRequest);
+
+		mockMvc.perform(patch("/api/v1/proposals/{proposalId}", proposal.getId())
+				.contentType(APPLICATION_JSON)
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
+				.content(jsonRequest))
+			.andExpect(status().isOk())
+			.andDo(document("proposal-Approve",
+				resource(
+					builder()
+						.tag(PROPOSAL)
+						.summary("신청서 상태 승인 API")
+						.description("방장으로부터 신청서가 승인되면 밥모임원에 등록된다.")
+						.requestSchema(UPDATE_PROPOSAL_REQUEST)
+						.requestFields(
+							fieldWithPath("proposalStatus").type(STRING).description("신청서 응답 상태")
+						)
+						.responseFields()
+						.build()
+				)
+			));
+
+	}
+	
+	@Test
+	@DisplayName("[성공] 방장이 신청서를 거절하는 경우 신청서의 상태값이 'REFUSE' 로 변경되며 밥모임원에 저장된다.")
+	void update_proposalStatus_refuse_success() throws Exception {
+
+		User createUser = createUser("1232456789");
+		User user = userRepository.save(createUser);
+
+		Crew creatCrew = createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew crew = crewRepository.save(creatCrew);
+
+		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(user.getId(), crew, CrewMemberRole.LEADER);
+		CrewMember leader = crewMemberRepository.save(crewMemberOfLeader);
+
+		CrewMember crewMemberOfMember = CrewMemberObjectProvider.createCrewMember(user.getId(), crew, CrewMemberRole.MEMBER);
+		crewMemberRepository.save(crewMemberOfMember);
+
+		Proposal createProposal = ProposalObjectProvider.createProposal(user, leader.getId(), crew.getId());
+		Proposal proposal = proposalRepository.save(createProposal);
+
+		UpdateProposalRequest proposalRequest = new UpdateProposalRequest("거절");
+
+		String jsonRequest = objectMapper.writeValueAsString(proposalRequest);
+
+		mockMvc.perform(patch("/api/v1/proposals/{proposalId}", proposal.getId())
+				.contentType(APPLICATION_JSON)
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
+				.content(jsonRequest))
+			.andExpect(status().isOk())
+			.andDo(document("proposal-Refuse",
+				resource(
+					builder()
+						.tag(PROPOSAL)
+						.summary("신청서 상태 거절 API")
+						.description("방장으로부터 신청서가 거절되면 밥모임원에 저장되지 않는다.")
+						.requestSchema(UPDATE_PROPOSAL_REQUEST)
+						.requestFields(
+							fieldWithPath("proposalStatus").type(STRING).description("신청서 응답 상태")
+						)
+						.responseFields()
 						.build()
 				)
 			));

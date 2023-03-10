@@ -11,14 +11,18 @@ import com.prgrms.mukvengers.domain.crew.exception.CrewNotFoundException;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
+import com.prgrms.mukvengers.domain.crewmember.mapper.CrewMemberMapper;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
+import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
 import com.prgrms.mukvengers.domain.proposal.dto.request.CreateProposalRequest;
+import com.prgrms.mukvengers.domain.proposal.dto.request.UpdateProposalRequest;
 import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponse;
 import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponses;
 import com.prgrms.mukvengers.domain.proposal.exception.ProposalNotFoundException;
 import com.prgrms.mukvengers.domain.proposal.mapper.ProposalMapper;
 import com.prgrms.mukvengers.domain.proposal.model.Proposal;
+import com.prgrms.mukvengers.domain.proposal.model.vo.ProposalStatus;
 import com.prgrms.mukvengers.domain.proposal.repository.ProposalRepository;
 import com.prgrms.mukvengers.domain.user.exception.UserNotFoundException;
 import com.prgrms.mukvengers.domain.user.model.User;
@@ -42,8 +46,10 @@ public class ProposalServiceImpl implements ProposalService {
 	private final CrewMemberRepository crewMemberRepository;
 	private final ProposalRepository proposalRepository;
 	private final ProposalMapper proposalMapper;
+	private final CrewMemberMapper crewMemberMapper;
 
 	@Override
+	@Transactional
 	public IdResponse create(CreateProposalRequest proposalRequest, Long userId, Long crewId) {
 
 		User user = userRepository.findById(userId)
@@ -107,4 +113,37 @@ public class ProposalServiceImpl implements ProposalService {
 		return new ProposalResponses(proposals);
 	}
 
+	@Override
+	@Transactional
+	public void approve(UpdateProposalRequest proposalRequest, Long userId, Long proposalId) {
+
+		if (!userRepository.existsById(userId)) {
+			throw new UserNotFoundException(userId);
+		}
+
+		Proposal proposal = proposalRepository.findById(proposalId)
+			.orElseThrow(() -> new ProposalNotFoundException(proposalId));
+
+		Crew crew = crewRepository.findById(proposal.getCrewId())
+			.orElseThrow(() -> new CrewNotFoundException(proposal.getCrewId()));
+
+		String status = proposalRequest.proposalStatus();
+
+		ProposalStatus proposalStatus = ProposalStatus.of(status);
+
+		registerCrewMember(proposal, crew, userId, proposalStatus);
+	}
+
+	private void registerCrewMember(Proposal proposal, Crew crew, Long userId, ProposalStatus proposalStatus) {
+
+		proposal.changeProposalStatus(proposalStatus);
+
+		if (!proposal.isApprove(proposalStatus)) return;
+
+		CrewMember createCrewMember = crewMemberMapper.toCrewMember(crew, userId, CrewMemberRole.MEMBER);
+
+		CrewMember crewMember = crewMemberRepository.save(createCrewMember);
+
+		crew.addCrewMember(crewMember);
+	}
 }
