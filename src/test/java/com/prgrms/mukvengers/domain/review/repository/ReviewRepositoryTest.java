@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 
 import com.prgrms.mukvengers.base.RepositoryTest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
-import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.review.model.Review;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.utils.CrewObjectProvider;
@@ -29,7 +28,7 @@ class ReviewRepositoryTest extends RepositoryTest {
 		User createUser = UserObjectProvider.createUser("kakao_1234");
 		User reviewer = userRepository.save(createUser);
 
-		Crew createCrew = CrewObjectProvider.createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew createCrew = CrewObjectProvider.createCrew(savedStore);
 		Crew crew = crewRepository.save(createCrew);
 
 		Integer page = 0;
@@ -56,7 +55,7 @@ class ReviewRepositoryTest extends RepositoryTest {
 		User createUser = UserObjectProvider.createUser("kakao_1234");
 		User reviewee = userRepository.save(createUser);
 
-		Crew createCrew = CrewObjectProvider.createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew createCrew = CrewObjectProvider.createCrew(savedStore);
 		Crew crew = crewRepository.save(createCrew);
 
 		Integer page = 0;
@@ -83,7 +82,7 @@ class ReviewRepositoryTest extends RepositoryTest {
 		User createUser = UserObjectProvider.createUser("kakao_1");
 		User reviewer = userRepository.save(createUser);
 
-		Crew createCrew = CrewObjectProvider.createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew createCrew = CrewObjectProvider.createCrew(savedStore);
 		Crew crew = crewRepository.save(createCrew);
 
 		Review review = ReviewObjectProvider.createLeaderReview(reviewer, savedUser, crew);

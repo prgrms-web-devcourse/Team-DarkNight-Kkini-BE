@@ -23,7 +23,6 @@ import org.springframework.util.MultiValueMap;
 import com.epages.restdocs.apispec.Schema;
 import com.prgrms.mukvengers.base.ControllerTest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
-import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.domain.review.dto.request.CreateLeaderReviewRequest;
@@ -50,7 +49,7 @@ class ReviewControllerTest extends ControllerTest {
 	void setCrew() {
 		reviewer = savedUser;
 		reviewee = userRepository.save(UserObjectProvider.createUser("kakao_1212"));
-		crew = crewRepository.save(createCrew(savedStore, CrewStatus.RECRUITING));
+		crew = crewRepository.save(createCrew(savedStore));
 	}
 
 	@Test

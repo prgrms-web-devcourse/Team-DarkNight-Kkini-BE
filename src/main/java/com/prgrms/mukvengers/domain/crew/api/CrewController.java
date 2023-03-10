@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -28,6 +29,7 @@ import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponses;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
 import com.prgrms.mukvengers.domain.crew.facade.CrewFacadeService;
+import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.crew.service.CrewService;
 import com.prgrms.mukvengers.global.common.dto.ApiResponse;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
@@ -133,17 +135,19 @@ public class CrewController {
 	 * <pre>
 	 *     밥 모임 모집 종료로 상태 변경
 	 * </pre>
-	 * @param crewId 밤 모임 아이디와
+	 * @param crewId 밤 모임 아이디
+	 * @param crewStatus 변경할 모임 상태
 	 * @param user 사용자 정보
 	 * @return status : 200
 	 */
-	@PatchMapping(value = "/{crewId}/close")
-	public ResponseEntity<Void> closeStatus
+	@PatchMapping(value = "/{crewId}")
+	public ResponseEntity<Void> updateStatus
 	(
 		@PathVariable Long crewId,
+		@RequestParam CrewStatus crewStatus,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		crewService.closeStatus(crewId, user.id());
+		crewService.updateStatus(crewId, user.id(), crewStatus);
 		return ResponseEntity.ok().build();
 	}
 

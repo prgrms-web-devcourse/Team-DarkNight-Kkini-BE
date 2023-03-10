@@ -32,7 +32,7 @@ public class CrewObjectProvider {
 	private static final Point LOCATION = GF.createPoint(
 		new Coordinate(Double.parseDouble(LONGITUDE), Double.parseDouble(LATITUDE)));
 
-	public static Crew createCrew(Store store, CrewStatus status) {
+	public static Crew createCrew(Store store) {
 		return Crew.builder()
 			.store(store)
 			.name(NAME)
@@ -46,7 +46,7 @@ public class CrewObjectProvider {
 
 	public static List<Crew> createCrews(Store store) {
 		return IntStream.range(0, 20)
-			.mapToObj(i -> createCrew(store, i % 2 == 0 ? STATUS_CLOSE : STATUS_RECRUITING))
+			.mapToObj(i -> createCrew(store))
 			.collect(Collectors.toList());
 	}
 

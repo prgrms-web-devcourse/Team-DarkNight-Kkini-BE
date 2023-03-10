@@ -82,7 +82,7 @@ class CrewServiceImplTest extends ServiceTest {
 	void getById_success() {
 
 		//given
-		Crew crew = CrewObjectProvider.createCrew(savedStore, RECRUITING);
+		Crew crew = CrewObjectProvider.createCrew(savedStore);
 
 		crewRepository.save(crew);
 
@@ -127,7 +127,7 @@ class CrewServiceImplTest extends ServiceTest {
 	void findByLocation_success() {
 
 		//given
-		Crew crew = CrewObjectProvider.createCrew(savedStore, RECRUITING);
+		Crew crew = CrewObjectProvider.createCrew(savedStore);
 
 		crewRepository.save(crew);
 
@@ -151,7 +151,7 @@ class CrewServiceImplTest extends ServiceTest {
 	void closeStatus_success() {
 
 		//given
-		Crew crew = CrewObjectProvider.createCrew(savedStore, RECRUITING);
+		Crew crew = CrewObjectProvider.createCrew(savedStore);
 
 		crewRepository.save(crew);
 
@@ -160,14 +160,14 @@ class CrewServiceImplTest extends ServiceTest {
 		crewMemberRepository.save(crewMember);
 
 		//when
-		crewService.closeStatus(crew.getId(), savedUserId);
+		crewService.updateStatus(crew.getId(), savedUserId, CLOSE);
 
 		//then
 		Optional<Crew> optionalCrew = crewRepository.findById(crew.getId());
 
 		assertThat(optionalCrew).isPresent();
 		Crew savedCrew = optionalCrew.get();
-		assertThat(savedCrew.getStatus()).isEqualTo(CLOSE);
+		assertThat(savedCrew.getStatus()).isEqualTo(FINISH);
 	}
 
 }

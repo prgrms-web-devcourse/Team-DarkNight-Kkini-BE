@@ -1,6 +1,5 @@
 package com.prgrms.mukvengers.domain.crewmember.repository;
 
-import static com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus.*;
 import static com.prgrms.mukvengers.utils.CrewMemberObjectProvider.*;
 import static com.prgrms.mukvengers.utils.CrewObjectProvider.*;
 import static com.prgrms.mukvengers.utils.UserObjectProvider.*;
@@ -28,7 +27,7 @@ class CrewMemberRepositoryTest extends RepositoryTest {
 	void setCrewMember() {
 		reviewer = savedUser;
 		reviewee = userRepository.save(createUser("kakao_1212"));
-		crew = crewRepository.save(createCrew(savedStore, RECRUITING));
+		crew = crewRepository.save(createCrew(savedStore));
 	}
 
 	@Test
@@ -69,7 +68,7 @@ class CrewMemberRepositoryTest extends RepositoryTest {
 	@DisplayName("[실패] 해당 밥모임에 참여하지 않은 사용자이면 empty 반환된다.")
 	void findCrewMemberByCrewIdAndUserId_success() {
 		// given
-		Crew otherCrew = crewRepository.save(createCrew(savedStore, RECRUITING));
+		Crew otherCrew = crewRepository.save(createCrew(savedStore));
 		CrewMember crewMemberOfMember = createCrewMember(reviewee.getId(), otherCrew, CrewMemberRole.MEMBER);
 		CrewMember member = crewMemberRepository.save(crewMemberOfMember);
 		otherCrew.addCrewMember(member);

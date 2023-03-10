@@ -3,7 +3,6 @@ package com.prgrms.mukvengers.domain.crew.api;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
 import static com.epages.restdocs.apispec.ResourceDocumentation.*;
 import static com.epages.restdocs.apispec.ResourceSnippetParameters.*;
-import static com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus.*;
 import static com.prgrms.mukvengers.utils.CrewMemberObjectProvider.*;
 import static com.prgrms.mukvengers.utils.CrewObjectProvider.*;
 import static org.hamcrest.Matchers.*;
@@ -96,7 +95,7 @@ class CrewControllerTest extends ControllerTest {
 	@DisplayName("[성공] 모임 아이디로 모임을 조회한다.")
 	void getById_success() throws Exception {
 
-		Crew crew = CrewObjectProvider.createCrew(savedStore, RECRUITING);
+		Crew crew = CrewObjectProvider.createCrew(savedStore);
 
 		crewRepository.save(crew);
 
@@ -367,10 +366,10 @@ class CrewControllerTest extends ControllerTest {
 	}
 
 	@Test
-	@DisplayName("[성공]밥 모임 상태를 변경한다.")
-	void closeStatus_success() throws Exception {
+	@DisplayName("[성공] 모임 상태를 모집 중 -> 모집 완료로 변경한다.")
+	void updateStatus_success() throws Exception {
 
-		Crew crew = CrewObjectProvider.createCrew(savedStore, RECRUITING);
+		Crew crew = CrewObjectProvider.createCrew(savedStore);
 
 		crewRepository.save(crew);
 
@@ -378,7 +377,11 @@ class CrewControllerTest extends ControllerTest {
 
 		crewMemberRepository.save(crewMember);
 
-		mockMvc.perform(patch("/api/v1/crews/{crewId}/close", crew.getId())
+		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+		params.add("crewStatus", "CLOSE");
+
+		mockMvc.perform(patch("/api/v1/crews/{crewId}", crew.getId())
+				.params(params)
 				.contentType(APPLICATION_JSON)
 				.header(AUTHORIZATION, BEARER_TYPE + accessToken))
 			.andExpect(status().isOk())
@@ -387,11 +390,12 @@ class CrewControllerTest extends ControllerTest {
 				resource(
 					builder()
 						.tag(CREW)
-						.summary("모임 상태 변경 API")
-						.description("밥 모임의 상태를 변경합니다.")
+						.summary("모임 상태 변경")
+						.description("모임 상태를 변경합니다.")
 						.build()
 				)
 			));
 
 	}
+
 }

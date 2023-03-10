@@ -22,7 +22,6 @@ import com.epages.restdocs.apispec.Schema;
 import com.epages.restdocs.apispec.SimpleType;
 import com.prgrms.mukvengers.base.ControllerTest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
-import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.proposal.dto.request.CreateProposalRequest;
 import com.prgrms.mukvengers.domain.proposal.model.Proposal;
 import com.prgrms.mukvengers.domain.user.model.User;
@@ -42,7 +41,7 @@ class ProposalControllerTest extends ControllerTest {
 		// given
 		User leader = userRepository.save(createUser("1232456789"));
 
-		Crew crew = crewRepository.save(createCrew(savedStore, CrewStatus.RECRUITING));
+		Crew crew = crewRepository.save(createCrew(savedStore));
 
 		CreateProposalRequest proposalRequest = ProposalObjectProvider.createProposalRequest(leader.getId());
 
@@ -79,7 +78,7 @@ class ProposalControllerTest extends ControllerTest {
 		User user = createUser("1232456789");
 		userRepository.save(user);
 
-		Crew crew = createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew crew = createCrew(savedStore);
 		crewRepository.save(crew);
 
 		Proposal proposal = ProposalObjectProvider.createProposal(user, savedUser.getId(), crew.getId());
@@ -129,7 +128,7 @@ class ProposalControllerTest extends ControllerTest {
 		User user = createUser("1232456789");
 		userRepository.save(user);
 
-		Crew crew = createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew crew = createCrew(savedStore);
 		crewRepository.save(crew);
 
 		List<Proposal> proposals = ProposalObjectProvider.createProposals(user, savedUser.getId(), crew.getId());
@@ -177,7 +176,7 @@ class ProposalControllerTest extends ControllerTest {
 		User user = createUser("1232456789");
 		userRepository.save(user);
 
-		Crew crew = createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew crew = createCrew(savedStore);
 		crewRepository.save(crew);
 
 		List<Proposal> proposals = ProposalObjectProvider.createProposals(savedUser, user.getId(), crew.getId());
