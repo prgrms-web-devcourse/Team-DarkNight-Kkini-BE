@@ -40,6 +40,7 @@ class ReviewControllerTest extends ControllerTest {
 	public static final Schema SINGLE_REVIEW_DETAIL = new Schema("singleReviewDetail");
 	public static final Schema ALL_RECEIVED_REVIEW = new Schema("allReceivedReview");
 	public static final Schema ALL_WROTE_REVIEW = new Schema("allWroteReview");
+	public static final Schema REVIEWEE_INFO = new Schema("RevieweeListResponse");
 
 	private User reviewer;
 	private User reviewee;
@@ -413,16 +414,16 @@ class ReviewControllerTest extends ControllerTest {
 		// given
 
 		CrewMember crewMemberOfMember1 = crewMemberRepository.save(
-			CrewMemberObjectProvider.createCrewMember(reviewee.getId(), crew, CrewMemberRole.MEMBER));
+			CrewMemberObjectProvider.createCrewMember(reviewer.getId(), crew, CrewMemberRole.LEADER));
 		crew.addCrewMember(crewMemberOfMember1);
 
 		CrewMember crewMemberOfMember2 = crewMemberRepository.save(
-			CrewMemberObjectProvider.createCrewMember(reviewer.getId(), crew, CrewMemberRole.MEMBER));
+			CrewMemberObjectProvider.createCrewMember(reviewee.getId(), crew, CrewMemberRole.MEMBER));
 		crew.addCrewMember(crewMemberOfMember2);
 
-		List<Review> reviews = ReviewObjectProvider.createReviews(reviewer, reviewee, crew);
+		Review review = ReviewObjectProvider.createMemberReview(reviewer, reviewee, crew);
 
-		reviewRepository.saveAll(reviews);
+		reviewRepository.save(review);
 
 		mockMvc.perform(get("/api/v1/crews/{crewId}/reviews", crew.getId())
 				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken))
@@ -434,7 +435,7 @@ class ReviewControllerTest extends ControllerTest {
 					builder()
 						.tag(REVIEW)
 						.summary("자신이 작성할 수 있는 리뷰이 조회 API")
-						.responseSchema(ALL_WROTE_REVIEW)
+						.responseSchema(REVIEWEE_INFO)
 						.description("사용자가 작성할 수 있는 리뷰이를 조회합니다.")
 						.responseFields(
 							fieldWithPath("data.[].userId").type(NUMBER).description("사용자 아이디"),

@@ -131,15 +131,15 @@ public class ReviewServiceImpl implements ReviewService {
 		return crewMemberRepository.findAllByCrewId(crewId)
 			.stream()
 			.filter(crewMember -> !Objects.equals(crewMember.getUserId(), reviewer.getId()))
-			.map(crewMember -> toRevieweeListResponse(crewId, reviewer, crewMember))
+			.map(crewMember -> toRevieweeResponse(crewId, reviewer, crewMember))
 			.toList();
 	}
 
-	private RevieweeListResponse toRevieweeListResponse(Long crewId, User reviewer, CrewMember crewMember) {
-		User crewMemberUser = getUserByUserId(crewMember.getUserId());
-		Optional<Review> reviewResult = reviewRepository.findByReview(crewId, reviewer.getId(), crewMemberUser.getId());
-		boolean isReviewed = reviewResult.isPresent();
-		return reviewMapper.toRevieweeListResponse(crewMemberUser, crewMember.getCrewMemberRole(), isReviewed);
+	private RevieweeListResponse toRevieweeResponse(Long crewId, User reviewer, CrewMember crewMember) {
+		User reviewee = getUserByUserId(crewMember.getUserId());
+		Optional<Review> review = reviewRepository.findByReview(crewId, reviewer.getId(), reviewee.getId());
+		boolean isReviewed = review.isPresent();
+		return reviewMapper.toRevieweeListResponse(reviewee, crewMember.getCrewMemberRole(), isReviewed);
 	}
 
 	private User getUserByUserId(Long userId) {

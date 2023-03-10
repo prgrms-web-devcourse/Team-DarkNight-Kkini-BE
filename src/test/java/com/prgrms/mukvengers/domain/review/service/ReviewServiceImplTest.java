@@ -5,6 +5,7 @@ import static com.prgrms.mukvengers.utils.ReviewObjectProvider.*;
 import static com.prgrms.mukvengers.utils.UserObjectProvider.*;
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +22,7 @@ import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.domain.review.dto.request.CreateLeaderReviewRequest;
 import com.prgrms.mukvengers.domain.review.dto.request.CreateMemberReviewRequest;
 import com.prgrms.mukvengers.domain.review.dto.response.ReviewResponse;
+import com.prgrms.mukvengers.domain.review.dto.response.RevieweeListResponse;
 import com.prgrms.mukvengers.domain.review.model.Review;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
@@ -136,4 +138,32 @@ class ReviewServiceImplTest extends ServiceTest {
 		assertThat(reviews).hasSize(1);
 		assertThat(reviews.getContent().get(0).reviewer().id()).isEqualTo(reviewer.getId());
 	}
+
+	@Test
+	@DisplayName("[성공] 내가 리뷰를 남긴 사용자와 아닌 사용자를 조회할 수 있다.")
+	void getRevieweeListFromCrew_success() {
+		// given
+		CrewMember createMemberOfReviewer = CrewMemberObjectProvider.createCrewMember(reviewer.getId(), crew,
+			CrewMemberRole.MEMBER);
+		CrewMember createMemberOfReviewee = CrewMemberObjectProvider.createCrewMember(reviewee.getId(), crew,
+			CrewMemberRole.MEMBER);
+
+		CrewMember crewMemberOfReviewer = crewMemberRepository.save(createMemberOfReviewer);
+		CrewMember crewMemberOfReviewee = crewMemberRepository.save(createMemberOfReviewee);
+
+		crew.addCrewMember(crewMemberOfReviewer);
+		crew.addCrewMember(crewMemberOfReviewee);
+
+		Review review = createMemberReview(reviewer, reviewee, crew);
+		reviewRepository.save(review);
+
+		// when
+		List<RevieweeListResponse> myReviewee
+			= reviewService.getRevieweeListFromCrew(reviewer.getId(), crew.getId());
+		// then
+		assertThat(myReviewee).isNotEmpty();
+		assertThat(myReviewee.get(0).userId()).isEqualTo(reviewee.getId());
+		assertThat(myReviewee.get(0).isReviewed()).isTrue();
+	}
+
 }

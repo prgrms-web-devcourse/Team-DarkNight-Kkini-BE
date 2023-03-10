@@ -89,8 +89,8 @@ class ReviewRepositoryTest extends RepositoryTest {
 		reviewRepository.save(review);
 
 		// when
-		Optional<Review> reviewResult = reviewRepository.findByReview(crew.getId(), savedUser.getId(),
-			reviewer.getId());
+		Optional<Review> reviewResult = reviewRepository.findByReview(crew.getId(),
+			reviewer.getId(), savedUser.getId());
 
 		// then
 		assertThat(reviewResult).isPresent();
