@@ -27,7 +27,7 @@ import com.prgrms.mukvengers.domain.crew.dto.response.CrewDetailResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponses;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
-import com.prgrms.mukvengers.domain.crew.facade.CrewFacadeService;
+import com.prgrms.mukvengers.domain.crew.dto.response.CrewStatusResponse;
 import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.crew.service.CrewService;
 import com.prgrms.mukvengers.global.common.dto.ApiResponse;
@@ -139,14 +139,14 @@ public class CrewController {
 	 * @return status : 200
 	 */
 	@PatchMapping(value = "/{crewId}")
-	public ResponseEntity<Void> updateStatus
+	public ResponseEntity<ApiResponse<CrewStatusResponse>> updateStatus
 	(
 		@PathVariable Long crewId,
 		@RequestBody CrewStatus crewStatus,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		crewService.updateStatus(crewId, user.id(), crewStatus);
-		return ResponseEntity.ok().build();
+		CrewStatusResponse crewStatusResponse = crewService.updateStatus(crewId, user.id(), crewStatus);
+		return ResponseEntity.ok().body(new ApiResponse<>(crewStatusResponse));
 	}
 
 }

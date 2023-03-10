@@ -25,7 +25,6 @@ import com.epages.restdocs.apispec.Schema;
 import com.prgrms.mukvengers.base.ControllerTest;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
-import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.utils.CrewMemberObjectProvider;
@@ -378,7 +377,7 @@ class CrewControllerTest extends ControllerTest {
 
 		crewMemberRepository.save(crewMember);
 
-		String jsonRequest = objectMapper.writeValueAsString(CrewStatus.CLOSE);
+		String jsonRequest = objectMapper.writeValueAsString("모집 종료");
 
 		mockMvc.perform(patch("/api/v1/crews/{crewId}", crew.getId())
 				.content(jsonRequest)
@@ -392,6 +391,8 @@ class CrewControllerTest extends ControllerTest {
 						.tag(CREW)
 						.summary("모임 상태 변경")
 						.description("모임 상태를 변경합니다.")
+						.responseFields(
+							fieldWithPath("data.crewStatus").type(STRING).description("모임 상태"))
 						.build()
 				)
 			));

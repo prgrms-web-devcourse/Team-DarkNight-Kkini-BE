@@ -20,6 +20,7 @@ import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponses;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
+import com.prgrms.mukvengers.domain.crew.dto.response.CrewStatusResponse;
 import com.prgrms.mukvengers.domain.crew.exception.CrewNotFoundException;
 import com.prgrms.mukvengers.domain.crew.exception.CrewStatusException;
 import com.prgrms.mukvengers.domain.crew.mapper.CrewMapper;
@@ -149,7 +150,7 @@ public class CrewServiceImpl implements CrewService {
 
 	@Override
 	@Transactional
-	public void updateStatus(Long crewId, Long userId, CrewStatus crewStatus) {
+	public CrewStatusResponse updateStatus(Long crewId, Long userId, CrewStatus crewStatus) {
 
 		Crew crew = crewRepository.findById(crewId)
 			.orElseThrow(() -> new CrewNotFoundException(crewId));
@@ -181,5 +182,6 @@ public class CrewServiceImpl implements CrewService {
 
 		crew.changeStatus(CrewStatus.FINISH);
 
+		return new CrewStatusResponse(crew.getStatus());
 	}
 }
