@@ -16,5 +16,5 @@ public interface ProposalService {
 
 	ProposalResponses getProposalsByMemberId(Long userId);
 
-	void approve(UpdateProposalRequest proposalRequest, Long userId, Long proposalId);
+	void updateProposalStatus(UpdateProposalRequest proposalRequest, Long userId, Long proposalId);
 }

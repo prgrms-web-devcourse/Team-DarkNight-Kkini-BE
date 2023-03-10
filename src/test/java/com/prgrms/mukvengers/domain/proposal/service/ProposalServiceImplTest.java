@@ -182,7 +182,7 @@ class ProposalServiceImplTest extends ServiceTest {
 		UpdateProposalRequest proposalRequest = new UpdateProposalRequest(inputProposalStatus);
 
 		// when
-		proposalService.approve(proposalRequest, leader.getUserId(), proposal.getId());
+		proposalService.updateProposalStatus(proposalRequest, leader.getUserId(), proposal.getId());
 		Optional<CrewMember> result = crewMemberRepository.findCrewMemberByCrewIdAndUserId(
 			crew.getId(), user.getId());
 
@@ -216,7 +216,7 @@ class ProposalServiceImplTest extends ServiceTest {
 		UpdateProposalRequest proposalRequest = new UpdateProposalRequest(inputProposalStatus);
 
 		// when
-		proposalService.approve(proposalRequest, leader.getUserId(), proposal.getId());
+		proposalService.updateProposalStatus(proposalRequest, leader.getUserId(), proposal.getId());
 		Optional<CrewMember> saveCrewMember = crewMemberRepository.findCrewMemberByCrewIdAndUserId(
 			crew.getId(), user.getId());
 
@@ -252,7 +252,7 @@ class ProposalServiceImplTest extends ServiceTest {
 		// when & then
 		assertThatThrownBy
 			(
-				() -> proposalService.approve(proposalRequest, leader.getUserId(), proposal.getId())
+				() -> proposalService.updateProposalStatus(proposalRequest, leader.getUserId(), proposal.getId())
 			)
 			.isInstanceOf(InvalidProposalStatusException.class);
 	}

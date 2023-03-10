@@ -110,21 +110,21 @@ public class ProposalController {
 
 	/**
 	 * <pre>
-	 *     방장으로부터 수락/거절 응답을 받으면 그에 맞는 응답을 한다.
+	 *     방장은 신청서를 수락/거절 응답할 수 있다.
 	 * </pre>
 	 * @param proposalId 신청서 아이디
 	 * @param proposalRequest 신청서 수정 dto
 	 * @param user 유저 정보
 	 * @return
 	 */
-	@PatchMapping(value = "/proposals/{proposalId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponse<Void>> approve
+	@PatchMapping(value = "/proposals/{proposalId}", consumes = APPLICATION_JSON_VALUE)
+	public ResponseEntity<ApiResponse<Void>> changeProposalStatus
 	(
 		@PathVariable Long proposalId,
 		@RequestBody @Valid UpdateProposalRequest proposalRequest,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		 proposalService.approve(proposalRequest, user.id(), proposalId);
+		 proposalService.updateProposalStatus(proposalRequest, user.id(), proposalId);
 
 		return ResponseEntity.ok().build();
 	}
