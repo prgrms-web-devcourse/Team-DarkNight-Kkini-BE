@@ -164,9 +164,6 @@ class ProposalServiceImplTest extends ServiceTest {
 
 		//given
 		String inputProposalStatus = "승인";
-		User createUser = createUser("1232456789");
-		User user = userRepository.save(createUser);
-
 		Crew creatCrew = createCrew(savedStore);
 		Crew crew = crewRepository.save(creatCrew);
 
@@ -198,8 +195,6 @@ class ProposalServiceImplTest extends ServiceTest {
 
 		//given
 		String inputProposalStatus = "거절";
-		User createUser = createUser("1232456789");
-		User user = userRepository.save(createUser);
 
 		Crew creatCrew = createCrew(savedStore);
 		Crew crew = crewRepository.save(creatCrew);
@@ -231,8 +226,6 @@ class ProposalServiceImplTest extends ServiceTest {
 
 		//given
 		String inputProposalStatus = "모름";
-		User createUser = createUser("1232456789");
-		User user = userRepository.save(createUser);
 
 		Crew creatCrew = createCrew(savedStore);
 		Crew crew = crewRepository.save(creatCrew);
