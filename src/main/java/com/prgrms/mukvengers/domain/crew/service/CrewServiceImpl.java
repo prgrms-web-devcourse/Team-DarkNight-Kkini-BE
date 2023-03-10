@@ -144,6 +144,7 @@ public class CrewServiceImpl implements CrewService {
 	}
 
 	@Override
+	@Transactional
 	public void closeStatus(Long crewId, Long userId) {
 
 		Crew crew = crewRepository.findById(crewId)
