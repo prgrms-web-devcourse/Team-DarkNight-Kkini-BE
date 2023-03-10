@@ -16,6 +16,7 @@ import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
 import com.prgrms.mukvengers.domain.proposal.dto.request.CreateProposalRequest;
 import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponse;
 import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponses;
+import com.prgrms.mukvengers.domain.proposal.exception.ProposalNotFoundException;
 import com.prgrms.mukvengers.domain.proposal.mapper.ProposalMapper;
 import com.prgrms.mukvengers.domain.proposal.model.Proposal;
 import com.prgrms.mukvengers.domain.proposal.repository.ProposalRepository;
@@ -73,6 +74,15 @@ public class ProposalServiceImpl implements ProposalService {
 		Proposal saveProposal = proposalRepository.save(proposal);
 
 		return new IdResponse(saveProposal.getId());
+	}
+
+	@Override
+	public ProposalResponse getById(Long proposalId) {
+
+		Proposal proposal = proposalRepository.findById(proposalId)
+			.orElseThrow(() -> new ProposalNotFoundException(proposalId));
+
+		return proposalMapper.toProposalResponse(proposal);
 	}
 
 	@Override

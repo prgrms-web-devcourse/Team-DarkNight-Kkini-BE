@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.prgrms.mukvengers.domain.proposal.dto.request.CreateProposalRequest;
+import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponse;
 import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponses;
 import com.prgrms.mukvengers.domain.proposal.service.ProposalService;
 import com.prgrms.mukvengers.global.common.dto.ApiResponse;
@@ -51,6 +52,24 @@ public class ProposalController {
 		IdResponse proposal = proposalService.create(proposalRequest, user.id(), crewId);
 		URI location = UriComponentsBuilder.fromUriString("/api/v1/proposals/" + proposal.id()).build().toUri();
 		return ResponseEntity.created(location).body(proposal);
+	}
+
+	/**
+	 * <pre>
+	 *     사용자가 신청서를 조회합니다.
+	 * </pre>
+	 * @param proposalId 조회할 신청서 아이디
+	 * @return status : 200, body : 조회된 신청서
+	 */
+	@GetMapping(value = "/proposals/{proposalId}")
+	public ResponseEntity<ApiResponse<ProposalResponse>> findById
+	(
+		@PathVariable Long proposalId
+	) {
+		ProposalResponse response = proposalService.getById(proposalId);
+
+		return ResponseEntity.ok(new ApiResponse<>(response));
+
 	}
 
 	/**

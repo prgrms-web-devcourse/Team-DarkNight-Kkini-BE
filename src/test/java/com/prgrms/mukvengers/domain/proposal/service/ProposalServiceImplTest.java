@@ -17,6 +17,7 @@ import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.domain.proposal.dto.request.CreateProposalRequest;
+import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponse;
 import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponses;
 import com.prgrms.mukvengers.domain.proposal.model.Proposal;
 import com.prgrms.mukvengers.domain.user.model.User;
@@ -151,6 +152,40 @@ class ProposalServiceImplTest extends ServiceTest {
 			)
 			.isInstanceOf(IllegalStateException.class)
 			.hasMessageContaining(DUPLICATE_USER_EXCEPTION_MESSAGE);
+	}
+
+	@Test
+	@DisplayName("[성공] 신청서 아이디로 신청서를 조회한다.")
+	void getById() {
+		//given
+		User user = createUser("1232456789");
+		userRepository.save(user);
+
+		Crew crew = createCrew(savedStore, CrewStatus.RECRUITING);
+		crewRepository.save(crew);
+
+		Proposal proposal = ProposalObjectProvider.createProposal(user, savedUser.getId(), crew.getId());
+		proposalRepository.save(proposal);
+
+		//when
+		ProposalResponse response = proposalService.getById(proposal.getId());
+
+		assertThat(response)
+			.hasFieldOrPropertyWithValue("id", proposal.getId())
+			.hasFieldOrPropertyWithValue("leaderId", savedUserId)
+			.hasFieldOrPropertyWithValue("crewId", crew.getId())
+			.hasFieldOrPropertyWithValue("content", proposal.getContent())
+			.hasFieldOrPropertyWithValue("status", proposal.getStatus());
+		
+		assertThat(response.user())
+			.hasFieldOrPropertyWithValue("id", user.getId())
+			.hasFieldOrPropertyWithValue("nickname", user.getNickname())
+			.hasFieldOrPropertyWithValue("profileImgUrl", user.getProfileImgUrl())
+			.hasFieldOrPropertyWithValue("introduction", user.getIntroduction())
+			.hasFieldOrPropertyWithValue("leaderCount", user.getLeaderCount())
+			.hasFieldOrPropertyWithValue("crewCount", user.getCrewCount())
+			.hasFieldOrPropertyWithValue("tasteScore", user.getTasteScore())
+			.hasFieldOrPropertyWithValue("mannerScore", user.getMannerScore());
 	}
 
 	@Test

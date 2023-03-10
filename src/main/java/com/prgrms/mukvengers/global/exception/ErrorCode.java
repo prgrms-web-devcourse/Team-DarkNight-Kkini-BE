@@ -39,9 +39,9 @@ public enum ErrorCode {
 	REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "R001", "존재하지 않는 리뷰입니다."),
 	REVIEW_NO_ACCESS(HttpStatus.UNAUTHORIZED, "R002", "해당 리뷰를 볼 수 있는 접근 권한이 없습니다."),
 
-
 	// Proposal
 	PROPOSAL_BLOCKED_USER(HttpStatus.FORBIDDEN, "P001", "강퇴된 밥모임에는 신청서를 작성할 수 없습니다."),
+	PROPOSAL_NOT_FOUND(HttpStatus.NOT_FOUND, "P002", "존재하지 않는 신청서입니다."),
 
 	// Auth
 	INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "A001", "유효하지 않은 토큰입니다."),

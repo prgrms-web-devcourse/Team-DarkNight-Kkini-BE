@@ -1,5 +1,7 @@
 package com.prgrms.mukvengers.domain.review.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,4 +25,12 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 		WHERE r.reviewer.id = :userId
 		""")
 	Page<Review> findByReviewer(@Param(value = "userId") Long userId, Pageable pageable);
+
+	@Query(value = """
+		SELECT r
+		FROM Review r
+		WHERE r.crew.id = :crewId AND r.reviewee.id = :revieweeId AND r.reviewer.id = :reviewerId
+		""")
+	Optional<Review> findByReview(@Param(value = "crewId") Long crewId,
+		@Param(value = "revieweeId") Long revieweeId, @Param(value = "reviewerId") Long reviewerId);
 }

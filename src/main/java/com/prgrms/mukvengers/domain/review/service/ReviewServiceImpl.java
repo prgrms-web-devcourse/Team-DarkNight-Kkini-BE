@@ -1,5 +1,8 @@
 package com.prgrms.mukvengers.domain.review.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -8,13 +11,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.prgrms.mukvengers.domain.crew.exception.CrewNotFoundException;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
+import com.prgrms.mukvengers.domain.crewmember.exception.LeaderNotFoundException;
+import com.prgrms.mukvengers.domain.crewmember.exception.MemberNotFoundException;
+import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
 import com.prgrms.mukvengers.domain.review.dto.request.CreateLeaderReviewRequest;
 import com.prgrms.mukvengers.domain.review.dto.request.CreateMemberReviewRequest;
 import com.prgrms.mukvengers.domain.review.dto.response.ReviewResponse;
-import com.prgrms.mukvengers.domain.crewmember.exception.LeaderNotFoundException;
-import com.prgrms.mukvengers.domain.crewmember.exception.MemberNotFoundException;
+import com.prgrms.mukvengers.domain.review.dto.response.RevieweeListResponse;
 import com.prgrms.mukvengers.domain.review.exception.ReviewNotAccessException;
 import com.prgrms.mukvengers.domain.review.exception.ReviewNotFoundException;
 import com.prgrms.mukvengers.domain.review.mapper.ReviewMapper;
@@ -40,14 +45,11 @@ public class ReviewServiceImpl implements ReviewService {
 
 	@Override
 	@Transactional
-	public IdResponse createLeaderReview(CreateLeaderReviewRequest leaderReviewRequest, Long reviewerId,
-		Long crewId) {
+	public IdResponse createLeaderReview(CreateLeaderReviewRequest leaderReviewRequest,
+		Long reviewerId, Long crewId) {
 
-		User reviewer = userRepository.findById(reviewerId)
-			.orElseThrow(() -> new UserNotFoundException(reviewerId));
-
-		User reviewee = userRepository.findById(leaderReviewRequest.leaderId())
-			.orElseThrow(() -> new UserNotFoundException(leaderReviewRequest.leaderId()));
+		User reviewer = getUserByUserId(reviewerId);
+		User reviewee = getUserByUserId(leaderReviewRequest.leaderId());
 
 		Crew crew = crewRepository.findById(crewId)
 			.orElseThrow(() -> new CrewNotFoundException(crewId));
@@ -71,11 +73,8 @@ public class ReviewServiceImpl implements ReviewService {
 	@Transactional
 	public IdResponse createMemberReview(CreateMemberReviewRequest memberReviewRequest, Long reviewerId, Long crewId) {
 
-		User reviewer = userRepository.findById(reviewerId)
-			.orElseThrow(() -> new UserNotFoundException(reviewerId));
-
-		User reviewee = userRepository.findById(memberReviewRequest.revieweeId())
-			.orElseThrow(() -> new UserNotFoundException(memberReviewRequest.revieweeId()));
+		User reviewer = getUserByUserId(reviewerId);
+		User reviewee = getUserByUserId(memberReviewRequest.revieweeId());
 
 		Crew crew = crewRepository.findById(crewId)
 			.orElseThrow(() -> new CrewNotFoundException(crewId));
@@ -122,5 +121,27 @@ public class ReviewServiceImpl implements ReviewService {
 
 		return reviewRepository.findByReviewer(userId, pageable)
 			.map(reviewMapper::toReviewResponse);
+	}
+
+	@Override
+	public List<RevieweeListResponse> getRevieweeListFromCrew(Long userId, Long crewId) {
+		User reviewer = getUserByUserId(userId);
+
+		return crewMemberRepository.findAllByCrewId(crewId)
+			.stream()
+			.map(crewMember -> toRevieweeListResponse(crewId, reviewer, crewMember))
+			.toList();
+	}
+
+	private RevieweeListResponse toRevieweeListResponse(Long crewId, User reviewer, CrewMember crewMember) {
+		User crewMemberUser = getUserByUserId(crewMember.getUserId());
+		Optional<Review> reviewResult = reviewRepository.findByReview(crewId, reviewer.getId(), crewMemberUser.getId());
+		boolean isReviewed = reviewResult.isPresent();
+		return reviewMapper.toRevieweeListResponse(crewMemberUser, crewMember.getCrewMemberRole(), isReviewed);
+	}
+
+	private User getUserByUserId(Long userId) {
+		return userRepository.findById(userId)
+			.orElseThrow(() -> new UserNotFoundException(userId));
 	}
 }
