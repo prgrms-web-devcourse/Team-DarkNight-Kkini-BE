@@ -166,10 +166,11 @@ class ProposalServiceImplTest extends ServiceTest {
 		User createUser = createUser("1232456789");
 		User user = userRepository.save(createUser);
 
-		Crew creatCrew = createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew creatCrew = createCrew(savedStore);
 		Crew crew = crewRepository.save(creatCrew);
 
-		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(savedUserId, crew, CrewMemberRole.LEADER);
+		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(savedUserId, crew,
+			CrewMemberRole.LEADER);
 		CrewMember leader = crewMemberRepository.save(crewMemberOfLeader);
 
 		Proposal createProposal = ProposalObjectProvider.createProposal(user, leader.getId(), crew.getId());
@@ -197,10 +198,11 @@ class ProposalServiceImplTest extends ServiceTest {
 		User createUser = createUser("1232456789");
 		User user = userRepository.save(createUser);
 
-		Crew creatCrew = createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew creatCrew = createCrew(savedStore);
 		Crew crew = crewRepository.save(creatCrew);
 
-		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(savedUserId, crew, CrewMemberRole.LEADER);
+		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(savedUserId, crew,
+			CrewMemberRole.LEADER);
 		CrewMember leader = crewMemberRepository.save(crewMemberOfLeader);
 
 		Proposal createProposal = ProposalObjectProvider.createProposal(user, leader.getId(), crew.getId());
@@ -227,10 +229,11 @@ class ProposalServiceImplTest extends ServiceTest {
 		User createUser = createUser("1232456789");
 		User user = userRepository.save(createUser);
 
-		Crew creatCrew = createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew creatCrew = createCrew(savedStore);
 		Crew crew = crewRepository.save(creatCrew);
 
-		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(savedUserId, crew, CrewMemberRole.LEADER);
+		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(savedUserId, crew,
+			CrewMemberRole.LEADER);
 		CrewMember leader = crewMemberRepository.save(crewMemberOfLeader);
 
 		Proposal createProposal = ProposalObjectProvider.createProposal(user, leader.getId(), crew.getId());
@@ -245,7 +248,6 @@ class ProposalServiceImplTest extends ServiceTest {
 			)
 			.isInstanceOf(InvalidProposalStatusException.class);
 	}
-
 
 	@Test
 	@DisplayName("[성공] 신청서 아이디로 신청서를 조회한다.")

@@ -22,7 +22,6 @@ import com.epages.restdocs.apispec.Schema;
 import com.epages.restdocs.apispec.SimpleType;
 import com.prgrms.mukvengers.base.ControllerTest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
-import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.domain.proposal.dto.request.CreateProposalRequest;
@@ -180,13 +179,15 @@ class ProposalControllerTest extends ControllerTest {
 		User createUser = createUser("1232456789");
 		User user = userRepository.save(createUser);
 
-		Crew creatCrew = createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew creatCrew = createCrew(savedStore);
 		Crew crew = crewRepository.save(creatCrew);
 
-		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(user.getId(), crew, CrewMemberRole.LEADER);
+		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(user.getId(), crew,
+			CrewMemberRole.LEADER);
 		CrewMember leader = crewMemberRepository.save(crewMemberOfLeader);
 
-		CrewMember crewMemberOfMember = CrewMemberObjectProvider.createCrewMember(user.getId(), crew, CrewMemberRole.MEMBER);
+		CrewMember crewMemberOfMember = CrewMemberObjectProvider.createCrewMember(user.getId(), crew,
+			CrewMemberRole.MEMBER);
 		crewMemberRepository.save(crewMemberOfMember);
 
 		Proposal createProposal = ProposalObjectProvider.createProposal(user, leader.getId(), crew.getId());
@@ -217,7 +218,7 @@ class ProposalControllerTest extends ControllerTest {
 			));
 
 	}
-	
+
 	@Test
 	@DisplayName("[성공] 방장이 신청서를 거절하는 경우 신청서의 상태값이 'REFUSE' 로 변경되며 밥모임원에 저장된다.")
 	void update_proposalStatus_refuse_success() throws Exception {
@@ -225,13 +226,15 @@ class ProposalControllerTest extends ControllerTest {
 		User createUser = createUser("1232456789");
 		User user = userRepository.save(createUser);
 
-		Crew creatCrew = createCrew(savedStore, CrewStatus.RECRUITING);
+		Crew creatCrew = createCrew(savedStore);
 		Crew crew = crewRepository.save(creatCrew);
 
-		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(user.getId(), crew, CrewMemberRole.LEADER);
+		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(user.getId(), crew,
+			CrewMemberRole.LEADER);
 		CrewMember leader = crewMemberRepository.save(crewMemberOfLeader);
 
-		CrewMember crewMemberOfMember = CrewMemberObjectProvider.createCrewMember(user.getId(), crew, CrewMemberRole.MEMBER);
+		CrewMember crewMemberOfMember = CrewMemberObjectProvider.createCrewMember(user.getId(), crew,
+			CrewMemberRole.MEMBER);
 		crewMemberRepository.save(crewMemberOfMember);
 
 		Proposal createProposal = ProposalObjectProvider.createProposal(user, leader.getId(), crew.getId());
