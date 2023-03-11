@@ -6,7 +6,6 @@ CREATE TABLE chat
     user_id    bigint       NOT NULL,
     crew_id    bigint       NOT NULL,
     content    varchar(255) NOT NULL,
-    sender     varchar(255) NOT NULL,
     created_at dateTime     NOT NULL DEFAULT now(),
     updated_at dateTime     NOT NULL DEFAULT now(),
     deleted    boolean      NOT NULL DEFAULT false
