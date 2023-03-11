@@ -18,9 +18,9 @@ public interface CrewService {
 
 	CrewResponses getByUserId(Long userId);
 
-	CrewDetailResponse getById(Long crewId);
+	CrewDetailResponse getById(Long userId, Long crewId);
 
-	CrewPageResponse getByPlaceId(String mapStoreId, Pageable pageable);
+	CrewPageResponse getByPlaceId(Long userId, String mapStoreId, Pageable pageable);
 
 	CrewLocationResponses getByLocation(SearchCrewRequest distanceRequest);
 
