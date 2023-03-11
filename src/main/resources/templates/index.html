@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0" name="viewport">
     <title>Spring Boot WebSocket Chat Application</title>
     <style>
         * {
@@ -311,16 +311,16 @@
         <h1 class="title">username을 입력하세요</h1>
         <form id="usernameForm" name="usernameForm">
             <div class="form-group">
-                <input type="text" id="name" placeholder="Username" autocomplete="off" class="form-control"/>
+                <input autocomplete="off" class="form-control" id="name" placeholder="Username" type="text"/>
             </div>
             <div class="form-group">
-                <button type="submit" class="accent username-submit">채팅 시작하기</button>
+                <button class="accent username-submit" type="submit">채팅 시작하기</button>
             </div>
         </form>
     </div>
 </div>
 
-<div id="chat-page" class="hidden">
+<div class="hidden" id="chat-page">
     <div class="chat-container">
         <div class="chat-header">
             <h2>Spring WebSocket Chat Demo</h2>
@@ -334,9 +334,9 @@
         <form id="messageForm" name="messageForm">
             <div class="form-group">
                 <div class="input-group clearfix">
-                    <input type="text" id="message" placeholder="Type a message..." autocomplete="off"
-                           class="form-control"/>
-                    <button type="submit" class="primary">보내기</button>
+                    <input autocomplete="off" class="form-control" id="message" placeholder="Type a message..."
+                           type="text"/>
+                    <button class="primary" type="submit">보내기</button>
                 </div>
             </div>
         </form>
@@ -385,10 +385,7 @@
         stompClient.subscribe('/topic/public/1', onMessageReceived);
 
         // Tell your username to the server
-        stompClient.send("/app/chat.addUser/1",
-            {},
-            JSON.stringify({sender: username, type: 'JOIN'})
-        )
+        stompClient.send("/app/chat.sendMessage/1");
 
         connectingElement.classList.add('hidden');
     }
@@ -403,13 +400,13 @@
     function sendMessage(event) {
         var messageContent = messageInput.value.trim();
         if (messageContent && stompClient) {
-            var chatMessage = {
-                sender: username,
+            var chatRequest = {
                 content: messageInput.value,
                 type: 'CHAT',
-                userId: 1
+                userId: 12
             };
-            stompClient.send("/app/chat.sendMessage/1", {}, JSON.stringify(chatMessage));
+
+            stompClient.send("/app/chat.sendMessage/1", {}, JSON.stringify(chatRequest));
             messageInput.value = '';
         }
         event.preventDefault();
@@ -423,13 +420,13 @@
 
 
         var messageElement = document.createElement('li');
+        var username = message.username;
 
         if (message.type === 'JOIN') {
             messageElement.classList.add('event-message');
-            message.content = message.sender + ' joined!';
         } else if (message.type === 'LEAVE') {
             messageElement.classList.add('event-message');
-            message.content = message.sender + ' left!';
+            message.content = username + ' left!';
         } else {
             messageElement.classList.add('chat-message');
 
@@ -441,7 +438,7 @@
             messageElement.appendChild(avatarElement);
 
             var usernameElement = document.createElement('span');
-            var usernameText = document.createTextNode(message.sender);
+            var usernameText = document.createTextNode(username);
             usernameElement.appendChild(usernameText);
             messageElement.appendChild(usernameElement);
         }
