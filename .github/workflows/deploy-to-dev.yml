@@ -41,6 +41,7 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }} .
           docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
 
+      # 환경 변수 파일 서버로 전달하기(복사 후 붙여넣기)
       - name: Send to Environment
         uses: appleboy/scp-action@master
         with:
@@ -50,6 +51,7 @@ jobs:
           source: "./.env"
           target: "/home/ubuntu"
 
+      # 도커 컴포즈 설정 파일 서버로 전달하기(복사 후 붙여넣기)
       - name: Send to Docker-Compose
         uses: appleboy/scp-action@master
         with:
@@ -60,6 +62,8 @@ jobs:
           source: "./docker-compose.yml"
           target: "/home/ubuntu/"
 
+      # 도커 컴포즈 실행하기
+      # 도커 허브에서 jar파일 및 pull후에 컴포즈 up
       - name: Deploy to Dev
         uses: appleboy/ssh-action@master
         with:

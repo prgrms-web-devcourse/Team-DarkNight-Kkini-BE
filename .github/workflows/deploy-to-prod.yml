@@ -42,6 +42,7 @@ jobs:
           format: YYYYMMDDTHHmm
           utcOffset: "+09:00"
 
+      # 배포할 파일(jar) 만들기
       - name: Generate Deployment Package
         run: |
           mkdir -p deploy
@@ -51,6 +52,7 @@ jobs:
           cp -r .platform deploy/.platform
           cd deploy && zip -r deploy.zip .
 
+      # Beanstalk에 배포하기 (jar파일 올리기)
       - name: Beanstalk Deploy
         uses: einaregilsson/beanstalk-deploy@v21
         with:
