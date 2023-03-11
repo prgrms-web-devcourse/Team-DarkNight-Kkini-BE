@@ -15,6 +15,7 @@ import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crewmember.dto.response.CrewMemberResponse;
+import com.prgrms.mukvengers.domain.proposal.model.vo.ProposalStatus;
 import com.prgrms.mukvengers.domain.store.dto.response.StoreResponse;
 import com.prgrms.mukvengers.domain.store.model.Store;
 
@@ -33,12 +34,14 @@ public interface CrewMapper {
 	@Mapping(target = "response", source = "storeResponse")
 	@Mapping(target = "promiseTime", source = "crew.promiseTime")
 	@Mapping(target = "id", source = "crew.id")
+	@Mapping(target = "crewStatus", source = "crew.status")
+	@Mapping(target = "proposalStatus", source = "proposalStatus")
 	CrewDetailResponse toCrewDetailResponse(Crew crew, Integer currentMember,
-		List<CrewMemberResponse> members, StoreResponse storeResponse);
+		List<CrewMemberResponse> members, StoreResponse storeResponse, ProposalStatus proposalStatus);
 
 	@Mapping(target = "latitude", source = "location", qualifiedByName = "latitudeMethod")
 	@Mapping(target = "longitude", source = "location", qualifiedByName = "longitudeMethod")
-	CrewLocationResponse toCrewLocationResponse(Point location, Long storeId);
+	CrewLocationResponse toCrewLocationResponse(Point location, Long storeId, String placeName);
 
 	@Named("latitudeMethod")
 	default Double mapLatitude(Point location) {

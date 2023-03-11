@@ -1,5 +1,7 @@
 package com.prgrms.mukvengers.domain.crew.service;
 
+import static com.prgrms.mukvengers.domain.proposal.model.vo.ProposalStatus.*;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,6 +36,7 @@ import com.prgrms.mukvengers.domain.crewmember.mapper.CrewMemberMapper;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
+import com.prgrms.mukvengers.domain.proposal.repository.ProposalRepository;
 import com.prgrms.mukvengers.domain.store.mapper.StoreMapper;
 import com.prgrms.mukvengers.domain.store.model.Store;
 import com.prgrms.mukvengers.domain.store.repository.StoreRepository;
@@ -52,6 +55,7 @@ public class CrewServiceImpl implements CrewService {
 	private final UserRepository userRepository;
 	private final StoreRepository storeRepository;
 	private final CrewMemberRepository crewMemberRepository;
+	private final ProposalRepository proposalRepository;
 	private final CrewMapper crewMapper;
 	private final StoreMapper storeMapper;
 	private final CrewMemberMapper crewMemberMapper;
@@ -90,14 +94,15 @@ public class CrewServiceImpl implements CrewService {
 						userRepository.findById(CrewMember.getUserId())
 							.orElseThrow(() -> new UserNotFoundException(CrewMember.getUserId())),
 						CrewMember.getCrewMemberRole()))
-					.toList(), storeMapper.toStoreResponse(crew.getStore())))
+					.toList(), storeMapper.toStoreResponse(crew.getStore()),
+				proposalRepository.findByUserIdAndCrewId(userId, crew.getId()).orElseGet(() -> NOT_APPLIED)))
 			.toList();
 
 		return new CrewResponses(responses);
 	}
 
 	@Override
-	public CrewDetailResponse getById(Long crewId) {
+	public CrewDetailResponse getById(Long userId, Long crewId) {
 
 		Crew crew = crewRepository.findById(crewId)
 			.orElseThrow(() -> new CrewNotFoundException(crewId));
@@ -113,11 +118,12 @@ public class CrewServiceImpl implements CrewService {
 			.toList();
 
 		return crewMapper.toCrewDetailResponse(crew, currentMember, members,
-			storeMapper.toStoreResponse(crew.getStore()));
+			storeMapper.toStoreResponse(crew.getStore()),
+			proposalRepository.findByUserIdAndCrewId(userId, crewId).orElseGet(() -> NOT_APPLIED));
 	}
 
 	@Override
-	public CrewPageResponse getByPlaceId(String placeId, Pageable pageable) {
+	public CrewPageResponse getByPlaceId(Long userId, String placeId, Pageable pageable) {
 
 		Page<CrewDetailResponse> responses = crewRepository.findAllByPlaceId(placeId, pageable)
 			.map(crew -> crewMapper.toCrewDetailResponse(crew,
@@ -128,7 +134,9 @@ public class CrewServiceImpl implements CrewService {
 						userRepository.findById(CrewMember.getUserId())
 							.orElseThrow(() -> new UserNotFoundException(CrewMember.getUserId())),
 						CrewMember.getCrewMemberRole()))
-					.toList(), storeMapper.toStoreResponse(crew.getStore())));
+					.toList(), storeMapper.toStoreResponse(crew.getStore()),
+				proposalRepository.findByUserIdAndCrewId(userId,
+					crew.getId()).orElseGet(() -> NOT_APPLIED)));
 
 		return new CrewPageResponse(responses);
 	}
@@ -142,7 +150,8 @@ public class CrewServiceImpl implements CrewService {
 
 		List<CrewLocationResponse> responses = crewRepository.findAllByLocation(location, distanceRequest.distance())
 			.stream()
-			.map(crew -> crewMapper.toCrewLocationResponse(crew.getLocation(), crew.getStore().getId()))
+			.map(crew -> crewMapper.toCrewLocationResponse(crew.getLocation(), crew.getStore().getId(),
+				crew.getStore().getPlaceName()))
 			.collect(Collectors.toList());
 
 		return new CrewLocationResponses(responses);
