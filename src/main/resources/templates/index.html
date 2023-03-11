@@ -373,7 +373,9 @@
             var socket = new SockJS('/ws');
             stompClient = Stomp.over(socket);
 
-            stompClient.connect({}, onConnected, onError);
+            stompClient.connect({
+                Authorization: "Bearer eyJhbGciOiJIUzM4NCJ9.eyJ1c2VySWQiOjEyLCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNjc4NTM3MjYzLCJleHAiOjE2Nzg1MzkwNjN9.QwketUFDZ10_MDXEkYsNz5jpFFRxh8c_pAkaMa3JrLcWomIhT02j-7OqChr-2V4D",
+            }, onConnected, onError);
         }
         event.preventDefault();
     }
@@ -415,7 +417,10 @@
 
 
     function onMessageReceived(payload) {
+        console.log(payload);
+
         var message = JSON.parse(payload.body);
+
 
         var messageElement = document.createElement('li');
 
@@ -429,9 +434,9 @@
             messageElement.classList.add('chat-message');
 
             var avatarElement = document.createElement('i');
-            var avatarText = document.createTextNode(message.sender[0]);
+            var avatarText = document.createTextNode(username);
             avatarElement.appendChild(avatarText);
-            avatarElement.style['background-color'] = getAvatarColor(message.sender);
+            avatarElement.style['background-color'] = getAvatarColor(username);
 
             messageElement.appendChild(avatarElement);
 
