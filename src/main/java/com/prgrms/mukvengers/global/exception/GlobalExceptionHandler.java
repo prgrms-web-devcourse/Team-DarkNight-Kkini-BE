@@ -17,6 +17,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 import net.gpedro.integrations.slack.SlackApi;
 
+import com.prgrms.mukvengers.domain.chat.exception.WebSocketException;
 import com.prgrms.mukvengers.global.common.annotation.SlackNotification;
 import com.prgrms.mukvengers.global.common.dto.ErrorResponse;
 import com.prgrms.mukvengers.global.utils.MessageUtil;
@@ -26,15 +27,23 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-	private final SlackApi slackApi;
+
 	private static final String EXCEPTION_FORMAT = "[EXCEPTION]                   -----> ";
 	private static final String EXCEPTION_MESSAGE_FORMAT = "[EXCEPTION] EXCEPTION_MESSAGE -----> [{}]";
 	private static final String EXCEPTION_TYPE_FORMAT = "[EXCEPTION] EXCEPTION_TYPE    -----> [{}]";
 	private static final String EXCEPTION_REQUEST_URI = "[EXCEPTION] REQUEST_URI       -----> [{}]";
 	private static final String EXCEPTION_HTTP_METHOD_TYPE = "[EXCEPTION] HTTP_METHOD_TYPE  -----> [{}]";
 
+	private final SlackApi slackApi;
+
 	public GlobalExceptionHandler(@Value("${spring.slack.webhook}") String webhook) {
 		this.slackApi = new SlackApi(webhook);
+	}
+
+	@ExceptionHandler(WebSocketException.class) // custom 에러
+	public ResponseEntity<Void> handleServiceException(WebSocketException e) {
+		log.error(e.getMessage());
+		return ResponseEntity.noContent().build();
 	}
 
 	@ExceptionHandler(ServiceException.class) // custom 에러
