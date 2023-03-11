@@ -27,41 +27,53 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class StompHandler implements ChannelInterceptor {
 
-	public static final String USER_ID = "userId";
-	public static final String CREW_ID = "crewId";
+	public static final String DEFAULT_PATH = "/topic/public/";
 
 	private final JwtTokenProvider jwtTokenProvider;
 	private final UserRepository userRepository;
 	private final CrewMemberRepository crewMemberRepository;
+
+	private Map<String, Object> getSessionAttributes(StompHeaderAccessor accessor) {
+		Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
+
+		if (Objects.isNull(sessionAttributes)) {
+			throw new WebSocketException("SessionAttributes가 null입니다.");
+		}
+		return sessionAttributes;
+	}
 
 	// websocket을 통해 들어온 요청이 처리 되기전 실행된다.
 	@Override
 	public Message<?> preSend(Message<?> message, MessageChannel channel) {
 
 		StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
+		StompCommand command = accessor.getCommand();
 
-		if (StompCommand.CONNECT.equals(accessor.getCommand())) { // websocket 연결요청 -> JWT 인증
+		if (StompCommand.CONNECT.equals(command)) { // websocket 연결요청 -> JWT 인증
 
+			// JWT 인증
 			User user = getUserByAuthorizationHeader(
 				accessor.getFirstNativeHeader("Authorization"));
-
-			setValue(accessor, USER_ID, user.getId());
+			// 인증 후 데이터를 헤더에 추가
+			setValue(accessor, "userId", user.getId());
 			setValue(accessor, "username", user.getNickname());
 			setValue(accessor, "profileImgUrl", user.getProfileImgUrl());
 
-			log.error("헤더 : " + message.getHeaders());
-			log.error("message:" + message);
+		} else if (StompCommand.SUBSCRIBE.equals(command)) { // 채팅룸 구독요청(진입) -> CrewMember인지 검증
 
-		} else if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) { // 채팅룸 구독요청(진입) -> CrewMember인지 검증
+			Long userId = (Long)getValue(accessor, "userId");
+			Long crewId = parseCrewIdFromPath(accessor);
+			log.debug("userId : " + userId + "crewId : " + crewId);
+			setValue(accessor, "crewId", crewId);
+			validateUserInCrew(userId, crewId);
 
-			validateUserInCrew(accessor);
-
-		} else if (StompCommand.DISCONNECT == accessor.getCommand()) { // Websocket 연결 종료
-			// 연결이 종료된 클라이언트 sesssionId로 채팅방 id를 얻는다.
-			Long userId = (Long)getValue(accessor, USER_ID);
-			Long crewId = (Long)getValue(accessor, CREW_ID);
-			log.info("DISCONNECTED crewId : {}, userId : {}", crewId, userId);
+		} else if (StompCommand.DISCONNECT == command) { // Websocket 연결 종료
+			Long userId = (Long)getValue(accessor, "userId");
+			log.info("DISCONNECTED userId : {}", userId);
 		}
+
+		log.info("header : " + message.getHeaders());
+		log.info("message:" + message);
 
 		return message;
 	}
@@ -71,7 +83,7 @@ public class StompHandler implements ChannelInterceptor {
 		String accessToken = getTokenByAuthorizationHeader(authHeaderValue);
 
 		Claims claims = jwtTokenProvider.getClaims(accessToken);
-		Long userId = claims.get(USER_ID, Long.class);
+		Long userId = claims.get("userId", Long.class);
 
 		return userRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException(userId));
@@ -80,46 +92,39 @@ public class StompHandler implements ChannelInterceptor {
 	private String getTokenByAuthorizationHeader(String authHeaderValue) {
 
 		if (Objects.isNull(authHeaderValue) || authHeaderValue.isBlank()) {
-			throw new WebSocketException();
+			throw new WebSocketException("authHeaderValue: " + authHeaderValue);
 		}
 
 		String accessToken = ExtractUtil.extractToken(authHeaderValue);
-		jwtTokenProvider.validateToken(accessToken);
+		jwtTokenProvider.validateToken(accessToken); // 예외 발생할 수 있음
 
 		return accessToken;
 	}
 
-	private void validateUserInCrew(StompHeaderAccessor accessor) {
-		Long userId = (Long)getValue(accessor, USER_ID);
-		Long crewId = (Long)getValue(accessor, CREW_ID);
-
-		crewMemberRepository.findCrewMemberByCrewIdAndUserId(crewId, userId)
-			.orElseThrow(WebSocketException::new);
+	private Long parseCrewIdFromPath(StompHeaderAccessor accessor) {
+		String destination = accessor.getDestination();
+		return Long.parseLong(destination.substring(DEFAULT_PATH.length()));
 	}
 
-	private Object getValue(StompHeaderAccessor accessor, String valueName) {
-		Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
+	private void validateUserInCrew(Long userId, Long crewId) {
+		crewMemberRepository.findCrewMemberByCrewIdAndUserId(crewId, userId)
+			.orElseThrow(() -> new WebSocketException(
+				String.format("crew Id : {} userId : {} 로 조회된 결과가 없습니다.", crewId, userId)));
+	}
 
-		if (Objects.isNull(sessionAttributes)) {
-			throw new WebSocketException();
-		}
-
-		Object value = sessionAttributes.get(valueName);
+	private Object getValue(StompHeaderAccessor accessor, String key) {
+		Map<String, Object> sessionAttributes = getSessionAttributes(accessor);
+		Object value = sessionAttributes.get(key);
 
 		if (Objects.isNull(value)) {
-			throw new WebSocketException();
+			throw new WebSocketException(key + " 에 해당하는 값이 없습니다.");
 		}
 
 		return value;
 	}
 
 	private void setValue(StompHeaderAccessor accessor, String key, Object value) {
-		Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
-
-		if (Objects.isNull(sessionAttributes)) {
-			throw new WebSocketException();
-		}
-
+		Map<String, Object> sessionAttributes = getSessionAttributes(accessor);
 		sessionAttributes.put(key, value);
 	}
 

@@ -8,9 +8,10 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 
-import com.prgrms.mukvengers.domain.chat.model.ChatMessage;
-import com.prgrms.mukvengers.domain.chat.model.MessageType;
+import com.prgrms.mukvengers.domain.chat.dto.request.ChatRequest;
+import com.prgrms.mukvengers.domain.chat.dto.request.MessageType;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,7 +29,8 @@ public class WebSocketEventListener {
 	}
 
 	@EventListener
-	public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
+	public void handleWebSocketSubscribeListener(SessionSubscribeEvent event) {
+		logger.info("Received a new web socket connection");
 		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 
 		String username = (String)headerAccessor.getSessionAttributes().get("username");
@@ -36,11 +38,27 @@ public class WebSocketEventListener {
 		Long crewId = (Long)headerAccessor.getSessionAttributes().get("crewId");
 
 		if (username != null && userId != null && crewId != null) {
-			logger.info("User Disconnected : " + username);
+			logger.info("User: {} {} Disconnected Crew : {}", userId, username, crewId);
+			ChatRequest chatRequest = new ChatRequest(MessageType.JOIN, userId,
+				username + " 님이 입장했습니다.");
+			messagingTemplate.convertAndSend("/topic/public/" + crewId, chatRequest);
+		}
+	}
 
-			ChatMessage chatMessage = new ChatMessage(MessageType.LEAVE, username, userId);
+	@EventListener
+	public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
+		logger.info("web socket disconnected");
+		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 
-			messagingTemplate.convertAndSend("/topic/public/" + crewId, chatMessage);
+		String username = (String)headerAccessor.getSessionAttributes().get("username");
+		Long userId = (Long)headerAccessor.getSessionAttributes().get("userId");
+		Long crewId = (Long)headerAccessor.getSessionAttributes().get("crewId");
+
+		if (username != null && userId != null && crewId != null) {
+			logger.info("User: {} {} Disconnected Crew : {}", userId, username, crewId);
+			ChatRequest chatRequest = new ChatRequest(MessageType.LEAVE, userId,
+				username + " 님이 떠났습니다.");
+			messagingTemplate.convertAndSend("/topic/public/" + crewId, chatRequest);
 		}
 	}
 }
