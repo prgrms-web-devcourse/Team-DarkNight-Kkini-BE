@@ -7,9 +7,10 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import com.prgrms.mukvengers.domain.proposal.exception.InvalidProposalStatusException;
 
 public enum ProposalStatus {
-	WAITING("대기중"),
+	WAITING("대기 중"),
 	APPROVE("승인"),
-	REFUSE("거절");
+	REFUSE("거절"),
+	NOT_APPLIED("미신청");
 
 	private final String status;
 
