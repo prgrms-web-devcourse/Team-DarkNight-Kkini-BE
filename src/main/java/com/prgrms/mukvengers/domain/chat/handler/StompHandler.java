@@ -33,15 +33,6 @@ public class StompHandler implements ChannelInterceptor {
 	private final UserRepository userRepository;
 	private final CrewMemberRepository crewMemberRepository;
 
-	private Map<String, Object> getSessionAttributes(StompHeaderAccessor accessor) {
-		Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
-
-		if (Objects.isNull(sessionAttributes)) {
-			throw new WebSocketException("SessionAttributes가 null입니다.");
-		}
-		return sessionAttributes;
-	}
-
 	// websocket을 통해 들어온 요청이 처리 되기전 실행된다.
 	@Override
 	public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -126,6 +117,15 @@ public class StompHandler implements ChannelInterceptor {
 	private void setValue(StompHeaderAccessor accessor, String key, Object value) {
 		Map<String, Object> sessionAttributes = getSessionAttributes(accessor);
 		sessionAttributes.put(key, value);
+	}
+
+	private Map<String, Object> getSessionAttributes(StompHeaderAccessor accessor) {
+		Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
+
+		if (Objects.isNull(sessionAttributes)) {
+			throw new WebSocketException("SessionAttributes가 null입니다.");
+		}
+		return sessionAttributes;
 	}
 
 }
