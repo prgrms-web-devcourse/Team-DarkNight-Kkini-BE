@@ -14,7 +14,7 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
 	@Query("""
 			SELECT 
 			new com.prgrms.mukvengers.domain.chat.dto.response.ChatResponse
-			(u.id, u.nickname, u.profileImgUrl, c.createdAt, c.content) 
+			(u.id, u.nickname, u.profileImgUrl, c.type, c.createdAt, c.content) 
 			FROM Chat c 
 			JOIN User u ON u.id = c.userId 
 			WHERE c.crewId = :crewId
