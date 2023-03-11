@@ -24,6 +24,7 @@ public class ChatServiceImpl implements ChatService {
 	private final ChatRepository chatRepository;
 	private final ChatMapper chatMapper;
 
+	// 채팅 내역 저장
 	@Override
 	@Transactional
 	public ChatResponse save(ChatRequest chatRequest, Long crewId, Map<String, Object> header) {
@@ -33,6 +34,7 @@ public class ChatServiceImpl implements ChatService {
 		return toChatResponse(savedChat, header);
 	}
 
+	// 채팅 내역 조회
 	@Override
 	public ChatsInCrew getByCrewId(Long crewId, Pageable pageable) {
 		Page<ChatResponse> result = chatRepository.findByCrewId(crewId, pageable);

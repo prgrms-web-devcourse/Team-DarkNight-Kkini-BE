@@ -31,14 +31,6 @@ public class ChatController {
 
 	private final ChatService chatService;
 
-	/**
-	 * 웹소켓 테스트용 임시 Endpoint
-	 */
-	@GetMapping("/")
-	public String home() {
-		return "index";
-	}
-
 	@ResponseBody
 	@GetMapping("/api/v1/crews/{crewId}/chats")
 	public ResponseEntity<ApiResponse<ChatsInCrew>> getChattingList(
