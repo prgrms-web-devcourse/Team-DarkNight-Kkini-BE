@@ -38,10 +38,11 @@ public class Chat extends BaseEntity {
 	private String content;
 
 	@Builder
-	protected Chat(Long crewId, Long userId, String content) {
+	protected Chat(Long crewId, Long userId, String content, MessageType type) {
 		this.crewId = validateCrew(crewId);
 		this.userId = validateUserId(userId);
 		this.content = validateContent(content);
+		this.type = type;
 	}
 
 	private Long validateUserId(Long userId) {
