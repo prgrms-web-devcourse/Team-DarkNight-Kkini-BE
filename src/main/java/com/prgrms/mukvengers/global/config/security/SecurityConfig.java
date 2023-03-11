@@ -44,6 +44,8 @@ public class SecurityConfig {
 			.antMatchers("/api/v1/sample").permitAll()
 			.antMatchers("/api/v1/stores/**").permitAll()
 			.antMatchers("/api/v1/tokens").permitAll()
+			.antMatchers("/ws/**").permitAll()
+			.antMatchers("/chat/**").permitAll()
 			.antMatchers(GET, "/api/v1/crews").permitAll()
 			.antMatchers("/").permitAll()
 			.anyRequest().authenticated()

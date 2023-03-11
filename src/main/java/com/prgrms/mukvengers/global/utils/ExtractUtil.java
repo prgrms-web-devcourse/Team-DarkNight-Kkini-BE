@@ -20,7 +20,7 @@ public class ExtractUtil {
 		return null;
 	}
 
-	private static String extractToken(String authHeaderValue) {
+	public static String extractToken(String authHeaderValue) {
 		if (authHeaderValue.toLowerCase().startsWith(BEARER_TYPE.toLowerCase())) {
 			return authHeaderValue.substring(BEARER_TYPE.length()).trim();
 		}
