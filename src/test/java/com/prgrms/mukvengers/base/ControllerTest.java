@@ -77,13 +77,19 @@ public abstract class ControllerTest {
 
 	protected MockMvc mockMvc;
 
-	protected String accessToken;
+	protected String accessToken1;
 
-	protected User savedUser;
+	protected String accessToken2;
+
+	protected User savedUser1;
+
+	protected User savedUser2;
 
 	protected Store savedStore;
 
-	protected Long savedUserId;
+	protected Long savedUser1Id;
+
+	protected Long savedUser2Id;
 
 	@BeforeEach
 	void setUpRestDocs(WebApplicationContext webApplicationContext,
@@ -99,13 +105,19 @@ public abstract class ControllerTest {
 	@BeforeEach
 	void setUpLogin() {
 
-		savedUser = userRepository.save(createUser());
+		savedUser1 = userRepository.save(createUser("123"));
+
+		savedUser2 = userRepository.save(createUser("456"));
 
 		savedStore = storeRepository.save(createStore());
 
-		savedUserId = savedUser.getId();
+		savedUser1Id = savedUser1.getId();
 
-		accessToken = jwtTokenProvider.createAccessToken(savedUserId, "USER");
+		accessToken1 = jwtTokenProvider.createAccessToken(savedUser1Id, "USER");
+
+		savedUser2Id = savedUser2.getId();
+
+		accessToken2 = jwtTokenProvider.createAccessToken(savedUser2Id, "USER");
 	}
 
 }

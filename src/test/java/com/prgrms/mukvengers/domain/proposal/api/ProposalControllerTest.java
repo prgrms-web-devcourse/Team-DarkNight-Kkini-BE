@@ -53,7 +53,7 @@ class ProposalControllerTest extends ControllerTest {
 
 		mockMvc.perform(post("/api/v1/crews/{crewId}/proposals", crew.getId())
 				.contentType(APPLICATION_JSON)
-				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken1)
 				.content(jsonRequest))
 			.andExpect(status().isCreated())
 			.andDo(print())
@@ -85,11 +85,11 @@ class ProposalControllerTest extends ControllerTest {
 		Crew crew = createCrew(savedStore);
 		crewRepository.save(crew);
 
-		Proposal proposal = ProposalObjectProvider.createProposal(user, savedUser.getId(), crew.getId());
+		Proposal proposal = ProposalObjectProvider.createProposal(user, savedUser1.getId(), crew.getId());
 		proposalRepository.save(proposal);
 
 		mockMvc.perform(get("/api/v1/proposals/{proposalId}", proposal.getId())
-				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken1)
 				.accept(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data").exists())
@@ -135,11 +135,11 @@ class ProposalControllerTest extends ControllerTest {
 		Crew crew = createCrew(savedStore);
 		crewRepository.save(crew);
 
-		List<Proposal> proposals = ProposalObjectProvider.createProposals(user, savedUser.getId(), crew.getId());
+		List<Proposal> proposals = ProposalObjectProvider.createProposals(user, savedUser1.getId(), crew.getId());
 		proposalRepository.saveAll(proposals);
 
 		mockMvc.perform(get("/api/v1/proposals/leader")
-				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken1)
 				.accept(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data").exists())
@@ -179,13 +179,15 @@ class ProposalControllerTest extends ControllerTest {
 		Crew creatCrew = createCrew(savedStore);
 		Crew crew = crewRepository.save(creatCrew);
 
-		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(savedUserId, crew, CrewMemberRole.LEADER);
+		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(savedUser1Id, crew,
+			CrewMemberRole.LEADER);
 		CrewMember leader = crewMemberRepository.save(crewMemberOfLeader);
 
 		User createUser = createUser("1232456789");
 		User user = userRepository.save(createUser);
 
-		CrewMember crewMemberOfMember = CrewMemberObjectProvider.createCrewMember(user.getId(), crew, CrewMemberRole.MEMBER);
+		CrewMember crewMemberOfMember = CrewMemberObjectProvider.createCrewMember(user.getId(), crew,
+			CrewMemberRole.MEMBER);
 		crewMemberRepository.save(crewMemberOfMember);
 
 		Proposal createProposal = ProposalObjectProvider.createProposal(user, leader.getId(), crew.getId());
@@ -197,7 +199,7 @@ class ProposalControllerTest extends ControllerTest {
 
 		mockMvc.perform(patch("/api/v1/proposals/{proposalId}", proposal.getId())
 				.contentType(APPLICATION_JSON)
-				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken1)
 				.content(jsonRequest))
 			.andExpect(status().isOk())
 			.andDo(document("proposal-Approve",
@@ -244,7 +246,7 @@ class ProposalControllerTest extends ControllerTest {
 
 		mockMvc.perform(patch("/api/v1/proposals/{proposalId}", proposal.getId())
 				.contentType(APPLICATION_JSON)
-				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken1)
 				.content(jsonRequest))
 			.andExpect(status().isOk())
 			.andDo(document("proposal-Refuse",
@@ -274,11 +276,11 @@ class ProposalControllerTest extends ControllerTest {
 		Crew crew = createCrew(savedStore);
 		crewRepository.save(crew);
 
-		List<Proposal> proposals = ProposalObjectProvider.createProposals(savedUser, user.getId(), crew.getId());
+		List<Proposal> proposals = ProposalObjectProvider.createProposals(savedUser1, user.getId(), crew.getId());
 		proposalRepository.saveAll(proposals);
 
 		mockMvc.perform(get("/api/v1/proposals/member")
-				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken1)
 				.accept(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data").exists())
