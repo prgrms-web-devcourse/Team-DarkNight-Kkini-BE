@@ -34,7 +34,7 @@ public class CookieUtil {
 	public static void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
 		Cookie cookie = new Cookie(name, value);
 		cookie.setPath("/");
-		cookie.setHttpOnly(false);
+		cookie.setHttpOnly(true);
 		cookie.setSecure(true);
 		cookie.setMaxAge(maxAge);
 		response.addCookie(cookie);
@@ -60,8 +60,7 @@ public class CookieUtil {
 	public static ResponseCookie getEmptyCookie(String key) {
 		return ResponseCookie.from(key, "")
 			.path("/")
-			.sameSite("None")
-			.httpOnly(false)
+			.httpOnly(true)
 			.secure(true)
 			.maxAge(0)
 			.build();
