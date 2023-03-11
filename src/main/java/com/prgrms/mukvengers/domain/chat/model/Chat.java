@@ -32,16 +32,13 @@ public class Chat extends BaseEntity {
 
 	private Long userId;
 
-	private String sender;
-
 	@Column(columnDefinition = "TEXT")
 	private String content;
 
 	@Builder
-	protected Chat(Long crewId, Long userId, String sender, String content) {
+	protected Chat(Long crewId, Long userId, String content) {
 		this.crewId = validateCrew(crewId);
 		this.userId = validateUserId(userId);
-		this.sender = validateSender(sender);
 		this.content = validateContent(content);
 	}
 
@@ -53,11 +50,6 @@ public class Chat extends BaseEntity {
 	private Long validateCrew(Long crewId) {
 		notNull(crewId, "유효하지 않은 밥모임입니다.");
 		return crewId;
-	}
-
-	private String validateSender(String sender) {
-		checkText(sender, "유효하지 않는 사용자입니다.");
-		return sender;
 	}
 
 	private String validateContent(String content) {
