@@ -30,6 +30,9 @@ spring:
       mode: always
       schema-locations: classpath:schema.sql
 
+  slack:
+    webhook: ${SLACK_WEBHOOK}
+
 jwt:
   expiry-seconds:
     access-token: 5
