@@ -13,6 +13,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,7 @@ import com.prgrms.mukvengers.global.common.dto.RequestInfo;
 
 @Aspect
 @Component
+@Profile(value = {"dev", "prod"})
 public class SlackNotificationAspect {
 	private final SlackApi slackApi;
 	private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
