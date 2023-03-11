@@ -96,7 +96,6 @@ dependencies {
     implementation group: 'ca.pjer', name: 'logback-awslogs-appender', version: '1.6.0'
     // AWS
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-
     //Slack Notification
     implementation "net.gpedro.integrations.slack:slack-webhook:1.4.0"
 }
@@ -141,7 +140,7 @@ tasks.withType(BootJar).configureEach {
     dependsOn 'copySwaggerUI'
     doLast {
         println('---replace \'full\' text to \'none\' ----')
-        def indexFile = file("${project.buildDir}/swagger-ui-sample/index.html")
+        def indexFile = file("${project.buildDir}/resources/main/static/docs/index.html")
 
         def contents = indexFile.getText("UTF-8")
         def newFileContents = contents.replace('full', 'none')
