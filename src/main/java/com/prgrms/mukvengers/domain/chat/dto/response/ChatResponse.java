@@ -8,10 +8,10 @@ import lombok.Builder;
 
 @Builder
 public record ChatResponse(
-	MessageType type,
 	Long userId,
 	String username,
 	String profileImgUrl,
+	MessageType type,
 	LocalDateTime createdAt,
 	String content
 ) {

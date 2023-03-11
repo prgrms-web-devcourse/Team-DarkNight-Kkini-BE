@@ -14,6 +14,7 @@ public interface ChatMapper {
 
 	@Mapping(target = "content", source = "chatRequest.content")
 	@Mapping(target = "userId", source = "chatRequest.userId")
+	@Mapping(target = "type", source = "chatRequest.type")
 	@Mapping(target = "crewId", source = "crewId")
 	Chat toChat(ChatRequest chatRequest, Long crewId);
 

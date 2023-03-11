@@ -27,13 +27,17 @@ import lombok.NoArgsConstructor;
 @Table(indexes = @Index(name = "IDX_CREWID", columnList = "crewId"))
 public class Chat extends BaseEntity {
 
-	@Enumerated(STRING)
-	MessageType type;
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
+
 	private Long crewId;
+
 	private Long userId;
+
+	@Enumerated(STRING)
+	private MessageType type;
+
 	@Column(columnDefinition = "TEXT")
 	private String content;
 
