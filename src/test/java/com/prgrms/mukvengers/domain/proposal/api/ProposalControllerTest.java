@@ -4,7 +4,7 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
 import static com.epages.restdocs.apispec.ResourceDocumentation.*;
 import static com.epages.restdocs.apispec.ResourceSnippetParameters.*;
 import static com.prgrms.mukvengers.utils.CrewObjectProvider.*;
-import static com.prgrms.mukvengers.utils.UserObjectProvider.*;
+import static com.prgrms.mukvengers.utils.ProposalObjectProvider.*;
 import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -22,14 +23,9 @@ import com.epages.restdocs.apispec.Schema;
 import com.epages.restdocs.apispec.SimpleType;
 import com.prgrms.mukvengers.base.ControllerTest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
-import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
-import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.domain.proposal.dto.request.CreateProposalRequest;
 import com.prgrms.mukvengers.domain.proposal.dto.request.UpdateProposalRequest;
 import com.prgrms.mukvengers.domain.proposal.model.Proposal;
-import com.prgrms.mukvengers.domain.user.model.User;
-import com.prgrms.mukvengers.utils.CrewMemberObjectProvider;
-import com.prgrms.mukvengers.utils.ProposalObjectProvider;
 
 class ProposalControllerTest extends ControllerTest {
 
@@ -39,19 +35,30 @@ class ProposalControllerTest extends ControllerTest {
 	public static final Schema UPDATE_PROPOSAL_REQUEST = new Schema("updateProposal");
 	public static final Schema FIND_BY_PROPOSAL_ID_REQUEST = new Schema("findByProposalIdCRequest");
 
+	private Long proposalId;
+	private Long crewId;
+
+	@BeforeEach
+	void setUp() {
+
+		Crew crew = crewRepository.save(createCrew(savedStore));
+		crewId = crew.getId();
+
+		List<Proposal> proposals = createProposals(savedUser2, savedUser1.getId(), crew.getId());
+		proposalRepository.saveAll(proposals);
+		proposalId = proposals.get(0).getId();
+
+	}
+
 	@Test
 	@DisplayName("[성공] 사용자는 신청서를 작성할 수 있다.")
 	void createProposal_success() throws Exception {
 
-		User leader = userRepository.save(createUser("1232456789"));
-
-		Crew crew = crewRepository.save(createCrew(savedStore));
-
-		CreateProposalRequest proposalRequest = ProposalObjectProvider.createProposalRequest(leader.getId());
+		CreateProposalRequest proposalRequest = createProposalRequest(savedUser2Id);
 
 		String jsonRequest = objectMapper.writeValueAsString(proposalRequest);
 
-		mockMvc.perform(post("/api/v1/crews/{crewId}/proposals", crew.getId())
+		mockMvc.perform(post("/api/v1/crews/{crewId}/proposals", crewId)
 				.contentType(APPLICATION_JSON)
 				.header(AUTHORIZATION, BEARER_TYPE + accessToken1)
 				.content(jsonRequest))
@@ -79,16 +86,7 @@ class ProposalControllerTest extends ControllerTest {
 	@DisplayName("[성공] 신청서 아이디로 신청서를 조회한다.")
 	void getById_success() throws Exception {
 
-		User user = createUser("1232456789");
-		userRepository.save(user);
-
-		Crew crew = createCrew(savedStore);
-		crewRepository.save(crew);
-
-		Proposal proposal = ProposalObjectProvider.createProposal(user, savedUser1.getId(), crew.getId());
-		proposalRepository.save(proposal);
-
-		mockMvc.perform(get("/api/v1/proposals/{proposalId}", proposal.getId())
+		mockMvc.perform(get("/api/v1/proposals/{proposalId}", proposalId)
 				.header(AUTHORIZATION, BEARER_TYPE + accessToken1)
 				.accept(APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -129,15 +127,6 @@ class ProposalControllerTest extends ControllerTest {
 	@DisplayName("[성공] 사용자가 방장인 모임의 모든 신청서를 조회한다.")
 	void getProposalsByLeaderId_success() throws Exception {
 
-		User user = createUser("1232456789");
-		userRepository.save(user);
-
-		Crew crew = createCrew(savedStore);
-		crewRepository.save(crew);
-
-		List<Proposal> proposals = ProposalObjectProvider.createProposals(user, savedUser1.getId(), crew.getId());
-		proposalRepository.saveAll(proposals);
-
 		mockMvc.perform(get("/api/v1/proposals/leader")
 				.header(AUTHORIZATION, BEARER_TYPE + accessToken1)
 				.accept(APPLICATION_JSON))
@@ -176,28 +165,11 @@ class ProposalControllerTest extends ControllerTest {
 	@DisplayName("[성공] 방장이 신청서를 승인하는 경우 신청서의 상태값이 'APPROVE' 로 변경되며 밥모임원에 저장된다.")
 	void update_proposalStatus_approve_success() throws Exception {
 
-		Crew creatCrew = createCrew(savedStore);
-		Crew crew = crewRepository.save(creatCrew);
-
-		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(savedUser1Id, crew,
-			CrewMemberRole.LEADER);
-		CrewMember leader = crewMemberRepository.save(crewMemberOfLeader);
-
-		User createUser = createUser("1232456789");
-		User user = userRepository.save(createUser);
-
-		CrewMember crewMemberOfMember = CrewMemberObjectProvider.createCrewMember(user.getId(), crew,
-			CrewMemberRole.MEMBER);
-		crewMemberRepository.save(crewMemberOfMember);
-
-		Proposal createProposal = ProposalObjectProvider.createProposal(user, leader.getId(), crew.getId());
-		Proposal proposal = proposalRepository.save(createProposal);
-
 		UpdateProposalRequest proposalRequest = new UpdateProposalRequest("승인");
 
 		String jsonRequest = objectMapper.writeValueAsString(proposalRequest);
 
-		mockMvc.perform(patch("/api/v1/proposals/{proposalId}", proposal.getId())
+		mockMvc.perform(patch("/api/v1/proposals/{proposalId}", proposalId)
 				.contentType(APPLICATION_JSON)
 				.header(AUTHORIZATION, BEARER_TYPE + accessToken1)
 				.content(jsonRequest))
@@ -223,28 +195,11 @@ class ProposalControllerTest extends ControllerTest {
 	@DisplayName("[성공] 방장이 신청서를 거절하는 경우 신청서의 상태값이 'REFUSE' 로 변경되며 밥모임원에 저장된다.")
 	void update_proposalStatus_refuse_success() throws Exception {
 
-		User createUser = createUser("1232456789");
-		User user = userRepository.save(createUser);
-
-		Crew creatCrew = createCrew(savedStore);
-		Crew crew = crewRepository.save(creatCrew);
-
-		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(user.getId(), crew,
-			CrewMemberRole.LEADER);
-		CrewMember leader = crewMemberRepository.save(crewMemberOfLeader);
-
-		CrewMember crewMemberOfMember = CrewMemberObjectProvider.createCrewMember(user.getId(), crew,
-			CrewMemberRole.MEMBER);
-		crewMemberRepository.save(crewMemberOfMember);
-
-		Proposal createProposal = ProposalObjectProvider.createProposal(user, leader.getId(), crew.getId());
-		Proposal proposal = proposalRepository.save(createProposal);
-
 		UpdateProposalRequest proposalRequest = new UpdateProposalRequest("거절");
 
 		String jsonRequest = objectMapper.writeValueAsString(proposalRequest);
 
-		mockMvc.perform(patch("/api/v1/proposals/{proposalId}", proposal.getId())
+		mockMvc.perform(patch("/api/v1/proposals/{proposalId}", proposalId)
 				.contentType(APPLICATION_JSON)
 				.header(AUTHORIZATION, BEARER_TYPE + accessToken1)
 				.content(jsonRequest))
@@ -270,22 +225,13 @@ class ProposalControllerTest extends ControllerTest {
 	@DisplayName("[성공] 사용자가 방장인 아니고 참여자인 모임의 신청서를 모두 조회합니다.")
 	void getProposalsByMemberId_success() throws Exception {
 
-		User user = createUser("1232456789");
-		userRepository.save(user);
-
-		Crew crew = createCrew(savedStore);
-		crewRepository.save(crew);
-
-		List<Proposal> proposals = ProposalObjectProvider.createProposals(savedUser1, user.getId(), crew.getId());
-		proposalRepository.saveAll(proposals);
-
 		mockMvc.perform(get("/api/v1/proposals/member")
-				.header(AUTHORIZATION, BEARER_TYPE + accessToken1)
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken2)
 				.accept(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data").exists())
 			.andDo(print())
-			.andDo(document("proposal-getProposalsByLeaderId",
+			.andDo(document("proposal-getProposalsBymemberId",
 				resource(
 					builder()
 						.tag(PROPOSAL)
