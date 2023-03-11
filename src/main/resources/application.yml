@@ -26,6 +26,9 @@ spring:
     encoding: UTF-8
     basename: messages/exceptions/exception
 
+  slack:
+    webhook: ${SLACK_WEBHOOK}
+
 # front server
 front:
   server: "https://kkini.vercel.app"
