@@ -75,7 +75,7 @@ public class CrewController {
 		@PathVariable Long crewId,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		CrewDetailResponse response = crewService.getById(crewId);
+		CrewDetailResponse response = crewService.getById(user.id(), crewId);
 		return ResponseEntity.ok().body(new ApiResponse<>(response));
 	}
 
@@ -106,10 +106,11 @@ public class CrewController {
 	public ResponseEntity<ApiResponse<CrewPageResponse>> getByPlaceId
 	(
 		@PathVariable String placeId,
-		@PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable
+		@PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable,
+		@AuthenticationPrincipal JwtAuthentication user
 	) {
 
-		CrewPageResponse responses = crewService.getByPlaceId(placeId, pageable);
+		CrewPageResponse responses = crewService.getByPlaceId(user.id(), placeId, pageable);
 		return ResponseEntity.ok().body(new ApiResponse<>(responses));
 	}
 

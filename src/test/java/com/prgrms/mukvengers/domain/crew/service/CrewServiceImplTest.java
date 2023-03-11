@@ -87,14 +87,14 @@ class CrewServiceImplTest extends ServiceTest {
 		crewRepository.save(crew);
 
 		//when
-		CrewDetailResponse response = crewService.getById(crew.getId());
+		CrewDetailResponse response = crewService.getById(savedUserId, crew.getId());
 
 		//then
 		assertThat(response)
 			.hasFieldOrPropertyWithValue("id", crew.getId())
 			.hasFieldOrPropertyWithValue("name", crew.getName())
 			.hasFieldOrPropertyWithValue("capacity", crew.getCapacity())
-			.hasFieldOrPropertyWithValue("status", crew.getStatus())
+			.hasFieldOrPropertyWithValue("crewStatus", crew.getStatus())
 			.hasFieldOrPropertyWithValue("content", crew.getContent())
 			.hasFieldOrPropertyWithValue("category", crew.getCategory())
 			.hasFieldOrPropertyWithValue("promiseTime", crew.getPromiseTime());
@@ -114,7 +114,7 @@ class CrewServiceImplTest extends ServiceTest {
 		Pageable pageable = PageRequest.of(page, size);
 
 		//when
-		CrewPageResponse crewSliceResponse = crewService.getByPlaceId(savedStore.getPlaceId(), pageable);
+		CrewPageResponse crewSliceResponse = crewService.getByPlaceId(savedUserId, savedStore.getPlaceId(), pageable);
 
 		//then
 		Slice<CrewDetailResponse> responses = crewSliceResponse.responses();

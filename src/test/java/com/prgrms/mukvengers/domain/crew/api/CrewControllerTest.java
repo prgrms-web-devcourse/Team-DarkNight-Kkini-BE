@@ -5,6 +5,7 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.*;
 import static com.epages.restdocs.apispec.ResourceSnippetParameters.*;
 import static com.prgrms.mukvengers.utils.CrewMemberObjectProvider.*;
 import static com.prgrms.mukvengers.utils.CrewObjectProvider.*;
+import static com.prgrms.mukvengers.utils.ProposalObjectProvider.*;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.http.MediaType.*;
@@ -29,8 +30,11 @@ import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
+import com.prgrms.mukvengers.domain.proposal.model.Proposal;
+import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.utils.CrewMemberObjectProvider;
 import com.prgrms.mukvengers.utils.CrewObjectProvider;
+import com.prgrms.mukvengers.utils.UserObjectProvider;
 
 class CrewControllerTest extends ControllerTest {
 
@@ -107,6 +111,10 @@ class CrewControllerTest extends ControllerTest {
 
 		Long crewId = crew.getId();
 
+		Proposal proposal = createProposal(savedUser, 1L, crewId);
+
+		proposalRepository.save(proposal);
+
 		mockMvc.perform(get("/api/v1/crews/{crewId}", crewId)
 				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
 				.accept(APPLICATION_JSON))
@@ -129,7 +137,8 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("data.name").type(STRING).description("밥 모임 이름"),
 							fieldWithPath("data.capacity").type(NUMBER).description("밥 모임 정원"),
 							fieldWithPath("data.promiseTime").type(ARRAY).description("약속 시간"),
-							fieldWithPath("data.status").type(STRING).description("밥 모임 상태"),
+							fieldWithPath("data.crewStatus").type(STRING).description("밥 모임 상태"),
+							fieldWithPath("data.proposalStatus").type(STRING).description("신청서 상태"),
 							fieldWithPath("data.content").type(STRING).description("밥 모임 내용"),
 							fieldWithPath("data.category").type(STRING).description("밥 모임 카테고리"),
 							fieldWithPath("data.members.[].userId").type(NUMBER).description("유저 ID"),
@@ -161,10 +170,17 @@ class CrewControllerTest extends ControllerTest {
 		List<Crew> crews = createCrews(savedStore);
 		crewRepository.saveAll(crews);
 
+		User leader = UserObjectProvider.createUser("12344");
+
+		userRepository.save(leader);
+
 		crews.forEach(crew -> {
 			CrewMember crewMember = createCrewMember(savedUserId, crew, CrewMemberRole.MEMBER);
 			crewMemberRepository.save(crewMember);
+
 		});
+		Proposal proposal = createProposal(savedUser, leader.getId(), crews.get(0).getId());
+		proposalRepository.save(proposal);
 
 		mockMvc.perform(get("/api/v1/crews/me")
 				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
@@ -188,7 +204,8 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("data.responses.[].name").type(STRING).description("밥 모임 이름"),
 							fieldWithPath("data.responses.[].capacity").type(NUMBER).description("밥 모임 정원"),
 							fieldWithPath("data.responses.[].promiseTime").type(ARRAY).description("약속 시간"),
-							fieldWithPath("data.responses.[].status").type(STRING).description("밥 모임 상태"),
+							fieldWithPath("data.responses.[].crewStatus").type(STRING).description("밥 모임 상태"),
+							fieldWithPath("data.responses.[].proposalStatus").type(STRING).description("신청서 상태"),
 							fieldWithPath("data.responses.[].content").type(STRING).description("밥 모임 내용"),
 							fieldWithPath("data.responses.[].category").type(STRING).description("밥 모임 카테고리"),
 							fieldWithPath("data.responses.[].members.[].userId").type(NUMBER).description("유저 ID"),
@@ -223,9 +240,15 @@ class CrewControllerTest extends ControllerTest {
 
 		crewRepository.saveAll(crews);
 
+		User leader = UserObjectProvider.createUser("12344");
+
+		userRepository.save(leader);
+
 		crews.forEach(crew -> {
 			CrewMember crewMember = createCrewMember(savedUserId, crew, CrewMemberRole.MEMBER);
 			crewMemberRepository.save(crewMember);
+			Proposal proposal = createProposal(savedUser, leader.getId(), crew.getId());
+			proposalRepository.save(proposal);
 		});
 
 		Integer page = 0;
@@ -260,9 +283,11 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("data.responses.content.[].name").type(STRING).description("밥 모임 이름"),
 							fieldWithPath("data.responses.content.[].capacity").type(NUMBER).description("밥 모임 정원"),
 							fieldWithPath("data.responses.content.[].promiseTime").type(ARRAY).description("약속 시간"),
-							fieldWithPath("data.responses.content.[].status").type(STRING).description("밥 모임 상태"),
+							fieldWithPath("data.responses.content.[].crewStatus").type(STRING).description("밥 모임 상태"),
+							fieldWithPath("data.responses.content.[].proposalStatus").type(STRING)
+								.description("신청서 상태"),
 							fieldWithPath("data.responses.content.[].content").type(STRING).description("밥 모임 내용"),
-							fieldWithPath("data.responses.content.[]currentMember").type(NUMBER)
+							fieldWithPath("data.responses.content.[].currentMember").type(NUMBER)
 								.description("밥 모임 현재 인원"),
 							fieldWithPath("data.responses.content.[].category").type(STRING).description("밥 모임 카테고리"),
 							fieldWithPath("data.responses.content.[].members.[].userId").type(NUMBER)
@@ -361,6 +386,7 @@ class CrewControllerTest extends ControllerTest {
 						.responseFields(
 							fieldWithPath("data.responses.[].longitude").type(NUMBER).description("가게 경도"),
 							fieldWithPath("data.responses.[].latitude").type(NUMBER).description("가게 위도"),
+							fieldWithPath("data.responses.[].placeName").type(STRING).description("가게 이름"),
 							fieldWithPath("data.responses.[].storeId").type(NUMBER).description("가게 아이디"))
 						.build()
 				)
@@ -368,7 +394,7 @@ class CrewControllerTest extends ControllerTest {
 	}
 
 	@Test
-	@DisplayName("[성공] 모임 상태를 모집 중 -> 모집 완료로 변경한다.")
+	@DisplayName("[성공] 모임 상태를 변경한다.")
 	void updateStatus_success() throws Exception {
 
 		Crew crew = CrewObjectProvider.createCrew(savedStore);
