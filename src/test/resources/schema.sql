@@ -131,6 +131,7 @@ CREATE TABLE chat
     id         bigint       NOT NULL PRIMARY KEY AUTO_INCREMENT,
     user_id    bigint       NOT NULL,
     crew_id    bigint       NOT NULL,
+    type       varchar(255) NOT NULL,
     content    varchar(255) NOT NULL,
     created_at dateTime     NOT NULL DEFAULT now(),
     updated_at dateTime     NOT NULL DEFAULT now(),
