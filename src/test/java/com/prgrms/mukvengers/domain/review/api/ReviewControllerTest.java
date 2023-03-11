@@ -48,7 +48,7 @@ class ReviewControllerTest extends ControllerTest {
 
 	@BeforeEach
 	void setCrew() {
-		reviewer = savedUser;
+		reviewer = savedUser1;
 		reviewee = userRepository.save(UserObjectProvider.createUser("kakao_1212"));
 		crew = crewRepository.save(createCrew(savedStore));
 	}
@@ -71,7 +71,7 @@ class ReviewControllerTest extends ControllerTest {
 		String jsonRequest = objectMapper.writeValueAsString(leaderReviewRequest);
 
 		mockMvc.perform(post("/api/v1/crews/{crewId}/reviews/leader", crew.getId())
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken)
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken1)
 				.content(jsonRequest)
 				.contentType(APPLICATION_JSON))
 			// when & then
@@ -113,7 +113,7 @@ class ReviewControllerTest extends ControllerTest {
 		String jsonRequest = objectMapper.writeValueAsString(memberReviewRequest);
 
 		mockMvc.perform(post("/api/v1/crews/{crewId}/reviews/member", crew.getId())
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken)
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken1)
 				.content(jsonRequest)
 				.contentType(APPLICATION_JSON))
 			// when & then
@@ -144,7 +144,7 @@ class ReviewControllerTest extends ControllerTest {
 		Review review = reviewRepository.save(createReview);
 
 		mockMvc.perform(get("/api/v1/reviews/{reviewId}", review.getId())
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken)
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken1)
 				.contentType(APPLICATION_JSON))
 			// when & then
 			.andExpect(status().isOk())
@@ -211,7 +211,7 @@ class ReviewControllerTest extends ControllerTest {
 		params.add("size", String.valueOf(size));
 
 		mockMvc.perform(get("/api/v1/reviews/me")
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken)
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken1)
 				.params(params)
 				.contentType(APPLICATION_JSON))
 			// when & then
@@ -318,7 +318,7 @@ class ReviewControllerTest extends ControllerTest {
 		params.add("size", String.valueOf(size));
 
 		mockMvc.perform(get("/api/v1/reviews")
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken)
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken1)
 				.params(params)
 				.contentType(APPLICATION_JSON))
 			// when & then
@@ -426,7 +426,7 @@ class ReviewControllerTest extends ControllerTest {
 		reviewRepository.save(review);
 
 		mockMvc.perform(get("/api/v1/crews/{crewId}/reviews", crew.getId())
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken))
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + accessToken1))
 			// when & then
 			.andExpect(status().isOk())
 			.andDo(print())

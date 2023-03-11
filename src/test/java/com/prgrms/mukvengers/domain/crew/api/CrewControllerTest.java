@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.LinkedMultiValueMap;
@@ -31,10 +32,7 @@ import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.domain.proposal.model.Proposal;
-import com.prgrms.mukvengers.domain.user.model.User;
-import com.prgrms.mukvengers.utils.CrewMemberObjectProvider;
 import com.prgrms.mukvengers.utils.CrewObjectProvider;
-import com.prgrms.mukvengers.utils.UserObjectProvider;
 
 class CrewControllerTest extends ControllerTest {
 
@@ -44,8 +42,33 @@ class CrewControllerTest extends ControllerTest {
 	public static final Schema CREW_PAGE_RESPONSE = new Schema("crewPageResponse");
 	public static final Schema FIND_BY_USER_LOCATION_CREW_REQUEST = new Schema("findByUserLocationCrewRequest");
 	public static final Schema CREW_RESPONSE = new Schema("crewResponse");
-	public static final Schema UPDATE_CREW_REQUEST = new Schema("updateCrewRequest");
-	public static final Schema FIND_BY_USER_ID_CREW_REQUEST = new Schema("findByUserIdCrewRequest");
+	public static final Schema UPDATE_CREW_RESPONSE = new Schema("updateCrewResponse");
+	public static final Schema FIND_BY_PLACE_ID_CREW_REQUEST = new Schema("findByPlaceIdCrewRequest");
+	public static final String URI = "/api/v1/crews";
+
+	private Crew crew;
+	private Long crewId;
+
+	@BeforeEach
+	void setUp() {
+
+		List<Crew> crews = createCrews(savedStore);
+		crewRepository.saveAll(crews);
+		crews.forEach(crew -> {
+			CrewMember crewMember = createCrewMember(savedUser1Id, crew, CrewMemberRole.MEMBER);
+			crewMemberRepository.save(crewMember);
+		});
+
+		crew = crews.get(0);
+		crewId = crew.getId();
+
+		CrewMember crewMember = createCrewMember(savedUser2Id, crew, CrewMemberRole.LEADER);
+		crewMemberRepository.save(crewMember);
+
+		Proposal proposal = createProposal(savedUser1, savedUser2Id, crewId);
+		proposalRepository.save(proposal);
+
+	}
 
 	@Test
 	@DisplayName("[성공]밥 모임을 저장하고 모임을 만든 유저는 모임원이 되며 방장 역할을 가진다.")
@@ -55,13 +78,13 @@ class CrewControllerTest extends ControllerTest {
 
 		String jsonRequest = objectMapper.writeValueAsString(createCrewRequest);
 
-		mockMvc.perform(post("/api/v1/crews")
+		mockMvc.perform(post(URI)
 				.contentType(APPLICATION_JSON)
-				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken1)
 				.content(jsonRequest))
 			.andExpect(status().isCreated())
-			.andExpect(header().string("Location", containsString("/api/v1/crews")))
-			.andExpect(redirectedUrlPattern("/api/v1/crews/*"))
+			.andExpect(header().string("Location", containsString(URI)))
+			.andExpect(redirectedUrlPattern(URI + "/*"))
 			.andDo(print())
 			.andDo(document("모임 생성",
 				resource(
@@ -70,7 +93,6 @@ class CrewControllerTest extends ControllerTest {
 						.summary("모임 생성 API")
 						.description("모임을 생성합니다. 생성한 유저는 모임원이 되고 방장 역할을 가집니다.")
 						.requestSchema(CREATE_CREW_REQUEST)
-						.responseSchema(CREATE_CREW_RESPONSE)
 						.requestFields(
 							fieldWithPath("createStoreRequest.latitude").type(NUMBER).description("위도"),
 							fieldWithPath("createStoreRequest.longitude").type(NUMBER).description("경도"),
@@ -88,6 +110,7 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("category").type(STRING).description("밥 모임 카테고리"))
 						.responseHeaders(
 							headerWithName("Location").description("조회해볼 수 있는 요청 주소"))
+						.responseSchema(CREATE_CREW_RESPONSE)
 						.responseFields(
 							fieldWithPath("id").type(NUMBER).description("밥 모임 아이디")
 						)
@@ -101,22 +124,8 @@ class CrewControllerTest extends ControllerTest {
 	@DisplayName("[성공] 모임 아이디로 모임을 조회한다.")
 	void getById_success() throws Exception {
 
-		Crew crew = CrewObjectProvider.createCrew(savedStore);
-
-		crewRepository.save(crew);
-
-		CrewMember crewMember = CrewMemberObjectProvider.createCrewMember(savedUserId, crew, CrewMemberRole.LEADER);
-
-		crewMemberRepository.save(crewMember);
-
-		Long crewId = crew.getId();
-
-		Proposal proposal = createProposal(savedUser, 1L, crewId);
-
-		proposalRepository.save(proposal);
-
-		mockMvc.perform(get("/api/v1/crews/{crewId}", crewId)
-				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
+		mockMvc.perform(get(URI + "/{crewId}", crewId)
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken1)
 				.accept(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data").exists())
@@ -167,23 +176,8 @@ class CrewControllerTest extends ControllerTest {
 	@DisplayName("[성공] 사용자가 참여한 모임을 조회한다.")
 	void getByUserId_success() throws Exception {
 
-		List<Crew> crews = createCrews(savedStore);
-		crewRepository.saveAll(crews);
-
-		User leader = UserObjectProvider.createUser("12344");
-
-		userRepository.save(leader);
-
-		crews.forEach(crew -> {
-			CrewMember crewMember = createCrewMember(savedUserId, crew, CrewMemberRole.MEMBER);
-			crewMemberRepository.save(crewMember);
-
-		});
-		Proposal proposal = createProposal(savedUser, leader.getId(), crews.get(0).getId());
-		proposalRepository.save(proposal);
-
-		mockMvc.perform(get("/api/v1/crews/me")
-				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
+		mockMvc.perform(get(URI + "/me")
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken1)
 				.accept(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data").exists())
@@ -196,7 +190,6 @@ class CrewControllerTest extends ControllerTest {
 						.description(
 							"사용자가 참여한 모든 모임을 조회합니다. "
 								+ "현재 모집 중인 모임과 모집종료된 모임 모두 조회하며 모집중인 데이터가 먼저 정렬되고 그후 모집 종료된 데이터가 옵니다.")
-						.requestSchema(FIND_BY_USER_ID_CREW_REQUEST)
 						.responseSchema(CREW_RESPONSE)
 						.responseFields(
 							fieldWithPath("data.responses.[].currentMember").type(NUMBER).description("밥 모임 현재 인원"),
@@ -236,21 +229,6 @@ class CrewControllerTest extends ControllerTest {
 	@DisplayName("[성공] 맵 api 아이디로 해당 가게의 밥 모임을 전부 조회한다.")
 	void findByPlaceId_success() throws Exception {
 
-		List<Crew> crews = CrewObjectProvider.createCrews(savedStore);
-
-		crewRepository.saveAll(crews);
-
-		User leader = UserObjectProvider.createUser("12344");
-
-		userRepository.save(leader);
-
-		crews.forEach(crew -> {
-			CrewMember crewMember = createCrewMember(savedUserId, crew, CrewMemberRole.MEMBER);
-			crewMemberRepository.save(crewMember);
-			Proposal proposal = createProposal(savedUser, leader.getId(), crew.getId());
-			proposalRepository.save(proposal);
-		});
-
 		Integer page = 0;
 
 		Integer size = 5;
@@ -259,9 +237,9 @@ class CrewControllerTest extends ControllerTest {
 		params.add("page", String.valueOf(page));
 		params.add("size", String.valueOf(size));
 
-		mockMvc.perform(get("/api/v1/crews/page/{placeId}", savedStore.getPlaceId())
+		mockMvc.perform(get(URI + "/page/{placeId}", savedStore.getPlaceId())
 				.params(params)
-				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken1)
 				.accept(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data").exists())
@@ -274,6 +252,7 @@ class CrewControllerTest extends ControllerTest {
 						.description("맵 api 아이디로 밥 모임을 조회합니다.")
 						.pathParameters(
 							parameterWithName("placeId").description("api에서 사용하는 가게 아이디"))
+						.requestSchema(FIND_BY_PLACE_ID_CREW_REQUEST)
 						.requestParameters(
 							parameterWithName("page").description("현재 페이지 번호"),
 							parameterWithName("size").description("한번에 가져올 데이터 사이즈"))
@@ -347,15 +326,6 @@ class CrewControllerTest extends ControllerTest {
 	@DisplayName("[성공] 사용자의 위도, 경도로 특정 범위 안에 있는 밥 모임을 모드 조회한다.")
 	void findByLocation_success() throws Exception {
 
-		List<Crew> crews = CrewObjectProvider.createCrews(savedStore);
-
-		crewRepository.saveAll(crews);
-
-		crews.forEach(crew -> {
-			CrewMember crewMember = createCrewMember(savedUserId, crew, CrewMemberRole.MEMBER);
-			crewMemberRepository.save(crewMember);
-		});
-
 		String latitude = "35.75413579";
 		String longitude = "-147.4654321321";
 		String distance = "500";
@@ -365,7 +335,7 @@ class CrewControllerTest extends ControllerTest {
 		params.add("longitude", longitude);
 		params.add("distance", distance);
 
-		mockMvc.perform(get("/api/v1/crews")
+		mockMvc.perform(get(URI)
 				.params(params)
 				.accept(APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -397,22 +367,14 @@ class CrewControllerTest extends ControllerTest {
 	@DisplayName("[성공] 모임 상태를 변경한다.")
 	void updateStatus_success() throws Exception {
 
-		Crew crew = CrewObjectProvider.createCrew(savedStore);
-
-		crewRepository.save(crew);
-
-		CrewMember crewMember = createCrewMember(savedUserId, crew, CrewMemberRole.LEADER);
-
-		crewMemberRepository.save(crewMember);
-
 		UpdateCrewStatusRequest updateCrewStatusRequest = new UpdateCrewStatusRequest(CrewStatus.CLOSE);
 
 		String jsonRequest = objectMapper.writeValueAsString(updateCrewStatusRequest);
 
-		mockMvc.perform(patch("/api/v1/crews/{crewId}", crew.getId())
+		mockMvc.perform(patch(URI + "/{crewId}", crew.getId())
 				.content(jsonRequest)
 				.contentType(APPLICATION_JSON)
-				.header(AUTHORIZATION, BEARER_TYPE + accessToken))
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken2))
 			.andExpect(status().isOk())
 			.andDo(print())
 			.andDo(document("crew-updateStatus",
@@ -421,6 +383,10 @@ class CrewControllerTest extends ControllerTest {
 						.tag(CREW)
 						.summary("모임 상태 변경")
 						.description("모임 상태를 변경합니다.")
+						.pathParameters(
+							parameterWithName("crewId").description("모임 상태를 변경할 모임 아이디")
+						)
+						.responseSchema(UPDATE_CREW_RESPONSE)
 						.responseFields(
 							fieldWithPath("data.crewStatus").type(STRING).description("모임 상태"))
 						.build()

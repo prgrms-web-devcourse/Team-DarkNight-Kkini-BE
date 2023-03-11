@@ -29,7 +29,7 @@ class UserControllerTest extends ControllerTest {
 	void getMyProfile_success() throws Exception {
 		// when
 		mockMvc.perform(get("/api/v1/user/me")
-				.header(AUTHORIZATION, BEARER_TYPE + accessToken))
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken1))
 			// then
 			.andExpectAll(
 				handler().methodName("getMyProfile"),
@@ -65,8 +65,8 @@ class UserControllerTest extends ControllerTest {
 	@DisplayName("[성공] 유저 아이디로 유저 정보를 조회할 수 있다.")
 	void getUserProfile_success() throws Exception {
 		// when
-		mockMvc.perform(get("/api/v1/user/{userId}", savedUserId)
-				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
+		mockMvc.perform(get("/api/v1/user/{userId}", savedUser1Id)
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken1)
 			)
 			// then
 			.andExpectAll(
@@ -107,7 +107,7 @@ class UserControllerTest extends ControllerTest {
 
 		// when
 		mockMvc.perform(put("/api/v1/user/me")
-				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken1)
 				.contentType(APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(request))
 			)
