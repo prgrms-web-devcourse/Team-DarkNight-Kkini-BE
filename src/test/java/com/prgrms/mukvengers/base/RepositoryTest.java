@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
+import com.prgrms.mukvengers.domain.chat.repository.ChatRepository;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
 import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
@@ -42,6 +43,9 @@ public abstract class RepositoryTest {
 
 	@Autowired
 	protected ReviewRepository reviewRepository;
+
+	@Autowired
+	protected ChatRepository chatRepository;
 
 	protected User savedUser;
 
