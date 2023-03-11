@@ -25,6 +25,6 @@ public interface CrewRepository extends JpaRepository<Crew, Long> {
 
 	@Query(nativeQuery = true, value =
 		"SELECT * FROM crew c "
-			+ "WHERE ST_DISTANCE_SPHERE(:location, c.location) < :distance ")
+			+ "WHERE ST_DISTANCE_SPHERE(:location, c.location) < :distance AND c.status = 'RECRUITING'")
 	List<Crew> findAllByLocation(@Param("location") Point location, @Param("distance") int distance);
 }
