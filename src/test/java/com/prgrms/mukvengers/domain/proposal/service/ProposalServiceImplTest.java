@@ -1,7 +1,6 @@
 package com.prgrms.mukvengers.domain.proposal.service;
 
 import static com.prgrms.mukvengers.domain.proposal.model.vo.ProposalStatus.*;
-import static com.prgrms.mukvengers.domain.proposal.service.ProposalServiceImpl.*;
 import static com.prgrms.mukvengers.utils.CrewObjectProvider.*;
 import static com.prgrms.mukvengers.utils.ProposalObjectProvider.*;
 import static com.prgrms.mukvengers.utils.UserObjectProvider.*;
@@ -10,6 +9,7 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,6 +21,9 @@ import com.prgrms.mukvengers.domain.proposal.dto.request.CreateProposalRequest;
 import com.prgrms.mukvengers.domain.proposal.dto.request.UpdateProposalRequest;
 import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponse;
 import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponses;
+import com.prgrms.mukvengers.domain.proposal.exception.CrewMemberOverCapacity;
+import com.prgrms.mukvengers.domain.proposal.exception.DuplicateProposalException;
+import com.prgrms.mukvengers.domain.proposal.exception.ExistCrewMemberRoleException;
 import com.prgrms.mukvengers.domain.proposal.exception.InvalidProposalStatusException;
 import com.prgrms.mukvengers.domain.proposal.model.Proposal;
 import com.prgrms.mukvengers.domain.proposal.model.vo.ProposalStatus;
@@ -31,17 +34,27 @@ import com.prgrms.mukvengers.utils.ProposalObjectProvider;
 
 class ProposalServiceImplTest extends ServiceTest {
 
+	private User leader;
+	private Crew crew;
+
+	@BeforeEach
+	void setUp() {
+		User createUser = createUser("12121212");
+		leader = userRepository.save(createUser);
+
+		Crew createCrew = createCrew(savedStore);
+		crew = crewRepository.save(createCrew);
+
+		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(leader.getId(), crew,
+			CrewMemberRole.LEADER);
+		crewMemberRepository.save(createCrewMember);
+	}
+
 	@Test
 	@DisplayName("[성공] 사용자는 신청서를 작성할 수 있다.")
 	void createProposal_success() {
 
 		//given
-		User createUser = createUser("12121212");
-		User leader = userRepository.save(createUser);
-
-		Crew createCrew = createCrew(savedStore);
-		Crew crew = crewRepository.save(createCrew);
-
 		CreateProposalRequest proposalRequest = ProposalObjectProvider.createProposalRequest(leader.getId());
 
 		// when
@@ -58,20 +71,27 @@ class ProposalServiceImplTest extends ServiceTest {
 	}
 
 	@Test
+	@DisplayName("[실패] 해당 밥모임에 대기중인 신청서가 이미 존재한다면 신청서를 작성할 수 없다.")
+	void createProposal_fail_duplicate() {
+
+		// given
+		Proposal createProposal = createProposal(savedUser, leader.getId(), crew.getId());
+		proposalRepository.save(createProposal);
+
+		CreateProposalRequest worstRequest = createProposalRequest(leader.getId());
+
+		// when & then
+		assertThatThrownBy
+			(
+				() -> proposalService.create(worstRequest, savedUserId, crew.getId())
+			).isInstanceOf(DuplicateProposalException.class);
+	}
+
+	@Test
 	@DisplayName("[실패] 모집 정원이 다 찬 밥모임에는 신청서를 작성할 수 없다.")
 	void createProposal_fail_countOverCapacity() {
 
 		//given
-		User createUser = createUser("12121212");
-		User leader = userRepository.save(createUser);
-
-		Crew createCrew = createCrew(savedStore);
-		Crew crew = crewRepository.save(createCrew);
-
-		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(leader.getId(), crew,
-			CrewMemberRole.LEADER);
-		crewMemberRepository.save(createCrewMember);
-
 		List<CrewMember> crewMembers = CrewMemberObjectProvider.createCrewMembers(savedUserId, crew,
 			CrewMemberRole.MEMBER,
 			crew.getCapacity());
@@ -85,8 +105,7 @@ class ProposalServiceImplTest extends ServiceTest {
 			(
 				() -> proposalService.create(proposalRequest, savedUserId, crew.getId())
 			)
-			.isInstanceOf(IllegalStateException.class)
-			.hasMessageContaining(CREW_MEMBER_COUNT_OVER_CAPACITY_EXCEPTION_MESSAGE);
+			.isInstanceOf(CrewMemberOverCapacity.class);
 	}
 
 	@Test
@@ -94,9 +113,6 @@ class ProposalServiceImplTest extends ServiceTest {
 	void createProposal_fail_blockedUser() {
 
 		//given
-		Crew createCrew = createCrew(savedStore);
-		Crew crew = crewRepository.save(createCrew);
-
 		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(savedUserId, crew,
 			CrewMemberRole.BLOCKED);
 		crewMemberRepository.save(createCrewMember);
@@ -108,8 +124,7 @@ class ProposalServiceImplTest extends ServiceTest {
 			(
 				() -> proposalService.create(proposalRequest, savedUserId, crew.getId())
 			)
-			.isInstanceOf(IllegalStateException.class)
-			.hasMessageContaining(DISMISSED_USER_EXCEPTION_MESSAGE);
+			.isInstanceOf(ExistCrewMemberRoleException.class);
 	}
 
 	@Test
@@ -117,22 +132,14 @@ class ProposalServiceImplTest extends ServiceTest {
 	void createProposal_fail_LeaderUser() {
 
 		//given
-		Crew createCrew = createCrew(savedStore);
-		Crew crew = crewRepository.save(createCrew);
-
-		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(savedUserId, crew,
-			CrewMemberRole.LEADER);
-		crewMemberRepository.save(createCrewMember);
-
-		CreateProposalRequest proposalRequest = ProposalObjectProvider.createProposalRequest(savedUserId);
+		CreateProposalRequest proposalRequest = ProposalObjectProvider.createProposalRequest(leader.getId());
 
 		// when & then
 		assertThatThrownBy
 			(
-				() -> proposalService.create(proposalRequest, savedUserId, crew.getId())
+				() -> proposalService.create(proposalRequest, leader.getId(), crew.getId())
 			)
-			.isInstanceOf(IllegalStateException.class)
-			.hasMessageContaining(LEADER_USER_EXCEPTION_MESSAGE);
+			.isInstanceOf(ExistCrewMemberRoleException.class);
 	}
 
 	@Test
@@ -140,9 +147,6 @@ class ProposalServiceImplTest extends ServiceTest {
 	void createProposal_fail_DuplicatedUser() {
 
 		//given
-		Crew createCrew = createCrew(savedStore);
-		Crew crew = crewRepository.save(createCrew);
-
 		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(savedUserId, crew,
 			CrewMemberRole.MEMBER);
 		crewMemberRepository.save(createCrewMember);
@@ -154,8 +158,7 @@ class ProposalServiceImplTest extends ServiceTest {
 			(
 				() -> proposalService.create(proposalRequest, savedUserId, crew.getId())
 			)
-			.isInstanceOf(IllegalStateException.class)
-			.hasMessageContaining(DUPLICATE_USER_EXCEPTION_MESSAGE);
+			.isInstanceOf(ExistCrewMemberRoleException.class);
 	}
 
 	@Test
@@ -164,22 +167,17 @@ class ProposalServiceImplTest extends ServiceTest {
 
 		//given
 		String inputProposalStatus = "승인";
-		Crew creatCrew = createCrew(savedStore);
-		Crew crew = crewRepository.save(creatCrew);
-
-		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(savedUserId, crew, CrewMemberRole.LEADER);
-		CrewMember leader = crewMemberRepository.save(crewMemberOfLeader);
 
 		User createUser = createUser("1232456789");
 		User user = userRepository.save(createUser);
 
-		Proposal createProposal = ProposalObjectProvider.createProposal(user, leader.getUserId(), crew.getId());
+		Proposal createProposal = ProposalObjectProvider.createProposal(user, leader.getId(), crew.getId());
 		Proposal proposal = proposalRepository.save(createProposal);
 
 		UpdateProposalRequest proposalRequest = new UpdateProposalRequest(inputProposalStatus);
 
 		// when
-		proposalService.updateProposalStatus(proposalRequest, leader.getUserId(), proposal.getId());
+		proposalService.updateProposalStatus(proposalRequest, leader.getId(), proposal.getId());
 		Optional<CrewMember> result = crewMemberRepository.findCrewMemberByCrewIdAndUserId(
 			crew.getId(), user.getId());
 
@@ -196,22 +194,16 @@ class ProposalServiceImplTest extends ServiceTest {
 		//given
 		String inputProposalStatus = "거절";
 
-		Crew creatCrew = createCrew(savedStore);
-		Crew crew = crewRepository.save(creatCrew);
-
-		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(savedUserId, crew, CrewMemberRole.LEADER);
-		CrewMember leader = crewMemberRepository.save(crewMemberOfLeader);
-
 		User createUser = createUser("1232456789");
 		User user = userRepository.save(createUser);
 
-		Proposal createProposal = ProposalObjectProvider.createProposal(user, leader.getUserId(), crew.getId());
+		Proposal createProposal = ProposalObjectProvider.createProposal(user, leader.getId(), crew.getId());
 		Proposal proposal = proposalRepository.save(createProposal);
 
 		UpdateProposalRequest proposalRequest = new UpdateProposalRequest(inputProposalStatus);
 
 		// when
-		proposalService.updateProposalStatus(proposalRequest, leader.getUserId(), proposal.getId());
+		proposalService.updateProposalStatus(proposalRequest, leader.getId(), proposal.getId());
 		Optional<CrewMember> saveCrewMember = crewMemberRepository.findCrewMemberByCrewIdAndUserId(
 			crew.getId(), user.getId());
 
@@ -227,13 +219,6 @@ class ProposalServiceImplTest extends ServiceTest {
 		//given
 		String inputProposalStatus = "모름";
 
-		Crew creatCrew = createCrew(savedStore);
-		Crew crew = crewRepository.save(creatCrew);
-
-		CrewMember crewMemberOfLeader = CrewMemberObjectProvider.createCrewMember(savedUserId, crew,
-			CrewMemberRole.LEADER);
-		CrewMember leader = crewMemberRepository.save(crewMemberOfLeader);
-
 		User createUser = createUser("1232456789");
 		User user = userRepository.save(createUser);
 
@@ -245,7 +230,7 @@ class ProposalServiceImplTest extends ServiceTest {
 		// when & then
 		assertThatThrownBy
 			(
-				() -> proposalService.updateProposalStatus(proposalRequest, leader.getUserId(), proposal.getId())
+				() -> proposalService.updateProposalStatus(proposalRequest, leader.getId(), proposal.getId())
 			)
 			.isInstanceOf(InvalidProposalStatusException.class);
 	}
@@ -257,10 +242,7 @@ class ProposalServiceImplTest extends ServiceTest {
 		User user = createUser("1232456789");
 		userRepository.save(user);
 
-		Crew crew = createCrew(savedStore);
-		crewRepository.save(crew);
-
-		Proposal proposal = ProposalObjectProvider.createProposal(user, savedUser.getId(), crew.getId());
+		Proposal proposal = ProposalObjectProvider.createProposal(user, leader.getId(), crew.getId());
 		proposalRepository.save(proposal);
 
 		//when
@@ -268,7 +250,7 @@ class ProposalServiceImplTest extends ServiceTest {
 
 		assertThat(response)
 			.hasFieldOrPropertyWithValue("id", proposal.getId())
-			.hasFieldOrPropertyWithValue("leaderId", savedUserId)
+			.hasFieldOrPropertyWithValue("leaderId", leader.getId())
 			.hasFieldOrPropertyWithValue("crewId", crew.getId())
 			.hasFieldOrPropertyWithValue("content", proposal.getContent())
 			.hasFieldOrPropertyWithValue("status", proposal.getStatus());
@@ -292,14 +274,11 @@ class ProposalServiceImplTest extends ServiceTest {
 		User user = createUser("1232456789");
 		userRepository.save(user);
 
-		Crew crew = createCrew(savedStore);
-		crewRepository.save(crew);
-
-		List<Proposal> proposals = createProposals(user, savedUser.getId(), crew.getId());
+		List<Proposal> proposals = createProposals(user, leader.getId(), crew.getId());
 		proposalRepository.saveAll(proposals);
 
 		//when
-		ProposalResponses responses = proposalService.getProposalsByLeaderId(savedUser.getId());
+		ProposalResponses responses = proposalService.getProposalsByLeaderId(leader.getId());
 
 		//then
 		assertThat(responses.responses()).hasSize(proposals.size());
@@ -313,14 +292,11 @@ class ProposalServiceImplTest extends ServiceTest {
 		User user = createUser("1232456789");
 		userRepository.save(user);
 
-		Crew crew = createCrew(savedStore);
-		crewRepository.save(crew);
-
-		List<Proposal> proposals = createProposals(savedUser, user.getId(), crew.getId());
+		List<Proposal> proposals = createProposals(user, leader.getId(), crew.getId());
 		proposalRepository.saveAll(proposals);
 
 		//when
-		ProposalResponses responses = proposalService.getProposalsByMemberId(savedUser.getId());
+		ProposalResponses responses = proposalService.getProposalsByMemberId(user.getId());
 
 		//then
 		assertThat(responses.responses()).hasSize(proposals.size());
