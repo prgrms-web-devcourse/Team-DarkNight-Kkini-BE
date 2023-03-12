@@ -42,7 +42,7 @@ public class ProposalController {
 	 * @param crewId 신청하고자 하는 밥모임 아이디
 	 * @param proposalRequest 신청서 생성 DTO
 	 * @param user 유저 정보
-	 * @return status : 201, body : 생성된 신청서 조회 redirectUrl
+	 * @return status : 201, header location : 생성된 신청서 조회 redirectUrl
 	 */
 	@PostMapping(value = "/crews/{crewId}/proposals", consumes = APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponse> create
