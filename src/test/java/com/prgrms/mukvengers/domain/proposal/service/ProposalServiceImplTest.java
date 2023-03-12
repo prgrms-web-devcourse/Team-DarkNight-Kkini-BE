@@ -1,7 +1,6 @@
 package com.prgrms.mukvengers.domain.proposal.service;
 
 import static com.prgrms.mukvengers.domain.proposal.model.vo.ProposalStatus.*;
-import static com.prgrms.mukvengers.domain.proposal.service.ProposalServiceImpl.*;
 import static com.prgrms.mukvengers.utils.CrewObjectProvider.*;
 import static com.prgrms.mukvengers.utils.ProposalObjectProvider.*;
 import static com.prgrms.mukvengers.utils.UserObjectProvider.*;
@@ -22,7 +21,9 @@ import com.prgrms.mukvengers.domain.proposal.dto.request.CreateProposalRequest;
 import com.prgrms.mukvengers.domain.proposal.dto.request.UpdateProposalRequest;
 import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponse;
 import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponses;
+import com.prgrms.mukvengers.domain.proposal.exception.CrewMemberOverCapacity;
 import com.prgrms.mukvengers.domain.proposal.exception.DuplicateProposalException;
+import com.prgrms.mukvengers.domain.proposal.exception.ExistCrewMemberRoleException;
 import com.prgrms.mukvengers.domain.proposal.exception.InvalidProposalStatusException;
 import com.prgrms.mukvengers.domain.proposal.model.Proposal;
 import com.prgrms.mukvengers.domain.proposal.model.vo.ProposalStatus;
@@ -54,7 +55,7 @@ class ProposalServiceImplTest extends ServiceTest {
 	void createProposal_success() {
 
 		//given
-		CreateProposalRequest proposalRequest = ProposalObjectProvider.createProposalRequest(savedUserId);
+		CreateProposalRequest proposalRequest = ProposalObjectProvider.createProposalRequest(leader.getId());
 
 		// when
 		IdResponse response = proposalService.create(proposalRequest, savedUserId, crew.getId());
@@ -104,8 +105,7 @@ class ProposalServiceImplTest extends ServiceTest {
 			(
 				() -> proposalService.create(proposalRequest, savedUserId, crew.getId())
 			)
-			.isInstanceOf(IllegalStateException.class)
-			.hasMessageContaining(CREW_MEMBER_COUNT_OVER_CAPACITY_EXCEPTION_MESSAGE);
+			.isInstanceOf(CrewMemberOverCapacity.class);
 	}
 
 	@Test
@@ -124,8 +124,7 @@ class ProposalServiceImplTest extends ServiceTest {
 			(
 				() -> proposalService.create(proposalRequest, savedUserId, crew.getId())
 			)
-			.isInstanceOf(IllegalStateException.class)
-			.hasMessageContaining(DISMISSED_USER_EXCEPTION_MESSAGE);
+			.isInstanceOf(ExistCrewMemberRoleException.class);
 	}
 
 	@Test
@@ -140,8 +139,7 @@ class ProposalServiceImplTest extends ServiceTest {
 			(
 				() -> proposalService.create(proposalRequest, leader.getId(), crew.getId())
 			)
-			.isInstanceOf(IllegalStateException.class)
-			.hasMessageContaining(LEADER_USER_EXCEPTION_MESSAGE);
+			.isInstanceOf(ExistCrewMemberRoleException.class);
 	}
 
 	@Test
@@ -160,8 +158,7 @@ class ProposalServiceImplTest extends ServiceTest {
 			(
 				() -> proposalService.create(proposalRequest, savedUserId, crew.getId())
 			)
-			.isInstanceOf(IllegalStateException.class)
-			.hasMessageContaining(DUPLICATE_USER_EXCEPTION_MESSAGE);
+			.isInstanceOf(ExistCrewMemberRoleException.class);
 	}
 
 	@Test
