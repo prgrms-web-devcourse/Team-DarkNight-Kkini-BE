@@ -1,5 +1,6 @@
 package com.prgrms.mukvengers.domain.proposal.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -92,33 +93,54 @@ public class ProposalServiceImpl implements ProposalService {
 
 	@Override
 	public ProposalResponse getById(Long proposalId) {
-
 		Proposal proposal = proposalRepository.findById(proposalId)
 			.orElseThrow(() -> new ProposalNotFoundException(proposalId));
 
-		return proposalMapper.toProposalResponse(proposal);
+		Crew crew = crewRepository.findById(proposal.getCrewId())
+			.orElseThrow(() -> new CrewNotFoundException(proposal.getCrewId()));
+
+		String crewName = crew.getName();
+		String storePlaceName = crew.getStore().getPlaceName();
+
+		return proposalMapper.toProposalResponse(proposal, crewName, storePlaceName);
 	}
 
 	@Override
 	public ProposalResponses getProposalsByLeaderId(Long userId) {
+		List<Proposal> proposals = proposalRepository.findAllByLeaderIdOrderByCreatedAtDesc(userId);
+		List<ProposalResponse> proposalResponses = new ArrayList<>();
 
-		List<ProposalResponse> proposals = proposalRepository.findAllByLeaderIdOrderByCreatedAtDesc(userId)
-			.stream()
-			.map(proposalMapper::toProposalResponse)
-			.toList();
+		for (Proposal proposal : proposals) {
+			Crew crew = crewRepository.findById(proposal.getCrewId())
+				.orElseThrow(() -> new CrewNotFoundException(proposal.getCrewId()));
 
-		return new ProposalResponses(proposals);
+			String crewName = crew.getName();
+			String storePlaceName = crew.getStore().getPlaceName();
+
+			ProposalResponse proposalResponse = proposalMapper.toProposalResponse(proposal, crewName, storePlaceName);
+			proposalResponses.add(proposalResponse);
+		}
+
+		return new ProposalResponses(proposalResponses);
 	}
 
 	@Override
 	public ProposalResponses getProposalsByMemberId(Long userId) {
+		List<Proposal> proposals = proposalRepository.findAllByUserIdOrderByCreatedAtDesc(userId);
+		List<ProposalResponse> proposalResponses = new ArrayList<>();
 
-		List<ProposalResponse> proposals = proposalRepository.findAllByUserIdOrderByCreatedAtDesc(userId)
-			.stream()
-			.map(proposalMapper::toProposalResponse)
-			.toList();
+		for (Proposal proposal : proposals) {
+			Crew crew = crewRepository.findById(proposal.getCrewId())
+				.orElseThrow(() -> new CrewNotFoundException(proposal.getCrewId()));
 
-		return new ProposalResponses(proposals);
+			String crewName = crew.getName();
+			String storePlaceName = crew.getStore().getPlaceName();
+
+			ProposalResponse proposalResponse = proposalMapper.toProposalResponse(proposal, crewName, storePlaceName);
+			proposalResponses.add(proposalResponse);
+		}
+
+		return new ProposalResponses(proposalResponses);
 	}
 
 	@Override
