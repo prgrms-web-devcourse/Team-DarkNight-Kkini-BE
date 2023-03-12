@@ -89,7 +89,7 @@ public class GlobalExceptionHandler {
 	@SlackNotification
 	@ResponseStatus(INTERNAL_SERVER_ERROR)
 	@ExceptionHandler(Exception.class)
-	public ErrorResponse handleException(Exception e) {
+	public ErrorResponse handleException(HttpServletRequest request, Exception e) {
 		logError(e);
 		return ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
 	}

@@ -108,6 +108,8 @@ class ProposalControllerTest extends ControllerTest {
 							fieldWithPath("data.status").type(STRING).description("신청서 상태"),
 							fieldWithPath("data.leaderId").type(NUMBER).description("모임의 방장 아이디"),
 							fieldWithPath("data.crewId").type(NUMBER).description("모임 아이디"),
+							fieldWithPath("data.storeName").type(STRING).description("가게 이름"),
+							fieldWithPath("data.crewName").type(STRING).description("모임 이름"),
 							fieldWithPath("data.user.id").type(NUMBER).description("유저 ID"),
 							fieldWithPath("data.user.nickname").type(STRING).description("닉네임"),
 							fieldWithPath("data.user.profileImgUrl").type(STRING).description("프로필 이미지"),
@@ -153,6 +155,8 @@ class ProposalControllerTest extends ControllerTest {
 							fieldWithPath("data.responses.[].content").type(STRING).description("신청서 내용"),
 							fieldWithPath("data.responses.[].status").type(STRING).description("신청서 상태"),
 							fieldWithPath("data.responses.[].leaderId").type(NUMBER).description("모임의 방장 아이디"),
+							fieldWithPath("data.responses.[].storeName").type(STRING).description("가게 이름"),
+							fieldWithPath("data.responses.[].crewName").type(STRING).description("모임 이름"),
 							fieldWithPath("data.responses.[].crewId").type(NUMBER).description("모임 아이디")
 						)
 						.build()
@@ -252,6 +256,8 @@ class ProposalControllerTest extends ControllerTest {
 							fieldWithPath("data.responses.[].content").type(STRING).description("신청서 내용"),
 							fieldWithPath("data.responses.[].status").type(STRING).description("신청서 상태"),
 							fieldWithPath("data.responses.[].leaderId").type(NUMBER).description("모임의 방장 아이디"),
+							fieldWithPath("data.responses.[].storeName").type(STRING).description("가게 이름"),
+							fieldWithPath("data.responses.[].crewName").type(STRING).description("모임 이름"),
 							fieldWithPath("data.responses.[].crewId").type(NUMBER).description("모임 아이디")
 						)
 						.build()

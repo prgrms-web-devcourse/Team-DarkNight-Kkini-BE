@@ -12,5 +12,5 @@ public interface ProposalMapper {
 
 	Proposal toProposal(CreateProposalRequest proposalRequest, User user, Long crewId);
 
-	ProposalResponse toProposalResponse(Proposal proposal);
+	ProposalResponse toProposalResponse(Proposal proposal, String storeName, String crewName);
 }

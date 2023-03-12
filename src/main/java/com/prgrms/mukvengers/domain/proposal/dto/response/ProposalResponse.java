@@ -9,6 +9,8 @@ public record ProposalResponse(
 	Long leaderId,
 	Long crewId,
 	String content,
-	ProposalStatus status
+	ProposalStatus status,
+	String storeName,
+	String crewName
 ) {
 }
