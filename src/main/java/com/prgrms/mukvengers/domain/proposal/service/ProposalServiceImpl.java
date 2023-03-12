@@ -2,7 +2,6 @@ package com.prgrms.mukvengers.domain.proposal.service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +18,9 @@ import com.prgrms.mukvengers.domain.proposal.dto.request.CreateProposalRequest;
 import com.prgrms.mukvengers.domain.proposal.dto.request.UpdateProposalRequest;
 import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponse;
 import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponses;
+import com.prgrms.mukvengers.domain.proposal.exception.CrewMemberOverCapacity;
+import com.prgrms.mukvengers.domain.proposal.exception.DuplicateProposalException;
+import com.prgrms.mukvengers.domain.proposal.exception.ExistCrewMemberRoleException;
 import com.prgrms.mukvengers.domain.proposal.exception.ProposalNotFoundException;
 import com.prgrms.mukvengers.domain.proposal.mapper.ProposalMapper;
 import com.prgrms.mukvengers.domain.proposal.model.Proposal;
@@ -36,17 +38,17 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class ProposalServiceImpl implements ProposalService {
 
-	public static final String CREW_MEMBER_COUNT_OVER_CAPACITY_EXCEPTION_MESSAGE = "밥모임의 모집 인원이 마감되어 신청서를 작성할 수 없습니다.";
+	public static final String CREW_MEMBER_COUNT_OVER_CAPACITY_EXCEPTION_MESSAGE = "해당 밥모임의 정원이 초과되어 신청서를 작성할 수 없습니다.";
 	public static final String DISMISSED_USER_EXCEPTION_MESSAGE = "강퇴된 밥모임에는 신청서를 작성할 수 없습니다.";
 	public static final String LEADER_USER_EXCEPTION_MESSAGE = "해당 밥모임의 리더는 신청서를 작성할 수 없습니다.";
-	public static final String DUPLICATE_USER_EXCEPTION_MESSAGE = "이미 신청한 밥모임에 다시 신청서를 작성할 수 없습니다.";
+	public static final String DUPLICATE_USER_EXCEPTION_MESSAGE = "이미 참여한 밥모임에 다시 신청서를 작성할 수 없습니다.";
 
 	private final UserRepository userRepository;
 	private final CrewRepository crewRepository;
 	private final CrewMemberRepository crewMemberRepository;
+	private final CrewMemberMapper crewMemberMapper;
 	private final ProposalRepository proposalRepository;
 	private final ProposalMapper proposalMapper;
-	private final CrewMemberMapper crewMemberMapper;
 
 	@Override
 	@Transactional
@@ -59,19 +61,25 @@ public class ProposalServiceImpl implements ProposalService {
 			.filter(c -> c.getStatus().equals(CrewStatus.RECRUITING))
 			.orElseThrow(() -> new CrewNotFoundException(crewId));
 
+		proposalRepository.findProposalByUserIdAndCrewId(userId, crewId)
+			.filter(p -> p.getStatus().equals(ProposalStatus.WAITING))
+			.ifPresent(proposal -> {
+				throw new DuplicateProposalException(proposal.getId());
+			});
+
 		Integer currentCrewMemberCount = crewMemberRepository.countCrewMemberByCrewId(crewId);
 
 		if (currentCrewMemberCount >= crew.getCapacity()) {
-			throw new IllegalStateException(CREW_MEMBER_COUNT_OVER_CAPACITY_EXCEPTION_MESSAGE);
+			throw new CrewMemberOverCapacity(CREW_MEMBER_COUNT_OVER_CAPACITY_EXCEPTION_MESSAGE);
 		}
 
 		Optional<CrewMember> crewMember = crewMemberRepository.findCrewMemberByCrewIdAndUserId(crewId, userId);
 
 		if (crewMember.isPresent()) {
 			switch (crewMember.get().getCrewMemberRole()) {
-				case BLOCKED -> throw new IllegalStateException(DISMISSED_USER_EXCEPTION_MESSAGE);
-				case LEADER -> throw new IllegalStateException(LEADER_USER_EXCEPTION_MESSAGE);
-				case MEMBER -> throw new IllegalStateException(DUPLICATE_USER_EXCEPTION_MESSAGE);
+				case BLOCKED -> throw new ExistCrewMemberRoleException(DISMISSED_USER_EXCEPTION_MESSAGE);
+				case LEADER -> throw new ExistCrewMemberRoleException(LEADER_USER_EXCEPTION_MESSAGE);
+				case MEMBER -> throw new ExistCrewMemberRoleException(DUPLICATE_USER_EXCEPTION_MESSAGE);
 			}
 		}
 
@@ -97,7 +105,7 @@ public class ProposalServiceImpl implements ProposalService {
 		List<ProposalResponse> proposals = proposalRepository.findAllByLeaderIdOrderByCreatedAtDesc(userId)
 			.stream()
 			.map(proposalMapper::toProposalResponse)
-			.collect(Collectors.toList());
+			.toList();
 
 		return new ProposalResponses(proposals);
 	}
@@ -108,7 +116,7 @@ public class ProposalServiceImpl implements ProposalService {
 		List<ProposalResponse> proposals = proposalRepository.findAllByUserIdOrderByCreatedAtDesc(userId)
 			.stream()
 			.map(proposalMapper::toProposalResponse)
-			.collect(Collectors.toList());
+			.toList();
 
 		return new ProposalResponses(proposals);
 	}
@@ -138,8 +146,9 @@ public class ProposalServiceImpl implements ProposalService {
 
 		proposal.changeProposalStatus(proposalStatus);
 
-		if (!proposal.isApprove(proposalStatus))
+		if (!proposal.isApprove(proposalStatus)) {
 			return;
+		}
 
 		CrewMember createCrewMember = crewMemberMapper.toCrewMember(crew, proposal.getUser().getId(),
 			CrewMemberRole.MEMBER);
