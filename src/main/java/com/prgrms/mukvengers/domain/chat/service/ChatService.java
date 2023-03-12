@@ -1,5 +1,6 @@
 package com.prgrms.mukvengers.domain.chat.service;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Pageable;
@@ -12,4 +13,6 @@ public interface ChatService {
 	ChatResponse save(ChatRequest chatRequest, Long crewId, Map<String, Object> headers);
 
 	ChatsInCrew getByCrewId(Long crewId, Pageable pageable);
+
+	List<ChatResponse> getAllByCrewId(Long crewId);
 }
