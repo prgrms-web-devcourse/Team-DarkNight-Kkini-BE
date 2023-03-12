@@ -117,7 +117,7 @@ public class ProposalServiceImpl implements ProposalService {
 			String crewName = crew.getName();
 			String storePlaceName = crew.getStore().getPlaceName();
 
-			ProposalResponse proposalResponse = proposalMapper.toProposalResponse(proposal, crewName, storePlaceName);
+			ProposalResponse proposalResponse = proposalMapper.toProposalResponse(proposal, storePlaceName, crewName);
 			proposalResponses.add(proposalResponse);
 		}
 
@@ -136,7 +136,7 @@ public class ProposalServiceImpl implements ProposalService {
 			String crewName = crew.getName();
 			String storePlaceName = crew.getStore().getPlaceName();
 
-			ProposalResponse proposalResponse = proposalMapper.toProposalResponse(proposal, crewName, storePlaceName);
+			ProposalResponse proposalResponse = proposalMapper.toProposalResponse(proposal, storePlaceName, crewName);
 			proposalResponses.add(proposalResponse);
 		}
 
