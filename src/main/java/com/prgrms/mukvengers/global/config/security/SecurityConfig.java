@@ -40,6 +40,7 @@ public class SecurityConfig {
 			.antMatchers(OPTIONS, "/api/*").permitAll()
 			.antMatchers(OPTIONS, "/ws").permitAll()
 			.antMatchers(OPTIONS, "/ws/*").permitAll()
+			.antMatchers("**/info").permitAll()
 			.antMatchers("/app/**").permitAll()
 			.antMatchers("/topic/**").permitAll()
 			.antMatchers("/docs/**").permitAll()
