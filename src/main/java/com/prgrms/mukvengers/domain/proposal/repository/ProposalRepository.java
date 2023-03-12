@@ -12,6 +12,13 @@ import com.prgrms.mukvengers.domain.proposal.model.vo.ProposalStatus;
 
 public interface ProposalRepository extends JpaRepository<Proposal, Long> {
 
+	@Query(value = """
+		SELECT p
+		FROM Proposal p
+		WHERE p.user.id = :userId AND p.crewId = :crewId
+		""")
+	Optional<Proposal> findProposalByUserIdAndCrewId(@Param("userId") Long userId, @Param("crewId") Long crewId);
+
 	List<Proposal> findAllByLeaderIdOrderByCreatedAtDesc(@Param("userId") Long userId);
 
 	List<Proposal> findAllByUserIdOrderByCreatedAtDesc(@Param("userId") Long userId);
