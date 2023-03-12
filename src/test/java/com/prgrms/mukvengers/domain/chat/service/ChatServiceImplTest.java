@@ -23,7 +23,7 @@ class ChatServiceImplTest extends ServiceTest {
 
 	@BeforeEach
 	void setup() {
-		userId = 100L;
+		userId = 1L;
 		crewId = 100L;
 	}
 

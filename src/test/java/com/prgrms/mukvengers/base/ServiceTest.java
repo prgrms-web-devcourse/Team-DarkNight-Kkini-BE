@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.mukvengers.domain.chat.repository.ChatRepository;
+import com.prgrms.mukvengers.domain.chat.service.ChatService;
 import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
 import com.prgrms.mukvengers.domain.crew.service.CrewService;
 import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
@@ -63,6 +64,9 @@ public abstract class ServiceTest {
 
 	@Autowired
 	protected ChatRepository chatRepository;
+
+	@Autowired
+	protected ChatService chatService;
 
 	protected GeometryFactory gf = new GeometryFactory();
 
