@@ -17,6 +17,6 @@ public class CrewEventHandler {
 
 	@EventListener
 	public void create(CreateCrewEvent event) {
-		crewMemberService.create(event.crewId(), event.userId(), CrewMemberRole.LEADER);
+		crewMemberService.create(event.crew(), event.userId(), CrewMemberRole.LEADER);
 	}
 }

@@ -3,6 +3,7 @@ package com.prgrms.mukvengers.domain.crew.service;
 import static com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus.*;
 import static com.prgrms.mukvengers.utils.CrewMemberObjectProvider.*;
 import static com.prgrms.mukvengers.utils.CrewObjectProvider.*;
+import static com.prgrms.mukvengers.utils.StoreObjectProvider.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
@@ -10,8 +11,6 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -27,24 +26,21 @@ import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
+import com.prgrms.mukvengers.domain.store.model.Store;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
 import com.prgrms.mukvengers.utils.CrewObjectProvider;
 
 class CrewServiceImplTest extends ServiceTest {
 
 	@Test
-	@DisplayName("[성공] Crew 저장에 성공한다.")
-	void create_success() { //given when then 쓰면 좋을듯?
+	@DisplayName("[성공] 가게가 DB에 있을 경우 가게를 업데이트하고 Crew 저장에 성공한다.")
+	void create_success_storeIsPresent() {
 
 		//given
 		CreateCrewRequest createCrewRequest = CrewObjectProvider.getCreateCrewRequest(savedStore.getPlaceId());
 
-		double parseLatitude = createCrewRequest.createStoreRequest().latitude();
-		double parseLongitude = createCrewRequest.createStoreRequest().longitude();
-		Point location = gf.createPoint(new Coordinate(parseLongitude, parseLatitude));
-		IdResponse idResponse = crewService.create(createCrewRequest, savedUser.getId());
-
 		//when
+		IdResponse idResponse = crewService.create(createCrewRequest, savedUser.getId());
 		Optional<Crew> optionalCrew = crewRepository.findById(idResponse.id());
 
 		//then
@@ -54,7 +50,34 @@ class CrewServiceImplTest extends ServiceTest {
 		assertThat(crew)
 			.hasFieldOrPropertyWithValue("store", savedStore)
 			.hasFieldOrPropertyWithValue("name", createCrewRequest.name())
-			.hasFieldOrPropertyWithValue("location", location)
+			.hasFieldOrPropertyWithValue("location", savedStore.getLocation())
+			.hasFieldOrPropertyWithValue("capacity", createCrewRequest.capacity())
+			.hasFieldOrPropertyWithValue("status", RECRUITING)
+			.hasFieldOrPropertyWithValue("content", createCrewRequest.content())
+			.hasFieldOrPropertyWithValue("category", createCrewRequest.category());
+	}
+
+	@Test
+	@DisplayName("[성공] 가게가 DB에 없을 경우 Crew 저장에 성공한다.")
+	void create_success_storeEmpty() {
+
+		//given
+		Store store = createStore("321321");
+		CreateCrewRequest createCrewRequest = CrewObjectProvider.getCreateCrewRequest(
+			store.getPlaceId());
+
+		//when
+		IdResponse idResponse = crewService.create(createCrewRequest, savedUser.getId());
+		Optional<Crew> optionalCrew = crewRepository.findById(idResponse.id());
+
+		//then
+		assertThat(crewRepository.count()).isNotZero();
+		assertThat(optionalCrew).isPresent();
+		Crew crew = optionalCrew.get();
+		assertThat(crew)
+			.hasFieldOrPropertyWithValue("store.placeId", store.getPlaceId())
+			.hasFieldOrPropertyWithValue("name", createCrewRequest.name())
+			.hasFieldOrPropertyWithValue("location", store.getLocation())
 			.hasFieldOrPropertyWithValue("capacity", createCrewRequest.capacity())
 			.hasFieldOrPropertyWithValue("status", RECRUITING)
 			.hasFieldOrPropertyWithValue("content", createCrewRequest.content())

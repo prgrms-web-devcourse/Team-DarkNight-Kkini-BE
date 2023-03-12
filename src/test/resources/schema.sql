@@ -45,7 +45,9 @@ CREATE TABLE store
     phone_number      varchar(255) NULL,
     created_at        dateTime     NOT NULL DEFAULT now(),
     updated_at        dateTime     NOT NULL DEFAULT now(),
-    deleted           boolean      NOT NULL DEFAULT false
+    deleted           boolean      NOT NULL DEFAULT false,
+    
+    UNIQUE KEY uk_store_place_id (place_id)
 );
 
 CREATE TABLE crew

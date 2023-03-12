@@ -3,6 +3,7 @@ package com.prgrms.mukvengers.domain.crew.service;
 import static com.prgrms.mukvengers.domain.proposal.model.vo.ProposalStatus.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.locationtech.jts.geom.Coordinate;
@@ -65,18 +66,22 @@ public class CrewServiceImpl implements CrewService {
 	@Transactional
 	public IdResponse create(CreateCrewRequest createCrewRequest, Long userId) {
 
-		userRepository.findById(userId)
-			.orElseThrow(() -> new UserNotFoundException(userId));
+		Optional<Store> optionalStore = storeRepository.findByPlaceId(createCrewRequest.createStoreRequest().placeId());
+		Store store = storeMapper.toStore(createCrewRequest.createStoreRequest());
 
-		Store store = storeRepository.findByPlaceId(createCrewRequest.createStoreRequest().placeId())
-			.orElseGet(() -> storeRepository.save(storeMapper.toStore(createCrewRequest.createStoreRequest())));
+		Crew crew;
 
-		Crew crew = crewMapper.toCrew(createCrewRequest, store);
+		if (optionalStore.isPresent()) {
+			Store findStore = optionalStore.get();
+			findStore.updateStore(store);
+			crew = crewMapper.toCrew(createCrewRequest, findStore);
+		} else {
+			storeRepository.save(store);
+			crew = crewMapper.toCrew(createCrewRequest, store);
+		}
 
 		crewRepository.save(crew);
-
-		publisher.publishEvent(new CreateCrewEvent(userId, crew.getId()));
-
+		publisher.publishEvent(new CreateCrewEvent(userId, crew));
 		return new IdResponse(crew.getId());
 	}
 

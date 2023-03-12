@@ -3,15 +3,11 @@ package com.prgrms.mukvengers.domain.crewmember.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.prgrms.mukvengers.domain.crew.exception.CrewNotFoundException;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
-import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
 import com.prgrms.mukvengers.domain.crewmember.mapper.CrewMemberMapper;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
-import com.prgrms.mukvengers.domain.user.exception.UserNotFoundException;
-import com.prgrms.mukvengers.domain.user.repository.UserRepository;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -21,23 +17,14 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class CrewMemberServiceImpl implements CrewMemberService {
 
-	private final CrewRepository crewRepository;
 	private final CrewMemberRepository crewMemberRepository;
 	private final CrewMemberMapper crewMemberMapper;
-	private final UserRepository userRepository;
 
 	@Override
 	@Transactional
-	public IdResponse create(Long crewId, Long userId, CrewMemberRole crewMemberRole) {
-
-		userRepository.findById(userId)
-			.orElseThrow(() -> new UserNotFoundException(userId));
-
-		Crew crew = crewRepository.findById(crewId)
-			.orElseThrow(() -> new CrewNotFoundException(crewId));
+	public IdResponse create(Crew crew, Long userId, CrewMemberRole crewMemberRole) {
 
 		CrewMember crewMember = crewMemberMapper.toCrewMember(crew, userId, crewMemberRole);
-
 		crewMemberRepository.save(crewMember);
 
 		return new IdResponse(crewMember.getId());

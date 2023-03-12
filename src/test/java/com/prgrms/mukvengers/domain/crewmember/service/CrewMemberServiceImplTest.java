@@ -34,7 +34,7 @@ class CrewMemberServiceImplTest extends ServiceTest {
 		crewRepository.save(crew);
 
 		//when
-		IdResponse idResponse = crewMemberService.create(crew.getId(), savedUserId, LEADER);
+		IdResponse idResponse = crewMemberService.create(crew, savedUserId, LEADER);
 
 		//then
 		Optional<CrewMember> optionalCrewMember = crewMemberRepository.findById(idResponse.id());

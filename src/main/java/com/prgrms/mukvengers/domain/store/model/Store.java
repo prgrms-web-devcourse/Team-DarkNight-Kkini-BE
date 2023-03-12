@@ -73,6 +73,16 @@ public class Store extends BaseEntity {
 		this.phoneNumber = phoneNumber;
 	}
 
+	public void updateStore(Store store) {
+		this.location = validatePosition(store.getLocation());
+		this.placeName = validatePlaceName(store.getPlaceName());
+		this.categories = validateCategories(store.getCategories());
+		this.roadAddressName = validateRoadAddressName(store.getRoadAddressName());
+		this.photoUrls = store.getPhotoUrls();
+		this.kakaoPlaceUrl = validateKakaoPlaceUrl(store.getKakaoPlaceUrl());
+		this.phoneNumber = store.getPhoneNumber();
+	}
+
 	private Point validatePosition(Point location) {
 		notNull(location, "유효하지 않는 위치입니다.");
 
