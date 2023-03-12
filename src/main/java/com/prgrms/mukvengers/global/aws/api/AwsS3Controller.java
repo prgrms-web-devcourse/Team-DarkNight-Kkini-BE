@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/s3")
+@RequestMapping("/api/v1/s3")
 public class AwsS3Controller {
 
 	private final AwsS3Service awsS3Service;

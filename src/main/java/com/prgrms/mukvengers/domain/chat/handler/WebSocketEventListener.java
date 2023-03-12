@@ -27,28 +27,30 @@ public class WebSocketEventListener {
 
 	private final SimpMessageSendingOperations messagingTemplate;
 
+	// 연결 요청
 	@EventListener
 	public void handleWebSocketConnectListener(SessionConnectedEvent event) {
 		logger.info("Received a new web socket connection");
 	}
 
+	// 구독 요청(입장)
 	@EventListener
 	public void handleWebSocketSubscribeListener(SessionSubscribeEvent event) {
-		logger.info("Received a new web socket connection");
-		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+		logger.info("Received a new web socket subscribe");
+		StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
 
-		String username = (String)headerAccessor.getSessionAttributes().get("username");
-		Long userId = (Long)headerAccessor.getSessionAttributes().get("userId");
-		Long crewId = (Long)headerAccessor.getSessionAttributes().get("crewId");
+		String username = (String)getValue(accessor, "username");
+		Long userId = (Long)getValue(accessor, "userId");
+		Long crewId = (Long)getValue(accessor, "crewId");
 
-		if (username != null && userId != null && crewId != null) {
-			logger.info("User: {} {} Disconnected Crew : {}", userId, username, crewId);
-			ChatRequest chatRequest = new ChatRequest(MessageType.JOIN, userId,
-				username + " 님이 입장했습니다.");
-			messagingTemplate.convertAndSend("/topic/public/" + crewId, chatRequest);
-		}
+		logger.info("User: {} {} Subscribe Crew : {}", userId, username, crewId);
+		ChatRequest chatRequest = new ChatRequest(MessageType.JOIN, userId,
+			username + " 님이 입장했습니다.");
+		messagingTemplate.convertAndSend("/topic/public/" + crewId, chatRequest);
+
 	}
 
+	// 연결 해제
 	@EventListener
 	public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
 		StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
@@ -74,11 +76,6 @@ public class WebSocketEventListener {
 		}
 
 		return value;
-	}
-
-	private void setValue(StompHeaderAccessor accessor, String key, Object value) {
-		Map<String, Object> sessionAttributes = getSessionAttributes(accessor);
-		sessionAttributes.put(key, value);
 	}
 
 	private Map<String, Object> getSessionAttributes(StompHeaderAccessor accessor) {

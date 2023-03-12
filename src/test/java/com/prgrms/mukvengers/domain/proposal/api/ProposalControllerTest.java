@@ -235,7 +235,7 @@ class ProposalControllerTest extends ControllerTest {
 				resource(
 					builder()
 						.tag(PROPOSAL)
-						.summary("사용자가 방장인 모임의 모든 신청서 조회")
+						.summary("사용자가 참여자인 모임의 모든 신청서 조회")
 						.description("사용자가 방장인 모임에서 모임 신청을 위해 작서된 신청서를 모두 조회를 위한 API 입니다.")
 						.responseSchema(GET_PROPOSALS_BY_LEADER_ID_PROPOSAL_RESPONSE)
 						.responseFields(

@@ -11,6 +11,7 @@ import com.prgrms.mukvengers.domain.chat.model.Chat;
 
 public interface ChatRepository extends JpaRepository<Chat, Long> {
 
+	// DTO로 반환
 	@Query("""
 			SELECT 
 			new com.prgrms.mukvengers.domain.chat.dto.response.ChatResponse
