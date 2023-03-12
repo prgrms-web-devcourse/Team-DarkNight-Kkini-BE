@@ -49,7 +49,7 @@ public class CrewController {
 	 * </pre>
 	 * @param createCrewRequest 밥 모임 생성 DTO
 	 * @param user 유저 정보
-	 * @return status : 201, body : 생성된 밥 모임 조회 redirectUri
+	 * @return header: redirect Uri, status : 201, body : 생성된 모임 아이디
 	 */
 	@PostMapping(consumes = APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponse> create
