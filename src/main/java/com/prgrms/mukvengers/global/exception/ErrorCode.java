@@ -42,7 +42,10 @@ public enum ErrorCode {
 
 	// Proposal
 	PROPOSAL_NOT_FOUND(HttpStatus.NOT_FOUND, "P001", "존재하지 않는 신청서입니다."),
-	INVALID_PROPOSAL_STATUS(HttpStatus.NOT_FOUND, "P002", "올바르지 않은 신청서 응답 상태입니다."),
+	INVALID_PROPOSAL_STATUS(HttpStatus.NOT_FOUND, "P002", "올바르지 않은 신청서 응답 값입니다."),
+	DUPLICATE_PROPOSAL(HttpStatus.NOT_FOUND, "P003", "해당 밥모임에 대기 중인 신청서가 이미 존재합니다. 중복 신청은 불가능합니다."),
+	EXIST_CREW_MEMBER_ROLE(HttpStatus.NOT_FOUND, "P004", "이미 존재하는 밥모임원입니다."),
+	PROPOSAL_OVER_CAPACITY(HttpStatus.NOT_FOUND, "P005", "해당 밥모임의 정원이 초과되어 신청서를 작성할 수 없습니다."),
 
 	// Auth
 	INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "A001", "유효하지 않은 토큰입니다."),
