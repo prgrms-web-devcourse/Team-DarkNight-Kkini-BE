@@ -47,7 +47,7 @@ public class AwsS3Service {
 	}
 
 	private String randomFileName(File file, String dirName) {
-		return dirName + "/" + UUID.randomUUID() + file.getName();
+		return dirName + "/" + UUID.randomUUID().toString().substring(0, 8) + file.getName();
 	}
 
 	private String putS3(File uploadFile, String fileName) {
