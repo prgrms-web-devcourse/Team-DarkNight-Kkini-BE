@@ -4,4 +4,3 @@ spring:
       - test
       - security
       - aws
-      - db
