@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.annotation.Rollback;
 
 import com.prgrms.mukvengers.base.ServiceTest;
 import com.prgrms.mukvengers.domain.chat.dto.response.ChatResponse;
@@ -23,7 +24,7 @@ class ChatServiceImplTest extends ServiceTest {
 
 	@BeforeEach
 	void setup() {
-		userId = 100L;
+		userId = 1L;
 		crewId = 100L;
 	}
 
@@ -53,5 +54,18 @@ class ChatServiceImplTest extends ServiceTest {
 
 		//then
 		assertEquals(5, result.getSize());
+	}
+
+	@Test
+	@Rollback(value = false)
+	void getAllByCrewId() {
+		//given
+		List<Chat> chatList = ChatObjectProvider.getChatList(crewId, userId);
+		chatRepository.saveAll(chatList);
+
+		//when
+		List<ChatResponse> result = chatRepository.findAllByCrewId(crewId);
+
+		assertEquals(chatList.size(), result.size());
 	}
 }
