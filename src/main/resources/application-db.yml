@@ -22,7 +22,10 @@ spring:
     generate-ddl: false
     open-in-view: false
     hibernate:
+      jdbc:
+        time-zone: Asia/Seoul
       ddl-auto: none
+
     properties:
       hibernate:
         dialect: org.hibernate.spatial.dialect.mysql.MySQL8SpatialDialect
