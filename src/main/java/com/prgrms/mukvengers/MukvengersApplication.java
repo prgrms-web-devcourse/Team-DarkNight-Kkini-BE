@@ -1,5 +1,10 @@
 package com.prgrms.mukvengers;
 
+import java.util.Locale;
+import java.util.TimeZone;
+
+import javax.annotation.PostConstruct;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -10,4 +15,9 @@ public class MukvengersApplication {
 		SpringApplication.run(MukvengersApplication.class, args);
 	}
 
+	@PostConstruct
+	void started() {
+		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
+		Locale.setDefault(Locale.KOREA);
+	}
 }
