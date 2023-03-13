@@ -1,8 +1,9 @@
-# 🍚 Mukvengers
+# 🍚 KKINI
 
-끼니팀 백엔드의 먹벤져스 프로로젝트
+![KKINI](https://user-images.githubusercontent.com/82176176/224625328-f963304a-03a0-4d85-96ac-369a3c35438b.png)
 
-## 🚀 프로젝트 목표
+### 배고프면 합류하라! 위치기반 밥 친구 만들기 플랫폼 KKINI
+KKINI는 동네에서 밥 친구를 만들고 싶은 사람, 혼자 가기 힘든 음식점을 가고 싶은 사람, 나만의 맛집을 공유하고 싶은 사람들이 모임을 결성하고 참여할 수 있는 서비스입니다.    
 
 ## 🍌 팀원 소개
 
@@ -10,6 +11,24 @@
 |:----------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------:|
 | <img alt="img_3.png" height="100" src="https://avatars.githubusercontent.com/u/59335077?v=4" width="100"/> | <img alt="img.png" height="100" src="https://avatars.githubusercontent.com/u/99165624?v=4" width="100" /> | <img alt="img_1.png" height="100" src="https://avatars.githubusercontent.com/u/81108344?v=4" width="100"/> | <img alt="img_2.png" height="100" src="https://avatars.githubusercontent.com/u/82176176?v=4" width="100"/> | 
 |                                                    최은비                                                     |                                                    권주성                                                    |                                                    김기서                                                     |                                                    이건우                                                     |
+
+
+## :link: 프로젝트 관련 링크
+## 🍒 배포 주소
+
+- 현재 접근 가능한 IP : 추가 예정
+- 프론트 REPO
+## 🍇 프로젝트 실행 방법
+
+- 추가 예정
+
+### 환경 변수
+
+- 예제 추가 예정
+
+## 🫐 프로젝트 페이지
+
+- 추가 예정
 
 ## 🍊 개발 언어 및 활용기술
 
@@ -28,27 +47,12 @@
 
 <img src="https://img.shields.io/badge/IntelliJ IDEA-000000?style=for-the-badge&logo=intellijIdea&logoColor=white"/> <img src="https://img.shields.io/badge/Github-181717?style=for-the-badge&logo=Github&logoColor=white"/> <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white"/> <img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=Slack&logoColor=white"/>
 
-## 🍎 설계 및 문서
-### 시스템 구조
-- 추가 예정
+## :factory: Architecture
+- 예정
+
 ### ERD
-- 추가 예정
+![mukvengers](https://user-images.githubusercontent.com/82176176/224623444-26f3e41e-9980-4321-8fdc-14a474f7c8f7.png)
 ### API
 - 추가 예정
 ### CI/CD
-- 추가 예정
-## 🍒 배포 주소
-
-- 현재 접근 가능한 IP : 추가 예정
-
-## 🍇 프로젝트 실행 방법
-
-- 추가 예정
-
-### 환경 변수
-
-- 예제 추가 예정
-
-## 🫐 프로젝트 페이지
-
 - 추가 예정
