@@ -107,7 +107,7 @@ public class ProposalServiceImpl implements ProposalService {
 
 	@Override
 	public ProposalResponses getProposalsByLeaderId(Long userId) {
-		List<Proposal> proposals = proposalRepository.findAllByLeaderIdOrderByCreatedAtDesc(userId);
+		List<Proposal> proposals = proposalRepository.findAllByLeaderIdOrderStatus(userId);
 		List<ProposalResponse> proposalResponses = new ArrayList<>();
 
 		for (Proposal proposal : proposals) {

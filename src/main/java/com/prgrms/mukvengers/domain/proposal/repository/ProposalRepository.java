@@ -19,7 +19,16 @@ public interface ProposalRepository extends JpaRepository<Proposal, Long> {
 		""")
 	Optional<Proposal> findProposalByUserIdAndCrewId(@Param("userId") Long userId, @Param("crewId") Long crewId);
 
-	List<Proposal> findAllByLeaderIdOrderByCreatedAtDesc(@Param("userId") Long userId);
+	@Query("""
+		SELECT p
+		FROM Proposal p
+		WHERE p.leaderId = :userId
+		ORDER BY CASE WHEN p.status = 'WAITING' THEN 0
+					  WHEN p.status = 'APPROVE' THEN 1
+					  WHEN p.status = 'REFUSE' THEN 2
+					  ELSE 3 END
+		""")
+	List<Proposal> findAllByLeaderIdOrderStatus(@Param("userId") Long userId);
 
 	List<Proposal> findAllByUserIdOrderByCreatedAtDesc(@Param("userId") Long userId);
 
