@@ -5,7 +5,7 @@ import com.prgrms.mukvengers.global.exception.ServiceException;
 
 public class CrewMemberOverCapacity extends ServiceException {
 
-	private static final ErrorCode ERROR_CODE = ErrorCode.PROPOSAL_NOT_FOUND;
+	private static final ErrorCode ERROR_CODE = ErrorCode.PROPOSAL_OVER_CAPACITY;
 	private static final String MESSAGE_KEY = "exception.crew.member.over.capacity.proposal";
 
 	public CrewMemberOverCapacity(String message) {
