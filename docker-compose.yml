@@ -6,7 +6,8 @@ services:
     environment:
       MYSQL_DATABASE: mukvengers
       MYSQL_USERNAME: root
-      MYSQL_ROOT_PASSWORD: team-kkini # 변수로 관리해야하지 않을까?
+      MYSQL_ROOT_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      TZ: Asia/Seoul
     ports:
       - "3306:3306"
     volumes:
