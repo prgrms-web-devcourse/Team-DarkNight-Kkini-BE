@@ -157,6 +157,10 @@ public class ProposalServiceImpl implements ProposalService {
 		Crew crew = crewRepository.findById(proposal.getCrewId())
 			.orElseThrow(() -> new CrewNotFoundException(proposal.getCrewId()));
 
+		if (crew.getCrewMembers().size() >= crew.getCapacity()) {
+			throw new CrewMemberOverCapacity(CREW_MEMBER_COUNT_OVER_CAPACITY_EXCEPTION_MESSAGE);
+		}
+
 		String status = proposalRequest.proposalStatus();
 
 		ProposalStatus proposalStatus = ProposalStatus.of(status);
