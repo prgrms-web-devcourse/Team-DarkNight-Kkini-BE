@@ -118,13 +118,13 @@ public class ProposalController {
 	 * @return
 	 */
 	@PatchMapping(value = "/proposals/{proposalId}", consumes = APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponse<Void>> changeProposalStatus
+	public ResponseEntity<Void> changeProposalStatus
 	(
 		@PathVariable Long proposalId,
 		@RequestBody @Valid UpdateProposalRequest proposalRequest,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		 proposalService.updateProposalStatus(proposalRequest, user.id(), proposalId);
+		proposalService.updateProposalStatus(proposalRequest, user.id(), proposalId);
 
 		return ResponseEntity.ok().build();
 	}

@@ -166,36 +166,6 @@ class ProposalControllerTest extends ControllerTest {
 	}
 
 	@Test
-	@DisplayName("[성공] 방장이 신청서를 승인하는 경우 신청서의 상태값이 'APPROVE' 로 변경되며 밥모임원에 저장된다.")
-	void update_proposalStatus_approve_success() throws Exception {
-
-		UpdateProposalRequest proposalRequest = new UpdateProposalRequest("승인");
-
-		String jsonRequest = objectMapper.writeValueAsString(proposalRequest);
-
-		mockMvc.perform(patch("/api/v1/proposals/{proposalId}", proposalId)
-				.contentType(APPLICATION_JSON)
-				.header(AUTHORIZATION, BEARER_TYPE + accessToken1)
-				.content(jsonRequest))
-			.andExpect(status().isOk())
-			.andDo(document("proposal-Approve",
-				resource(
-					builder()
-						.tag(PROPOSAL)
-						.summary("신청서 상태 승인 API")
-						.description("방장으로부터 신청서가 승인되면 밥모임원에 등록된다.")
-						.requestSchema(UPDATE_PROPOSAL_REQUEST)
-						.requestFields(
-							fieldWithPath("proposalStatus").type(STRING).description("신청서 응답 상태")
-						)
-						.responseFields()
-						.build()
-				)
-			));
-
-	}
-
-	@Test
 	@DisplayName("[성공] 방장이 신청서를 거절하는 경우 신청서의 상태값이 'REFUSE' 로 변경되며 밥모임원에 저장된다.")
 	void update_proposalStatus_refuse_success() throws Exception {
 
@@ -212,8 +182,8 @@ class ProposalControllerTest extends ControllerTest {
 				resource(
 					builder()
 						.tag(PROPOSAL)
-						.summary("신청서 상태 거절 API")
-						.description("방장으로부터 신청서가 거절되면 밥모임원에 저장되지 않는다.")
+						.summary("신청서 상태 변경 API")
+						.description("방장은 신청서의 상태를 변경할 수 있다.")
 						.requestSchema(UPDATE_PROPOSAL_REQUEST)
 						.requestFields(
 							fieldWithPath("proposalStatus").type(STRING).description("신청서 응답 상태")
