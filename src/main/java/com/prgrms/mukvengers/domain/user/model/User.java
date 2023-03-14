@@ -115,7 +115,7 @@ public class User extends BaseEntity {
 	}
 
 	public void addMannerScore(Integer mannerScore) {
-		this.mannerScore = (0.1 * mannerScore);
+		this.mannerScore += (0.1 * mannerScore);
 	}
 
 	public void addTasteScore(Integer tasteScore) {

@@ -67,6 +67,9 @@ public class ReviewServiceImpl implements ReviewService {
 
 		Review saveReview = reviewRepository.save(review);
 
+		reviewee.addTasteScore(saveReview.getTasteScore());
+		reviewee.addMannerScore(saveReview.getMannerScore());
+
 		return new IdResponse(saveReview.getId());
 	}
 
