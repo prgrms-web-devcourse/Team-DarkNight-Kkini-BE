@@ -19,6 +19,7 @@ import com.prgrms.mukvengers.domain.proposal.dto.request.CreateProposalRequest;
 import com.prgrms.mukvengers.domain.proposal.dto.request.UpdateProposalRequest;
 import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponse;
 import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponses;
+import com.prgrms.mukvengers.domain.proposal.exception.ApproveException;
 import com.prgrms.mukvengers.domain.proposal.exception.CrewMemberOverCapacity;
 import com.prgrms.mukvengers.domain.proposal.exception.DuplicateProposalException;
 import com.prgrms.mukvengers.domain.proposal.exception.ExistCrewMemberRoleException;
@@ -158,7 +159,7 @@ public class ProposalServiceImpl implements ProposalService {
 			.orElseThrow(() -> new CrewNotFoundException(proposal.getCrewId()));
 
 		if (crew.getCrewMembers().size() >= crew.getCapacity()) {
-			throw new CrewMemberOverCapacity(CREW_MEMBER_COUNT_OVER_CAPACITY_EXCEPTION_MESSAGE);
+			throw new ApproveException(CREW_MEMBER_COUNT_OVER_CAPACITY_EXCEPTION_MESSAGE);
 		}
 
 		String status = proposalRequest.proposalStatus();
