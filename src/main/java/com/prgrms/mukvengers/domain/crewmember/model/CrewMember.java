@@ -52,4 +52,8 @@ public class CrewMember extends BaseEntity {
 		this.crew = crew;
 		this.crewMemberRole = crewMemberRole;
 	}
+
+	public boolean isBlocked() {
+		return this.crewMemberRole == CrewMemberRole.BLOCKED;
+	}
 }

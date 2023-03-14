@@ -85,7 +85,7 @@ public class ReviewServiceImpl implements ReviewService {
 			.orElseThrow(() -> new MemberNotFoundException(reviewee.getId()));
 
 		crewMemberRepository.findCrewMemberByCrewIdAndUserId(crewId, reviewer.getId())
-			.filter(crewMember -> crewMember.getCrewMemberRole() == CrewMemberRole.MEMBER)
+			.filter(crewMember -> !crewMember.isBlocked())
 			.orElseThrow(() -> new MemberNotFoundException(reviewee.getId()));
 
 		Review review = reviewMapper.toReview(memberReviewRequest, reviewer, reviewee, crew);
