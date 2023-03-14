@@ -158,24 +158,20 @@ public class ProposalServiceImpl implements ProposalService {
 		Crew crew = crewRepository.findById(proposal.getCrewId())
 			.orElseThrow(() -> new CrewNotFoundException(proposal.getCrewId()));
 
-		if (crew.getCrewMembers().size() >= crew.getCapacity()) {
-			throw new ApproveException(CREW_MEMBER_COUNT_OVER_CAPACITY_EXCEPTION_MESSAGE);
-		}
-
 		String status = proposalRequest.proposalStatus();
 
 		ProposalStatus proposalStatus = ProposalStatus.of(status);
 
-		registerCrewMember(proposal, crew, proposalStatus);
+		if (proposal.isApprove(proposalStatus)) {
+			if (crew.getCrewMembers().size() >= crew.getCapacity()) {
+				throw new ApproveException(CREW_MEMBER_COUNT_OVER_CAPACITY_EXCEPTION_MESSAGE);
+			}
+			registerCrewMember(proposal, crew);
+		}
+		proposal.changeProposalStatus(proposalStatus);
 	}
 
-	private void registerCrewMember(Proposal proposal, Crew crew, ProposalStatus proposalStatus) {
-
-		proposal.changeProposalStatus(proposalStatus);
-
-		if (!proposal.isApprove(proposalStatus)) {
-			return;
-		}
+	private void registerCrewMember(Proposal proposal, Crew crew) {
 
 		CrewMember createCrewMember = crewMemberMapper.toCrewMember(crew, proposal.getUser().getId(),
 			CrewMemberRole.MEMBER);
