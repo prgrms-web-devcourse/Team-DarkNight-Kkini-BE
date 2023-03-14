@@ -121,4 +121,13 @@ public class User extends BaseEntity {
 	public void addTasteScore(Integer tasteScore) {
 		this.tasteScore += tasteScore;
 	}
+
+	public void updateLeaderCount() {
+		this.leaderCount++;
+	}
+
+	public void updateCrewCount() {
+		this.crewCount++;
+	}
+
 }

@@ -42,6 +42,7 @@ import com.prgrms.mukvengers.domain.store.mapper.StoreMapper;
 import com.prgrms.mukvengers.domain.store.model.Store;
 import com.prgrms.mukvengers.domain.store.repository.StoreRepository;
 import com.prgrms.mukvengers.domain.user.exception.UserNotFoundException;
+import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
 
@@ -186,6 +187,18 @@ public class CrewServiceImpl implements CrewService {
 			case FINISH -> {
 				if (!crew.getStatus().equals(CrewStatus.CLOSE)) {
 					throw new CrewStatusException(crew.getStatus());
+				}
+				for (CrewMember member : crew.getCrewMembers()) {
+
+					User user = userRepository.findById(member.getUserId())
+						.orElseThrow(() -> new UserNotFoundException(member.getUserId()));
+					if (member.getCrewMemberRole() == CrewMemberRole.LEADER) {
+						user.updateLeaderCount();
+						user.updateCrewCount();
+					} else {
+						user.updateCrewCount();
+					}
+
 				}
 			}
 
