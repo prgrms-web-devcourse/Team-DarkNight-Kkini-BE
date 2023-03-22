@@ -14,15 +14,15 @@ KKINI는 동네에서 밥 친구를 만들고 싶은 사람, 혼자 가기 힘�
 
 ## 🫐 프로젝트 페이지
 
+### [그라운드 룰](https://www.notion.so/backend-devcourse/e1ce1460c06d40f39f9732023cfcc3ad?pvs=4)
+
+### [프로젝트 회고](https://www.notion.so/backend-devcourse/3836b166a3804028b351081d2a4ad1da?pvs=4)
+
+### [프로젝트 노션 페이지](https://www.notion.so/backend-devcourse/03-51c74b2cb8814c2c9cb0d4faa26f4bce?pvs=4)
+
+### [프로젝트 PPT 발표 자료](https://www.canva.com/design/DAFdD-TJqpo/LM-Oymlcp0OB7JzNIFkxfA/view?utm_content=DAFdD-TJqpo&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+
 ### [프론트 Repository](https://github.com/prgrms-web-devcourse/Team-DarkNight-Kkini-FE)
-
-### [프로젝트 오버뷰](https://www.notion.so/backend-devcourse/overview-f09356adedf7471db50a76208fce7abc?pvs=4)
-
-### [그라운드 룰](https://www.notion.so/backend-devcourse/7063f14625f147e291f45f371092d84a)
-
-### [프로젝트 회고](https://www.notion.so/backend-devcourse/6a625fcd1af340b197cd24fba38f3c90)
-
-### [프로젝트 노션 페이지](https://www.notion.so/backend-devcourse/Prolog-a038a633c3fc496ba0489beb2b15ef6c)
 
 ## 🍒 배포 주소
 
