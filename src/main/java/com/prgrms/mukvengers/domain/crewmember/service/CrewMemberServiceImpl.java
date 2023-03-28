@@ -32,9 +32,9 @@ public class CrewMemberServiceImpl implements CrewMemberService {
 
 	@Override
 	@Transactional
-	public void delete(Long crewMemberId) {
+	public void delete(Long userId, Long crewId) {
 
-		crewMemberRepository.deleteById(crewMemberId);
+		crewMemberRepository.deleteByUserIdAndCrewId(userId, crewId);
 
 	}
 }
