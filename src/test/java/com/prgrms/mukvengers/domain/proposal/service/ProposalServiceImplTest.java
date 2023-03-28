@@ -58,13 +58,13 @@ class ProposalServiceImplTest extends ServiceTest {
 		CreateProposalRequest proposalRequest = ProposalObjectProvider.createProposalRequest(leader.getId());
 
 		// when
-		IdResponse response = proposalService.create(proposalRequest, savedUserId, crew.getId());
+		IdResponse response = proposalService.create(proposalRequest, savedUser1Id, crew.getId());
 
 		// then
 		Optional<Proposal> findProposal = proposalRepository.findById(response.id());
 		assertThat(findProposal).isPresent();
 		assertThat(findProposal.get())
-			.hasFieldOrPropertyWithValue("user", savedUser)
+			.hasFieldOrPropertyWithValue("user", savedUser1)
 			.hasFieldOrPropertyWithValue("leaderId", leader.getId())
 			.hasFieldOrPropertyWithValue("crewId", crew.getId())
 			.hasFieldOrPropertyWithValue("content", proposalRequest.content());
@@ -75,7 +75,7 @@ class ProposalServiceImplTest extends ServiceTest {
 	void createProposal_fail_duplicate() {
 
 		// given
-		Proposal createProposal = createProposal(savedUser, leader.getId(), crew.getId());
+		Proposal createProposal = createProposal(savedUser1, leader.getId(), crew.getId());
 		proposalRepository.save(createProposal);
 
 		CreateProposalRequest worstRequest = createProposalRequest(leader.getId());
@@ -83,7 +83,7 @@ class ProposalServiceImplTest extends ServiceTest {
 		// when & then
 		assertThatThrownBy
 			(
-				() -> proposalService.create(worstRequest, savedUserId, crew.getId())
+				() -> proposalService.create(worstRequest, savedUser1Id, crew.getId())
 			).isInstanceOf(DuplicateProposalException.class);
 	}
 
@@ -92,7 +92,7 @@ class ProposalServiceImplTest extends ServiceTest {
 	void createProposal_fail_countOverCapacity() {
 
 		//given
-		List<CrewMember> crewMembers = CrewMemberObjectProvider.createCrewMembers(savedUserId, crew,
+		List<CrewMember> crewMembers = CrewMemberObjectProvider.createCrewMembers(savedUser1Id, crew,
 			CrewMemberRole.MEMBER,
 			crew.getCapacity());
 
@@ -103,7 +103,7 @@ class ProposalServiceImplTest extends ServiceTest {
 		// when & then
 		assertThatThrownBy
 			(
-				() -> proposalService.create(proposalRequest, savedUserId, crew.getId())
+				() -> proposalService.create(proposalRequest, savedUser1Id, crew.getId())
 			)
 			.isInstanceOf(CrewMemberOverCapacity.class);
 	}
@@ -113,16 +113,16 @@ class ProposalServiceImplTest extends ServiceTest {
 	void createProposal_fail_blockedUser() {
 
 		//given
-		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(savedUserId, crew,
+		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(savedUser1Id, crew,
 			CrewMemberRole.BLOCKED);
 		crewMemberRepository.save(createCrewMember);
 
-		CreateProposalRequest proposalRequest = ProposalObjectProvider.createProposalRequest(savedUserId);
+		CreateProposalRequest proposalRequest = ProposalObjectProvider.createProposalRequest(savedUser1Id);
 
 		// when & then
 		assertThatThrownBy
 			(
-				() -> proposalService.create(proposalRequest, savedUserId, crew.getId())
+				() -> proposalService.create(proposalRequest, savedUser1Id, crew.getId())
 			)
 			.isInstanceOf(ExistCrewMemberRoleException.class);
 	}
@@ -147,16 +147,16 @@ class ProposalServiceImplTest extends ServiceTest {
 	void createProposal_fail_DuplicatedUser() {
 
 		//given
-		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(savedUserId, crew,
+		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(savedUser1Id, crew,
 			CrewMemberRole.MEMBER);
 		crewMemberRepository.save(createCrewMember);
 
-		CreateProposalRequest proposalRequest = ProposalObjectProvider.createProposalRequest(savedUserId);
+		CreateProposalRequest proposalRequest = ProposalObjectProvider.createProposalRequest(savedUser1Id);
 
 		// when & then
 		assertThatThrownBy
 			(
-				() -> proposalService.create(proposalRequest, savedUserId, crew.getId())
+				() -> proposalService.create(proposalRequest, savedUser1Id, crew.getId())
 			)
 			.isInstanceOf(ExistCrewMemberRoleException.class);
 	}

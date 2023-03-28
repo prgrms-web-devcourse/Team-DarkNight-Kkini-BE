@@ -40,7 +40,7 @@ class CrewServiceImplTest extends ServiceTest {
 		CreateCrewRequest createCrewRequest = CrewObjectProvider.getCreateCrewRequest(savedStore.getPlaceId());
 
 		//when
-		IdResponse idResponse = crewService.create(createCrewRequest, savedUser.getId());
+		IdResponse idResponse = crewService.create(createCrewRequest, savedUser1.getId());
 		Optional<Crew> optionalCrew = crewRepository.findById(idResponse.id());
 
 		//then
@@ -67,7 +67,7 @@ class CrewServiceImplTest extends ServiceTest {
 			store.getPlaceId());
 
 		//when
-		IdResponse idResponse = crewService.create(createCrewRequest, savedUser.getId());
+		IdResponse idResponse = crewService.create(createCrewRequest, savedUser1.getId());
 		Optional<Crew> optionalCrew = crewRepository.findById(idResponse.id());
 
 		//then
@@ -92,11 +92,11 @@ class CrewServiceImplTest extends ServiceTest {
 		crewRepository.saveAll(crews);
 
 		crews.forEach(crew -> {
-			CrewMember crewMember = createCrewMember(savedUserId, crew, CrewMemberRole.MEMBER);
+			CrewMember crewMember = createCrewMember(savedUser1Id, crew, CrewMemberRole.MEMBER);
 			crewMemberRepository.save(crewMember);
 		});
 
-		CrewResponses responses = crewService.getByUserId(savedUserId);
+		CrewResponses responses = crewService.getByUserId(savedUser1Id);
 		assertThat(responses.responses()).hasSize(crews.size());
 	}
 
@@ -110,7 +110,7 @@ class CrewServiceImplTest extends ServiceTest {
 		crewRepository.save(crew);
 
 		//when
-		CrewDetailResponse response = crewService.getById(savedUserId, crew.getId());
+		CrewDetailResponse response = crewService.getById(savedUser1Id, crew.getId());
 
 		//then
 		assertThat(response)
@@ -137,7 +137,7 @@ class CrewServiceImplTest extends ServiceTest {
 		Pageable pageable = PageRequest.of(page, size);
 
 		//when
-		CrewPageResponse crewSliceResponse = crewService.getByPlaceId(savedUserId, savedStore.getPlaceId(), pageable);
+		CrewPageResponse crewSliceResponse = crewService.getByPlaceId(savedUser1Id, savedStore.getPlaceId(), pageable);
 
 		//then
 		Slice<CrewDetailResponse> responses = crewSliceResponse.responses();
@@ -178,12 +178,12 @@ class CrewServiceImplTest extends ServiceTest {
 
 		crewRepository.save(crew);
 
-		CrewMember crewMember = createCrewMember(savedUserId, crew, CrewMemberRole.LEADER);
+		CrewMember crewMember = createCrewMember(savedUser1Id, crew, CrewMemberRole.LEADER);
 
 		crewMemberRepository.save(crewMember);
 
 		//when
-		crewService.updateStatus(crew.getId(), savedUserId, CLOSE);
+		crewService.updateStatus(crew.getId(), savedUser1Id, CLOSE);
 
 		//then
 		Optional<Crew> optionalCrew = crewRepository.findById(crew.getId());
