@@ -12,11 +12,6 @@ import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 
 public interface CrewMemberRepository extends JpaRepository<CrewMember, Long> {
 
-	@Query("""
-		SELECT cm
-		FROM CrewMember cm
-		WHERE cm.crew.id= :crewId AND cm.userId= :userId
-		""")
 	Optional<CrewMember> findCrewMemberByCrewIdAndUserId(@Param(value = "crewId") Long crewId,
 		@Param(value = "userId") Long userId);
 
@@ -33,4 +28,7 @@ public interface CrewMemberRepository extends JpaRepository<CrewMember, Long> {
 	Integer countCrewMemberByCrewId(@Param(value = "crewId") Long crewId);
 
 	List<CrewMember> findAllByCrewId(@Param(value = "crewId") Long crewId);
+
+	void deleteByUserIdAndCrewId(@Param(value = "userId") Long userId, @Param(value = "crewId") Long crewId);
+
 }
