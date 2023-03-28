@@ -1,5 +1,6 @@
 package com.prgrms.mukvengers.domain.crewmember.model;
 
+import static com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole.*;
 import static javax.persistence.EnumType.*;
 import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
@@ -53,7 +54,20 @@ public class CrewMember extends BaseEntity {
 		this.crewMemberRole = crewMemberRole;
 	}
 
-	public boolean isBlocked() {
-		return this.crewMemberRole == CrewMemberRole.BLOCKED;
+	public void blockMember() {
+		this.crewMemberRole = BLOCKED;
 	}
+
+	public boolean isLeader() {
+		return this.crewMemberRole == LEADER;
+	}
+
+	public boolean isMember() {
+		return this.crewMemberRole == MEMBER;
+	}
+
+	public boolean isBlocked() {
+		return this.crewMemberRole == BLOCKED;
+	}
+
 }
