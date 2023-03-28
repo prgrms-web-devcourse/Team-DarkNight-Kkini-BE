@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.Optional;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,11 +59,12 @@ class CrewMemberServiceImplTest extends ServiceTest {
 
 		CrewMember crewMember = CrewMemberObjectProvider.createCrewMember(savedUserId, crew, MEMBER);
 		crewMemberRepository.save(crewMember);
+
 		//when
-		crewMemberService.delete(crewMember.getId());
+		crewMemberService.delete(crewMember.getUserId(), crew.getId());
 
 		//then
 		Optional<CrewMember> optionalCrewMember = crewMemberRepository.findById(crewMember.getId());
-		Assertions.assertThat(optionalCrewMember.isEmpty()).isTrue();
+		assertThat(optionalCrewMember).isEmpty();
 	}
 }

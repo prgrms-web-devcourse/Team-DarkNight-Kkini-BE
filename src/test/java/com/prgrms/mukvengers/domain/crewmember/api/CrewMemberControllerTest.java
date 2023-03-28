@@ -43,7 +43,7 @@ class CrewMemberControllerTest extends ControllerTest {
 	@DisplayName("[성공] 모임원 아이디로 모임원을 삭제한다")
 	void delete_success() throws Exception {
 
-		mockMvc.perform(delete("/api/v1/crews/{crewId}/crewMembers/{crewMemberId}", crewId, crewMemberId)
+		mockMvc.perform(delete("/api/v1/crews/{crewId}/crewMembers", crewId)
 				.header(AUTHORIZATION, BEARER_TYPE + accessToken1)
 				.accept(APPLICATION_JSON))
 			.andExpect(MockMvcResultMatchers.status().isOk())
@@ -55,8 +55,7 @@ class CrewMemberControllerTest extends ControllerTest {
 						.summary("모임원 아이디로 모임원 삭제 API")
 						.description("모임원 아이디로 모임원을 삭제합니다.")
 						.pathParameters(
-							parameterWithName("crewId").description("모임 아이디"),
-							parameterWithName("crewMemberId").description("모임원 아이디"))
+							parameterWithName("crewId").description("모임 아이디"))
 						.build()
 				)
 			));
