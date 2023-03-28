@@ -7,4 +7,6 @@ import com.prgrms.mukvengers.global.common.dto.IdResponse;
 public interface CrewMemberService {
 
 	IdResponse create(Crew crew, Long userId, CrewMemberRole crewMemberRole);
+
+	void delete(Long crewMemberId);
 }

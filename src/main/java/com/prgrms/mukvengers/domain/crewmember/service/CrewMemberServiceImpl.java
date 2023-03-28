@@ -29,4 +29,12 @@ public class CrewMemberServiceImpl implements CrewMemberService {
 
 		return new IdResponse(crewMember.getId());
 	}
+
+	@Override
+	@Transactional
+	public void delete(Long crewMemberId) {
+
+		crewMemberRepository.deleteById(crewMemberId);
+
+	}
 }
