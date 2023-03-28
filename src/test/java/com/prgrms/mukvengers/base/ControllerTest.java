@@ -41,6 +41,7 @@ import com.prgrms.mukvengers.global.security.jwt.JwtTokenProvider;
 public abstract class ControllerTest {
 
 	protected final String CREW = "모임 API";
+	protected final String CREW_MEMBER = "모임원 API";
 	protected final String STORE = "가게 API";
 	protected final String USER = "유저 API";
 	protected final String REVIEW = "리뷰 API";

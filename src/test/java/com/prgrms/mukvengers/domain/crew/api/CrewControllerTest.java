@@ -150,6 +150,7 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("data.proposalStatus").type(STRING).description("신청서 상태"),
 							fieldWithPath("data.content").type(STRING).description("밥 모임 내용"),
 							fieldWithPath("data.category").type(STRING).description("밥 모임 카테고리"),
+							fieldWithPath("data.members.[].id").type(NUMBER).description("모임원 ID"),
 							fieldWithPath("data.members.[].userId").type(NUMBER).description("유저 ID"),
 							fieldWithPath("data.members.[].nickname").type(STRING).description("닉네임"),
 							fieldWithPath("data.members.[].profileImgUrl").type(STRING).description("프로필 이미지"),
@@ -202,6 +203,7 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("data.responses.[].content").type(STRING).description("밥 모임 내용"),
 							fieldWithPath("data.responses.[].category").type(STRING).description("밥 모임 카테고리"),
 							fieldWithPath("data.responses.[].members.[].userId").type(NUMBER).description("유저 ID"),
+							fieldWithPath("data.responses.[].members.[].id").type(NUMBER).description("모임원 ID"),
 							fieldWithPath("data.responses.[].members.[].nickname").type(STRING).description("닉네임"),
 							fieldWithPath("data.responses.[].members.[].profileImgUrl").type(STRING)
 								.description("프로필 이미지"),
@@ -269,6 +271,8 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("data.responses.content.[].currentMember").type(NUMBER)
 								.description("밥 모임 현재 인원"),
 							fieldWithPath("data.responses.content.[].category").type(STRING).description("밥 모임 카테고리"),
+							fieldWithPath("data.responses.content.[].members.[].id").type(NUMBER)
+								.description("모임원 ID"),
 							fieldWithPath("data.responses.content.[].members.[].userId").type(NUMBER)
 								.description("유저 ID"),
 							fieldWithPath("data.responses.content.[].members.[].nickname").type(STRING)
