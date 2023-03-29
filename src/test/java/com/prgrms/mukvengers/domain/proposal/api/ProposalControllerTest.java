@@ -117,8 +117,7 @@ class ProposalControllerTest extends ControllerTest {
 							fieldWithPath("data.user.leaderCount").type(NUMBER).description("방장 횟수"),
 							fieldWithPath("data.user.crewCount").type(NUMBER).description("모임 참여 횟수"),
 							fieldWithPath("data.user.tasteScore").type(NUMBER).description("맛잘알 점수"),
-							fieldWithPath("data.user.mannerScore").type(NUMBER).description("매너 온도"),
-							fieldWithPath("data.user.mannerScore").type(NUMBER).description("매너 온도"))
+							fieldWithPath("data.user.mannerScore").type(STRING).description("매너 온도"))
 						.build()
 				)
 			));
@@ -150,7 +149,7 @@ class ProposalControllerTest extends ControllerTest {
 							fieldWithPath("data.responses.[].user.leaderCount").type(NUMBER).description("방장 횟수"),
 							fieldWithPath("data.responses.[].user.crewCount").type(NUMBER).description("모임 참여 횟수"),
 							fieldWithPath("data.responses.[].user.tasteScore").type(NUMBER).description("맛잘알 점수"),
-							fieldWithPath("data.responses.[].user.mannerScore").type(NUMBER).description("매너 온도"),
+							fieldWithPath("data.responses.[].user.mannerScore").type(STRING).description("매너 온도"),
 							fieldWithPath("data.responses.[].id").type(NUMBER).description("신청서 아이디"),
 							fieldWithPath("data.responses.[].content").type(STRING).description("신청서 내용"),
 							fieldWithPath("data.responses.[].status").type(STRING).description("신청서 상태"),
@@ -220,8 +219,7 @@ class ProposalControllerTest extends ControllerTest {
 							fieldWithPath("data.responses.[].user.leaderCount").type(NUMBER).description("방장 횟수"),
 							fieldWithPath("data.responses.[].user.crewCount").type(NUMBER).description("모임 참여 횟수"),
 							fieldWithPath("data.responses.[].user.tasteScore").type(NUMBER).description("맛잘알 점수"),
-							fieldWithPath("data.responses.[].user.mannerScore").type(NUMBER).description("매너 온도"),
-							fieldWithPath("data.responses.[].user.mannerScore").type(NUMBER).description("매너 온도"),
+							fieldWithPath("data.responses.[].user.mannerScore").type(STRING).description("매너 온도"),
 							fieldWithPath("data.responses.[].id").type(NUMBER).description("신청서 아이디"),
 							fieldWithPath("data.responses.[].content").type(STRING).description("신청서 내용"),
 							fieldWithPath("data.responses.[].status").type(STRING).description("신청서 상태"),
