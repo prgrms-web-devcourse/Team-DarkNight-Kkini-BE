@@ -27,7 +27,7 @@ class CrewMemberRepositoryTest extends RepositoryTest {
 
 	@BeforeEach
 	void setCrewMember() {
-		reviewer = savedUser;
+		reviewer = savedUser1;
 		reviewee = userRepository.save(createUser("kakao_1212"));
 		crew = crewRepository.save(createCrew(savedStore));
 	}
@@ -90,11 +90,11 @@ class CrewMemberRepositoryTest extends RepositoryTest {
 		//given
 		Crew crew = CrewObjectProvider.createCrew(savedStore);
 		crewRepository.save(crew);
-		CrewMember crewMember = CrewMemberObjectProvider.createCrewMember(savedUserId, crew, CrewMemberRole.MEMBER);
+		CrewMember crewMember = CrewMemberObjectProvider.createCrewMember(savedUser1Id, crew, CrewMemberRole.MEMBER);
 		crewMemberRepository.save(crewMember);
 
 		//when
-		crewMemberRepository.deleteByUserIdAndCrewId(savedUserId, crew.getId());
+		crewMemberRepository.deleteByUserIdAndCrewId(savedUser1Id, crew.getId());
 
 		//then
 		Optional<CrewMember> optionalCrewMember = crewMemberRepository.findById(crewMember.getId());

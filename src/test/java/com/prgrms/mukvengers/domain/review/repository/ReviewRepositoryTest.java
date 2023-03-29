@@ -37,14 +37,14 @@ class ReviewRepositoryTest extends RepositoryTest {
 
 		Pageable pageable = PageRequest.of(page, size);
 
-		Review review = ReviewObjectProvider.createLeaderReview(reviewer, savedUser, crew);
+		Review review = ReviewObjectProvider.createLeaderReview(reviewer, savedUser1, crew);
 		reviewRepository.save(review);
 
 		// when
-		Page<Review> findReview = reviewRepository.findByReviewee(savedUserId, pageable);
+		Page<Review> findReview = reviewRepository.findByReviewee(savedUser1Id, pageable);
 
 		// then
-		assertThat(findReview.getContent().get(0).getReviewee().getId()).isEqualTo(savedUserId);
+		assertThat(findReview.getContent().get(0).getReviewee().getId()).isEqualTo(savedUser1Id);
 	}
 
 	@Test
@@ -64,14 +64,14 @@ class ReviewRepositoryTest extends RepositoryTest {
 
 		Pageable pageable = PageRequest.of(page, size);
 
-		Review review = ReviewObjectProvider.createLeaderReview(savedUser, reviewee, crew);
+		Review review = ReviewObjectProvider.createLeaderReview(savedUser1, reviewee, crew);
 		reviewRepository.save(review);
 
 		// when
-		Page<Review> findReview = reviewRepository.findByReviewer(savedUserId, pageable);
+		Page<Review> findReview = reviewRepository.findByReviewer(savedUser1Id, pageable);
 
 		// then
-		assertThat(findReview.getContent().get(0).getReviewer().getId()).isEqualTo(savedUserId);
+		assertThat(findReview.getContent().get(0).getReviewer().getId()).isEqualTo(savedUser1Id);
 	}
 
 	@Test
@@ -85,12 +85,12 @@ class ReviewRepositoryTest extends RepositoryTest {
 		Crew createCrew = CrewObjectProvider.createCrew(savedStore);
 		Crew crew = crewRepository.save(createCrew);
 
-		Review review = ReviewObjectProvider.createLeaderReview(reviewer, savedUser, crew);
+		Review review = ReviewObjectProvider.createLeaderReview(reviewer, savedUser1, crew);
 		reviewRepository.save(review);
 
 		// when
 		Optional<Review> reviewResult = reviewRepository.findByReview(crew.getId(),
-			reviewer.getId(), savedUser.getId());
+			reviewer.getId(), savedUser1.getId());
 
 		// then
 		assertThat(reviewResult).isPresent();
