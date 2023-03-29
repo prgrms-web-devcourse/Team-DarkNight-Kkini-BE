@@ -263,7 +263,7 @@ class ProposalServiceImplTest extends ServiceTest {
 			.hasFieldOrPropertyWithValue("leaderCount", user.getLeaderCount())
 			.hasFieldOrPropertyWithValue("crewCount", user.getCrewCount())
 			.hasFieldOrPropertyWithValue("tasteScore", user.getTasteScore())
-			.hasFieldOrPropertyWithValue("mannerScore", user.getMannerScore());
+			.hasFieldOrPropertyWithValue("mannerScore", String.valueOf(user.getMannerScore()));
 	}
 
 	@Test
