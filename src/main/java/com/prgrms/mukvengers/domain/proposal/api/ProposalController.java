@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -125,6 +126,17 @@ public class ProposalController {
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
 		proposalService.updateProposalStatus(proposalRequest, user.id(), proposalId);
+
+		return ResponseEntity.ok().build();
+	}
+
+	@DeleteMapping(value = "/proposals/{proposalId}")
+	public ResponseEntity<Void> delete
+		(
+			@PathVariable Long proposalId,
+			@AuthenticationPrincipal JwtAuthentication user
+		) {
+		proposalService.delete(proposalId, user.id());
 
 		return ResponseEntity.ok().build();
 	}
