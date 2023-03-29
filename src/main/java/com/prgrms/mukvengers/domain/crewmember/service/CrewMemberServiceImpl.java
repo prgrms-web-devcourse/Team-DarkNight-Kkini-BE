@@ -52,7 +52,7 @@ public class CrewMemberServiceImpl implements CrewMemberService {
 		}
 
 		member.blockMember();
-  }
+  	}
   
 	public void delete(Long userId, Long crewId) {
 

@@ -19,11 +19,11 @@ public class CrewMemberController {
 
 	private final CrewMemberService crewMemberService;
   
-  /**
+  	/**
 	 * <pre>
 	 *     모임원 강퇴 기능
 	 * </pre>
-   * @param UpdateCrewMemberRequest 강퇴 하고자 하는 멤버 DTO
+   	 * @param UpdateCrewMemberRequest 강퇴 하고자 하는 멤버 DTO
 	 * @param crewId : 모임 아이디
 	 * @param user : 사용자
 	 * @return

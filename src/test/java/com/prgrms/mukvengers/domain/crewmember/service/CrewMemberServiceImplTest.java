@@ -104,9 +104,9 @@ class CrewMemberServiceImplTest extends ServiceTest {
 		assertThatThrownBy(
 			() -> crewMemberService.block(leader.getUserId(), leader.getUserId(), crew.getId())).isInstanceOf(
 			NotMemberException.class);
-  }
+  	}
 
-  @Test
+  	@Test
 	@DisplayName("[성공] 모임원 아이디로 모임원을 삭제한다")
 	void delete_success() {
 
