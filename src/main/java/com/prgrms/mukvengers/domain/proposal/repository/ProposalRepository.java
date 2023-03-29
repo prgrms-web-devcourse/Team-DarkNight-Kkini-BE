@@ -1,9 +1,11 @@
 package com.prgrms.mukvengers.domain.proposal.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -38,5 +40,13 @@ public interface ProposalRepository extends JpaRepository<Proposal, Long> {
 		WHERE p.user.id = :userId AND p.crewId = :crewId
 		""")
 	Optional<ProposalStatus> findByUserIdAndCrewId(@Param("userId") Long userId, @Param("crewId") Long crewId);
+
+	@Modifying
+	@Query(value = """
+		DELETE
+		FROM Proposal p
+		WHERE p.crewId IN (SELECT c.id FROM Crew c WHERE c.promiseTime < :time)
+		""")
+	int deleteProposalsByPromiseTime(@Param("time") LocalDateTime now);
 
 }

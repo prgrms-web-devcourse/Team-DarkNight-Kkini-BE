@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
+import com.prgrms.mukvengers.domain.proposal.repository.ProposalRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,10 +18,17 @@ import lombok.RequiredArgsConstructor;
 public class Scheduler {
 
 	private final CrewRepository crewRepository;
+	private final ProposalRepository proposalRepository;
 
 	@Scheduled(cron = "0 0 * * * *", zone = "Asia/Seoul")
 	@Transactional
 	public void changStatusOvertimeCrew() {
-		crewRepository.updateStatusAll(LocalDateTime.now());
+		crewRepository.updateAllStatusToFinish(LocalDateTime.now());
+	}
+
+	@Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
+	@Transactional
+	public void deleteProposalOverTimeCrew() {
+		proposalRepository.deleteProposalsByPromiseTime(LocalDateTime.now());
 	}
 }
