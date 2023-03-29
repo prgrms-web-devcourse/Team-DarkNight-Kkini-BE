@@ -6,7 +6,7 @@ on:
       - develop
       - 'fix/**'
 
-  pull-request:
+  pull_request:
     branches:
       - develop  #TODO 무중단배포 완료 후 merge할 때 제거
 
