@@ -14,9 +14,11 @@ public interface CrewMemberMapper {
 
 	CrewMember toCrewMember(Crew crew, Long userId, CrewMemberRole crewMemberRole);
 
+	@Mapping(target = "id", source = "crewMemberId")
 	@Mapping(target = "userId", source = "user.id")
 	@Mapping(target = "nickname", source = "user.nickname")
 	@Mapping(target = "profileImgUrl", source = "user.profileImgUrl")
 	@Mapping(target = "crewMemberRole", source = "crewMemberRole")
-	CrewMemberResponse toCrewMemberResponse(User user, CrewMemberRole crewMemberRole);
+	CrewMemberResponse toCrewMemberResponse(User user, CrewMemberRole crewMemberRole, Long crewMemberId);
+
 }

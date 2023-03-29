@@ -96,10 +96,10 @@ public class CrewServiceImpl implements CrewService {
 				crewMemberRepository.countCrewMemberByCrewId(crew.getId()), crewMemberRepository.findAllByCrewId(
 						crew.getId())
 					.stream()
-					.map(CrewMember -> crewMemberMapper.toCrewMemberResponse(
-						userRepository.findById(CrewMember.getUserId())
-							.orElseThrow(() -> new UserNotFoundException(CrewMember.getUserId())),
-						CrewMember.getCrewMemberRole()))
+					.map(crewMember -> crewMemberMapper.toCrewMemberResponse(
+						userRepository.findById(crewMember.getUserId())
+							.orElseThrow(() -> new UserNotFoundException(crewMember.getUserId())),
+						crewMember.getCrewMemberRole(), crewMember.getId()))
 					.toList(), storeMapper.toStoreResponse(crew.getStore()),
 				proposalRepository.findByUserIdAndCrewId(userId, crew.getId()).orElseGet(() -> NOT_APPLIED)))
 			.toList();
@@ -117,10 +117,10 @@ public class CrewServiceImpl implements CrewService {
 
 		List<CrewMemberResponse> members = crewMemberRepository.findAllByCrewId(crewId)
 			.stream()
-			.map(CrewMember -> crewMemberMapper.toCrewMemberResponse(
-				userRepository.findById(CrewMember.getUserId())
-					.orElseThrow(() -> new UserNotFoundException(CrewMember.getUserId())),
-				CrewMember.getCrewMemberRole()))
+			.map(crewMember -> crewMemberMapper.toCrewMemberResponse(
+				userRepository.findById(crewMember.getUserId())
+					.orElseThrow(() -> new UserNotFoundException(crewMember.getUserId())),
+				crewMember.getCrewMemberRole(), crewMember.getId()))
 			.toList();
 
 		return crewMapper.toCrewDetailResponse(crew, currentMember, members,
@@ -136,10 +136,10 @@ public class CrewServiceImpl implements CrewService {
 				crewMemberRepository.countCrewMemberByCrewId(crew.getId())
 				, crewMemberRepository.findAllByCrewId(crew.getId())
 					.stream()
-					.map(CrewMember -> crewMemberMapper.toCrewMemberResponse(
-						userRepository.findById(CrewMember.getUserId())
-							.orElseThrow(() -> new UserNotFoundException(CrewMember.getUserId())),
-						CrewMember.getCrewMemberRole()))
+					.map(crewMember -> crewMemberMapper.toCrewMemberResponse(
+						userRepository.findById(crewMember.getUserId())
+							.orElseThrow(() -> new UserNotFoundException(crewMember.getUserId())),
+						crewMember.getCrewMemberRole(), crewMember.getId()))
 					.toList(), storeMapper.toStoreResponse(crew.getStore()),
 				proposalRepository.findByUserIdAndCrewId(userId,
 					crew.getId()).orElseGet(() -> NOT_APPLIED)));

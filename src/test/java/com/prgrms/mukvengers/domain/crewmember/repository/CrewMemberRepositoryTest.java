@@ -16,6 +16,8 @@ import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.domain.user.model.User;
+import com.prgrms.mukvengers.utils.CrewMemberObjectProvider;
+import com.prgrms.mukvengers.utils.CrewObjectProvider;
 
 class CrewMemberRepositoryTest extends RepositoryTest {
 
@@ -79,5 +81,24 @@ class CrewMemberRepositoryTest extends RepositoryTest {
 
 		// then
 		assertThat(result).isEmpty();
+	}
+
+	@Test
+	@DisplayName("[성공] 모임원 아이디로 모임원을 삭제한다")
+	void deleteByUserId_success() {
+
+		//given
+		Crew crew = CrewObjectProvider.createCrew(savedStore);
+		crewRepository.save(crew);
+		CrewMember crewMember = CrewMemberObjectProvider.createCrewMember(savedUserId, crew, CrewMemberRole.MEMBER);
+		crewMemberRepository.save(crewMember);
+
+		//when
+		crewMemberRepository.deleteByUserIdAndCrewId(savedUserId, crew.getId());
+
+		//then
+		Optional<CrewMember> optionalCrewMember = crewMemberRepository.findById(crewMember.getId());
+		assertThat(optionalCrewMember).isEmpty();
+
 	}
 }
