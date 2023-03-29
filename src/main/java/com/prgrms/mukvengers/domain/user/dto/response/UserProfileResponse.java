@@ -8,6 +8,6 @@ public record UserProfileResponse(
 	Integer leaderCount,
 	Integer crewCount,
 	Integer tasteScore,
-	Double mannerScore
+	String mannerScore
 ) {
 }
