@@ -70,18 +70,26 @@ public abstract class ServiceTest {
 
 	protected GeometryFactory gf = new GeometryFactory();
 
-	protected User savedUser;
+	protected User savedUser1;
+
+	protected User savedUser2;
 
 	protected Store savedStore;
 
-	protected Long savedUserId;
+	protected Long savedUser1Id;
+
+	protected Long savedUser2Id;
 
 	@BeforeEach
 	void setUpLogin() {
 
-		savedUser = userRepository.save(createUser());
+		savedUser1 = userRepository.save(createUser("123"));
 
-		savedUserId = savedUser.getId();
+		savedUser2 = userRepository.save(createUser("456"));
+
+		savedUser1Id = savedUser1.getId();
+
+		savedUser2Id = savedUser2.getId();
 
 		savedStore = storeRepository.save(createStore());
 	}

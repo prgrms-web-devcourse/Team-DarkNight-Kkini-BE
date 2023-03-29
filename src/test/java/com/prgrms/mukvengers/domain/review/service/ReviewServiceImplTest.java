@@ -36,7 +36,7 @@ class ReviewServiceImplTest extends ServiceTest {
 
 	@BeforeEach
 	void setReview() {
-		reviewer = savedUser;
+		reviewer = savedUser1;
 		reviewee = userRepository.save(createUser("kakao_1212"));
 		crew = crewRepository.save(createCrew(savedStore));
 	}

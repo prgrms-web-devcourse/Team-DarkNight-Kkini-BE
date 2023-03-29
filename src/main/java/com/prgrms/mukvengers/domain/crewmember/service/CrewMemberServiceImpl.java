@@ -4,6 +4,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.mukvengers.domain.crew.model.Crew;
+import com.prgrms.mukvengers.domain.crewmember.exception.MemberNotFoundException;
+import com.prgrms.mukvengers.domain.crewmember.exception.NotLeaderException;
+import com.prgrms.mukvengers.domain.crewmember.exception.NotMemberException;
 import com.prgrms.mukvengers.domain.crewmember.mapper.CrewMemberMapper;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
@@ -32,9 +35,28 @@ public class CrewMemberServiceImpl implements CrewMemberService {
 
 	@Override
 	@Transactional
+	public void block(Long userId, Long blockUserId, Long crewId) {
+
+		CrewMember leader = crewMemberRepository.findCrewMemberByCrewIdAndUserId(crewId, userId)
+			.orElseThrow(() -> new MemberNotFoundException(userId));
+
+		if (!leader.isLeader()) {
+			throw new NotLeaderException(leader.getCrewMemberRole());
+		}
+
+		CrewMember member = crewMemberRepository.findCrewMemberByCrewIdAndUserId(crewId, blockUserId)
+			.orElseThrow(() -> new MemberNotFoundException(blockUserId));
+
+		if (!member.isMember()) {
+			throw new NotMemberException(member.getCrewMemberRole());
+		}
+
+		member.blockMember();
+  	}
+  
 	public void delete(Long userId, Long crewId) {
 
 		crewMemberRepository.deleteByUserIdAndCrewId(userId, crewId);
-
 	}
+  
 }
