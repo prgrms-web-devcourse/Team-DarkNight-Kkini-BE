@@ -44,7 +44,7 @@ class CrewMemberControllerTest extends ControllerTest {
 	}
 
 	@Test
-	@DisplayName("[성공] 모임원 아이디로 모임원을 삭제한다")
+	@DisplayName("[성공] 방장은 자신의 모임에서 모임원을 강퇴할 수 있다.")
 	void block_success() throws Exception {
 
 		UpdateCrewMemberRequest updateCrewMemberRequest = new UpdateCrewMemberRequest(savedUser1Id);
@@ -58,12 +58,12 @@ class CrewMemberControllerTest extends ControllerTest {
 				.accept(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(print())
-			.andDo(document("crewMember-deleteById",
+			.andDo(document("crewMember-block",
 				resource(
 					builder()
 						.tag(CREW_MEMBER)
-						.summary("모임원 아이디로 모임원 삭제 API")
-						.description("모임원 아이디로 모임원을 삭제합니다.")
+						.summary("모임원 강퇴 API")
+						.description("방장이 자신의 모임에서 모임원을 강퇴합니다. 어떤 모임인지 알기위해 모임아이디가 필요합니다.")
 						.pathParameters(
 							parameterWithName("crewId").description("모임 아이디"))
 						.build()
@@ -72,7 +72,7 @@ class CrewMemberControllerTest extends ControllerTest {
 	}
 
 	@Test
-	@DisplayName("[성공] 모임원 아이디로 모임원을 삭제한다")
+	@DisplayName("[성공] 사용자가 모임 아이디의 모임의 방을 나갈 수 있다.")
 	void delete_success() throws Exception {
 
 		mockMvc.perform(delete("/api/v1/crews/{crewId}/crewMembers", crewId)
@@ -84,8 +84,8 @@ class CrewMemberControllerTest extends ControllerTest {
 				resource(
 					builder()
 						.tag(CREW_MEMBER)
-						.summary("모임원 아이디로 모임원 삭제 API")
-						.description("모임원 아이디로 모임원을 삭제합니다.")
+						.summary("방 나가기 API")
+						.description("방을 나가면 해당 모임원에서 삭제된다.")
 						.pathParameters(
 							parameterWithName("crewId").description("모임 아이디"))
 						.build()

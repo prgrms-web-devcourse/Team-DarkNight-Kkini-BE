@@ -42,7 +42,7 @@ public class CrewMemberController {
 
 	/**
 	 * <pre>
-	 *     모임원 삭제 기능
+	 *     방 나가기 기능, 방을 나가면 해당 모임원에서 삭제된다.
 	 * </pre>
 	 * @param crewId : 모임 아이디
 	 * @param user : 사용자
