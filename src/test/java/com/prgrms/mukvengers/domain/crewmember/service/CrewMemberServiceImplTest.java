@@ -55,6 +55,11 @@ class CrewMemberServiceImplTest extends ServiceTest {
 	@Test
 	@DisplayName("[성공] 사용자 아이디, 강퇴할 사용자 아이디, 모임 아이디로 사용자를 강퇴한다.")
 	void block_success() {
+
+		//given
+		Crew crew = createCrew(savedStore);
+		crewRepository.save(crew);
+
   		CrewMember leader = createCrewMember(savedUser1Id, crew, LEADER);
 		CrewMember member = createCrewMember(savedUser2Id, crew, MEMBER);
 
@@ -114,7 +119,7 @@ class CrewMemberServiceImplTest extends ServiceTest {
 		Crew crew = createCrew(savedStore);
 		crewRepository.save(crew);
 
-		CrewMember crewMember = CrewMemberObjectProvider.createCrewMember(savedUserId, crew, MEMBER);
+		CrewMember crewMember = CrewMemberObjectProvider.createCrewMember(savedUser1Id, crew, MEMBER);
 		crewMemberRepository.save(crewMember);
 
 		//when
