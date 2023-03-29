@@ -1,11 +1,9 @@
 package com.prgrms.mukvengers.domain.crewmember.api;
 
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.mukvengers.domain.crewmember.service.CrewMemberService;
@@ -27,8 +25,7 @@ public class CrewMemberController {
 	 * @param user : 사용자
 	 * @return
 	 */
-	@DeleteMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-	@RequestMapping("/api/v1/crews/{crewId}/crewMembers")
+	@DeleteMapping(value = "/api/v1/crews/{crewId}/crewMembers")
 	public ResponseEntity<Void> delete(
 		@PathVariable Long crewId,
 		@AuthenticationPrincipal JwtAuthentication user
