@@ -2,6 +2,7 @@ package com.prgrms.mukvengers.domain.crew.repository;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -45,5 +46,14 @@ class CrewRepositoryTest extends RepositoryTest {
 
 		assertThat(savedCrews).hasSize(crews.size());
 
+	}
+
+	@Test
+	@DisplayName("[성공] 시간이 지난 모임을 찾아 종료시킨다.")
+	void updateStatusAll_success() {
+
+		int result = crewRepository.updateStatusAll(LocalDateTime.now());
+
+		assertThat(result).isEqualTo(20); // 만들어져 있는 크루 전부 지워짐
 	}
 }
