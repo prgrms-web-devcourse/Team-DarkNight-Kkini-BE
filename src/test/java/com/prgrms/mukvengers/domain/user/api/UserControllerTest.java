@@ -55,7 +55,7 @@ class UserControllerTest extends ControllerTest {
 							fieldWithPath("data.leaderCount").type(NUMBER).description("방장 횟수"),
 							fieldWithPath("data.crewCount").type(NUMBER).description("모임 참여 횟수"),
 							fieldWithPath("data.tasteScore").type(NUMBER).description("맛잘알 점수"),
-							fieldWithPath("data.mannerScore").type(NUMBER).description("매너 온도"))
+							fieldWithPath("data.mannerScore").type(STRING).description("매너 온도"))
 						.build()
 				))
 			);
@@ -93,7 +93,7 @@ class UserControllerTest extends ControllerTest {
 							fieldWithPath("data.leaderCount").type(NUMBER).description("방장 횟수"),
 							fieldWithPath("data.crewCount").type(NUMBER).description("모임 참여 횟수"),
 							fieldWithPath("data.tasteScore").type(NUMBER).description("맛잘알 점수"),
-							fieldWithPath("data.mannerScore").type(NUMBER).description("매너 온도"))
+							fieldWithPath("data.mannerScore").type(STRING).description("매너 온도"))
 						.build()
 				))
 			);
@@ -134,7 +134,7 @@ class UserControllerTest extends ControllerTest {
 							fieldWithPath("data.leaderCount").type(NUMBER).description("방장 횟수"),
 							fieldWithPath("data.crewCount").type(NUMBER).description("모임 참여 횟수"),
 							fieldWithPath("data.tasteScore").type(NUMBER).description("맛잘알 점수"),
-							fieldWithPath("data.mannerScore").type(NUMBER).description("매너 온도"))
+							fieldWithPath("data.mannerScore").type(STRING).description("매너 온도"))
 						.build()
 				))
 			);
