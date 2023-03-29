@@ -87,7 +87,6 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
-            sudo docker rm -f $(docker ps -qa)
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
             chmod 777 ./deploy.sh
             ./deploy.sh
