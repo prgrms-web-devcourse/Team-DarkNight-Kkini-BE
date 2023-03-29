@@ -6,10 +6,6 @@ on:
       - develop
       - 'fix/**'
 
-  pull_request:
-    branches:
-      - develop  #TODO 무중단배포 완료 후 merge할 때 제거
-
 # 권한 설정
 permissions:
   contents: read

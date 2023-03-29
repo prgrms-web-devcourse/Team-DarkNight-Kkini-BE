@@ -50,8 +50,7 @@ if [ -z $IS_GREEN  ];then # blue라면
   echo "5. blue container down"
   docker-compose stop blue
 else
-
-	echo "### GREEN => BLUE ###"
+  echo "### GREEN => BLUE ###"
 
   echo "1. get blue image"
   docker-compose pull blue
