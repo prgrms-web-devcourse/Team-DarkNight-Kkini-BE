@@ -1,4 +1,4 @@
-package com.prgrms.mukvengers.global.security.jwt;
+package com.prgrms.mukvengers.global.security.token.filter;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,6 +14,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.prgrms.mukvengers.global.security.token.dto.jwt.JwtAuthentication;
+import com.prgrms.mukvengers.global.security.token.dto.jwt.JwtAuthenticationToken;
+import com.prgrms.mukvengers.global.security.token.service.JwtTokenProvider;
 import com.prgrms.mukvengers.global.utils.ExtractUtil;
 
 import io.jsonwebtoken.Claims;

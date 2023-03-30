@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.prgrms.mukvengers.global.security.jwt.JwtTokenProvider;
 import com.prgrms.mukvengers.global.security.oauth.dto.AuthUserInfo;
 import com.prgrms.mukvengers.global.security.token.exception.NotFoundCookieException;
 import com.prgrms.mukvengers.global.security.token.exception.RefreshTokenNotFoundException;

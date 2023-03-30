@@ -1,4 +1,4 @@
-package com.prgrms.mukvengers.global.security.jwt;
+package com.prgrms.mukvengers.global.security.token.filter;
 
 import static com.prgrms.mukvengers.utils.UserObjectProvider.*;
 import static org.assertj.core.api.Assertions.*;
@@ -19,6 +19,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.prgrms.mukvengers.global.security.token.exception.ExpiredTokenException;
 import com.prgrms.mukvengers.global.security.token.exception.InvalidTokenException;
+import com.prgrms.mukvengers.global.security.token.filter.JwtAuthenticationFilter;
+import com.prgrms.mukvengers.global.security.token.dto.jwt.JwtAuthentication;
+import com.prgrms.mukvengers.global.security.token.service.JwtTokenProvider;
 import com.prgrms.mukvengers.global.utils.ExtractUtil;
 
 class JwtAuthenticationFilterTest {

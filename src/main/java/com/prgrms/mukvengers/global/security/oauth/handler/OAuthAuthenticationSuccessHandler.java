@@ -1,6 +1,6 @@
 package com.prgrms.mukvengers.global.security.oauth.handler;
 
-import static com.prgrms.mukvengers.global.security.oauth.handler.HttpCookieOAuthAuthorizationRequestRepository.*;
+import static com.prgrms.mukvengers.global.security.oauth.repository.HttpCookieOAuthAuthorizationRequestRepository.*;
 
 import java.io.IOException;
 

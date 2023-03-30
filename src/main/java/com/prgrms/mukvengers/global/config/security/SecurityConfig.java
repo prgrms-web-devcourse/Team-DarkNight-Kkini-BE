@@ -10,9 +10,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.prgrms.mukvengers.global.security.jwt.JwtAuthenticationEntryPoint;
-import com.prgrms.mukvengers.global.security.jwt.JwtAuthenticationFilter;
-import com.prgrms.mukvengers.global.security.oauth.handler.HttpCookieOAuthAuthorizationRequestRepository;
+import com.prgrms.mukvengers.global.security.token.filter.JwtAuthenticationEntryPoint;
+import com.prgrms.mukvengers.global.security.token.filter.JwtAuthenticationFilter;
+import com.prgrms.mukvengers.global.security.oauth.repository.HttpCookieOAuthAuthorizationRequestRepository;
 import com.prgrms.mukvengers.global.security.oauth.handler.OAuthAuthenticationFailureHandler;
 import com.prgrms.mukvengers.global.security.oauth.handler.OAuthAuthenticationSuccessHandler;
 import com.prgrms.mukvengers.global.security.token.exception.ExceptionHandlerFilter;

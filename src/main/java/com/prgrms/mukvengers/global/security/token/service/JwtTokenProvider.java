@@ -1,4 +1,4 @@
-package com.prgrms.mukvengers.global.security.jwt;
+package com.prgrms.mukvengers.global.security.token.service;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;

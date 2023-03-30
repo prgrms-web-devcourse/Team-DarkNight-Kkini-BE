@@ -1,4 +1,4 @@
-package com.prgrms.mukvengers.global.security.jwt;
+package com.prgrms.mukvengers.global.security.token.filter;
 
 import static org.springframework.http.HttpStatus.*;
 

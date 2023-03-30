@@ -1,4 +1,4 @@
-package com.prgrms.mukvengers.global.security.oauth.handler;
+package com.prgrms.mukvengers.global.security.oauth.repository;
 
 import static org.springframework.util.StringUtils.*;
 
