@@ -1,8 +1,11 @@
 package com.prgrms.mukvengers.global.security.oauth.handler;
 
 import static com.prgrms.mukvengers.global.security.oauth.repository.HttpCookieOAuthAuthorizationRequestRepository.*;
+import static java.nio.charset.StandardCharsets.*;
 
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -29,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 public class OAuthAuthenticationSuccessHandler
 	extends SavedRequestAwareAuthenticationSuccessHandler {
 
+	public static final String NAME_QUERY = "name=";
 	private final TokenService tokenService;
 
 	@Override
@@ -51,11 +55,27 @@ public class OAuthAuthenticationSuccessHandler
 	private String determineTargetUrl(HttpServletRequest request, String accessToken) {
 		String targetUrl = CookieUtil.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
 			.map(Cookie::getValue)
+			.map(cookie -> URLDecoder.decode(cookie, UTF_8))
+			.map(this::encodeKr)
 			.orElse(getDefaultTargetUrl());
 
 		return UriComponentsBuilder.fromUriString(targetUrl)
 			.queryParam("accessToken", accessToken)
 			.build().toUriString();
+	}
+
+	// 문제가 발생한 영역 일단 하드 코딩해서 해결
+	private String encodeKr(String url) {
+
+		String[] splitUrl = url.split(NAME_QUERY);
+
+		if (splitUrl.length > 1) {
+			String name = splitUrl[1];
+			String encodedName = URLEncoder.encode(name, UTF_8);
+			return splitUrl[0] + NAME_QUERY + encodedName;
+		}
+
+		return url;
 	}
 
 	private void setRefreshTokenInCookie(HttpServletResponse response, String refreshToken) {
