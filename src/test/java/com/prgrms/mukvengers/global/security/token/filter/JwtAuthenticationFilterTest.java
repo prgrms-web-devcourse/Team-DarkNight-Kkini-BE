@@ -11,17 +11,19 @@ import javax.servlet.ServletException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.prgrms.mukvengers.global.security.token.dto.jwt.JwtAuthentication;
 import com.prgrms.mukvengers.global.security.token.exception.ExpiredTokenException;
 import com.prgrms.mukvengers.global.security.token.exception.InvalidTokenException;
-import com.prgrms.mukvengers.global.security.token.filter.JwtAuthenticationFilter;
-import com.prgrms.mukvengers.global.security.token.dto.jwt.JwtAuthentication;
+import com.prgrms.mukvengers.global.security.token.repository.RefreshTokenRepository;
 import com.prgrms.mukvengers.global.security.token.service.JwtTokenProvider;
+import com.prgrms.mukvengers.global.security.token.service.TokenService;
 import com.prgrms.mukvengers.global.utils.ExtractUtil;
 
 class JwtAuthenticationFilterTest {
@@ -34,6 +36,8 @@ class JwtAuthenticationFilterTest {
 
 	private JwtAuthenticationFilter jwtAuthenticationFilter;
 	private JwtTokenProvider jwtTokenProvider;
+	private TokenService tokenService;
+	@Mock private RefreshTokenRepository refreshTokenRepository;
 	private MockHttpServletRequest request;
 	private MockHttpServletResponse response;
 	private MockFilterChain filterChain;
@@ -45,7 +49,8 @@ class JwtAuthenticationFilterTest {
 		response = new MockHttpServletResponse();
 		filterChain = new MockFilterChain();
 		jwtTokenProvider = new JwtTokenProvider(ISSUER, SECRET_KEY, ACCESS_TOKEN_EXPIRY_SECONDS);
-		jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtTokenProvider);
+		tokenService = new TokenService(jwtTokenProvider, refreshTokenRepository);
+		jwtAuthenticationFilter = new JwtAuthenticationFilter(tokenService);
 		ACCESS_TOKEN = jwtTokenProvider.createAccessToken(USER_ID, USER_ROLE);
 	}
 

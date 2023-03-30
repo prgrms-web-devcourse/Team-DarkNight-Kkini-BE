@@ -101,6 +101,8 @@ dependencies {
     implementation "net.gpedro.integrations.slack:slack-webhook:1.4.0"
     //websocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    //https://velog.io/@saintho/javaxannotationmetawhennotfound
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
 }
 
 

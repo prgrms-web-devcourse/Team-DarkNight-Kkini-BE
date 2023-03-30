@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.mukvengers.global.security.oauth.dto.AuthUserInfo;
 import com.prgrms.mukvengers.global.security.token.dto.Tokens;
+import com.prgrms.mukvengers.global.security.token.dto.jwt.JwtAuthentication;
 import com.prgrms.mukvengers.global.security.token.dto.jwt.JwtAuthenticationToken;
 import com.prgrms.mukvengers.global.security.token.exception.NotFoundCookieException;
 import com.prgrms.mukvengers.global.security.token.exception.RefreshTokenNotFoundException;
@@ -83,7 +84,7 @@ public class TokenService { // TODO: authService와 TokenService로 분리하는
 		Long userId = claims.get("userId", Long.class);
 		String role = claims.get("role", String.class);
 
-		AuthUserInfo principal = new AuthUserInfo(userId, role, null);
+		JwtAuthentication principal = new JwtAuthentication(userId, accessToken);
 		List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
 
 		return new JwtAuthenticationToken(principal, null, authorities);
