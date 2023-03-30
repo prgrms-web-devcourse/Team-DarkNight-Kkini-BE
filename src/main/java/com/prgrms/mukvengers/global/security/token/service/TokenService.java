@@ -1,20 +1,25 @@
 package com.prgrms.mukvengers.global.security.token.service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.mukvengers.global.security.oauth.dto.AuthUserInfo;
+import com.prgrms.mukvengers.global.security.token.dto.Tokens;
+import com.prgrms.mukvengers.global.security.token.dto.jwt.JwtAuthenticationToken;
 import com.prgrms.mukvengers.global.security.token.exception.NotFoundCookieException;
 import com.prgrms.mukvengers.global.security.token.exception.RefreshTokenNotFoundException;
 import com.prgrms.mukvengers.global.security.token.model.RefreshToken;
 import com.prgrms.mukvengers.global.security.token.repository.RefreshTokenRepository;
 
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -28,14 +33,20 @@ public class TokenService {
 	@Value("${jwt.expiry-seconds.refresh-token}")
 	private int refreshTokenExpirySeconds;
 
-	public String createAccessToken(AuthUserInfo user) {
-		return jwtTokenProvider.createAccessToken(user.id(), user.role());
+	public Tokens createTokens(AuthUserInfo userInfo) {
+		Long userId = userInfo.id();
+		String userRole = userInfo.role();
+
+		String accessToken = createAccessToken(userId, userRole);
+		String refreshToken = createRefreshToken(userId, userRole);
+
+		return new Tokens(accessToken, refreshToken);
 	}
 
 	@Transactional
-	public String createRefreshToken(AuthUserInfo user) {
+	public String createRefreshToken(Long userId, String userRole) {
 		RefreshToken refreshToken
-			= new RefreshToken(UUID.randomUUID().toString(), user.id(), user.role(), refreshTokenExpirySeconds);
+			= new RefreshToken(UUID.randomUUID().toString(), userId, userRole, refreshTokenExpirySeconds);
 
 		return refreshTokenRepository.save(refreshToken).getRefreshToken();
 	}
@@ -46,7 +57,7 @@ public class TokenService {
 		checkRefreshToken(refreshToken);
 
 		return refreshTokenRepository.findById(refreshToken)
-			.map(token -> jwtTokenProvider.createAccessToken(token.getUserId(), token.getRole()))
+			.map(token -> createAccessToken(token.getUserId(), token.getRole()))
 			.orElseThrow(RefreshTokenNotFoundException::new);
 	}
 
@@ -58,6 +69,26 @@ public class TokenService {
 		refreshTokenRepository.findById(refreshToken)
 			.ifPresentOrElse(refreshTokenRepository::delete, RefreshTokenNotFoundException::new);
 	}
+
+	public String createAccessToken(Long userId, String userRole) {
+		return jwtTokenProvider.createAccessToken(userId, userRole);
+	}
+
+	public JwtAuthenticationToken getAuthenticationByAccessToken(String accessToken) {
+
+		jwtTokenProvider.validateToken(accessToken);
+
+		Claims claims = jwtTokenProvider.getClaims(accessToken);
+
+		Long userId = claims.get("userId", Long.class);
+		String role = claims.get("role", String.class);
+
+		AuthUserInfo principal = new AuthUserInfo(userId, role, null);
+		List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
+
+		return new JwtAuthenticationToken(principal, null, authorities);
+	}
+
 
 	public int getRefreshTokenExpirySeconds() {
 		return refreshTokenExpirySeconds;
