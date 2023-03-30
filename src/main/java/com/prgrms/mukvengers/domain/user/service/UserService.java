@@ -2,8 +2,14 @@ package com.prgrms.mukvengers.domain.user.service;
 
 import com.prgrms.mukvengers.domain.user.dto.request.UpdateUserRequest;
 import com.prgrms.mukvengers.domain.user.dto.response.UserProfileResponse;
+import com.prgrms.mukvengers.global.security.oauth.dto.AuthUserInfo;
+import com.prgrms.mukvengers.global.security.oauth.dto.OAuthUserInfo;
 
 public interface UserService {
+
+
+	/* 회원 등록 */
+	AuthUserInfo getOrRegisterUser(OAuthUserInfo oauthUserInfo);
 
 	/* 회원 프로필 조회 */
 	UserProfileResponse getUserProfile(Long userId);
