@@ -1,5 +1,7 @@
 package com.prgrms.mukvengers.domain.review.mapper;
 
+import static org.mapstruct.ReportingPolicy.*;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -13,7 +15,7 @@ import com.prgrms.mukvengers.domain.review.dto.response.RevieweeListResponse;
 import com.prgrms.mukvengers.domain.review.model.Review;
 import com.prgrms.mukvengers.domain.user.model.User;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedSourcePolicy = IGNORE, unmappedTargetPolicy = IGNORE)
 public interface ReviewMapper {
 
 	@Mapping(source = "reviewer", target = "reviewer")

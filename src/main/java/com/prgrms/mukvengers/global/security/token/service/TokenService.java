@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class TokenService {
+public class TokenService { // TODO: authService와 TokenService로 분리하는 것이 좋을지 고민해보기
 
 	private final JwtTokenProvider jwtTokenProvider;
 	private final RefreshTokenRepository refreshTokenRepository;
@@ -67,7 +67,7 @@ public class TokenService {
 		checkRefreshToken(refreshToken);
 
 		refreshTokenRepository.findById(refreshToken)
-			.ifPresentOrElse(refreshTokenRepository::delete, RefreshTokenNotFoundException::new);
+			.ifPresent(refreshTokenRepository::delete);
 	}
 
 	public String createAccessToken(Long userId, String userRole) {
