@@ -302,4 +302,24 @@ class ProposalServiceImplTest extends ServiceTest {
 		assertThat(responses.responses()).hasSize(proposals.size());
 	}
 
+	@Test
+	@DisplayName("[성공] 신청서 아이디로 신청서를 삭제한다.")
+	void delete_success() {
+
+		//given
+		User user = createUser("1232456789");
+		userRepository.save(user);
+
+		Proposal proposal = createProposal(user, leader.getId(), crew.getId());
+		proposalRepository.save(proposal);
+
+		//when
+		proposalService.delete(proposal.getId(), user.getId());
+
+		//then
+		Optional<Proposal> optionalProposal = proposalRepository.findById(proposal.getId());
+
+		assertThat(optionalProposal).isEmpty();
+	}
+
 }

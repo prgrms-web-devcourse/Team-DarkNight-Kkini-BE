@@ -235,4 +235,26 @@ class ProposalControllerTest extends ControllerTest {
 			));
 
 	}
+
+	@Test
+	@DisplayName("[성공] 신청서를 삭제한다.")
+	void delete_success() throws Exception {
+
+		mockMvc.perform(delete("/api/v1/proposals/{proposalId}", proposalId)
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken2))
+			.andExpect(status().isOk())
+			.andDo(document("proposal-delete",
+				resource(
+					builder()
+						.tag(PROPOSAL)
+						.summary("신청서 삭제 API")
+						.description("자신의 신청서를 삭제할 수 있다.")
+						.pathParameters(
+							parameterWithName("proposalId").description("신청서 아이디")
+						)
+						.build()
+				)
+			));
+
+	}
 }

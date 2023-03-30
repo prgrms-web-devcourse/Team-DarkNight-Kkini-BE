@@ -17,4 +17,6 @@ public interface ProposalService {
 	ProposalResponses getProposalsByMemberId(Long userId);
 
 	void updateProposalStatus(UpdateProposalRequest proposalRequest, Long userId, Long proposalId);
+
+	void delete(Long proposalId, Long userId);
 }

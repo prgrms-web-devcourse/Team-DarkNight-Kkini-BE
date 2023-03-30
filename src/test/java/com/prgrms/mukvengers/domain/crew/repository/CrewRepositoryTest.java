@@ -52,7 +52,7 @@ class CrewRepositoryTest extends RepositoryTest {
 	@DisplayName("[성공] 시간이 지난 모임을 찾아 종료시킨다.")
 	void updateStatusAll_success() {
 
-		int result = crewRepository.updateStatusAll(LocalDateTime.now());
+		int result = crewRepository.updateAllStatusToFinish(LocalDateTime.now());
 
 		assertThat(result).isEqualTo(20); // 만들어져 있는 크루 전부 지워짐
 	}

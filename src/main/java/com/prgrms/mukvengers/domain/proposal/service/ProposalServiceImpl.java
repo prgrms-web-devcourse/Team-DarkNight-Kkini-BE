@@ -28,6 +28,7 @@ import com.prgrms.mukvengers.domain.proposal.mapper.ProposalMapper;
 import com.prgrms.mukvengers.domain.proposal.model.Proposal;
 import com.prgrms.mukvengers.domain.proposal.model.vo.ProposalStatus;
 import com.prgrms.mukvengers.domain.proposal.repository.ProposalRepository;
+import com.prgrms.mukvengers.domain.user.exception.InvalidUserException;
 import com.prgrms.mukvengers.domain.user.exception.UserNotFoundException;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
@@ -179,5 +180,20 @@ public class ProposalServiceImpl implements ProposalService {
 		CrewMember crewMember = crewMemberRepository.save(createCrewMember);
 
 		crew.addCrewMember(crewMember);
+	}
+
+	@Override
+	@Transactional
+	public void delete(Long proposalId, Long userId) {
+
+		Proposal proposal = proposalRepository.findById(proposalId)
+			.orElseThrow(() -> new ProposalNotFoundException(proposalId));
+
+		if (!proposal.getUser().getId().equals(userId)) {
+			throw new InvalidUserException(userId);
+		}
+
+		proposalRepository.deleteById(proposalId);
+
 	}
 }

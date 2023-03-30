@@ -36,6 +36,6 @@ public interface CrewRepository extends JpaRepository<Crew, Long> {
 		SET c.status = 'FINISH'
 		WHERE c.status != 'FINISH' AND c.promiseTime < :time
 		""")
-	int updateStatusAll(@Param("time")LocalDateTime now);
+	int updateAllStatusToFinish(@Param("time") LocalDateTime now);
 
 }
