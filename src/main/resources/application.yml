@@ -29,6 +29,11 @@ spring:
   slack:
     webhook: ${SLACK_WEBHOOK}
 
+  task:
+    scheduling:
+      pool:
+        size: 2
+
 # front server
 front:
   server: "https://kkini.vercel.app"
