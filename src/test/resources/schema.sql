@@ -15,21 +15,21 @@ DROP TABLE IF EXISTS users;
 
 CREATE TABLE users
 (
-    id              bigint       NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    nickname        varchar(20)  NOT NULL,
-    introduction    varchar(100) NOT NULL,
-    profile_img_url varchar(255) NOT NULL,
-    taste_score     bigint       NOT NULL DEFAULT 0,
-    manner_score    double       NOT NULL DEFAULT 36.5,
-    leader_count    int          NOT NULL DEFAULT 0,
-    crew_count      int          NOT NULL DEFAULT 0,
-    reported_count  int          NOT NULL DEFAULT 0,
-    enabled         boolean      NOT NULL DEFAULT false,
-    provider        varchar(10)  NOT NULL,
-    oauth_id        varchar(255) NOT NULL,
-    created_at      dateTime     NOT NULL DEFAULT now(),
-    updated_at      dateTime     NOT NULL DEFAULT now(),
-    deleted         boolean      NOT NULL DEFAULT false
+    id              bigint        NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    nickname        varchar(20)   NOT NULL,
+    introduction    varchar(100)  NOT NULL,
+    profile_img_url varchar(255)  NOT NULL,
+    taste_score     bigint        NOT NULL DEFAULT 0,
+    manner_score    decimal(3, 1) NOT NULL DEFAULT 36.5,
+    leader_count    int           NOT NULL DEFAULT 0,
+    crew_count      int           NOT NULL DEFAULT 0,
+    reported_count  int           NOT NULL DEFAULT 0,
+    enabled         boolean       NOT NULL DEFAULT false,
+    provider        varchar(10)   NOT NULL,
+    oauth_id        varchar(255)  NOT NULL,
+    created_at      dateTime      NOT NULL DEFAULT now(),
+    updated_at      dateTime      NOT NULL DEFAULT now(),
+    deleted         boolean       NOT NULL DEFAULT false
 );
 
 CREATE TABLE store
@@ -46,7 +46,7 @@ CREATE TABLE store
     created_at        dateTime     NOT NULL DEFAULT now(),
     updated_at        dateTime     NOT NULL DEFAULT now(),
     deleted           boolean      NOT NULL DEFAULT false,
-    
+
     UNIQUE KEY uk_store_place_id (place_id)
 );
 
