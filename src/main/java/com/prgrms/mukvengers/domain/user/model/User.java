@@ -3,6 +3,7 @@ package com.prgrms.mukvengers.domain.user.model;
 import static javax.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -31,8 +32,8 @@ import lombok.NoArgsConstructor;
 public class User extends BaseEntity {
 
 	public static final String DEFAULT_INTRODUCE = "자기소개를 작성해주세요";
-	public static final Double DEFAULT_MANNER_VALUE = 36.5;
 	public static final Integer ZERO = 0;
+	public static final BigDecimal CRITERIA = new BigDecimal("0.1");
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -54,7 +55,7 @@ public class User extends BaseEntity {
 	private String oauthId;
 
 	@Column(nullable = false)
-	private Double mannerScore;
+	private BigDecimal mannerScore;
 
 	@Column(nullable = false)
 	private Integer tasteScore;
@@ -78,7 +79,7 @@ public class User extends BaseEntity {
 		this.provider = provider;
 		this.oauthId = oauthId;
 		this.introduction = DEFAULT_INTRODUCE;
-		this.mannerScore = DEFAULT_MANNER_VALUE;
+		this.mannerScore = new BigDecimal("36.5");
 		this.tasteScore = ZERO;
 		this.leaderCount = ZERO;
 		this.crewCount = ZERO;
@@ -115,7 +116,9 @@ public class User extends BaseEntity {
 	}
 
 	public void addMannerScore(Integer mannerScore) {
-		this.mannerScore += (0.1 * mannerScore);
+		BigDecimal score = CRITERIA.multiply(new BigDecimal(mannerScore));
+		BigDecimal result = this.mannerScore.add(score);
+		this.mannerScore = checkMinusMannerScore(result);
 	}
 
 	public void addTasteScore(Integer tasteScore) {
@@ -130,4 +133,14 @@ public class User extends BaseEntity {
 		this.crewCount++;
 	}
 
+	public BigDecimal checkMinusMannerScore(BigDecimal mannerScore) {
+
+		BigDecimal zero = new BigDecimal("0.0");
+
+		// 값 비교를 위해 사용하며 값이 동일하면 0, 적으면 -1, 많으면 1을 반환함
+		if (mannerScore.compareTo(zero) > 0) {
+			return mannerScore;
+		}
+		return zero;
+	}
 }
