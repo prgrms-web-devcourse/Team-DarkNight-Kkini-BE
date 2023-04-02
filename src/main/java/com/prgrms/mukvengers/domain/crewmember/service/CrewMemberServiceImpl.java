@@ -52,11 +52,12 @@ public class CrewMemberServiceImpl implements CrewMemberService {
 		}
 
 		member.blockMember();
-  	}
-  
+	}
+
+	@Transactional
 	public void delete(Long userId, Long crewId) {
 
 		crewMemberRepository.deleteByUserIdAndCrewId(userId, crewId);
 	}
-  
+
 }
