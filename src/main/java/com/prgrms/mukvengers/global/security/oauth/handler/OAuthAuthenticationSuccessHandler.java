@@ -6,7 +6,6 @@ import static java.nio.charset.StandardCharsets.*;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.Arrays;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -67,9 +66,9 @@ public class OAuthAuthenticationSuccessHandler
 
 	// 문제가 발생한 영역 일단 하드 코딩해서 해결
 	private String encodeKr(String url) {
-		log.error(url);
+
 		String[] splitUrl = url.split(NAME_QUERY);
-		log.error(Arrays.toString(splitUrl));
+
 		if (splitUrl.length > 1) {
 			String name = splitUrl[1];
 			String encodedName = URLEncoder.encode(name, UTF_8);
