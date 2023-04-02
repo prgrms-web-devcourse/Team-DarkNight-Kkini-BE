@@ -18,10 +18,7 @@ public interface CrewMemberRepository extends JpaRepository<CrewMember, Long> {
 	@Query(value = """
 		SELECT cm.crew
 		FROM CrewMember cm
-		WHERE cm.userId = :userId
-		ORDER BY CASE WHEN cm.crew.status = 'RECRUITING' THEN 0
-					  WHEN cm.crew.status = 'CLOSE' THEN 1
-					  ELSE 2 END
+		WHERE cm.userId = :userId AND cm.crew.status = 'RECRUITING' AND cm.crewMemberRole != 'BLOCKED'
 		""")
 	List<Crew> findAllByUserIdOrderByStatus(@Param("userId") Long userId);
 
