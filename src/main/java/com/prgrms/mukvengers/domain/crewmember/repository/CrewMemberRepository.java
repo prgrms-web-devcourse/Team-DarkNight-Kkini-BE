@@ -28,14 +28,14 @@ public interface CrewMemberRepository extends JpaRepository<CrewMember, Long> {
 	@Query(value = """
 				SELECT COUNT(cm)
 				FROM  CrewMember cm
-				WHERE cm.crew.id = :crewId AND cm.deleted = false
+				WHERE cm.crew.id = :crewId AND cm.crewMemberRole != 'BLOCKED'
 		""")
 	Integer countCrewMemberByCrewId(@Param(value = "crewId") Long crewId);
 
 	@Query(value = """
 						SELECT cm
 						FROM CrewMember cm
-						WHERE cm.crew.id = :crewId AND cm.deleted = false
+						WHERE cm.crew.id = :crewId AND cm.crewMemberRole != 'BLOCKED'
 		""")
 	List<CrewMember> findAllByCrewId(@Param(value = "crewId") Long crewId);
 
