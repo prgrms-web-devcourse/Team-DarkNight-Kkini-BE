@@ -25,8 +25,18 @@ public interface CrewMemberRepository extends JpaRepository<CrewMember, Long> {
 		""")
 	List<Crew> findAllByUserIdOrderByStatus(@Param("userId") Long userId);
 
+	@Query(value = """
+				SELECT COUNT(cm)
+				FROM  CrewMember cm
+				WHERE cm.crew.id = :crewId AND cm.deleted = false
+		""")
 	Integer countCrewMemberByCrewId(@Param(value = "crewId") Long crewId);
 
+	@Query(value = """
+						SELECT cm
+						FROM CrewMember cm
+						WHERE cm.crew.id = :crewId AND cm.deleted = false
+		""")
 	List<CrewMember> findAllByCrewId(@Param(value = "crewId") Long crewId);
 
 	void deleteByUserIdAndCrewId(@Param(value = "userId") Long userId, @Param(value = "crewId") Long crewId);
