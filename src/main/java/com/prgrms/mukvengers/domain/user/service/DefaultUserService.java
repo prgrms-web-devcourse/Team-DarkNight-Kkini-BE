@@ -26,6 +26,7 @@ public class DefaultUserService implements UserService {
 
 	/* [회원 인증 정보 조회 및 저장] 등록된 유저 정보 찾아서 제공하고 없으면 등록합니다. */
 	@Override
+	@Transactional
 	public AuthUserInfo getOrRegisterUser(OAuthUserInfo oauthUserInfo) {
 		User user = userRepository
 			.findByUserIdByProviderAndOauthId(oauthUserInfo.provider(), oauthUserInfo.oauthId())
