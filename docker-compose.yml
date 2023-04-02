@@ -45,6 +45,7 @@ services:
       REDIS_PORT: ${REDIS_PORT}
       ACTIVE_PROFILE: ${ACTIVE_PROFILE}
       SLACK_WEBHOOK: ${SLACK_WEBHOOK}
+      SENTRY_DSN: ${SENTRY_DSN}
 
   blue:
     container_name: blue
@@ -69,3 +70,4 @@ services:
       REDIS_PORT: ${REDIS_PORT}
       ACTIVE_PROFILE: ${ACTIVE_PROFILE}
       SLACK_WEBHOOK: ${SLACK_WEBHOOK}
+      SENTRY_DSN: ${SENTRY_DSN}
