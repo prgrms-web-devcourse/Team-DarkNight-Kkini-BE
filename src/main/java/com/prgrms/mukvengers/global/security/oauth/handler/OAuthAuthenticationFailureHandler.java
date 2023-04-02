@@ -1,8 +1,10 @@
 package com.prgrms.mukvengers.global.security.oauth.handler;
 
 import static com.prgrms.mukvengers.global.security.oauth.repository.HttpCookieOAuthAuthorizationRequestRepository.*;
+import static java.nio.charset.StandardCharsets.*;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -31,10 +33,11 @@ public class OAuthAuthenticationFailureHandler
 		AuthenticationException exception) throws IOException {
 		String redirectUrl = CookieUtil.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
 			.map(Cookie::getValue)
+			.map(cookie -> URLDecoder.decode(cookie, UTF_8))
 			.orElse(DEFAULT_TARGET_URL);
 
 		String targetUrl = UriComponentsBuilder.fromUriString(redirectUrl)
-			.queryParam("error", exception.getMessage())
+			.queryParam("error", exception.getMessage()) // TODO: exception.getMessage() -> error code
 			.build().toUriString();
 
 		httpCookieOAuthAuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);

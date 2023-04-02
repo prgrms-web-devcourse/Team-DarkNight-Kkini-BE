@@ -1,5 +1,6 @@
 package com.prgrms.mukvengers.domain.proposal.api;
 
+import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.*;
 
 import java.net.URI;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -119,15 +121,14 @@ public class ProposalController {
 	 * @return
 	 */
 	@PatchMapping(value = "/proposals/{proposalId}", consumes = APPLICATION_JSON_VALUE)
-	public ResponseEntity<Void> changeProposalStatus
+	@ResponseStatus(NO_CONTENT)
+	public void changeProposalStatus
 	(
 		@PathVariable Long proposalId,
 		@RequestBody @Valid UpdateProposalRequest proposalRequest,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
 		proposalService.updateProposalStatus(proposalRequest, user.id(), proposalId);
-
-		return ResponseEntity.ok().build();
 	}
 
 	@DeleteMapping(value = "/proposals/{proposalId}")
