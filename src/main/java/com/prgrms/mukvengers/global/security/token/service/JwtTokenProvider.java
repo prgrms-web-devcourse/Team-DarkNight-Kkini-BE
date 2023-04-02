@@ -1,4 +1,4 @@
-package com.prgrms.mukvengers.global.security.jwt;
+package com.prgrms.mukvengers.global.security.token.service;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -37,6 +37,10 @@ public class JwtTokenProvider {
 
 	public String createAccessToken(Long userId, String role) {
 		Map<String, Object> claims = Map.of("userId", userId, "role", role);
+		return this.createAccessToken(claims);
+	}
+
+	public String createAccessToken(Map<String, Object> claims) {
 		Date now = new Date();
 		Date expiredDate = new Date(now.getTime() + accessTokenExpirySeconds * MILLI_SECOND);
 

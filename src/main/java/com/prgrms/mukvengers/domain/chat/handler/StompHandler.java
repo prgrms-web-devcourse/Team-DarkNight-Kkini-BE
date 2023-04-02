@@ -15,7 +15,7 @@ import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
 import com.prgrms.mukvengers.domain.user.exception.UserNotFoundException;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
-import com.prgrms.mukvengers.global.security.jwt.JwtTokenProvider;
+import com.prgrms.mukvengers.global.security.token.service.JwtTokenProvider;
 import com.prgrms.mukvengers.global.utils.ExtractUtil;
 
 import io.jsonwebtoken.Claims;

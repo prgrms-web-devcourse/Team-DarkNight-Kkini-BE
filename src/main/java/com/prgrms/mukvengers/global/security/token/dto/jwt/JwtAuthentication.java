@@ -1,4 +1,4 @@
-package com.prgrms.mukvengers.global.security.jwt;
+package com.prgrms.mukvengers.global.security.token.dto.jwt;
 
 import java.util.Objects;
 

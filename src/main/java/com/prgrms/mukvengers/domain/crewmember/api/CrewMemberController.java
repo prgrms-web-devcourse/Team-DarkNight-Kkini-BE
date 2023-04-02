@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.mukvengers.domain.crewmember.dto.request.UpdateCrewMemberRequest;
 import com.prgrms.mukvengers.domain.crewmember.service.CrewMemberService;
-import com.prgrms.mukvengers.global.security.jwt.JwtAuthentication;
+import com.prgrms.mukvengers.global.security.token.dto.jwt.JwtAuthentication;
 
 import lombok.RequiredArgsConstructor;
 

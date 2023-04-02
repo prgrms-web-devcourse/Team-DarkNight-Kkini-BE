@@ -7,7 +7,10 @@ import com.prgrms.mukvengers.domain.user.dto.request.UpdateUserRequest;
 import com.prgrms.mukvengers.domain.user.dto.response.UserProfileResponse;
 import com.prgrms.mukvengers.domain.user.exception.UserNotFoundException;
 import com.prgrms.mukvengers.domain.user.mapper.UserMapper;
+import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
+import com.prgrms.mukvengers.global.security.oauth.dto.AuthUserInfo;
+import com.prgrms.mukvengers.global.security.oauth.dto.OAuthUserInfo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,8 +19,26 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class DefaultUserService implements UserService {
 
+	public static final String DEFAULT_ROLE = "ROLE_USER";
+
 	private final UserMapper userMapper;
 	private final UserRepository userRepository;
+
+	/* [회원 인증 정보 조회 및 저장] 등록된 유저 정보 찾아서 제공하고 없으면 등록합니다. */
+	@Override
+	public AuthUserInfo getOrRegisterUser(OAuthUserInfo oauthUserInfo) {
+		User user = userRepository
+			.findByUserIdByProviderAndOauthId(oauthUserInfo.provider(), oauthUserInfo.oauthId())
+			.orElseGet(() -> save(userMapper.toUser(oauthUserInfo)));
+
+		return new AuthUserInfo(user.getId(), DEFAULT_ROLE, user.getNickname());
+	}
+
+	/* [회원 저장] USER 객체를 DB에 저장한다. */
+	@Transactional
+	public User save(User unsavedUser) {
+		return userRepository.save(unsavedUser);
+	}
 
 	/* [회원 조회] 사용자 ID를 통해 등록된 유저 정보 찾아서 제공하고 없으면 예외가 발생합니다. */
 	@Override
