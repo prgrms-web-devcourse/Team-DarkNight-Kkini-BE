@@ -1,4 +1,4 @@
-package com.prgrms.mukvengers.global.security.jwt;
+package com.prgrms.mukvengers.global.security.token.filter;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import com.prgrms.mukvengers.global.security.token.exception.InvalidTokenException;
+import com.prgrms.mukvengers.global.security.token.dto.jwt.JwtAuthentication;
 
 class JwtAuthenticationTest {
 

@@ -1,6 +1,6 @@
 package com.prgrms.mukvengers.global.security.oauth.handler;
 
-import static com.prgrms.mukvengers.global.security.oauth.handler.HttpCookieOAuthAuthorizationRequestRepository.*;
+import static com.prgrms.mukvengers.global.security.oauth.repository.HttpCookieOAuthAuthorizationRequestRepository.*;
 
 import java.io.IOException;
 
@@ -13,6 +13,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.prgrms.mukvengers.global.security.oauth.repository.HttpCookieOAuthAuthorizationRequestRepository;
 import com.prgrms.mukvengers.global.utils.CookieUtil;
 
 import lombok.RequiredArgsConstructor;
