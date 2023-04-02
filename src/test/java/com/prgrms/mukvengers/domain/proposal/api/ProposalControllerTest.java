@@ -165,7 +165,7 @@ class ProposalControllerTest extends ControllerTest {
 
 	}
 
-	@Test
+	@Test // 신청서가 거절 됐는데 왜 저장이 되는건가요?
 	@DisplayName("[성공] 방장이 신청서를 거절하는 경우 신청서의 상태값이 'REFUSE' 로 변경되며 밥모임원에 저장된다.")
 	void update_proposalStatus_refuse_success() throws Exception {
 
@@ -177,7 +177,7 @@ class ProposalControllerTest extends ControllerTest {
 				.contentType(APPLICATION_JSON)
 				.header(AUTHORIZATION, BEARER_TYPE + accessToken1)
 				.content(jsonRequest))
-			.andExpect(status().isOk())
+			.andExpect(status().isNoContent())
 			.andDo(document("proposal-Refuse",
 				resource(
 					builder()
