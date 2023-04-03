@@ -1,6 +1,7 @@
 package com.prgrms.mukvengers.domain.user.model;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.util.stream.Stream;
@@ -114,5 +115,22 @@ class UserTest {
 
 		// then
 		assertThat(user.getMannerScore()).isEqualTo(new BigDecimal("0.0"));
+	}
+
+	@Test
+	@DisplayName("[실패] mannerScore에 null 값이 들어온다면 매너 온도 연산처리할 수 없다.")
+	void mannerScore_null_fail() {
+
+		//given
+		User user = User.builder()
+			.nickname("테스트")
+			.profileImgUrl("https://defaultImg.jpg")
+			.provider("kakao")
+			.oauthId("12345")
+			.build();
+
+
+		// when & then
+		assertThrows(IllegalArgumentException.class, () -> user.addMannerScore(null));
 	}
 }
