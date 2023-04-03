@@ -1,5 +1,5 @@
 FROM openjdk:17-oracle
-ARG JAR_FILE=build/libs/Mukvengers-1.0.1.jar
+ARG JAR_FILE=build/libs/Mukvengers-1.0.2.jar
 ENV MY_SERVER=${MY_SERVER} \
 AWS_ACCESS_KEY=${AWS_ACCESS_KEY} \
 AWS_SECRET_KEY=${AWS_SECRET_KEY} \

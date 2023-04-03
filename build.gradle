@@ -11,7 +11,7 @@ plugins {
 }
 
 group = 'com.prgrms'
-version = '1.0.1'
+version = '1.0.2'
 sourceCompatibility = '17'
 
 configurations {
@@ -42,7 +42,7 @@ openapi3 {
     setServer(env.MY_SERVER.orElse("http://localhost:8080")) // Swagger 서버 설정
     title = "KKINI API Document"
     description = "Spring REST Docs with SwaggerUI."
-    version = "1.0.1"
+    version = "1.0.2"
     format = "yaml"
 }
 
