@@ -2,6 +2,7 @@ package com.prgrms.mukvengers.domain.user.model;
 
 import static javax.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
+import static org.springframework.util.Assert.*;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -116,6 +117,7 @@ public class User extends BaseEntity {
 	}
 
 	public void addMannerScore(Integer mannerScore) {
+		notNull(mannerScore, "유효하지 않는 매너 온도입니다.");
 		BigDecimal score = CRITERIA.multiply(new BigDecimal(mannerScore));
 		BigDecimal result = this.mannerScore.add(score);
 		this.mannerScore = checkMinusMannerScore(result);
