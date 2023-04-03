@@ -4,7 +4,6 @@ import static org.springframework.http.HttpStatus.*;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -14,8 +13,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
-
-import net.gpedro.integrations.slack.SlackApi;
 
 import com.prgrms.mukvengers.global.common.dto.ErrorResponse;
 import com.prgrms.mukvengers.global.slack.annotation.SlackNotification;
@@ -32,12 +29,6 @@ public class GlobalExceptionHandler {
 	private static final String EXCEPTION_TYPE_FORMAT = "[EXCEPTION] EXCEPTION_TYPE    -----> [{}]";
 	private static final String EXCEPTION_REQUEST_URI = "[EXCEPTION] REQUEST_URI       -----> [{}]";
 	private static final String EXCEPTION_HTTP_METHOD_TYPE = "[EXCEPTION] HTTP_METHOD_TYPE  -----> [{}]";
-
-	private final SlackApi slackApi;
-
-	public GlobalExceptionHandler(@Value("${spring.slack.webhook}") String webhook) {
-		this.slackApi = new SlackApi(webhook);
-	}
 
 	@ExceptionHandler(ServiceException.class) // custom 에러
 	public ResponseEntity<ErrorResponse> handleServiceException(HttpServletRequest request, ServiceException e) {
