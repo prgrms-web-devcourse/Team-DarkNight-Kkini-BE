@@ -1,7 +1,9 @@
 package com.prgrms.mukvengers.domain.user.model;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.math.BigDecimal;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
@@ -41,7 +43,7 @@ class UserTest {
 			.hasFieldOrPropertyWithValue("leaderCount", 0)
 			.hasFieldOrPropertyWithValue("crewCount", 0)
 			.hasFieldOrPropertyWithValue("tasteScore", 0)
-			.hasFieldOrPropertyWithValue("mannerScore", 36.5)
+			.hasFieldOrPropertyWithValue("mannerScore", new BigDecimal("36.5"))
 			.hasFieldOrPropertyWithValue("provider", "kakao")
 			.hasFieldOrPropertyWithValue("oauthId", "12345")
 			.hasFieldOrPropertyWithValue("reportedCount", 0)
@@ -58,4 +60,77 @@ class UserTest {
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
+	@Test
+	@DisplayName("[성공] mannerScore 를 양수값으로 받으면 mannerScore 값이 증가한다.")
+	void addMannerScore_add_success() {
+
+		//given
+		User user = User.builder()
+			.nickname("테스트")
+			.profileImgUrl("https://defaultImg.jpg")
+			.provider("kakao")
+			.oauthId("12345")
+			.build();
+
+		// when
+		user.addMannerScore(5);
+
+		// then
+		assertThat(user.getMannerScore()).isEqualTo(new BigDecimal("37.0"));
+	}
+
+	@Test
+	@DisplayName("[성공] mannerScore 를 음수값으로 받으면 mannerScore 값이 감소한다.")
+	void addMannerScore_minus_success() {
+
+		//given
+		User user = User.builder()
+			.nickname("테스트")
+			.profileImgUrl("https://defaultImg.jpg")
+			.provider("kakao")
+			.oauthId("12345")
+			.build();
+
+		// when
+		user.addMannerScore(-3);
+
+		// then
+		assertThat(user.getMannerScore()).isEqualTo(new BigDecimal("36.2"));
+	}
+
+	@Test
+	@DisplayName("[성공] mannerScore 값은 0.0 이하로 내려갈 수 없다.")
+	void mannerScore_notMinus_success() {
+
+		//given
+		User user = User.builder()
+			.nickname("테스트")
+			.profileImgUrl("https://defaultImg.jpg")
+			.provider("kakao")
+			.oauthId("12345")
+			.build();
+
+		// when
+		user.addMannerScore(-400);
+
+		// then
+		assertThat(user.getMannerScore()).isEqualTo(new BigDecimal("0.0"));
+	}
+
+	@Test
+	@DisplayName("[실패] mannerScore에 null 값이 들어온다면 매너 온도 연산처리할 수 없다.")
+	void mannerScore_null_fail() {
+
+		//given
+		User user = User.builder()
+			.nickname("테스트")
+			.profileImgUrl("https://defaultImg.jpg")
+			.provider("kakao")
+			.oauthId("12345")
+			.build();
+
+
+		// when & then
+		assertThrows(IllegalArgumentException.class, () -> user.addMannerScore(null));
+	}
 }

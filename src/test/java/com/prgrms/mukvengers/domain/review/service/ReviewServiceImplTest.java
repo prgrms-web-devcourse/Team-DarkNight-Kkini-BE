@@ -4,7 +4,9 @@ import static com.prgrms.mukvengers.utils.CrewObjectProvider.*;
 import static com.prgrms.mukvengers.utils.ReviewObjectProvider.*;
 import static com.prgrms.mukvengers.utils.UserObjectProvider.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,8 +65,13 @@ class ReviewServiceImplTest extends ServiceTest {
 		Optional<Review> findReview = reviewRepository.findById(leaderReview.id());
 
 		// then
-		assertThat(findReview).isPresent();
-		assertThat(findReview.get().getReviewee().getId()).isEqualTo(leader.getUserId());
+		assertThat(findReview)
+			.hasValueSatisfying(review -> assertAll(
+				() -> assertThat(review.getReviewee().getId()).isEqualTo(leader.getUserId()),
+				() -> assertThat(review.getMannerScore()).isEqualTo(MANNER_SCORE),
+				() -> assertThat(review.getTasteScore()).isEqualTo(TASTE_SCORE),
+				() -> assertThat(review.getReviewee().getMannerScore()).isEqualTo(new BigDecimal("37.0"))
+			));
 	}
 
 	@Test
@@ -85,13 +92,16 @@ class ReviewServiceImplTest extends ServiceTest {
 		CreateMemberReviewRequest memberReviewRequest = createMemberReviewRequest(reviewee.getId());
 
 		// when
-		IdResponse review = reviewService.createMemberReview(memberReviewRequest, reviewer.getId(), crew.getId());
-		Optional<Review> findReview = reviewRepository.findById(review.id());
+		IdResponse memberReview = reviewService.createMemberReview(memberReviewRequest, reviewer.getId(), crew.getId());
+		Optional<Review> findReview = reviewRepository.findById(memberReview.id());
 
 		// then
-		assertThat(findReview).isPresent();
-		assertThat(findReview.get().getMannerScore()).isEqualTo(MANNER_SCORE);
-		assertThat(findReview.get().getTasteScore()).isZero();
+		assertThat(findReview)
+			.hasValueSatisfying(review -> assertAll(
+				() -> assertThat(review.getMannerScore()).isEqualTo(MANNER_SCORE),
+				() -> assertThat(review.getTasteScore()).isZero(),
+				() -> assertThat(review.getReviewee().getMannerScore()).isEqualTo(new BigDecimal("37.0"))
+			));
 	}
 
 	@Test

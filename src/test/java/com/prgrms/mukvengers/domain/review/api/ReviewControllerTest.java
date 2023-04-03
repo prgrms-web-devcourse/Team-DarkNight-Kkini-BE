@@ -173,7 +173,7 @@ class ReviewControllerTest extends ControllerTest {
 							fieldWithPath("data.reviewee.leaderCount").type(NUMBER).description("리뷰이의 리더 횟수"),
 							fieldWithPath("data.reviewee.crewCount").type(NUMBER).description("리뷰이의 밥모임 참여한 횟수"),
 							fieldWithPath("data.reviewee.tasteScore").type(NUMBER).description("리뷰이의 맛잘알 점수"),
-							fieldWithPath("data.reviewee.mannerScore").type(NUMBER).description("리뷰이의 매너 점수"),
+							fieldWithPath("data.reviewee.mannerScore").type(STRING).description("리뷰이의 매너 점수"),
 
 							fieldWithPath("data.crew.currentMember").type(NULL).description("밥모임의 아이디"),
 							fieldWithPath("data.crew.id").type(NUMBER).description("밥모임의 아이디"),
@@ -239,7 +239,7 @@ class ReviewControllerTest extends ControllerTest {
 								.description("리뷰를 작성하고자 하는 사용자의 밥모임 참여 횟수"),
 							fieldWithPath("data.content.[].reviewer.tasteScore").type(NUMBER)
 								.description("리뷰를 작성하고자 하는 사용자의 맛잘알 점수"),
-							fieldWithPath("data.content.[].reviewer.mannerScore").type(NUMBER)
+							fieldWithPath("data.content.[].reviewer.mannerScore").type(STRING)
 								.description("리뷰를 작성하고자 하는 사용자의 매너 온도 점수"),
 
 							fieldWithPath("data.content.[].reviewee.id").type(NUMBER).description("리뷰 남기고자하는 사용자의 아이디"),
@@ -255,7 +255,7 @@ class ReviewControllerTest extends ControllerTest {
 								.description("리뷰 남기고자하는 사용자의 밥모임 참여 횟수"),
 							fieldWithPath("data.content.[].reviewee.tasteScore").type(NUMBER)
 								.description("리뷰 남기고자하는 사용자의 맛잘알 점수"),
-							fieldWithPath("data.content.[].reviewee.mannerScore").type(NUMBER)
+							fieldWithPath("data.content.[].reviewee.mannerScore").type(STRING)
 								.description("리뷰 남기고자하는 사용자의 매너 온도 점수"),
 
 							fieldWithPath("data.content.[].crew.id").type(NUMBER).description("리뷰하고자하는 밥 모임 아이디"),
@@ -346,7 +346,7 @@ class ReviewControllerTest extends ControllerTest {
 								.description("리뷰를 작성하고자 하는 사용자의 밥모임 참여 횟수"),
 							fieldWithPath("data.content.[].reviewer.tasteScore").type(NUMBER)
 								.description("리뷰를 작성하고자 하는 사용자의 맛잘알 점수"),
-							fieldWithPath("data.content.[].reviewer.mannerScore").type(NUMBER)
+							fieldWithPath("data.content.[].reviewer.mannerScore").type(STRING)
 								.description("리뷰를 작성하고자 하는 사용자의 매너 온도 점수"),
 
 							fieldWithPath("data.content.[].reviewee.id").type(NUMBER).description("리뷰 남기고자하는 사용자의 아이디"),
@@ -362,7 +362,7 @@ class ReviewControllerTest extends ControllerTest {
 								.description("리뷰 남기고자하는 사용자의 밥모임 참여 횟수"),
 							fieldWithPath("data.content.[].reviewee.tasteScore").type(NUMBER)
 								.description("리뷰 남기고자하는 사용자의 맛잘알 점수"),
-							fieldWithPath("data.content.[].reviewee.mannerScore").type(NUMBER)
+							fieldWithPath("data.content.[].reviewee.mannerScore").type(STRING)
 								.description("리뷰 남기고자하는 사용자의 매너 온도 점수"),
 
 							fieldWithPath("data.content.[].crew.id").type(NUMBER).description("리뷰하고자하는 밥 모임 아이디"),
