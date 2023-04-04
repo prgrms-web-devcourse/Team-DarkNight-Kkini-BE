@@ -20,7 +20,7 @@ public interface CrewRepository extends JpaRepository<Crew, Long> {
 		SELECT c
 		FROM Crew c
 		JOIN FETCH c.store s
-		WHERE s.placeId = :placeId
+		WHERE s.placeId = :placeId AND c.status = 'RECRUITING'
 		""",
 		countQuery = "SELECT count(c) FROM Crew c WHERE c.store.placeId = :placeId")
 	Page<Crew> findAllByPlaceId(@Param(value = "placeId") String placeId, Pageable pageable);
