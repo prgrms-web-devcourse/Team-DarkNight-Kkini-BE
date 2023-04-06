@@ -1,4 +1,4 @@
-package com.prgrms.mukvengers.global.security.jwt;
+package com.prgrms.mukvengers.global.security.token.filter;
 
 import static com.prgrms.mukvengers.utils.UserObjectProvider.*;
 import static org.assertj.core.api.Assertions.*;
@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import com.prgrms.mukvengers.global.security.token.exception.ExpiredTokenException;
 import com.prgrms.mukvengers.global.security.token.exception.InvalidTokenException;
+import com.prgrms.mukvengers.global.security.token.service.JwtTokenProvider;
 
 import io.jsonwebtoken.Claims;
 

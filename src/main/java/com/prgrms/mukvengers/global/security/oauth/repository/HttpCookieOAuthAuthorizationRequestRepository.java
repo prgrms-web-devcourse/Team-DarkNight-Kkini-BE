@@ -1,6 +1,9 @@
-package com.prgrms.mukvengers.global.security.oauth.handler;
+package com.prgrms.mukvengers.global.security.oauth.repository;
 
+import static java.nio.charset.StandardCharsets.*;
 import static org.springframework.util.StringUtils.*;
+
+import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,6 +40,7 @@ public class HttpCookieOAuthAuthorizationRequestRepository implements
 			CookieUtil.serialize(authorizationRequest), COOKIE_EXPIRE_SECONDS);
 		String redirectUriAfterLogin = request.getParameter(REDIRECT_URI_PARAM_COOKIE_NAME);
 		if (hasText(redirectUriAfterLogin)) {
+			redirectUriAfterLogin = URLEncoder.encode(redirectUriAfterLogin, UTF_8);
 			CookieUtil.addCookie(response, REDIRECT_URI_PARAM_COOKIE_NAME, redirectUriAfterLogin,
 				COOKIE_EXPIRE_SECONDS);
 		}

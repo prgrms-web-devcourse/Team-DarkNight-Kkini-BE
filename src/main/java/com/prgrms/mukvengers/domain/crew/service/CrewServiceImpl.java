@@ -42,6 +42,7 @@ import com.prgrms.mukvengers.domain.store.mapper.StoreMapper;
 import com.prgrms.mukvengers.domain.store.model.Store;
 import com.prgrms.mukvengers.domain.store.repository.StoreRepository;
 import com.prgrms.mukvengers.domain.user.exception.UserNotFoundException;
+import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
 
@@ -95,10 +96,10 @@ public class CrewServiceImpl implements CrewService {
 				crewMemberRepository.countCrewMemberByCrewId(crew.getId()), crewMemberRepository.findAllByCrewId(
 						crew.getId())
 					.stream()
-					.map(CrewMember -> crewMemberMapper.toCrewMemberResponse(
-						userRepository.findById(CrewMember.getUserId())
-							.orElseThrow(() -> new UserNotFoundException(CrewMember.getUserId())),
-						CrewMember.getCrewMemberRole()))
+					.map(crewMember -> crewMemberMapper.toCrewMemberResponse(
+						userRepository.findById(crewMember.getUserId())
+							.orElseThrow(() -> new UserNotFoundException(crewMember.getUserId())),
+						crewMember.getCrewMemberRole(), crewMember.getId()))
 					.toList(), storeMapper.toStoreResponse(crew.getStore()),
 				proposalRepository.findByUserIdAndCrewId(userId, crew.getId()).orElseGet(() -> NOT_APPLIED)))
 			.toList();
@@ -116,10 +117,10 @@ public class CrewServiceImpl implements CrewService {
 
 		List<CrewMemberResponse> members = crewMemberRepository.findAllByCrewId(crewId)
 			.stream()
-			.map(CrewMember -> crewMemberMapper.toCrewMemberResponse(
-				userRepository.findById(CrewMember.getUserId())
-					.orElseThrow(() -> new UserNotFoundException(CrewMember.getUserId())),
-				CrewMember.getCrewMemberRole()))
+			.map(crewMember -> crewMemberMapper.toCrewMemberResponse(
+				userRepository.findById(crewMember.getUserId())
+					.orElseThrow(() -> new UserNotFoundException(crewMember.getUserId())),
+				crewMember.getCrewMemberRole(), crewMember.getId()))
 			.toList();
 
 		return crewMapper.toCrewDetailResponse(crew, currentMember, members,
@@ -135,10 +136,10 @@ public class CrewServiceImpl implements CrewService {
 				crewMemberRepository.countCrewMemberByCrewId(crew.getId())
 				, crewMemberRepository.findAllByCrewId(crew.getId())
 					.stream()
-					.map(CrewMember -> crewMemberMapper.toCrewMemberResponse(
-						userRepository.findById(CrewMember.getUserId())
-							.orElseThrow(() -> new UserNotFoundException(CrewMember.getUserId())),
-						CrewMember.getCrewMemberRole()))
+					.map(crewMember -> crewMemberMapper.toCrewMemberResponse(
+						userRepository.findById(crewMember.getUserId())
+							.orElseThrow(() -> new UserNotFoundException(crewMember.getUserId())),
+						crewMember.getCrewMemberRole(), crewMember.getId()))
 					.toList(), storeMapper.toStoreResponse(crew.getStore()),
 				proposalRepository.findByUserIdAndCrewId(userId,
 					crew.getId()).orElseGet(() -> NOT_APPLIED)));
@@ -186,6 +187,18 @@ public class CrewServiceImpl implements CrewService {
 			case FINISH -> {
 				if (!crew.getStatus().equals(CrewStatus.CLOSE)) {
 					throw new CrewStatusException(crew.getStatus());
+				}
+				for (CrewMember member : crew.getCrewMembers()) {
+
+					User user = userRepository.findById(member.getUserId())
+						.orElseThrow(() -> new UserNotFoundException(member.getUserId()));
+					if (member.getCrewMemberRole() == CrewMemberRole.LEADER) {
+						user.updateLeaderCount();
+						user.updateCrewCount();
+					} else {
+						user.updateCrewCount();
+					}
+
 				}
 			}
 

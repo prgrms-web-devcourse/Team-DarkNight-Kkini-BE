@@ -19,6 +19,7 @@ import com.prgrms.mukvengers.domain.proposal.dto.request.CreateProposalRequest;
 import com.prgrms.mukvengers.domain.proposal.dto.request.UpdateProposalRequest;
 import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponse;
 import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponses;
+import com.prgrms.mukvengers.domain.proposal.exception.ApproveException;
 import com.prgrms.mukvengers.domain.proposal.exception.CrewMemberOverCapacity;
 import com.prgrms.mukvengers.domain.proposal.exception.DuplicateProposalException;
 import com.prgrms.mukvengers.domain.proposal.exception.ExistCrewMemberRoleException;
@@ -27,6 +28,7 @@ import com.prgrms.mukvengers.domain.proposal.mapper.ProposalMapper;
 import com.prgrms.mukvengers.domain.proposal.model.Proposal;
 import com.prgrms.mukvengers.domain.proposal.model.vo.ProposalStatus;
 import com.prgrms.mukvengers.domain.proposal.repository.ProposalRepository;
+import com.prgrms.mukvengers.domain.user.exception.InvalidUserException;
 import com.prgrms.mukvengers.domain.user.exception.UserNotFoundException;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
@@ -107,7 +109,7 @@ public class ProposalServiceImpl implements ProposalService {
 
 	@Override
 	public ProposalResponses getProposalsByLeaderId(Long userId) {
-		List<Proposal> proposals = proposalRepository.findAllByLeaderIdOrderByCreatedAtDesc(userId);
+		List<Proposal> proposals = proposalRepository.findAllByLeaderIdOrderStatus(userId);
 		List<ProposalResponse> proposalResponses = new ArrayList<>();
 
 		for (Proposal proposal : proposals) {
@@ -117,7 +119,7 @@ public class ProposalServiceImpl implements ProposalService {
 			String crewName = crew.getName();
 			String storePlaceName = crew.getStore().getPlaceName();
 
-			ProposalResponse proposalResponse = proposalMapper.toProposalResponse(proposal, crewName, storePlaceName);
+			ProposalResponse proposalResponse = proposalMapper.toProposalResponse(proposal, storePlaceName, crewName);
 			proposalResponses.add(proposalResponse);
 		}
 
@@ -136,7 +138,7 @@ public class ProposalServiceImpl implements ProposalService {
 			String crewName = crew.getName();
 			String storePlaceName = crew.getStore().getPlaceName();
 
-			ProposalResponse proposalResponse = proposalMapper.toProposalResponse(proposal, crewName, storePlaceName);
+			ProposalResponse proposalResponse = proposalMapper.toProposalResponse(proposal, storePlaceName, crewName);
 			proposalResponses.add(proposalResponse);
 		}
 
@@ -161,16 +163,16 @@ public class ProposalServiceImpl implements ProposalService {
 
 		ProposalStatus proposalStatus = ProposalStatus.of(status);
 
-		registerCrewMember(proposal, crew, proposalStatus);
+		if (proposal.isApprove(proposalStatus)) {
+			if (crew.getCrewMembers().size() >= crew.getCapacity()) {
+				throw new ApproveException(CREW_MEMBER_COUNT_OVER_CAPACITY_EXCEPTION_MESSAGE);
+			}
+			registerCrewMember(proposal, crew);
+		}
+		proposal.changeProposalStatus(proposalStatus);
 	}
 
-	private void registerCrewMember(Proposal proposal, Crew crew, ProposalStatus proposalStatus) {
-
-		proposal.changeProposalStatus(proposalStatus);
-
-		if (!proposal.isApprove(proposalStatus)) {
-			return;
-		}
+	private void registerCrewMember(Proposal proposal, Crew crew) {
 
 		CrewMember createCrewMember = crewMemberMapper.toCrewMember(crew, proposal.getUser().getId(),
 			CrewMemberRole.MEMBER);
@@ -178,5 +180,20 @@ public class ProposalServiceImpl implements ProposalService {
 		CrewMember crewMember = crewMemberRepository.save(createCrewMember);
 
 		crew.addCrewMember(crewMember);
+	}
+
+	@Override
+	@Transactional
+	public void delete(Long proposalId, Long userId) {
+
+		Proposal proposal = proposalRepository.findById(proposalId)
+			.orElseThrow(() -> new ProposalNotFoundException(proposalId));
+
+		if (!proposal.getUser().getId().equals(userId)) {
+			throw new InvalidUserException(userId);
+		}
+
+		proposalRepository.deleteById(proposalId);
+
 	}
 }

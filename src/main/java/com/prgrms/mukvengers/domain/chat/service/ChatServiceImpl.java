@@ -1,5 +1,6 @@
 package com.prgrms.mukvengers.domain.chat.service;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Page;
@@ -39,6 +40,11 @@ public class ChatServiceImpl implements ChatService {
 	public ChatsInCrew getByCrewId(Long crewId, Pageable pageable) {
 		Page<ChatResponse> result = chatRepository.findByCrewId(crewId, pageable);
 		return new ChatsInCrew(result);
+	}
+
+	@Override
+	public List<ChatResponse> getAllByCrewId(Long crewId) {
+		return chatRepository.findAllByCrewId(crewId);
 	}
 
 	private ChatResponse toChatResponse(Chat chat, Map<String, Object> header) {

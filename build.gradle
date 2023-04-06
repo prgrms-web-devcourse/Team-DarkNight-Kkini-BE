@@ -11,7 +11,7 @@ plugins {
 }
 
 group = 'com.prgrms'
-version = '1.0.1'
+version = '1.0.2'
 sourceCompatibility = '17'
 
 configurations {
@@ -42,7 +42,7 @@ openapi3 {
     setServer(env.MY_SERVER.orElse("http://localhost:8080")) // Swagger 서버 설정
     title = "KKINI API Document"
     description = "Spring REST Docs with SwaggerUI."
-    version = "1.0.1"
+    version = "1.0.2"
     format = "yaml"
 }
 
@@ -93,14 +93,20 @@ dependencies {
     implementation 'org.hibernate:hibernate-spatial'
     //https://mvnrepository.com/artifact/org.locationtech.jts/jts-core
     implementation 'org.locationtech.jts:jts-core:1.19.0'
-    //logback - cloudwatch
+    // logback - cloudwatch
     implementation group: 'ca.pjer', name: 'logback-awslogs-appender', version: '1.6.0'
     // AWS
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-    //Slack Notification
+    // Slack Notification
     implementation "net.gpedro.integrations.slack:slack-webhook:1.4.0"
-    //websocket
+    // Websocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    // Sentry
+    implementation 'io.sentry:sentry-spring-boot-starter:6.17.0'
+    implementation 'io.sentry:sentry-logback:6.17.0'
+
+    //https://velog.io/@saintho/javaxannotationmetawhennotfound
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
 }
 
 

@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.mukvengers.domain.chat.repository.ChatRepository;
+import com.prgrms.mukvengers.domain.chat.service.ChatService;
 import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
 import com.prgrms.mukvengers.domain.crew.service.CrewService;
 import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
@@ -64,20 +65,31 @@ public abstract class ServiceTest {
 	@Autowired
 	protected ChatRepository chatRepository;
 
+	@Autowired
+	protected ChatService chatService;
+
 	protected GeometryFactory gf = new GeometryFactory();
 
-	protected User savedUser;
+	protected User savedUser1;
+
+	protected User savedUser2;
 
 	protected Store savedStore;
 
-	protected Long savedUserId;
+	protected Long savedUser1Id;
+
+	protected Long savedUser2Id;
 
 	@BeforeEach
 	void setUpLogin() {
 
-		savedUser = userRepository.save(createUser());
+		savedUser1 = userRepository.save(createUser("123"));
 
-		savedUserId = savedUser.getId();
+		savedUser2 = userRepository.save(createUser("456"));
+
+		savedUser1Id = savedUser1.getId();
+
+		savedUser2Id = savedUser2.getId();
 
 		savedStore = storeRepository.save(createStore());
 	}

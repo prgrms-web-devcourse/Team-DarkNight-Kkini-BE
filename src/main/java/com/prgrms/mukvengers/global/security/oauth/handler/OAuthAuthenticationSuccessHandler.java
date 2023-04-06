@@ -1,8 +1,11 @@
 package com.prgrms.mukvengers.global.security.oauth.handler;
 
-import static com.prgrms.mukvengers.global.security.oauth.handler.HttpCookieOAuthAuthorizationRequestRepository.*;
+import static com.prgrms.mukvengers.global.security.oauth.repository.HttpCookieOAuthAuthorizationRequestRepository.*;
+import static java.nio.charset.StandardCharsets.*;
 
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -11,14 +14,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.prgrms.mukvengers.global.security.oauth.dto.AuthUserInfo;
-import com.prgrms.mukvengers.global.security.oauth.service.OAuthService;
+import com.prgrms.mukvengers.global.security.oauth.dto.CustomOAuth2User;
+import com.prgrms.mukvengers.global.security.token.dto.Tokens;
 import com.prgrms.mukvengers.global.security.token.service.TokenService;
 import com.prgrms.mukvengers.global.utils.CookieUtil;
 
@@ -31,21 +32,19 @@ import lombok.extern.slf4j.Slf4j;
 public class OAuthAuthenticationSuccessHandler
 	extends SavedRequestAwareAuthenticationSuccessHandler {
 
-	private final OAuthService oauthService;
+	public static final String NAME_QUERY = "name=";
 	private final TokenService tokenService;
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 		Authentication authentication) throws IOException, ServletException {
 
-		if (authentication instanceof OAuth2AuthenticationToken authenticationToken) {
-			OAuth2User oauth2User = authenticationToken.getPrincipal();
-			String providerName = authenticationToken.getAuthorizedClientRegistrationId();
-			AuthUserInfo authUserInfo = oauthService.login(oauth2User, providerName);
-			String accessToken = tokenService.createAccessToken(authUserInfo);
-			String refreshToken = tokenService.createRefreshToken(authUserInfo);
-			String targetUrl = determineTargetUrl(request, accessToken);
-			setRefreshTokenInCookie(response, refreshToken);
+		if (authentication.getPrincipal() instanceof CustomOAuth2User oauth2User) {
+
+			Tokens tokens = tokenService.createTokens(oauth2User.getUserInfo());
+
+			String targetUrl = determineTargetUrl(request, tokens.accessToken());
+			setRefreshTokenInCookie(response, tokens.refreshToken());
 			getRedirectStrategy().sendRedirect(request, response, targetUrl);
 
 		} else {
@@ -56,17 +55,34 @@ public class OAuthAuthenticationSuccessHandler
 	private String determineTargetUrl(HttpServletRequest request, String accessToken) {
 		String targetUrl = CookieUtil.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
 			.map(Cookie::getValue)
+			.map(cookie -> URLDecoder.decode(cookie, UTF_8))
+			.map(this::encodeKr)
 			.orElse(getDefaultTargetUrl());
 
 		return UriComponentsBuilder.fromUriString(targetUrl)
-			.queryParam("accessToken", accessToken) // url에도 실어 보내기
+			.queryParam("accessToken", accessToken)
 			.build().toUriString();
+	}
+
+	// 문제가 발생한 영역 일단 하드 코딩해서 해결
+	private String encodeKr(String url) {
+
+		String[] splitUrl = url.split(NAME_QUERY);
+
+		if (splitUrl.length > 1) {
+			String name = splitUrl[1];
+			String encodedName = URLEncoder.encode(name, UTF_8);
+			return splitUrl[0] + NAME_QUERY + encodedName;
+		}
+
+		return url;
 	}
 
 	private void setRefreshTokenInCookie(HttpServletResponse response, String refreshToken) {
 		ResponseCookie token = ResponseCookie.from("refreshToken", refreshToken)
 			.path(getDefaultTargetUrl())
 			.httpOnly(true)
+			.sameSite("None")
 			.secure(true)
 			.maxAge(tokenService.getRefreshTokenExpirySeconds())
 			.build();

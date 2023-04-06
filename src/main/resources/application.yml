@@ -29,6 +29,11 @@ spring:
   slack:
     webhook: ${SLACK_WEBHOOK}
 
+  task:
+    scheduling:
+      pool:
+        size: 2
+
 # front server
 front:
   server: "https://kkini.vercel.app"
@@ -45,3 +50,8 @@ decorator:
   datasource:
     p6spy:
       enable-logging: true
+
+# sentry 설정
+sentry:
+  dsn: ${SENTRY_DSN}
+  traces-sample-rate: 1.0

@@ -117,8 +117,7 @@ class ProposalControllerTest extends ControllerTest {
 							fieldWithPath("data.user.leaderCount").type(NUMBER).description("방장 횟수"),
 							fieldWithPath("data.user.crewCount").type(NUMBER).description("모임 참여 횟수"),
 							fieldWithPath("data.user.tasteScore").type(NUMBER).description("맛잘알 점수"),
-							fieldWithPath("data.user.mannerScore").type(NUMBER).description("매너 온도"),
-							fieldWithPath("data.user.mannerScore").type(NUMBER).description("매너 온도"))
+							fieldWithPath("data.user.mannerScore").type(STRING).description("매너 온도"))
 						.build()
 				)
 			));
@@ -150,7 +149,7 @@ class ProposalControllerTest extends ControllerTest {
 							fieldWithPath("data.responses.[].user.leaderCount").type(NUMBER).description("방장 횟수"),
 							fieldWithPath("data.responses.[].user.crewCount").type(NUMBER).description("모임 참여 횟수"),
 							fieldWithPath("data.responses.[].user.tasteScore").type(NUMBER).description("맛잘알 점수"),
-							fieldWithPath("data.responses.[].user.mannerScore").type(NUMBER).description("매너 온도"),
+							fieldWithPath("data.responses.[].user.mannerScore").type(STRING).description("매너 온도"),
 							fieldWithPath("data.responses.[].id").type(NUMBER).description("신청서 아이디"),
 							fieldWithPath("data.responses.[].content").type(STRING).description("신청서 내용"),
 							fieldWithPath("data.responses.[].status").type(STRING).description("신청서 상태"),
@@ -165,37 +164,7 @@ class ProposalControllerTest extends ControllerTest {
 
 	}
 
-	@Test
-	@DisplayName("[성공] 방장이 신청서를 승인하는 경우 신청서의 상태값이 'APPROVE' 로 변경되며 밥모임원에 저장된다.")
-	void update_proposalStatus_approve_success() throws Exception {
-
-		UpdateProposalRequest proposalRequest = new UpdateProposalRequest("승인");
-
-		String jsonRequest = objectMapper.writeValueAsString(proposalRequest);
-
-		mockMvc.perform(patch("/api/v1/proposals/{proposalId}", proposalId)
-				.contentType(APPLICATION_JSON)
-				.header(AUTHORIZATION, BEARER_TYPE + accessToken1)
-				.content(jsonRequest))
-			.andExpect(status().isOk())
-			.andDo(document("proposal-Approve",
-				resource(
-					builder()
-						.tag(PROPOSAL)
-						.summary("신청서 상태 승인 API")
-						.description("방장으로부터 신청서가 승인되면 밥모임원에 등록된다.")
-						.requestSchema(UPDATE_PROPOSAL_REQUEST)
-						.requestFields(
-							fieldWithPath("proposalStatus").type(STRING).description("신청서 응답 상태")
-						)
-						.responseFields()
-						.build()
-				)
-			));
-
-	}
-
-	@Test
+	@Test // 신청서가 거절 됐는데 왜 저장이 되는건가요?
 	@DisplayName("[성공] 방장이 신청서를 거절하는 경우 신청서의 상태값이 'REFUSE' 로 변경되며 밥모임원에 저장된다.")
 	void update_proposalStatus_refuse_success() throws Exception {
 
@@ -207,13 +176,13 @@ class ProposalControllerTest extends ControllerTest {
 				.contentType(APPLICATION_JSON)
 				.header(AUTHORIZATION, BEARER_TYPE + accessToken1)
 				.content(jsonRequest))
-			.andExpect(status().isOk())
+			.andExpect(status().isNoContent())
 			.andDo(document("proposal-Refuse",
 				resource(
 					builder()
 						.tag(PROPOSAL)
-						.summary("신청서 상태 거절 API")
-						.description("방장으로부터 신청서가 거절되면 밥모임원에 저장되지 않는다.")
+						.summary("신청서 상태 변경 API")
+						.description("방장은 신청서의 상태를 변경할 수 있다.")
 						.requestSchema(UPDATE_PROPOSAL_REQUEST)
 						.requestFields(
 							fieldWithPath("proposalStatus").type(STRING).description("신청서 응답 상태")
@@ -250,8 +219,7 @@ class ProposalControllerTest extends ControllerTest {
 							fieldWithPath("data.responses.[].user.leaderCount").type(NUMBER).description("방장 횟수"),
 							fieldWithPath("data.responses.[].user.crewCount").type(NUMBER).description("모임 참여 횟수"),
 							fieldWithPath("data.responses.[].user.tasteScore").type(NUMBER).description("맛잘알 점수"),
-							fieldWithPath("data.responses.[].user.mannerScore").type(NUMBER).description("매너 온도"),
-							fieldWithPath("data.responses.[].user.mannerScore").type(NUMBER).description("매너 온도"),
+							fieldWithPath("data.responses.[].user.mannerScore").type(STRING).description("매너 온도"),
 							fieldWithPath("data.responses.[].id").type(NUMBER).description("신청서 아이디"),
 							fieldWithPath("data.responses.[].content").type(STRING).description("신청서 내용"),
 							fieldWithPath("data.responses.[].status").type(STRING).description("신청서 상태"),
@@ -259,6 +227,28 @@ class ProposalControllerTest extends ControllerTest {
 							fieldWithPath("data.responses.[].storeName").type(STRING).description("가게 이름"),
 							fieldWithPath("data.responses.[].crewName").type(STRING).description("모임 이름"),
 							fieldWithPath("data.responses.[].crewId").type(NUMBER).description("모임 아이디")
+						)
+						.build()
+				)
+			));
+
+	}
+
+	@Test
+	@DisplayName("[성공] 신청서를 삭제한다.")
+	void delete_success() throws Exception {
+
+		mockMvc.perform(delete("/api/v1/proposals/{proposalId}", proposalId)
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken2))
+			.andExpect(status().isOk())
+			.andDo(document("proposal-delete",
+				resource(
+					builder()
+						.tag(PROPOSAL)
+						.summary("신청서 삭제 API")
+						.description("자신의 신청서를 삭제할 수 있다.")
+						.pathParameters(
+							parameterWithName("proposalId").description("신청서 아이디")
 						)
 						.build()
 				)

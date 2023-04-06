@@ -67,6 +67,9 @@ public class ReviewServiceImpl implements ReviewService {
 
 		Review saveReview = reviewRepository.save(review);
 
+		reviewee.addTasteScore(saveReview.getTasteScore());
+		reviewee.addMannerScore(saveReview.getMannerScore());
+
 		return new IdResponse(saveReview.getId());
 	}
 
@@ -85,7 +88,7 @@ public class ReviewServiceImpl implements ReviewService {
 			.orElseThrow(() -> new MemberNotFoundException(reviewee.getId()));
 
 		crewMemberRepository.findCrewMemberByCrewIdAndUserId(crewId, reviewer.getId())
-			.filter(crewMember -> crewMember.getCrewMemberRole() == CrewMemberRole.MEMBER)
+			.filter(crewMember -> !crewMember.isBlocked())
 			.orElseThrow(() -> new MemberNotFoundException(reviewee.getId()));
 
 		Review review = reviewMapper.toReview(memberReviewRequest, reviewer, reviewee, crew);

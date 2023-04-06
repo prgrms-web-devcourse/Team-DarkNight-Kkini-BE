@@ -1,5 +1,6 @@
 package com.prgrms.mukvengers.domain.proposal.api;
 
+import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.*;
 
 import java.net.URI;
@@ -8,12 +9,14 @@ import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -24,7 +27,7 @@ import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponses;
 import com.prgrms.mukvengers.domain.proposal.service.ProposalService;
 import com.prgrms.mukvengers.global.common.dto.ApiResponse;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
-import com.prgrms.mukvengers.global.security.jwt.JwtAuthentication;
+import com.prgrms.mukvengers.global.security.token.dto.jwt.JwtAuthentication;
 
 import lombok.RequiredArgsConstructor;
 
@@ -118,13 +121,23 @@ public class ProposalController {
 	 * @return
 	 */
 	@PatchMapping(value = "/proposals/{proposalId}", consumes = APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponse<Void>> changeProposalStatus
+	@ResponseStatus(NO_CONTENT)
+	public void changeProposalStatus
 	(
 		@PathVariable Long proposalId,
 		@RequestBody @Valid UpdateProposalRequest proposalRequest,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		 proposalService.updateProposalStatus(proposalRequest, user.id(), proposalId);
+		proposalService.updateProposalStatus(proposalRequest, user.id(), proposalId);
+	}
+
+	@DeleteMapping(value = "/proposals/{proposalId}")
+	public ResponseEntity<Void> delete
+		(
+			@PathVariable Long proposalId,
+			@AuthenticationPrincipal JwtAuthentication user
+		) {
+		proposalService.delete(proposalId, user.id());
 
 		return ResponseEntity.ok().build();
 	}

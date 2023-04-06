@@ -32,7 +32,7 @@ import com.prgrms.mukvengers.domain.crew.dto.response.CrewStatusResponse;
 import com.prgrms.mukvengers.domain.crew.service.CrewService;
 import com.prgrms.mukvengers.global.common.dto.ApiResponse;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
-import com.prgrms.mukvengers.global.security.jwt.JwtAuthentication;
+import com.prgrms.mukvengers.global.security.token.dto.jwt.JwtAuthentication;
 
 import lombok.RequiredArgsConstructor;
 

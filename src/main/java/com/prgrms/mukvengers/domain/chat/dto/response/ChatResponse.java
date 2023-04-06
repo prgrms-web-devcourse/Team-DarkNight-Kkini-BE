@@ -8,6 +8,7 @@ import lombok.Builder;
 
 @Builder
 public record ChatResponse(
+	Long id,
 	Long userId,
 	String username,
 	String profileImgUrl,

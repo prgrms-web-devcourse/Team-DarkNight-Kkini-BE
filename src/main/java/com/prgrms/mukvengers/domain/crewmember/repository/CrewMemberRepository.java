@@ -12,25 +12,30 @@ import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 
 public interface CrewMemberRepository extends JpaRepository<CrewMember, Long> {
 
-	@Query("""
-		SELECT cm
-		FROM CrewMember cm
-		WHERE cm.crew.id= :crewId AND cm.userId= :userId
-		""")
 	Optional<CrewMember> findCrewMemberByCrewIdAndUserId(@Param(value = "crewId") Long crewId,
 		@Param(value = "userId") Long userId);
 
 	@Query(value = """
 		SELECT cm.crew
 		FROM CrewMember cm
-		WHERE cm.userId = :userId
-		ORDER BY CASE WHEN cm.crew.status = 'RECRUITING' THEN 0
-					  WHEN cm.crew.status = 'CLOSE' THEN 1
-					  ELSE 2 END
+		WHERE cm.userId = :userId AND cm.crewMemberRole != 'BLOCKED'
 		""")
 	List<Crew> findAllByUserIdOrderByStatus(@Param("userId") Long userId);
 
+	@Query(value = """
+				SELECT COUNT(cm)
+				FROM  CrewMember cm
+				WHERE cm.crew.id = :crewId AND cm.crewMemberRole != 'BLOCKED'
+		""")
 	Integer countCrewMemberByCrewId(@Param(value = "crewId") Long crewId);
 
+	@Query(value = """
+						SELECT cm
+						FROM CrewMember cm
+						WHERE cm.crew.id = :crewId AND cm.crewMemberRole != 'BLOCKED'
+		""")
 	List<CrewMember> findAllByCrewId(@Param(value = "crewId") Long crewId);
+
+	void deleteByUserIdAndCrewId(@Param(value = "userId") Long userId, @Param(value = "crewId") Long crewId);
+
 }

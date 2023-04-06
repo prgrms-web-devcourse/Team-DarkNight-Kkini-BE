@@ -62,6 +62,7 @@ public class CookieUtil {
 			.path("/")
 			.httpOnly(true)
 			.secure(true)
+			.sameSite("None")
 			.maxAge(0)
 			.build();
 	}

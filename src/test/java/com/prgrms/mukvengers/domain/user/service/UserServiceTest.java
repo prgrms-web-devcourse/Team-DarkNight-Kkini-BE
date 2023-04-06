@@ -60,7 +60,7 @@ class UserServiceTest extends ServiceTest {
 				.hasFieldOrPropertyWithValue("leaderCount", 0)
 				.hasFieldOrPropertyWithValue("crewCount", 0)
 				.hasFieldOrPropertyWithValue("tasteScore", 0)
-				.hasFieldOrPropertyWithValue("mannerScore", 36.5)
+				.hasFieldOrPropertyWithValue("mannerScore", "36.5")
 			;
 		}
 

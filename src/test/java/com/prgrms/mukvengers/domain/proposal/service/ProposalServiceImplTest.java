@@ -58,13 +58,13 @@ class ProposalServiceImplTest extends ServiceTest {
 		CreateProposalRequest proposalRequest = ProposalObjectProvider.createProposalRequest(leader.getId());
 
 		// when
-		IdResponse response = proposalService.create(proposalRequest, savedUserId, crew.getId());
+		IdResponse response = proposalService.create(proposalRequest, savedUser1Id, crew.getId());
 
 		// then
 		Optional<Proposal> findProposal = proposalRepository.findById(response.id());
 		assertThat(findProposal).isPresent();
 		assertThat(findProposal.get())
-			.hasFieldOrPropertyWithValue("user", savedUser)
+			.hasFieldOrPropertyWithValue("user", savedUser1)
 			.hasFieldOrPropertyWithValue("leaderId", leader.getId())
 			.hasFieldOrPropertyWithValue("crewId", crew.getId())
 			.hasFieldOrPropertyWithValue("content", proposalRequest.content());
@@ -75,7 +75,7 @@ class ProposalServiceImplTest extends ServiceTest {
 	void createProposal_fail_duplicate() {
 
 		// given
-		Proposal createProposal = createProposal(savedUser, leader.getId(), crew.getId());
+		Proposal createProposal = createProposal(savedUser1, leader.getId(), crew.getId());
 		proposalRepository.save(createProposal);
 
 		CreateProposalRequest worstRequest = createProposalRequest(leader.getId());
@@ -83,7 +83,7 @@ class ProposalServiceImplTest extends ServiceTest {
 		// when & then
 		assertThatThrownBy
 			(
-				() -> proposalService.create(worstRequest, savedUserId, crew.getId())
+				() -> proposalService.create(worstRequest, savedUser1Id, crew.getId())
 			).isInstanceOf(DuplicateProposalException.class);
 	}
 
@@ -92,7 +92,7 @@ class ProposalServiceImplTest extends ServiceTest {
 	void createProposal_fail_countOverCapacity() {
 
 		//given
-		List<CrewMember> crewMembers = CrewMemberObjectProvider.createCrewMembers(savedUserId, crew,
+		List<CrewMember> crewMembers = CrewMemberObjectProvider.createCrewMembers(savedUser1Id, crew,
 			CrewMemberRole.MEMBER,
 			crew.getCapacity());
 
@@ -103,7 +103,7 @@ class ProposalServiceImplTest extends ServiceTest {
 		// when & then
 		assertThatThrownBy
 			(
-				() -> proposalService.create(proposalRequest, savedUserId, crew.getId())
+				() -> proposalService.create(proposalRequest, savedUser1Id, crew.getId())
 			)
 			.isInstanceOf(CrewMemberOverCapacity.class);
 	}
@@ -113,16 +113,16 @@ class ProposalServiceImplTest extends ServiceTest {
 	void createProposal_fail_blockedUser() {
 
 		//given
-		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(savedUserId, crew,
+		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(savedUser1Id, crew,
 			CrewMemberRole.BLOCKED);
 		crewMemberRepository.save(createCrewMember);
 
-		CreateProposalRequest proposalRequest = ProposalObjectProvider.createProposalRequest(savedUserId);
+		CreateProposalRequest proposalRequest = ProposalObjectProvider.createProposalRequest(savedUser1Id);
 
 		// when & then
 		assertThatThrownBy
 			(
-				() -> proposalService.create(proposalRequest, savedUserId, crew.getId())
+				() -> proposalService.create(proposalRequest, savedUser1Id, crew.getId())
 			)
 			.isInstanceOf(ExistCrewMemberRoleException.class);
 	}
@@ -147,16 +147,16 @@ class ProposalServiceImplTest extends ServiceTest {
 	void createProposal_fail_DuplicatedUser() {
 
 		//given
-		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(savedUserId, crew,
+		CrewMember createCrewMember = CrewMemberObjectProvider.createCrewMember(savedUser1Id, crew,
 			CrewMemberRole.MEMBER);
 		crewMemberRepository.save(createCrewMember);
 
-		CreateProposalRequest proposalRequest = ProposalObjectProvider.createProposalRequest(savedUserId);
+		CreateProposalRequest proposalRequest = ProposalObjectProvider.createProposalRequest(savedUser1Id);
 
 		// when & then
 		assertThatThrownBy
 			(
-				() -> proposalService.create(proposalRequest, savedUserId, crew.getId())
+				() -> proposalService.create(proposalRequest, savedUser1Id, crew.getId())
 			)
 			.isInstanceOf(ExistCrewMemberRoleException.class);
 	}
@@ -263,7 +263,7 @@ class ProposalServiceImplTest extends ServiceTest {
 			.hasFieldOrPropertyWithValue("leaderCount", user.getLeaderCount())
 			.hasFieldOrPropertyWithValue("crewCount", user.getCrewCount())
 			.hasFieldOrPropertyWithValue("tasteScore", user.getTasteScore())
-			.hasFieldOrPropertyWithValue("mannerScore", user.getMannerScore());
+			.hasFieldOrPropertyWithValue("mannerScore", String.valueOf(user.getMannerScore()));
 	}
 
 	@Test
@@ -300,6 +300,26 @@ class ProposalServiceImplTest extends ServiceTest {
 
 		//then
 		assertThat(responses.responses()).hasSize(proposals.size());
+	}
+
+	@Test
+	@DisplayName("[성공] 신청서 아이디로 신청서를 삭제한다.")
+	void delete_success() {
+
+		//given
+		User user = createUser("1232456789");
+		userRepository.save(user);
+
+		Proposal proposal = createProposal(user, leader.getId(), crew.getId());
+		proposalRepository.save(proposal);
+
+		//when
+		proposalService.delete(proposal.getId(), user.getId());
+
+		//then
+		Optional<Proposal> optionalProposal = proposalRepository.findById(proposal.getId());
+
+		assertThat(optionalProposal).isEmpty();
 	}
 
 }
