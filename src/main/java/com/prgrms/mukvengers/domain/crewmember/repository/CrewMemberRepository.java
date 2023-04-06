@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -36,6 +37,8 @@ public interface CrewMemberRepository extends JpaRepository<CrewMember, Long> {
 		""")
 	List<CrewMember> findAllByCrewId(@Param(value = "crewId") Long crewId);
 
-	void deleteByUserIdAndCrewId(@Param(value = "userId") Long userId, @Param(value = "crewId") Long crewId);
+	@Modifying
+	@Query(value = "DELETE FROM crew_member cm WHERE user_id = :userId AND crew_id = :crewId", nativeQuery = true)
+	int deleteByUserIdAndCrewId(@Param(value = "userId") Long userId, @Param(value = "crewId") Long crewId);
 
 }

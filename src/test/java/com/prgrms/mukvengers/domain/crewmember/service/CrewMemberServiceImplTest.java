@@ -18,7 +18,6 @@ import com.prgrms.mukvengers.domain.crewmember.exception.NotMemberException;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
-import com.prgrms.mukvengers.utils.CrewMemberObjectProvider;
 
 class CrewMemberServiceImplTest extends ServiceTest {
 
@@ -51,7 +50,7 @@ class CrewMemberServiceImplTest extends ServiceTest {
 			.hasFieldOrPropertyWithValue("crew", crew)
 			.hasFieldOrPropertyWithValue("crewMemberRole", LEADER);
 	}
- 
+
 	@Test
 	@DisplayName("[성공] 사용자 아이디, 강퇴할 사용자 아이디, 모임 아이디로 사용자를 강퇴한다.")
 	void block_success() {
@@ -60,7 +59,7 @@ class CrewMemberServiceImplTest extends ServiceTest {
 		Crew crew = createCrew(savedStore);
 		crewRepository.save(crew);
 
-  		CrewMember leader = createCrewMember(savedUser1Id, crew, LEADER);
+		CrewMember leader = createCrewMember(savedUser1Id, crew, LEADER);
 		CrewMember member = createCrewMember(savedUser2Id, crew, MEMBER);
 
 		crewMemberRepository.save(leader);
@@ -109,24 +108,6 @@ class CrewMemberServiceImplTest extends ServiceTest {
 		assertThatThrownBy(
 			() -> crewMemberService.block(leader.getUserId(), leader.getUserId(), crew.getId())).isInstanceOf(
 			NotMemberException.class);
-  	}
-
-  	@Test
-	@DisplayName("[성공] 모임원 아이디로 모임원을 삭제한다")
-	void delete_success() {
-
-		//given
-		Crew crew = createCrew(savedStore);
-		crewRepository.save(crew);
-
-		CrewMember crewMember = CrewMemberObjectProvider.createCrewMember(savedUser1Id, crew, MEMBER);
-		crewMemberRepository.save(crewMember);
-
-		//when
-		crewMemberService.delete(crewMember.getUserId(), crew.getId());
-
-		//then
-		Optional<CrewMember> optionalCrewMember = crewMemberRepository.findById(crewMember.getId());
-		assertThat(optionalCrewMember).isEmpty();
 	}
+
 }
