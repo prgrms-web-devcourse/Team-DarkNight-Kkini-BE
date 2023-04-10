@@ -94,11 +94,10 @@ class CrewMemberRepositoryTest extends RepositoryTest {
 		crewMemberRepository.save(crewMember);
 
 		//when
-		crewMemberRepository.deleteByUserIdAndCrewId(savedUser1Id, crew.getId());
+		int delete = crewMemberRepository.deleteByUserIdAndCrewId(savedUser1Id, crew.getId());
 
 		//then
-		Optional<CrewMember> optionalCrewMember = crewMemberRepository.findById(crewMember.getId());
-		assertThat(optionalCrewMember).isEmpty();
+		assertThat(delete).isEqualTo(1);
 
 	}
 }
