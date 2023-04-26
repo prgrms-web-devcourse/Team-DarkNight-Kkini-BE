@@ -32,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 public class OAuthAuthenticationSuccessHandler
 	extends SavedRequestAwareAuthenticationSuccessHandler {
 
-	public static final String NAME_QUERY = "name=";
+	public static final String QUERY = "restaurantName=";
 	private final TokenService tokenService;
 
 	@Override
@@ -67,12 +67,12 @@ public class OAuthAuthenticationSuccessHandler
 	// 문제가 발생한 영역 일단 하드 코딩해서 해결
 	private String encodeKr(String url) {
 
-		String[] splitUrl = url.split(NAME_QUERY);
+		String[] splitUrl = url.split(QUERY);
 
 		if (splitUrl.length > 1) {
 			String name = splitUrl[1];
 			String encodedName = URLEncoder.encode(name, UTF_8);
-			return splitUrl[0] + NAME_QUERY + encodedName;
+			return splitUrl[0] + QUERY + encodedName;
 		}
 
 		return url;
