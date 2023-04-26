@@ -9,13 +9,11 @@ import java.util.stream.Collectors;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.prgrms.mukvengers.domain.crew.dto.event.CreateCrewEvent;
 import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.request.SearchCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewDetailResponse;
@@ -61,7 +59,6 @@ public class CrewServiceImpl implements CrewService {
 	private final CrewMapper crewMapper;
 	private final StoreMapper storeMapper;
 	private final CrewMemberMapper crewMemberMapper;
-	private final ApplicationEventPublisher publisher;
 
 	@Override
 	@Transactional
@@ -82,7 +79,7 @@ public class CrewServiceImpl implements CrewService {
 		}
 
 		crewRepository.save(crew);
-		publisher.publishEvent(new CreateCrewEvent(userId, crew));
+
 		return new IdResponse(crew.getId());
 	}
 
