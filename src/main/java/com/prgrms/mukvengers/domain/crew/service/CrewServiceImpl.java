@@ -87,7 +87,7 @@ public class CrewServiceImpl implements CrewService {
 
 	@Override
 	public CrewResponses<MyCrewResponse> getByUserId(Long userId) {
-		List<MyCrewResponse> responses = crewMemberRepository.findAllByUserIdAndNotBlocked(userId)
+		List<MyCrewResponse> responses = crewMemberRepository.findAllByUserIdAndNotBlockedOrderByPromiseTime(userId)
 			.stream()
 			.map(crew -> crewMapper.toMyCrewResponse(
 				crew,

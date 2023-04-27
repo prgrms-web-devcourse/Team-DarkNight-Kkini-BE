@@ -5,6 +5,8 @@ import static com.prgrms.mukvengers.utils.CrewObjectProvider.*;
 import static com.prgrms.mukvengers.utils.UserObjectProvider.*;
 import static org.assertj.core.api.Assertions.*;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -98,6 +100,33 @@ class CrewMemberRepositoryTest extends RepositoryTest {
 
 		//then
 		assertThat(delete).isEqualTo(1);
+
+	}
+
+	@Test
+	@DisplayName("[성공] 사용자 아이디로 사용자가 참여한 모임을 약속시간이 빠른순으로 조회한다.")
+	void findAllByUserIdAndNotBlocked_success() {
+
+		//given
+		Crew crew1 = CrewObjectProvider.createCrew(savedStore, LocalDateTime.now().minusDays(1L));
+		Crew crew2 = CrewObjectProvider.createCrew(savedStore, LocalDateTime.now().plusDays(1L));
+		Crew crew3 = CrewObjectProvider.createCrew(savedStore, LocalDateTime.now());
+		CrewMember crewMember1 = CrewMemberObjectProvider.createCrewMember(savedUser1Id, crew1, CrewMemberRole.MEMBER);
+		CrewMember crewMember2 = CrewMemberObjectProvider.createCrewMember(savedUser1Id, crew2, CrewMemberRole.MEMBER);
+		CrewMember crewMember3 = CrewMemberObjectProvider.createCrewMember(savedUser1Id, crew3, CrewMemberRole.MEMBER);
+		crew1.addCrewMember(crewMember1);
+		crew2.addCrewMember(crewMember2);
+		crew3.addCrewMember(crewMember3);
+		crewRepository.save(crew1);
+		crewRepository.save(crew2);
+		crewRepository.save(crew3);
+
+		//when
+		List<Crew> crews = crewMemberRepository.findAllByUserIdAndNotBlockedOrderByPromiseTime(savedUser1Id);
+
+		for (int i = 0; i < crews.size() - 1; i++) {
+			assertThat(crews.get(i).getPromiseTime()).isBefore(crews.get(i + 1).getPromiseTime());
+		}
 
 	}
 }
