@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
@@ -45,7 +46,7 @@ public class Crew extends BaseEntity {
 	private static final Integer MAX_LONGITUDE = 180;
 	private static final Integer MIN_LONGITUDE = -180;
 
-	@OneToMany(mappedBy = "crew")
+	@OneToMany(mappedBy = "crew", cascade = CascadeType.PERSIST)
 	private final List<CrewMember> crewMembers = new ArrayList<>();
 
 	@Id
