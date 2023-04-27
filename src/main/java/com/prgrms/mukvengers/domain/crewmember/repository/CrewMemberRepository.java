@@ -21,7 +21,7 @@ public interface CrewMemberRepository extends JpaRepository<CrewMember, Long> {
 		FROM CrewMember cm
 		WHERE cm.userId = :userId AND cm.crewMemberRole != 'BLOCKED'
 		""")
-	List<Crew> findAllByUserIdOrderByStatus(@Param("userId") Long userId);
+	List<Crew> findAllByUserIdAndNotBlocked(@Param("userId") Long userId);
 
 	@Query(value = """
 				SELECT COUNT(cm)

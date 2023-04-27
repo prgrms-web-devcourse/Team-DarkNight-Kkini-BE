@@ -21,6 +21,7 @@ import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponses;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewStatusResponse;
+import com.prgrms.mukvengers.domain.crew.dto.response.MyCrewResponse;
 import com.prgrms.mukvengers.domain.crew.exception.CrewNotFoundException;
 import com.prgrms.mukvengers.domain.crew.exception.CrewStatusException;
 import com.prgrms.mukvengers.domain.crew.mapper.CrewMapper;
@@ -28,6 +29,7 @@ import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
 import com.prgrms.mukvengers.domain.crewmember.dto.response.CrewMemberResponse;
+import com.prgrms.mukvengers.domain.crewmember.dto.response.MyCrewMemberResponse;
 import com.prgrms.mukvengers.domain.crewmember.exception.MemberNotFoundException;
 import com.prgrms.mukvengers.domain.crewmember.exception.NotLeaderException;
 import com.prgrms.mukvengers.domain.crewmember.mapper.CrewMemberMapper;
@@ -84,24 +86,25 @@ public class CrewServiceImpl implements CrewService {
 	}
 
 	@Override
-	public CrewResponses getByUserId(Long userId) {
-
-		List<CrewDetailResponse> responses = crewMemberRepository.findAllByUserIdOrderByStatus(userId)
+	public CrewResponses<MyCrewResponse> getByUserId(Long userId) {
+		List<MyCrewResponse> responses = crewMemberRepository.findAllByUserIdAndNotBlocked(userId)
 			.stream()
-			.map(crew -> crewMapper.toCrewDetailResponse(
+			.map(crew -> crewMapper.toMyCrewResponse(
 				crew,
-				crewMemberRepository.countCrewMemberByCrewId(crew.getId()), crewMemberRepository.findAllByCrewId(
-						crew.getId())
-					.stream()
-					.map(crewMember -> crewMemberMapper.toCrewMemberResponse(
-						userRepository.findById(crewMember.getUserId())
-							.orElseThrow(() -> new UserNotFoundException(crewMember.getUserId())),
-						crewMember.getCrewMemberRole(), crewMember.getId()))
-					.toList(), storeMapper.toStoreResponse(crew.getStore()),
-				proposalRepository.findByUserIdAndCrewId(userId, crew.getId()).orElseGet(() -> NOT_APPLIED)))
-			.toList();
+				crew.getCrewMembers().size(),
+				getProfileImgUrl(crew)
+			)).toList();
+		return new CrewResponses<>(responses);
 
-		return new CrewResponses(responses);
+	}
+
+	private List<MyCrewMemberResponse> getProfileImgUrl(Crew crew) {
+		return crew.getCrewMembers()
+			.stream()
+			.map(crewMember -> crewMemberMapper.toMyCrewMemberResponse(
+				userRepository.findProfileImgUrlByUserId(crewMember.getUserId())
+					.orElseThrow(() -> new UserNotFoundException(crewMember.getUserId())), crewMember.getId()
+			)).toList();
 	}
 
 	@Override
