@@ -23,6 +23,7 @@ import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponses;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
+import com.prgrms.mukvengers.domain.crew.dto.response.MyCrewResponse;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
@@ -89,14 +90,14 @@ class CrewServiceImplTest extends ServiceTest {
 	void getByUserId_success() {
 
 		List<Crew> crews = createCrews(savedStore);
-		crewRepository.saveAll(crews);
 
 		crews.forEach(crew -> {
 			CrewMember crewMember = createCrewMember(savedUser1Id, crew, CrewMemberRole.MEMBER);
-			crewMemberRepository.save(crewMember);
+			crew.addCrewMember(crewMember);
 		});
+		crewRepository.saveAll(crews);
 
-		CrewResponses responses = crewService.getByUserId(savedUser1Id);
+		CrewResponses<MyCrewResponse> responses = crewService.getByUserId(savedUser1Id);
 		assertThat(responses.responses()).hasSize(crews.size());
 	}
 

@@ -44,6 +44,18 @@ public class CrewObjectProvider {
 			.build();
 	}
 
+	public static Crew createCrew(Store store, LocalDateTime localDateTime) {
+		return Crew.builder()
+			.store(store)
+			.name(NAME)
+			.location(LOCATION)
+			.promiseTime(localDateTime)
+			.capacity(CAPACITY)
+			.content(CONTENT)
+			.category(CATEGORY)
+			.build();
+	}
+
 	public static List<Crew> createCrews(Store store) {
 		return IntStream.range(0, 20)
 			.mapToObj(i -> createCrew(store))

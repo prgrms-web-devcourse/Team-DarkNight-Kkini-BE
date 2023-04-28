@@ -53,17 +53,17 @@ class CrewControllerTest extends ControllerTest {
 	void setUp() {
 
 		List<Crew> crews = createCrews(savedStore);
-		crewRepository.saveAll(crews);
 		crews.forEach(crew -> {
 			CrewMember crewMember = createCrewMember(savedUser1Id, crew, CrewMemberRole.MEMBER);
-			crewMemberRepository.save(crewMember);
+			crew.addCrewMember(crewMember);
 		});
+		crewRepository.saveAll(crews);
 
 		crew = crews.get(0);
 		crewId = crew.getId();
 
 		CrewMember crewMember = createCrewMember(savedUser2Id, crew, CrewMemberRole.LEADER);
-		crewMemberRepository.save(crewMember);
+		crew.addCrewMember(crewMember);
 
 		Proposal proposal = createProposal(savedUser1, savedUser2Id, crewId);
 		proposalRepository.save(proposal);
@@ -195,34 +195,16 @@ class CrewControllerTest extends ControllerTest {
 						.responseFields(
 							fieldWithPath("data.responses.[].currentMember").type(NUMBER).description("밥 모임 현재 인원"),
 							fieldWithPath("data.responses.[].id").type(NUMBER).description("밥 모임 아이디"),
-							fieldWithPath("data.responses.[].name").type(STRING).description("밥 모임 이름"),
+							fieldWithPath("data.responses.[].placeName").type(STRING).description("밥 모임 아이디"),
+							fieldWithPath("data.responses.[].crewName").type(STRING).description("밥 모임 이름"),
 							fieldWithPath("data.responses.[].capacity").type(NUMBER).description("밥 모임 정원"),
 							fieldWithPath("data.responses.[].promiseTime").type(ARRAY).description("약속 시간"),
 							fieldWithPath("data.responses.[].crewStatus").type(STRING).description("밥 모임 상태"),
-							fieldWithPath("data.responses.[].proposalStatus").type(STRING).description("신청서 상태"),
 							fieldWithPath("data.responses.[].content").type(STRING).description("밥 모임 내용"),
 							fieldWithPath("data.responses.[].category").type(STRING).description("밥 모임 카테고리"),
-							fieldWithPath("data.responses.[].members.[].userId").type(NUMBER).description("유저 ID"),
 							fieldWithPath("data.responses.[].members.[].id").type(NUMBER).description("모임원 ID"),
-							fieldWithPath("data.responses.[].members.[].nickname").type(STRING).description("닉네임"),
 							fieldWithPath("data.responses.[].members.[].profileImgUrl").type(STRING)
-								.description("프로필 이미지"),
-							fieldWithPath("data.responses.[].members.[].crewMemberRole").type(STRING)
-								.description("사용자의 권한"),
-							fieldWithPath("data.responses.[].response.id").type(NUMBER).description("가게 아이디"),
-							fieldWithPath("data.responses.[].response.latitude").type(NUMBER).description("위도"),
-							fieldWithPath("data.responses.[].response.longitude").type(NUMBER).description("경도"),
-							fieldWithPath("data.responses.[].response.placeId").type(STRING)
-								.description("지도 api 제공 id"),
-							fieldWithPath("data.responses.[].response.placeName").type(STRING).description("가게 이름"),
-							fieldWithPath("data.responses.[].response.categories").type(STRING).description("가게 카테고리"),
-							fieldWithPath("data.responses.[].response.roadAddressName").type(STRING)
-								.description("가게 도로명 주소"),
-							fieldWithPath("data.responses.[].response.photoUrls").type(STRING).description("가게 사진 URL"),
-							fieldWithPath("data.responses.[].response.kakaoPlaceUrl").type(STRING)
-								.description("가게 상세 페이지 URL"),
-							fieldWithPath("data.responses.[].response.phoneNumber").type(STRING).description("가게 전화번호"))
-						.build()
+								.description("프로필 이미지")).build()
 				)
 			));
 	}

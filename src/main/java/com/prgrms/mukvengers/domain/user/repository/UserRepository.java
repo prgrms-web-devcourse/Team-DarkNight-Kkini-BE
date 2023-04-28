@@ -19,4 +19,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	Optional<User> findByUserIdByProviderAndOauthId(
 		@Param("provider") String provider,
 		@Param("oauthId") String oauthId);
+
+	@Query("""
+		SELECT u.profileImgUrl
+		FROM User u
+		WHERE u.id = :userId
+		""")
+	Optional<String> findProfileImgUrlByUserId(@Param("userId") Long userId);
 }

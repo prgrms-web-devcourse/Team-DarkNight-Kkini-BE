@@ -13,8 +13,10 @@ import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewDetailResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponse;
+import com.prgrms.mukvengers.domain.crew.dto.response.MyCrewResponse;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crewmember.dto.response.CrewMemberResponse;
+import com.prgrms.mukvengers.domain.crewmember.dto.response.MyCrewMemberResponse;
 import com.prgrms.mukvengers.domain.proposal.model.vo.ProposalStatus;
 import com.prgrms.mukvengers.domain.store.dto.response.StoreResponse;
 import com.prgrms.mukvengers.domain.store.model.Store;
@@ -38,6 +40,12 @@ public interface CrewMapper {
 	@Mapping(target = "proposalStatus", source = "proposalStatus")
 	CrewDetailResponse toCrewDetailResponse(Crew crew, Integer currentMember,
 		List<CrewMemberResponse> members, StoreResponse storeResponse, ProposalStatus proposalStatus);
+
+	@Mapping(target = "promiseTime", source = "crew.promiseTime")
+	@Mapping(target = "crewName", source = "crew.name")
+	@Mapping(target = "placeName", source = "crew.store.placeName")
+	@Mapping(target = "crewStatus", source = "crew.status")
+	MyCrewResponse toMyCrewResponse(Crew crew, Integer currentMember, List<MyCrewMemberResponse> members);
 
 	@Mapping(target = "latitude", source = "location", qualifiedByName = "latitudeMethod")
 	@Mapping(target = "longitude", source = "location", qualifiedByName = "longitudeMethod")

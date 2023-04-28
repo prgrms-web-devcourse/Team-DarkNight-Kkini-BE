@@ -5,6 +5,7 @@ import org.mapstruct.Mapping;
 
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crewmember.dto.response.CrewMemberResponse;
+import com.prgrms.mukvengers.domain.crewmember.dto.response.MyCrewMemberResponse;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.domain.user.model.User;
@@ -20,5 +21,9 @@ public interface CrewMemberMapper {
 	@Mapping(target = "profileImgUrl", source = "user.profileImgUrl")
 	@Mapping(target = "crewMemberRole", source = "crewMemberRole")
 	CrewMemberResponse toCrewMemberResponse(User user, CrewMemberRole crewMemberRole, Long crewMemberId);
+
+	@Mapping(target = "id", source = "crewMemberId")
+	@Mapping(target = "profileImgUrl", source = "profileImgUrl")
+	MyCrewMemberResponse toMyCrewMemberResponse(String profileImgUrl, Long crewMemberId);
 
 }
