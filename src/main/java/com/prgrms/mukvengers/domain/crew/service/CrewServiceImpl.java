@@ -109,21 +109,24 @@ public class CrewServiceImpl implements CrewService {
 
 	@Override
 	public CrewDetailResponse getById(Long userId, Long crewId) {
-
 		Crew crew = crewRepository.findById(crewId)
 			.orElseThrow(() -> new CrewNotFoundException(crewId));
 
-		Integer currentMember = crewMemberRepository.countCrewMemberByCrewId(crewId);
+		int currentMember = crew.getCrewMembers().size();
 
-		List<CrewMemberResponse> members = crewMemberRepository.findAllByCrewId(crewId)
+		List<CrewMemberResponse> members = crew.getCrewMembers()
 			.stream()
 			.map(crewMember -> crewMemberMapper.toCrewMemberResponse(
 				userRepository.findById(crewMember.getUserId())
 					.orElseThrow(() -> new UserNotFoundException(crewMember.getUserId())),
-				crewMember.getCrewMemberRole(), crewMember.getId()))
+				crewMember.getCrewMemberRole(),
+				crewMember.getId()))
 			.toList();
 
-		return crewMapper.toCrewDetailResponse(crew, currentMember, members,
+		return crewMapper.toCrewDetailResponse(
+			crew,
+			currentMember,
+			members,
 			storeMapper.toStoreResponse(crew.getStore()),
 			proposalRepository.findByUserIdAndCrewId(userId, crewId).orElseGet(() -> NOT_APPLIED));
 	}
