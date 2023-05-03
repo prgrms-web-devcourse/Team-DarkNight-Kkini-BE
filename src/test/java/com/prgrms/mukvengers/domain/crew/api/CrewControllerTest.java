@@ -64,6 +64,7 @@ class CrewControllerTest extends ControllerTest {
 
 		CrewMember crewMember = createCrewMember(savedUser2Id, crew, CrewMemberRole.LEADER);
 		crew.addCrewMember(crewMember);
+		crewMemberRepository.save(crewMember);
 
 		Proposal proposal = createProposal(savedUser1, savedUser2Id, crewId);
 		proposalRepository.save(proposal);
