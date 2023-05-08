@@ -8,6 +8,7 @@ plugins {
     id 'org.hidetake.swagger.generator' version '2.18.2'
     id 'com.epages.restdocs-api-spec' version '0.16.2'
     id "co.uzzu.dotenv.gradle" version "2.0.0"
+    id 'jacoco'
 }
 
 group = 'com.prgrms'
@@ -109,10 +110,10 @@ dependencies {
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 }
 
-
 tasks.named('test') {
     outputs.dir snippetsDir
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
 }
 
 tasks.named('asciidoctor') {
@@ -159,6 +160,40 @@ tasks.withType(BootJar).configureEach {
     dependsOn 'copySwaggerUI'
 }
 
+jacocoTestReport {
+    dependsOn test
+    finalizedBy 'jacocoTestCoverageVerification'
+    reports {
+        xml.required = false
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
+}
+
+jacoco {
+    toolVersion = "0.8.8"
+    reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir') as Directory
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            enabled = true
+            element = 'CLASS'
+
+            limit {
+                counter = 'METHOD'
+                value = 'COVEREDRATIO'
+                minimum = 0.7
+            }
+
+            excludes = [
+            ]
+
+        }
+
+    }
+}
 
 
 
