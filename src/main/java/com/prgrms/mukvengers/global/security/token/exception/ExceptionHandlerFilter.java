@@ -7,6 +7,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.CharEncoding;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -36,8 +38,8 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
 	private void generateErrorResponse(HttpServletResponse response, TokenException e) throws IOException {
 		response.setStatus(e.getErrorCode().getStatus().value());
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
+		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+		response.setCharacterEncoding(CharEncoding.UTF_8);
 		response.getWriter()
 			.write(objectMapper.writeValueAsString(
 				ErrorResponse.of(e.getErrorCode())));
