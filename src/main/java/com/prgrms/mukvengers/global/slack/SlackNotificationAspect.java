@@ -51,7 +51,7 @@ public class SlackNotificationAspect {
 		threadPoolTaskExecutor.execute(() -> sendSlackMessage(requestInfo, e));
 	}
 
-	private void sendSlackMessage(RequestInfo request, Exception e) {
+	public void sendSlackMessage(RequestInfo request, Exception e) {
 		SlackAttachment slackAttachment = new SlackAttachment();
 		slackAttachment.setFallback("Error");
 		slackAttachment.setColor("danger");

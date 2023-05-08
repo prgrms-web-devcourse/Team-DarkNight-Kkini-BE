@@ -48,7 +48,7 @@ public class TokenService { // TODO: authService와 TokenService로 분리하는
 	@Transactional
 	public String createRefreshToken(Long userId, String userRole) {
 		RefreshToken refreshToken
-			= new RefreshToken(UUID.randomUUID().toString(), userId, userRole, refreshTokenExpirySeconds);
+			= new RefreshToken(UUID.randomUUID().toString(), userId, userRole, getRefreshTokenExpirySeconds());
 
 		return refreshTokenRepository.save(refreshToken).getRefreshToken();
 	}
