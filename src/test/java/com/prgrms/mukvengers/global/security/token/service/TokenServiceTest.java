@@ -14,8 +14,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import com.prgrms.mukvengers.base.SliceTest;
@@ -32,15 +33,16 @@ import com.prgrms.mukvengers.global.security.token.repository.RefreshTokenReposi
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.impl.DefaultClaims;
 
+@SpringBootTest(classes = {TokenService.class})
 class TokenServiceTest extends SliceTest {
 
-	@Mock
+	@MockBean
 	private JwtTokenProvider jwtTokenProvider;
 
-	@Mock
+	@MockBean
 	private RefreshTokenRepository refreshTokenRepository;
 
-	@InjectMocks
+	@Autowired
 	private TokenService tokenService;
 
 	private AuthUserInfo userInfo;
@@ -158,7 +160,7 @@ class TokenServiceTest extends SliceTest {
 	@DisplayName("[성공] accessToken을 통해서 인증된 유저 정보를 가져올 수 있다.")
 	void getAuthenticationByAccessToken_success() {
 		// Given
-		Claims claims = new DefaultClaims(Map.of("id", userInfo.id(), "role", userInfo.role()));
+		Claims claims = new DefaultClaims(Map.of("userId", userInfo.id(), "role", userInfo.role()));
 		willDoNothing().given(jwtTokenProvider).validateToken(any(String.class));
 		given(jwtTokenProvider.getClaims(any(String.class))).willReturn(claims);
 

@@ -34,20 +34,21 @@ class JwtAuthenticationFilterTest {
 	private static final long ACCESS_TOKEN_EXPIRY_SECONDS = 3L;
 	private static final String USER_ROLE = "USER";
 
+	@Mock
+	private RefreshTokenRepository refreshTokenRepository;
+
 	private JwtAuthenticationFilter jwtAuthenticationFilter;
 	private JwtTokenProvider jwtTokenProvider;
 	private TokenService tokenService;
-	@Mock private RefreshTokenRepository refreshTokenRepository;
-	private MockHttpServletRequest request;
-	private MockHttpServletResponse response;
-	private MockFilterChain filterChain;
+
+	private final MockHttpServletRequest request = new MockHttpServletRequest();
+	private final MockHttpServletResponse response = new MockHttpServletResponse();
+	private final MockFilterChain filterChain = new MockFilterChain();
+
 	private String ACCESS_TOKEN;
 
 	@BeforeEach
 	void setUp() {
-		request = new MockHttpServletRequest();
-		response = new MockHttpServletResponse();
-		filterChain = new MockFilterChain();
 		jwtTokenProvider = new JwtTokenProvider(ISSUER, SECRET_KEY, ACCESS_TOKEN_EXPIRY_SECONDS);
 		tokenService = new TokenService(jwtTokenProvider, refreshTokenRepository);
 		jwtAuthenticationFilter = new JwtAuthenticationFilter(tokenService);

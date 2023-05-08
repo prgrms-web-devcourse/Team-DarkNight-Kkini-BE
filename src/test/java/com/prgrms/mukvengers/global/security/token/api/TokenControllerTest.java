@@ -20,8 +20,10 @@ import com.prgrms.mukvengers.global.security.token.service.TokenService;
 class TokenControllerTest extends ControllerTest {
 
 	private final String invalidRefreshToken = "invalidRefreshToken";
+
 	@Autowired
-	TokenService tokenservice;
+	private TokenService tokenservice;
+
 	private String validRefreshToken;
 
 	@BeforeEach

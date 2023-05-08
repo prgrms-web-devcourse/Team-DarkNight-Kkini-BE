@@ -16,11 +16,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 class RefreshTokenTest {
 
 	private String validRefreshToken;
-
 	private Long validUserId;
-
 	private String validRole;
-
 	private long validExpiration;
 
 	@BeforeEach
