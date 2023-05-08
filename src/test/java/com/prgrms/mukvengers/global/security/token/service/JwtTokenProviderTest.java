@@ -1,4 +1,4 @@
-package com.prgrms.mukvengers.global.security.token.filter;
+package com.prgrms.mukvengers.global.security.token.service;
 
 import static com.prgrms.mukvengers.utils.UserObjectProvider.*;
 import static org.assertj.core.api.Assertions.*;
@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 
 import com.prgrms.mukvengers.global.security.token.exception.ExpiredTokenException;
 import com.prgrms.mukvengers.global.security.token.exception.InvalidTokenException;
-import com.prgrms.mukvengers.global.security.token.service.JwtTokenProvider;
 
 import io.jsonwebtoken.Claims;
 
@@ -26,28 +25,22 @@ class JwtTokenProviderTest {
 	private String accessToken;
 
 	@Test
-	@DisplayName("[성공] 페이로드(유저ID, ROLE)를 담은 JWT를 생성할 수 있다.")
-	void createAccessToken_success() {
+	@DisplayName("[성공] 페이로드(유저ID, ROLE)를 담은 JWT를 생성 및 추춣할 수 있다.")
+	void createAccessTokenAndGetClaims_success() {
 		// given : 유저 아이디와 권한에 대해 100% 유효함을 보장하지는 못한다.
 		Long userId = 0L;
-
 		String role = "ROLE";
-		// when & then
-		assertDoesNotThrow(() -> jwtTokenProvider.createAccessToken(userId, role));
-	}
 
-	@Test
-	@DisplayName("[성공] JWT에서 페이로드(유저ID, ROLE)를 추출할 수 있다.")
-	void getClaims_success() {
-		// given
-		accessToken = jwtTokenProvider.createAccessToken(USER_ID, USER_ROLE);
 		// when
+		String accessToken = jwtTokenProvider.createAccessToken(userId, role);
 		Claims claims = jwtTokenProvider.getClaims(accessToken);
-		// then
-		assertAll(
-			() -> assertThat(claims.get("userId", Long.class)).isEqualTo(USER_ID),
-			() -> assertThat(claims.get("role", String.class)).isEqualTo(USER_ROLE)
-		);
+
+		//then
+		assertDoesNotThrow(() -> jwtTokenProvider.createAccessToken(userId, role));
+
+		assertThat(claims)
+			.containsEntry("userId", userId.intValue())
+			.containsEntry("role", role);
 	}
 
 	@Test
