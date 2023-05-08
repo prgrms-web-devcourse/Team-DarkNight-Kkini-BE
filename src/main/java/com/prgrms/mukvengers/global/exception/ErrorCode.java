@@ -56,7 +56,10 @@ public enum ErrorCode {
 	NOT_FOUND_COOKIE(HttpStatus.UNAUTHORIZED, "A005", "쿠키를 찾을 수 없습니다."),
 
 	//WebSocket
-	EXCEPTION_IN_WEBSOCKET(HttpStatus.UNAUTHORIZED, "W001", "웹 소켓 연결 중에 예외가 발생하였습니다.");
+	EXCEPTION_IN_WEBSOCKET(HttpStatus.UNAUTHORIZED, "W001", "웹 소켓 연결 중에 예외가 발생하였습니다."),
+
+	//SSE
+	INVALID_NOTIFICATION_CONTENT(HttpStatus.INTERNAL_SERVER_ERROR, "N001", "올바르지 않은 알림 메시지입니다.");
 
 	private final HttpStatus status;
 	private final String code;
