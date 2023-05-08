@@ -6,6 +6,9 @@ import static java.nio.charset.StandardCharsets.*;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -56,7 +59,7 @@ public class OAuthAuthenticationSuccessHandler
 		String targetUrl = CookieUtil.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
 			.map(Cookie::getValue)
 			.map(cookie -> URLDecoder.decode(cookie, UTF_8))
-			.map(this::encodeKr)
+			.map(this::encodeKoreanCharacters)
 			.orElse(getDefaultTargetUrl());
 
 		return UriComponentsBuilder.fromUriString(targetUrl)
@@ -64,18 +67,22 @@ public class OAuthAuthenticationSuccessHandler
 			.build().toUriString();
 	}
 
-	// 문제가 발생한 영역 일단 하드 코딩해서 해결
-	private String encodeKr(String url) {
+	// 정규 표현식을 이용해서 한글만 따로 인코딩
+	private String encodeKoreanCharacters(String url) {
+		Pattern koreanPattern = Pattern.compile("[가-힣]+");
+		Matcher matcher = koreanPattern.matcher(url);
+		StringBuilder encodedUrl = new StringBuilder();
 
-		String[] splitUrl = url.split(QUERY);
-
-		if (splitUrl.length > 1) {
-			String name = splitUrl[1];
-			String encodedName = URLEncoder.encode(name, UTF_8);
-			return splitUrl[0] + QUERY + encodedName;
+		while (matcher.find()) {
+			String koreanText = matcher.group();
+			// 한글 부분만 인코딩
+			String encodedKoreanText = URLEncoder.encode(koreanText, StandardCharsets.UTF_8);
+			// 인코딩된 한글로 치환
+			matcher.appendReplacement(encodedUrl, encodedKoreanText);
 		}
+		matcher.appendTail(encodedUrl);
 
-		return url;
+		return encodedUrl.toString();
 	}
 
 	private void setRefreshTokenInCookie(HttpServletResponse response, String refreshToken) {
