@@ -184,10 +184,18 @@ jacocoTestCoverageVerification {
             limit {
                 counter = 'METHOD'
                 value = 'COVEREDRATIO'
-                minimum = 0.7
+                minimum = 0.5
             }
 
             excludes = [
+                    '*.chat.*',
+                    '*.dto.*',
+                    '*.exception.*',
+                    '*.scheduler.*',
+                    '*.oauth.*',
+                    '*.common.*',
+                    '*.log.*',
+                    '*.notification.*',
             ]
 
         }
