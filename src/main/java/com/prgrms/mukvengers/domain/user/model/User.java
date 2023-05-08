@@ -5,6 +5,7 @@ import static lombok.AccessLevel.*;
 import static org.springframework.util.Assert.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -144,5 +145,9 @@ public class User extends BaseEntity {
 			return mannerScore;
 		}
 		return zero;
+	}
+
+	public BigDecimal getMannerScore() {
+		return mannerScore.setScale(1, RoundingMode.HALF_UP);
 	}
 }
