@@ -11,6 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class MemoryEmitterRepository implements EmitterRepository {
 	public final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
 	private final Map<String, Object> eventCache = new ConcurrentHashMap<>();
+	private String delimiter;
 
 	@Override
 	public SseEmitter save(String id, SseEmitter sseEmitter) {
@@ -25,23 +26,29 @@ public class MemoryEmitterRepository implements EmitterRepository {
 
 	@Override
 	public Map<String, SseEmitter> findAllStartWithById(String userId) {
+		delimiter = userId + "_";
+
 		return emitters.entrySet().stream()
-			.filter(entry -> entry.getKey().startsWith(userId))
+			.filter(entry -> entry.getKey().startsWith(delimiter))
 			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 
 	@Override
 	public Map<String, Object> findAllEventCacheStartWithId(String userId) {
+		delimiter = userId + "_";
+
 		return eventCache.entrySet().stream()
-			.filter(entry -> entry.getKey().startsWith(userId))
+			.filter(entry -> entry.getKey().startsWith(delimiter))
 			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 
 	@Override
 	public void deleteAllStartWithId(String userId) {
+		delimiter = userId + "_";
+
 		emitters.forEach(
 			(key, emitter) -> {
-				if (key.startsWith(userId)) {
+				if (key.startsWith(delimiter)) {
 					emitters.remove(key);
 				}
 			}
@@ -55,9 +62,11 @@ public class MemoryEmitterRepository implements EmitterRepository {
 
 	@Override
 	public void deleteAllEventCacheStartWithId(String userId) {
+		delimiter = userId + "_";
+
 		eventCache.forEach(
 			(key, data) -> {
-				if (key.startsWith(userId)) {
+				if (key.startsWith(delimiter)) {
 					eventCache.remove(key);
 				}
 			}

@@ -76,7 +76,7 @@ class EmitterRepositoryTest {
 		emitterRepository.save(emitterId3, new SseEmitter(DEFAULT_TIMEOUT));
 
 		//when
-		Map<String, SseEmitter> ActualResult = emitterRepository.findAllStartWithById(String.valueOf(1L));
+		Map<String, SseEmitter> ActualResult = emitterRepository.findAllStartWithById(String.valueOf(10L));
 
 		//then
 		Assertions.assertEquals(3, ActualResult.size());
