@@ -49,6 +49,14 @@ jobs:
         with:
           title: 📝 테스트 커버리지 리포트
           paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ github.token }}
           min-coverage-overall: 50
           min-coverage-changed-files: 50
+
+      ## 테스트 실패시 코드 라인에 대한 체크 추가
+      - name: if test fail, add check comment on failed code line
+        uses: mikepenz/action-junit-report@v3
+        if: always()
+        with:
+          report_paths: '**/build/test-results/test/TEST-*.html'
+          token: ${{ github.token }}
