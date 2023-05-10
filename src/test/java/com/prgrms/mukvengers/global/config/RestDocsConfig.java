@@ -1,4 +1,4 @@
-package com.prgrms.mukvengers.config;
+package com.prgrms.mukvengers.global.config;
 
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 

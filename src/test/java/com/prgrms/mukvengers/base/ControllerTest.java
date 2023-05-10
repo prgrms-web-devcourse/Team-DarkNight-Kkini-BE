@@ -22,7 +22,6 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.prgrms.mukvengers.config.RestDocsConfig;
 import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
 import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
 import com.prgrms.mukvengers.domain.proposal.repository.ProposalRepository;
@@ -31,6 +30,7 @@ import com.prgrms.mukvengers.domain.store.model.Store;
 import com.prgrms.mukvengers.domain.store.repository.StoreRepository;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
+import com.prgrms.mukvengers.global.config.RestDocsConfig;
 import com.prgrms.mukvengers.global.security.token.service.JwtTokenProvider;
 
 @SpringBootTest

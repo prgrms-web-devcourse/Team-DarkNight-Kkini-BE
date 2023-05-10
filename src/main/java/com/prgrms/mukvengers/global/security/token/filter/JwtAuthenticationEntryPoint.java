@@ -7,6 +7,8 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.CharEncoding;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -32,8 +34,8 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 		AuthenticationException authException) throws IOException {
 		log.info(ERROR_LOG_MESSAGE, authException.getClass().getSimpleName(), authException.getMessage());
 		response.setStatus(UNAUTHORIZED.value());
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
+		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+		response.setCharacterEncoding(CharEncoding.UTF_8);
 		response.getWriter()
 			.write(objectMapper.writeValueAsString(
 				ErrorResponse.of(ErrorCode.HANDLE_ACCESS_DENIED))

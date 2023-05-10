@@ -4,6 +4,7 @@ import static com.prgrms.mukvengers.utils.UserObjectProvider.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -72,5 +73,19 @@ class UserRepositoryTest extends RepositoryTest {
 		// when & then
 		assertThatThrownBy(() -> userRepository.deleteById(UNSAVED_USER_ID))
 			.isInstanceOf(EmptyResultDataAccessException.class);
+	}
+
+	@Test
+	@DisplayName("BaseEntity 테스트")
+	void baseEntityTest() {
+
+		User savedUser = userRepository.save(createUser());
+
+		LocalDateTime createdAt = savedUser.getCreatedAt();
+		LocalDateTime updatedAt = savedUser.getUpdatedAt();
+
+		assertThat(savedUser.isDeleted()).isFalse();
+		assertThat(createdAt).isNotNull();
+		assertThat(updatedAt).isNotNull();
 	}
 }

@@ -29,9 +29,10 @@ import lombok.RequiredArgsConstructor;
 public class TokenService { // TODO: authService와 TokenService로 분리하는 것이 좋을지 고민해보기
 
 	private final JwtTokenProvider jwtTokenProvider;
+
 	private final RefreshTokenRepository refreshTokenRepository;
 
-	@Value("${jwt.expiry-seconds.refresh-token}")
+	@Value("${jwt.expiry-seconds.refresh-token:36000}")
 	private int refreshTokenExpirySeconds;
 
 	public Tokens createTokens(AuthUserInfo userInfo) {
@@ -47,7 +48,7 @@ public class TokenService { // TODO: authService와 TokenService로 분리하는
 	@Transactional
 	public String createRefreshToken(Long userId, String userRole) {
 		RefreshToken refreshToken
-			= new RefreshToken(UUID.randomUUID().toString(), userId, userRole, refreshTokenExpirySeconds);
+			= new RefreshToken(UUID.randomUUID().toString(), userId, userRole, getRefreshTokenExpirySeconds());
 
 		return refreshTokenRepository.save(refreshToken).getRefreshToken();
 	}
@@ -89,7 +90,6 @@ public class TokenService { // TODO: authService와 TokenService로 분리하는
 
 		return new JwtAuthenticationToken(principal, null, authorities);
 	}
-
 
 	public int getRefreshTokenExpirySeconds() {
 		return refreshTokenExpirySeconds;

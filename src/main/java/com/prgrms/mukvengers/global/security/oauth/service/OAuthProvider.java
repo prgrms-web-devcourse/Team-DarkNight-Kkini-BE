@@ -53,7 +53,7 @@ public enum OAuthProvider {
 	private final String name;
 
 	public static OAuthProvider getOAuthProviderByName(String providerName) {
-		if (!PROVIDERS.containsKey(providerName)) { // TODO: 가독성 떨어지나요?
+		if (!PROVIDERS.containsKey(providerName)) {
 			throw new IllegalArgumentException("지원하지 않는 로그인입니다.");
 		}
 		return PROVIDERS.get(providerName);

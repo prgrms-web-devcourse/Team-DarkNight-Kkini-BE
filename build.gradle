@@ -8,6 +8,7 @@ plugins {
     id 'org.hidetake.swagger.generator' version '2.18.2'
     id 'com.epages.restdocs-api-spec' version '0.16.2'
     id "co.uzzu.dotenv.gradle" version "2.0.0"
+    id 'jacoco'
 }
 
 group = 'com.prgrms'
@@ -26,8 +27,14 @@ repositories {
 
 ext {
     set('snippetsDir', file("build/generated-snippets"))
+    springCloudVersion = "Hoxton.SR12"
 }
 
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
 jar {
     enabled = false
 }
@@ -104,15 +111,19 @@ dependencies {
     // Sentry
     implementation 'io.sentry:sentry-spring-boot-starter:6.17.0'
     implementation 'io.sentry:sentry-logback:6.17.0'
+    // WireMock
+    implementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"
+    // Embedded Redis
+    testImplementation 'it.ozimov:embedded-redis:0.7.2'
 
     //https://velog.io/@saintho/javaxannotationmetawhennotfound
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 }
 
-
 tasks.named('test') {
     outputs.dir snippetsDir
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
 }
 
 tasks.named('asciidoctor') {
@@ -159,6 +170,47 @@ tasks.withType(BootJar).configureEach {
     dependsOn 'copySwaggerUI'
 }
 
+jacocoTestReport {
+    dependsOn test
+    finalizedBy 'jacocoTestCoverageVerification'
+    reports {
+        xml.enabled true
+        html.enabled true
+        csv.enabled false
+    }
+}
+
+jacoco {
+    toolVersion = "0.8.8"
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            enabled = true
+            element = 'CLASS'
+
+            limit {
+                counter = 'METHOD'
+                value = 'COVEREDRATIO'
+                minimum = 0.5
+            }
+
+            excludes = [
+                    '*.dto.*',
+                    '*.exception.*',
+                    '*.scheduler.*',
+                    '*.common.*',
+                    '*.mapper.*',
+                    '*.log.*',
+                    '*.chat.*',
+                    '*.notification.*',
+            ]
+
+        }
+
+    }
+}
 
 
 
