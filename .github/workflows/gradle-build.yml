@@ -14,12 +14,14 @@ jobs:
     runs-on: ubuntu-latest # 실행 환경
     steps:
       - uses: actions/checkout@v3 # 기본 체크아웃 동작
+
       # Java version 세팅
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
+
       # 환경 변수 설정
       - name: Set up Environment
         run: echo "${{ secrets.ENV_PROPERTIES }}" > ./.env # GitHub SecretKey 에서 설정한 내용으로 .env 파일 생성
@@ -35,6 +37,18 @@ jobs:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle', '**/gradle-wrapper.properties') }}
           restore-keys: ${{ runner.os }}-gradle
+
       # 빌드
       - name: Build with Gradle
         run: ./gradlew build
+
+      # 테스트 커버리지 리포트 생성
+      - name: Add Test Coverage Report as Comment to the PR
+        id: jacoco
+        uses: madrapps/jacoco-report@v1.2
+        with:
+          title: 📝 테스트 커버리지 리포트
+          paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: 50
+          min-coverage-changed-files: 50

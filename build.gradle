@@ -27,8 +27,14 @@ repositories {
 
 ext {
     set('snippetsDir', file("build/generated-snippets"))
+    springCloudVersion = "Hoxton.SR12"
 }
 
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
 jar {
     enabled = false
 }
@@ -105,6 +111,10 @@ dependencies {
     // Sentry
     implementation 'io.sentry:sentry-spring-boot-starter:6.17.0'
     implementation 'io.sentry:sentry-logback:6.17.0'
+    // WireMock
+    implementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"
+    // Embedded Redis
+    testImplementation 'it.ozimov:embedded-redis:0.7.2'
 
     //https://velog.io/@saintho/javaxannotationmetawhennotfound
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
@@ -164,15 +174,14 @@ jacocoTestReport {
     dependsOn test
     finalizedBy 'jacocoTestCoverageVerification'
     reports {
-        xml.required = false
-        csv.required = false
-        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+        xml.enabled true
+        html.enabled true
+        csv.enabled false
     }
 }
 
 jacoco {
     toolVersion = "0.8.8"
-    reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir') as Directory
 }
 
 jacocoTestCoverageVerification {
@@ -188,13 +197,13 @@ jacocoTestCoverageVerification {
             }
 
             excludes = [
-                    '*.chat.*',
                     '*.dto.*',
                     '*.exception.*',
                     '*.scheduler.*',
-                    '*.oauth.*',
                     '*.common.*',
+                    '*.mapper.*',
                     '*.log.*',
+                    '*.chat.*',
                     '*.notification.*',
             ]
 
