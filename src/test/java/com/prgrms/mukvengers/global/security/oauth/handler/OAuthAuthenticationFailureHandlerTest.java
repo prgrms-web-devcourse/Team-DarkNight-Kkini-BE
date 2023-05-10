@@ -42,8 +42,8 @@ class OAuthAuthenticationFailureHandlerTest extends SliceTest {
 
 		oAuthAuthenticationFailureHandler.onAuthenticationFailure(request, response, exception);
 
-		verify(repository, times(1)).removeAuthorizationRequestCookies(request, response);
-		verify(response, times(1)).encodeRedirectURL("https://kkini.com/?error=" + exception.getMessage());
+		then(repository).should().removeAuthorizationRequestCookies(request, response);
+		then(response).should().encodeRedirectURL("https://kkini.com/?error=" + exception.getMessage());
 	}
 
 	@Test
@@ -55,7 +55,7 @@ class OAuthAuthenticationFailureHandlerTest extends SliceTest {
 
 		oAuthAuthenticationFailureHandler.onAuthenticationFailure(request, response, exception);
 
-		verify(repository, times(1)).removeAuthorizationRequestCookies(request, response);
-		verify(response, times(1)).encodeRedirectURL("https://server.com/?error=" + exception.getMessage());
+		then(repository).should().removeAuthorizationRequestCookies(request, response);
+		then(response).should().encodeRedirectURL("https://server.com/?error=" + exception.getMessage());
 	}
 }
