@@ -5,8 +5,7 @@ on:
     branches: [ develop ]
 
 # 권한 설정
-permissions:
-  contents: read
+permissions: write-all
 
 # Work
 jobs:
@@ -56,7 +55,6 @@ jobs:
       ## 테스트 실패시 코드 라인에 대한 체크 추가
       - name: if test fail, add check comment on failed code line
         uses: mikepenz/action-junit-report@v3
-        if: always()
         with:
           report_paths: '**/build/test-results/test/TEST-*.html'
           token: ${{ github.token }}
