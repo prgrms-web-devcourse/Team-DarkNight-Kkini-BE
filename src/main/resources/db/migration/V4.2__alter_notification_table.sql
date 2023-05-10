@@ -3,7 +3,7 @@ ALTER TABLE notification
     CHANGE isRead is_read boolean;
 
 ALTER TABLE notification
-    CHANGE receiver receiver_id boolean;
+    CHANGE receiver receiver_id bigint;
 
 
 # receiver_id 인덱스 추가
