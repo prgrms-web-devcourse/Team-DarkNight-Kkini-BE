@@ -47,8 +47,9 @@ public class NotificationController {
 	 * 알림 상태를 읽음으로 변경
 	 */
 	@PatchMapping(value = "/notifications/{id}")
-	public ResponseEntity<Void> readNotification(@PathVariable Long id) {
-		notificationService.readNotification(id);
+	public ResponseEntity<Void> readNotification(@AuthenticationPrincipal JwtAuthentication user,
+		@PathVariable Long id) {
+		notificationService.readNotification(user.id(), id);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 }
