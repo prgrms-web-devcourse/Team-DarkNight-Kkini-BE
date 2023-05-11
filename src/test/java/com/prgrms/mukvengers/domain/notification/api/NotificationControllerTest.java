@@ -1,9 +1,14 @@
 package com.prgrms.mukvengers.domain.notification.api;
 
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
+import static com.epages.restdocs.apispec.ResourceDocumentation.*;
+import static com.epages.restdocs.apispec.ResourceSnippetParameters.*;
 import static com.prgrms.mukvengers.domain.notification.model.vo.NotificationType.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.payload.JsonFieldType.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -42,21 +47,37 @@ class NotificationControllerTest extends ControllerTest {
 	@Test
 	@DisplayName("[성공] SSE 연결을 진행한다.")
 	public void subscribe() throws Exception {
-		//given
 		given(notificationService.subscribe(anyLong(), anyString())).willReturn(new SseEmitter());
 
 		//when
 		ResultActions result = mockMvc.perform(get("/subscribe")
 			.header(AUTHORIZATION, BEARER_TYPE + accessToken1)
+			.header("Last-Event-ID", "1_7598137456")
 			.accept(MediaType.TEXT_EVENT_STREAM)
 		);
 
 		//then
-		result.andExpect(status().isOk()).andDo(print());
+		result
+			.andExpect(status().isOk())
+			.andDo(print())
+			.andDo(document("SSE 연결",
+					resource(
+						builder()
+							.tag(NOTIFICATION)
+							.summary("SSE 연결 API")
+							.description("SSE 연결을 시도합니다. 연결한 유저는 알림을 수신할 수 있습니다.")
+							.requestHeaders(
+								headerWithName(AUTHORIZATION).description("accessToken"),
+								headerWithName("Last-Event-ID").description("마지막으로 수신한 emitter ID")
+							)
+							.build()
+					)
+				)
+			);
 	}
 
 	@Test
-	@DisplayName("[성공] 로그인 한 사용자의 모든 알림 조회")
+	@DisplayName("[성공] 로그인 한 유저의 모든 알림 조회")
 	void findAllNotification() throws Exception {
 		// given
 		List<NotificationResponse> notificationList = Arrays.asList(
@@ -77,7 +98,28 @@ class NotificationControllerTest extends ControllerTest {
 
 		// then
 		result.andExpect(status().isOk())
-			.andDo(print());
+			.andDo(print())
+			.andDo(document("유저의 알림 목록 조회",
+					resource(
+						builder()
+							.tag(NOTIFICATION)
+							.summary("유저의 알림 목록 조회")
+							.description("유저가 수신한 알림들을 조회합니다.")
+							.requestHeaders(
+								headerWithName(AUTHORIZATION).description("accessToken")
+							)
+							.responseFields(
+								fieldWithPath("notifications.[].id").type(NUMBER).description("알림의 고유 ID"),
+								fieldWithPath("notifications.[].type").type(STRING).description("알림 타입"),
+								fieldWithPath("notifications.[].content").type(STRING).description("알림 내용"),
+								fieldWithPath("notifications.[].createdAt").type(ARRAY).description("알림 생성일자"),
+								fieldWithPath("notifications.[].isRead").type(BOOLEAN).description("읽음 여부"),
+								fieldWithPath("unReadCount").type(NUMBER).description("읽지 않은 알림의 개수")
+							)
+							.build()
+					)
+				)
+			);
 	}
 
 	@Test
@@ -90,6 +132,22 @@ class NotificationControllerTest extends ControllerTest {
 		);
 
 		// then
-		result.andExpect(status().isNoContent());
+		result.andExpect(status().isNoContent())
+			.andDo(document("특정 알림 읽음처리",
+					resource(
+						builder()
+							.tag(NOTIFICATION)
+							.summary("유저의 알림 읽음처리")
+							.description("유저가 수신한 알림들을 읽음처리합니다.")
+							.requestHeaders(
+								headerWithName(AUTHORIZATION).description("accessToken")
+							)
+							.pathParameters(
+								parameterWithName("id").description("읽음 처리할 알림의 ID")
+							)
+							.build()
+					)
+				)
+			);
 	}
 }
