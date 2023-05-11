@@ -60,8 +60,9 @@ public enum ErrorCode {
 
 	//SSE
 	INVALID_NOTIFICATION_CONTENT(HttpStatus.BAD_REQUEST, "N001", "올바르지 않은 알림 메시지입니다."),
-	EXCEPTION_IN_NOTIFICATION(HttpStatus.INTERNAL_SERVER_ERROR, "N002", "알림 전송에 실패했습니다."),
-	NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "N003", "존재하지 않는 알림입니다.");
+	INVALID_NOTIFICATION_ACCESS(HttpStatus.BAD_REQUEST, "N002", "알림에 접근 권한이 없습니다."),
+	EXCEPTION_IN_NOTIFICATION(HttpStatus.INTERNAL_SERVER_ERROR, "N003", "알림 전송에 실패했습니다."),
+	NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "N004", "존재하지 않는 알림입니다.");
 
 	private final HttpStatus status;
 	private final String code;

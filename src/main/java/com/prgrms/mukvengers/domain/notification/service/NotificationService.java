@@ -3,6 +3,7 @@ package com.prgrms.mukvengers.domain.notification.service;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.prgrms.mukvengers.domain.notification.dto.response.NotificationResponse;
 import com.prgrms.mukvengers.domain.notification.dto.response.NotificationResponses;
+import com.prgrms.mukvengers.domain.notification.exception.InvalidNotificationAccessException;
 import com.prgrms.mukvengers.domain.notification.exception.NotificationNotFoundException;
 import com.prgrms.mukvengers.domain.notification.mapper.NotificationMapper;
 import com.prgrms.mukvengers.domain.notification.model.Notification;
@@ -141,9 +143,13 @@ public class NotificationService {
 	 알림을 읽음처리합니다.
 	 */
 	@Transactional
-	public void readNotification(Long notificationId) {
+	public void readNotification(Long userId, Long notificationId) {
 		Notification notification = notificationRepository.findById(notificationId)
 			.orElseThrow(() -> new NotificationNotFoundException(notificationId));
+
+		if (!Objects.equals(userId, notification.getReceiverId())) {
+			throw new InvalidNotificationAccessException(userId, notificationId);
+		}
 
 		notification.read();
 	}
