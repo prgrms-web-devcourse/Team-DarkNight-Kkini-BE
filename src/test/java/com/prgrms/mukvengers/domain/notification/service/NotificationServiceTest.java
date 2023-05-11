@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.prgrms.mukvengers.base.ServiceTest;
 import com.prgrms.mukvengers.domain.notification.dto.response.NotificationResponses;
+import com.prgrms.mukvengers.domain.notification.exception.InvalidNotificationAccessException;
 import com.prgrms.mukvengers.domain.notification.exception.NotificationNotFoundException;
 import com.prgrms.mukvengers.domain.notification.model.Notification;
 import com.prgrms.mukvengers.domain.user.exception.UserNotFoundException;
@@ -71,7 +72,7 @@ class NotificationServiceTest extends ServiceTest {
 		assertEquals(false, notification.getIsRead());
 
 		//when
-		notificationService.readNotification(notification.getId());
+		notificationService.readNotification(savedUser1.getId(), notification.getId());
 
 		//then
 		assertEquals(true, notification.getIsRead());
@@ -85,7 +86,8 @@ class NotificationServiceTest extends ServiceTest {
 		Long unknownId = 100L;
 
 		//when & then
-		assertThrows(NotificationNotFoundException.class, () -> notificationService.readNotification(unknownId));
+		assertThrows(NotificationNotFoundException.class,
+			() -> notificationService.readNotification(savedUser1.getId(), unknownId));
 	}
 
 	@Test
@@ -113,5 +115,16 @@ class NotificationServiceTest extends ServiceTest {
 
 		//when & then
 		assertThrows(UserNotFoundException.class, () -> notificationService.findAllById(unknownId));
+	}
+
+	@Test
+	@DisplayName("[실패] 읽음 처리를 요청한 회원과 알림의 수신자가 동일하지 않은 경우 예외가 발생한다.")
+	public void read_fail2() {
+		//given
+		Notification notification = notificationService.save(savedUser1.getId(), "1번 알림", INFO);
+		Long anotherUserId = savedUser2.getId();
+		//when & then
+		assertThrows(InvalidNotificationAccessException.class,
+			() -> notificationService.readNotification(anotherUserId, notification.getId()));
 	}
 }
