@@ -2,6 +2,7 @@
 -- create schema mukvengers
 -- use mukvengers;
 
+DROP TABLE IF EXISTS notification;
 DROP TABLE IF EXISTS chat;
 DROP TABLE IF EXISTS comment;
 DROP TABLE IF EXISTS post;
@@ -128,4 +129,19 @@ CREATE TABLE chat
     deleted    boolean      NOT NULL DEFAULT false
 );
 
+CREATE TABLE notification
+(
+    id          bigint       NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    content     varchar(255) NOT NULL,
+    type        varchar(255) NOT NULL,
+    is_read     boolean      NOT NULL DEFAULT false,
+    receiver_id bigint       NOT NULL,
+    created_at  dateTime     NOT NULL DEFAULT now(),
+    updated_at  dateTime     NOT NULL DEFAULT now(),
+    deleted     boolean      NOT NULL DEFAULT false
+);
+
 create index idx_crew_id on chat (crew_id);
+# receiver_id 인덱스 추가
+create index idx_receiver_id on notification (receiver_id);
+

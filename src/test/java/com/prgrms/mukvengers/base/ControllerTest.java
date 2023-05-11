@@ -46,6 +46,7 @@ public abstract class ControllerTest {
 	protected final String USER = "유저 API";
 	protected final String REVIEW = "리뷰 API";
 	protected final String PROPOSAL = "신청서 API";
+	protected final String NOTIFICATION = "알림 API";
 
 	protected final String BEARER_TYPE = "Bearer ";
 
