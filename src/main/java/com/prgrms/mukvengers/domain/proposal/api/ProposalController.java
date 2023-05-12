@@ -7,6 +7,8 @@ import java.net.URI;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,8 +24,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.prgrms.mukvengers.domain.proposal.dto.request.CreateProposalRequest;
 import com.prgrms.mukvengers.domain.proposal.dto.request.UpdateProposalRequest;
+import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalPageResponse;
 import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponse;
-import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponses;
 import com.prgrms.mukvengers.domain.proposal.service.ProposalService;
 import com.prgrms.mukvengers.global.common.dto.ApiResponse;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
@@ -85,11 +87,12 @@ public class ProposalController {
 	 * @return status : 200, body : 조회된 모든 신청서 데이터
 	 */
 	@GetMapping(value = "/proposals/leader", produces = APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponse<ProposalResponses>> getProposalsByLeaderId
+	public ResponseEntity<ApiResponse<ProposalPageResponse>> getProposalsByLeaderId
 	(
-		@AuthenticationPrincipal JwtAuthentication user
+		@AuthenticationPrincipal JwtAuthentication user,
+		@PageableDefault Pageable pageable
 	) {
-		ProposalResponses responses = proposalService.getProposalsByLeaderId(user.id());
+		ProposalPageResponse responses = proposalService.getProposalsByLeaderId(user.id(), pageable);
 
 		return ResponseEntity.ok().body(new ApiResponse<>(responses));
 	}
@@ -102,11 +105,12 @@ public class ProposalController {
 	 * @return status : 200, body : 조회된 모든 신청서 데이터
 	 */
 	@GetMapping(value = "/proposals/member", produces = APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponse<ProposalResponses>> getProposalsByMemberId
+	public ResponseEntity<ApiResponse<ProposalPageResponse>> getProposalsByMemberId
 	(
-		@AuthenticationPrincipal JwtAuthentication user
+		@AuthenticationPrincipal JwtAuthentication user,
+		@PageableDefault Pageable pageable
 	) {
-		ProposalResponses responses = proposalService.getProposalsByMemberId(user.id());
+		ProposalPageResponse responses = proposalService.getProposalsByMemberId(user.id(), pageable);
 
 		return ResponseEntity.ok().body(new ApiResponse<>(responses));
 	}
