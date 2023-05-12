@@ -1,9 +1,11 @@
 package com.prgrms.mukvengers.domain.proposal.service;
 
+import org.springframework.data.domain.Pageable;
+
 import com.prgrms.mukvengers.domain.proposal.dto.request.CreateProposalRequest;
 import com.prgrms.mukvengers.domain.proposal.dto.request.UpdateProposalRequest;
+import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalPageResponse;
 import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponse;
-import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponses;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
 
 public interface ProposalService {
@@ -12,9 +14,9 @@ public interface ProposalService {
 
 	ProposalResponse getById(Long proposalId);
 
-	ProposalResponses getProposalsByLeaderId(Long userId);
+	ProposalPageResponse getProposalsByLeaderId(Long userId, Pageable pageable);
 
-	ProposalResponses getProposalsByMemberId(Long userId);
+	ProposalPageResponse getProposalsByMemberId(Long userId, Pageable pageable);
 
 	void updateProposalStatus(UpdateProposalRequest proposalRequest, Long userId, Long proposalId);
 

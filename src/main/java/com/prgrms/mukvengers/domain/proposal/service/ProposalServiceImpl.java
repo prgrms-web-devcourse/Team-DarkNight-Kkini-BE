@@ -1,9 +1,9 @@
 package com.prgrms.mukvengers.domain.proposal.service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,8 +17,8 @@ import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
 import com.prgrms.mukvengers.domain.proposal.dto.request.CreateProposalRequest;
 import com.prgrms.mukvengers.domain.proposal.dto.request.UpdateProposalRequest;
+import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalPageResponse;
 import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponse;
-import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponses;
 import com.prgrms.mukvengers.domain.proposal.exception.ApproveException;
 import com.prgrms.mukvengers.domain.proposal.exception.CrewMemberOverCapacity;
 import com.prgrms.mukvengers.domain.proposal.exception.DuplicateProposalException;
@@ -108,41 +108,37 @@ public class ProposalServiceImpl implements ProposalService {
 	}
 
 	@Override
-	public ProposalResponses getProposalsByLeaderId(Long userId) {
-		List<Proposal> proposals = proposalRepository.findAllByLeaderIdOrderStatus(userId);
-		List<ProposalResponse> proposalResponses = new ArrayList<>();
+	public ProposalPageResponse getProposalsByLeaderId(Long userId, Pageable pageable) {
 
-		for (Proposal proposal : proposals) {
-			Crew crew = crewRepository.findById(proposal.getCrewId())
-				.orElseThrow(() -> new CrewNotFoundException(proposal.getCrewId()));
+		Page<ProposalResponse> responses = proposalRepository.findAllByLeaderId(userId, pageable)
+			.map(proposal -> {
+					Crew crew = crewRepository.findById(proposal.getCrewId())
+						.orElseThrow(() -> new CrewNotFoundException(proposal.getCrewId()));
+					String crewName = crew.getName();
+					String storePlaceName = crew.getStore().getPlaceName();
 
-			String crewName = crew.getName();
-			String storePlaceName = crew.getStore().getPlaceName();
+					return proposalMapper.toProposalResponse(proposal, storePlaceName, crewName);
+				}
+			);
 
-			ProposalResponse proposalResponse = proposalMapper.toProposalResponse(proposal, storePlaceName, crewName);
-			proposalResponses.add(proposalResponse);
-		}
-
-		return new ProposalResponses(proposalResponses);
+		return new ProposalPageResponse(responses);
 	}
 
 	@Override
-	public ProposalResponses getProposalsByMemberId(Long userId) {
-		List<Proposal> proposals = proposalRepository.findAllByUserIdOrderByCreatedAtDesc(userId);
-		List<ProposalResponse> proposalResponses = new ArrayList<>();
+	public ProposalPageResponse getProposalsByMemberId(Long userId, Pageable pageable) {
 
-		for (Proposal proposal : proposals) {
-			Crew crew = crewRepository.findById(proposal.getCrewId())
-				.orElseThrow(() -> new CrewNotFoundException(proposal.getCrewId()));
+		Page<ProposalResponse> responses = proposalRepository.findAllByUserIdOrderByCreatedAtDesc(userId, pageable)
+			.map(proposal -> {
+				Crew crew = crewRepository.findById(proposal.getCrewId())
+					.orElseThrow(() -> new CrewNotFoundException(proposal.getCrewId()));
 
-			String crewName = crew.getName();
-			String storePlaceName = crew.getStore().getPlaceName();
+				String crewName = crew.getName();
+				String storePlaceName = crew.getStore().getPlaceName();
 
-			ProposalResponse proposalResponse = proposalMapper.toProposalResponse(proposal, storePlaceName, crewName);
-			proposalResponses.add(proposalResponse);
-		}
+				return proposalMapper.toProposalResponse(proposal, storePlaceName, crewName);
+			});
 
-		return new ProposalResponses(proposalResponses);
+		return new ProposalPageResponse(responses);
 	}
 
 	@Override

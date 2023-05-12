@@ -18,6 +18,8 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import com.epages.restdocs.apispec.Schema;
 import com.epages.restdocs.apispec.SimpleType;
@@ -128,7 +130,16 @@ class ProposalControllerTest extends ControllerTest {
 	@DisplayName("[성공] 사용자가 방장인 모임의 모든 신청서를 조회한다.")
 	void getProposalsByLeaderId_success() throws Exception {
 
+		Integer page = 0;
+
+		Integer size = 5;
+
+		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+		params.add("page", String.valueOf(page));
+		params.add("size", String.valueOf(size));
+
 		mockMvc.perform(get("/api/v1/proposals/leader")
+				.params(params)
 				.header(AUTHORIZATION, BEARER_TYPE + accessToken1)
 				.accept(APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -142,22 +153,48 @@ class ProposalControllerTest extends ControllerTest {
 						.description("사용자가 방장인 모임에서 모임 신청을 위해 작서된 신청서를 모두 조회를 위한 API 입니다.")
 						.responseSchema(GET_PROPOSALS_BY_LEADER_ID_PROPOSAL_RESPONSE)
 						.responseFields(
-							fieldWithPath("data.responses.[].user.id").type(NUMBER).description("유저 ID"),
-							fieldWithPath("data.responses.[].user.nickname").type(STRING).description("닉네임"),
-							fieldWithPath("data.responses.[].user.profileImgUrl").type(STRING).description("프로필 이미지"),
-							fieldWithPath("data.responses.[].user.introduction").type(STRING).description("한줄 소개"),
-							fieldWithPath("data.responses.[].user.leaderCount").type(NUMBER).description("방장 횟수"),
-							fieldWithPath("data.responses.[].user.crewCount").type(NUMBER).description("모임 참여 횟수"),
-							fieldWithPath("data.responses.[].user.tasteScore").type(NUMBER).description("맛잘알 점수"),
-							fieldWithPath("data.responses.[].user.mannerScore").type(STRING).description("매너 온도"),
-							fieldWithPath("data.responses.[].id").type(NUMBER).description("신청서 아이디"),
-							fieldWithPath("data.responses.[].content").type(STRING).description("신청서 내용"),
-							fieldWithPath("data.responses.[].status").type(STRING).description("신청서 상태"),
-							fieldWithPath("data.responses.[].leaderId").type(NUMBER).description("모임의 방장 아이디"),
-							fieldWithPath("data.responses.[].storeName").type(STRING).description("가게 이름"),
-							fieldWithPath("data.responses.[].crewName").type(STRING).description("모임 이름"),
-							fieldWithPath("data.responses.[].crewId").type(NUMBER).description("모임 아이디")
-						)
+							fieldWithPath("data.responses.content.[].user.id").type(NUMBER).description("유저 ID"),
+							fieldWithPath("data.responses.content.[].user.nickname").type(STRING).description("닉네임"),
+							fieldWithPath("data.responses.content.[].user.profileImgUrl").type(STRING)
+								.description("프로필 이미지"),
+							fieldWithPath("data.responses.content.[].user.introduction").type(STRING)
+								.description("한줄 소개"),
+							fieldWithPath("data.responses.content.[].user.leaderCount").type(NUMBER)
+								.description("방장 횟수"),
+							fieldWithPath("data.responses.content.[].user.crewCount").type(NUMBER)
+								.description("모임 참여 횟수"),
+							fieldWithPath("data.responses.content.[].user.tasteScore").type(NUMBER)
+								.description("맛잘알 점수"),
+							fieldWithPath("data.responses.content.[].user.mannerScore").type(STRING)
+								.description("매너 온도"),
+							fieldWithPath("data.responses.content.[].id").type(NUMBER).description("신청서 아이디"),
+							fieldWithPath("data.responses.content.[].content").type(STRING).description("신청서 내용"),
+							fieldWithPath("data.responses.content.[].status").type(STRING).description("신청서 상태"),
+							fieldWithPath("data.responses.content.[].leaderId").type(NUMBER).description("모임의 방장 아이디"),
+							fieldWithPath("data.responses.content.[].storeName").type(STRING).description("가게 이름"),
+							fieldWithPath("data.responses.content.[].crewName").type(STRING).description("모임 이름"),
+							fieldWithPath("data.responses.content.[].crewId").type(NUMBER).description("모임 아이디"),
+							fieldWithPath("data.responses.pageable.sort.empty").type(BOOLEAN).description("빈 페이지 여부"),
+							fieldWithPath("data.responses.pageable.sort.sorted").type(BOOLEAN).description("페이지 정렬 여부"),
+							fieldWithPath("data.responses.pageable.sort.unsorted").type(BOOLEAN)
+								.description("페이지 비정렬 여부"),
+							fieldWithPath("data.responses.pageable.offset").type(NUMBER).description("페이지 오프셋"),
+							fieldWithPath("data.responses.pageable.pageNumber").type(NUMBER).description("페이지 번호"),
+							fieldWithPath("data.responses.pageable.pageSize").type(NUMBER)
+								.description("한 페이지에 나타내는 원소 수"),
+							fieldWithPath("data.responses.pageable.paged").type(BOOLEAN).description("페이지 정보 포함 여부"),
+							fieldWithPath("data.responses.pageable.unpaged").type(BOOLEAN).description("페이지 정보 비포함 여부"),
+							fieldWithPath("data.responses.last").type(BOOLEAN).description("마지막 페이지 여부"),
+							fieldWithPath("data.responses.size").type(NUMBER).description("페이지 사이즈"),
+							fieldWithPath("data.responses.number").type(NUMBER).description("페이지 번호"),
+							fieldWithPath("data.responses.sort.empty").type(BOOLEAN).description("빈 페이지 여부"),
+							fieldWithPath("data.responses.sort.sorted").type(BOOLEAN).description("페이지 정렬 여부"),
+							fieldWithPath("data.responses.sort.unsorted").type(BOOLEAN).description("페이지 비정렬 여부"),
+							fieldWithPath("data.responses.first").type(BOOLEAN).description("첫 번째 페이지 여부"),
+							fieldWithPath("data.responses.numberOfElements").type(NUMBER).description("페이지 원소 개수"),
+							fieldWithPath("data.responses.empty").type(BOOLEAN).description("빈 페이지 여부"),
+							fieldWithPath("data.responses.totalPages").type(NUMBER).description("전체 페이지 개수"),
+							fieldWithPath("data.responses.totalElements").type(NUMBER).description("전체 데이터 개수"))
 						.build()
 				)
 			));
@@ -198,7 +235,16 @@ class ProposalControllerTest extends ControllerTest {
 	@DisplayName("[성공] 사용자가 방장인 아니고 참여자인 모임의 신청서를 모두 조회합니다.")
 	void getProposalsByMemberId_success() throws Exception {
 
+		Integer page = 0;
+
+		Integer size = 5;
+
+		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+		params.add("page", String.valueOf(page));
+		params.add("size", String.valueOf(size));
+
 		mockMvc.perform(get("/api/v1/proposals/member")
+				.params(params)
 				.header(AUTHORIZATION, BEARER_TYPE + accessToken2)
 				.accept(APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -212,22 +258,48 @@ class ProposalControllerTest extends ControllerTest {
 						.description("사용자가 방장인 모임에서 모임 신청을 위해 작서된 신청서를 모두 조회를 위한 API 입니다.")
 						.responseSchema(GET_PROPOSALS_BY_LEADER_ID_PROPOSAL_RESPONSE)
 						.responseFields(
-							fieldWithPath("data.responses.[].user.id").type(NUMBER).description("유저 ID"),
-							fieldWithPath("data.responses.[].user.nickname").type(STRING).description("닉네임"),
-							fieldWithPath("data.responses.[].user.profileImgUrl").type(STRING).description("프로필 이미지"),
-							fieldWithPath("data.responses.[].user.introduction").type(STRING).description("한줄 소개"),
-							fieldWithPath("data.responses.[].user.leaderCount").type(NUMBER).description("방장 횟수"),
-							fieldWithPath("data.responses.[].user.crewCount").type(NUMBER).description("모임 참여 횟수"),
-							fieldWithPath("data.responses.[].user.tasteScore").type(NUMBER).description("맛잘알 점수"),
-							fieldWithPath("data.responses.[].user.mannerScore").type(STRING).description("매너 온도"),
-							fieldWithPath("data.responses.[].id").type(NUMBER).description("신청서 아이디"),
-							fieldWithPath("data.responses.[].content").type(STRING).description("신청서 내용"),
-							fieldWithPath("data.responses.[].status").type(STRING).description("신청서 상태"),
-							fieldWithPath("data.responses.[].leaderId").type(NUMBER).description("모임의 방장 아이디"),
-							fieldWithPath("data.responses.[].storeName").type(STRING).description("가게 이름"),
-							fieldWithPath("data.responses.[].crewName").type(STRING).description("모임 이름"),
-							fieldWithPath("data.responses.[].crewId").type(NUMBER).description("모임 아이디")
-						)
+							fieldWithPath("data.responses.content.[].user.id").type(NUMBER).description("유저 ID"),
+							fieldWithPath("data.responses.content.[].user.nickname").type(STRING).description("닉네임"),
+							fieldWithPath("data.responses.content.[].user.profileImgUrl").type(STRING)
+								.description("프로필 이미지"),
+							fieldWithPath("data.responses.content.[].user.introduction").type(STRING)
+								.description("한줄 소개"),
+							fieldWithPath("data.responses.content.[].user.leaderCount").type(NUMBER)
+								.description("방장 횟수"),
+							fieldWithPath("data.responses.content.[].user.crewCount").type(NUMBER)
+								.description("모임 참여 횟수"),
+							fieldWithPath("data.responses.content.[].user.tasteScore").type(NUMBER)
+								.description("맛잘알 점수"),
+							fieldWithPath("data.responses.content.[].user.mannerScore").type(STRING)
+								.description("매너 온도"),
+							fieldWithPath("data.responses.content.[].id").type(NUMBER).description("신청서 아이디"),
+							fieldWithPath("data.responses.content.[].content").type(STRING).description("신청서 내용"),
+							fieldWithPath("data.responses.content.[].status").type(STRING).description("신청서 상태"),
+							fieldWithPath("data.responses.content.[].leaderId").type(NUMBER).description("모임의 방장 아이디"),
+							fieldWithPath("data.responses.content.[].storeName").type(STRING).description("가게 이름"),
+							fieldWithPath("data.responses.content.[].crewName").type(STRING).description("모임 이름"),
+							fieldWithPath("data.responses.content.[].crewId").type(NUMBER).description("모임 아이디"),
+							fieldWithPath("data.responses.pageable.sort.empty").type(BOOLEAN).description("빈 페이지 여부"),
+							fieldWithPath("data.responses.pageable.sort.sorted").type(BOOLEAN).description("페이지 정렬 여부"),
+							fieldWithPath("data.responses.pageable.sort.unsorted").type(BOOLEAN)
+								.description("페이지 비정렬 여부"),
+							fieldWithPath("data.responses.pageable.offset").type(NUMBER).description("페이지 오프셋"),
+							fieldWithPath("data.responses.pageable.pageNumber").type(NUMBER).description("페이지 번호"),
+							fieldWithPath("data.responses.pageable.pageSize").type(NUMBER)
+								.description("한 페이지에 나타내는 원소 수"),
+							fieldWithPath("data.responses.pageable.paged").type(BOOLEAN).description("페이지 정보 포함 여부"),
+							fieldWithPath("data.responses.pageable.unpaged").type(BOOLEAN).description("페이지 정보 비포함 여부"),
+							fieldWithPath("data.responses.last").type(BOOLEAN).description("마지막 페이지 여부"),
+							fieldWithPath("data.responses.size").type(NUMBER).description("페이지 사이즈"),
+							fieldWithPath("data.responses.number").type(NUMBER).description("페이지 번호"),
+							fieldWithPath("data.responses.sort.empty").type(BOOLEAN).description("빈 페이지 여부"),
+							fieldWithPath("data.responses.sort.sorted").type(BOOLEAN).description("페이지 정렬 여부"),
+							fieldWithPath("data.responses.sort.unsorted").type(BOOLEAN).description("페이지 비정렬 여부"),
+							fieldWithPath("data.responses.first").type(BOOLEAN).description("첫 번째 페이지 여부"),
+							fieldWithPath("data.responses.numberOfElements").type(NUMBER).description("페이지 원소 개수"),
+							fieldWithPath("data.responses.empty").type(BOOLEAN).description("빈 페이지 여부"),
+							fieldWithPath("data.responses.totalPages").type(NUMBER).description("전체 페이지 개수"),
+							fieldWithPath("data.responses.totalElements").type(NUMBER).description("전체 데이터 개수"))
 						.build()
 				)
 			));
