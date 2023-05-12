@@ -1,9 +1,10 @@
 package com.prgrms.mukvengers.domain.proposal.repository;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -25,14 +26,10 @@ public interface ProposalRepository extends JpaRepository<Proposal, Long> {
 		SELECT p
 		FROM Proposal p
 		WHERE p.leaderId = :userId
-		ORDER BY CASE WHEN p.status = 'WAITING' THEN 0
-					  WHEN p.status = 'APPROVE' THEN 1
-					  WHEN p.status = 'REFUSE' THEN 2
-					  ELSE 3 END
 		""")
-	List<Proposal> findAllByLeaderIdOrderStatus(@Param("userId") Long userId);
+	Page<Proposal> findAllByLeaderId(@Param("userId") Long userId, Pageable pageable);
 
-	List<Proposal> findAllByUserIdOrderByCreatedAtDesc(@Param("userId") Long userId);
+	Page<Proposal> findAllByUserIdOrderByCreatedAtDesc(@Param("userId") Long userId, Pageable pageable);
 
 	@Query("""
 		SELECT p.status

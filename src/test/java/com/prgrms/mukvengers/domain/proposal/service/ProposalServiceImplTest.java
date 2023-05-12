@@ -12,6 +12,8 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import com.prgrms.mukvengers.base.ServiceTest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
@@ -19,8 +21,8 @@ import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.domain.proposal.dto.request.CreateProposalRequest;
 import com.prgrms.mukvengers.domain.proposal.dto.request.UpdateProposalRequest;
+import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalPageResponse;
 import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponse;
-import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponses;
 import com.prgrms.mukvengers.domain.proposal.exception.CrewMemberOverCapacity;
 import com.prgrms.mukvengers.domain.proposal.exception.DuplicateProposalException;
 import com.prgrms.mukvengers.domain.proposal.exception.ExistCrewMemberRoleException;
@@ -277,11 +279,15 @@ class ProposalServiceImplTest extends ServiceTest {
 		List<Proposal> proposals = createProposals(user, leader.getId(), crew.getId());
 		proposalRepository.saveAll(proposals);
 
+		Integer page = 0;
+		Integer size = 5;
+		Pageable pageable = PageRequest.of(page, size);
+
 		//when
-		ProposalResponses responses = proposalService.getProposalsByLeaderId(leader.getId());
+		ProposalPageResponse response = proposalService.getProposalsByLeaderId(leader.getId(), pageable);
 
 		//then
-		assertThat(responses.responses()).hasSize(proposals.size());
+		assertThat(response.responses()).hasSize(size);
 	}
 
 	@Test
@@ -295,11 +301,15 @@ class ProposalServiceImplTest extends ServiceTest {
 		List<Proposal> proposals = createProposals(user, leader.getId(), crew.getId());
 		proposalRepository.saveAll(proposals);
 
+		Integer page = 0;
+		Integer size = 5;
+		Pageable pageable = PageRequest.of(page, size);
+
 		//when
-		ProposalResponses responses = proposalService.getProposalsByMemberId(user.getId());
+		ProposalPageResponse response = proposalService.getProposalsByMemberId(user.getId(), pageable);
 
 		//then
-		assertThat(responses.responses()).hasSize(proposals.size());
+		assertThat(response.responses()).hasSize(size);
 	}
 
 	@Test
