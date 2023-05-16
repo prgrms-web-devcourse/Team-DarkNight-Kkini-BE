@@ -5,11 +5,14 @@ import static javax.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 import static org.springframework.util.Assert.*;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.locationtech.jts.geom.Point;
@@ -24,6 +27,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @Where(clause = "deleted = false")
+@DynamicUpdate
 @SQLDelete(sql = "UPDATE store set deleted = true where id=?")
 public class Store extends BaseEntity {
 
@@ -86,9 +90,12 @@ public class Store extends BaseEntity {
 	private Point validatePosition(Point location) {
 		notNull(location, "유효하지 않는 위치입니다.");
 
+		if (Objects.equals(this.location, location)) {
+			return this.location;
+		}
+
 		validateLongitude(location);
 		validateLatitude(location);
-
 		return location;
 	}
 
