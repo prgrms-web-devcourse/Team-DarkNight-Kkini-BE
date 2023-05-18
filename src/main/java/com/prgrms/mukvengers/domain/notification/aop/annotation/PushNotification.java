@@ -1,4 +1,4 @@
-package com.prgrms.mukvengers.domain.notification.annotation;
+package com.prgrms.mukvengers.domain.notification.aop.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
