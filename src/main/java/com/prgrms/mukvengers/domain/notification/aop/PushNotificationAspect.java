@@ -1,5 +1,7 @@
 package com.prgrms.mukvengers.domain.notification.aop;
 
+import static com.prgrms.mukvengers.domain.notification.model.vo.MessageKey.*;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -24,7 +26,7 @@ public class PushNotificationAspect {
 
 	@AfterReturning("@annotation(com.prgrms.mukvengers.domain.notification.aop.annotation.PushNotification) && args(proposalRequest, ..)")
 	public void proposalArriveNotificate(JoinPoint joinPoint, CreateProposalRequest proposalRequest) {
-		String message = MessageUtil.getMessage("proposal.arrived");
+		String message = MessageUtil.getMessage(PROPOSAL_ARRIVED.getKey());
 
 		threadPoolTaskExecutor.execute(() ->
 			notificationService.send(proposalRequest.leaderId(), message, NotificationType.INFO));
@@ -34,13 +36,13 @@ public class PushNotificationAspect {
 	public void proposalUpdateNotificate(JoinPoint joinPoint, UpdateProposalRequest proposalRequest, Long userId) {
 		String proposalStatus = proposalRequest.proposalStatus();
 		if (proposalStatus.equals("승인")) {
-			String message = MessageUtil.getMessage("proposal.accepted");
+			String message = MessageUtil.getMessage(PROPOSAL_ACCEPTED.getKey());
 
 			threadPoolTaskExecutor.execute(() -> {
 				notificationService.send(userId, message, NotificationType.APPROVE);
 			});
 		} else if (proposalStatus.equals("거절")) {
-			String message = MessageUtil.getMessage("proposal.rejected");
+			String message = MessageUtil.getMessage(PROPOSAL_REJECTED.getKey());
 
 			threadPoolTaskExecutor.execute(() -> {
 				notificationService.send(userId, message, NotificationType.REJECT);
