@@ -15,6 +15,7 @@ import com.prgrms.mukvengers.domain.crewmember.mapper.CrewMemberMapper;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
+import com.prgrms.mukvengers.domain.notification.aop.annotation.PushNotification;
 import com.prgrms.mukvengers.domain.proposal.dto.request.CreateProposalRequest;
 import com.prgrms.mukvengers.domain.proposal.dto.request.UpdateProposalRequest;
 import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalPageResponse;
@@ -55,6 +56,7 @@ public class ProposalServiceImpl implements ProposalService {
 
 	@Override
 	@Transactional
+	@PushNotification
 	public IdResponse create(CreateProposalRequest proposalRequest, Long userId, Long crewId) {
 
 		User user = userRepository.findById(userId)
@@ -143,6 +145,7 @@ public class ProposalServiceImpl implements ProposalService {
 
 	@Override
 	@Transactional
+	@PushNotification
 	public void updateProposalStatus(UpdateProposalRequest proposalRequest, Long userId, Long proposalId) {
 
 		if (!userRepository.existsById(userId)) {

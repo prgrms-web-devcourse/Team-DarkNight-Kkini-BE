@@ -24,7 +24,7 @@ spring:
   # MessageSource 설정
   messages:
     encoding: UTF-8
-    basename: messages/exceptions/exception
+    basename: messages/exceptions/exception, messages/notification/messages
 
   slack:
     webhook: ${SLACK_WEBHOOK}
