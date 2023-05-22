@@ -204,9 +204,11 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("data.responses.[].content").type(STRING).description("밥 모임 내용"),
 							fieldWithPath("data.responses.[].category").type(STRING).description("밥 모임 카테고리"),
 							fieldWithPath("data.responses.[].members.[].id").type(NUMBER).description("모임원 ID"),
-							fieldWithPath("data.responses.[].members.[].profileImgUrl").type(STRING),
+							fieldWithPath("data.responses.[].members.[].profileImgUrl").type(STRING)
+								.description("프로필 이미지"),
 							fieldWithPath("data.responses.[].members.[].nickname").type(STRING)
-								.description("프로필 이미지")).build()
+								.description("사용자 닉네임")).build()
+
 				)
 			));
 	}
