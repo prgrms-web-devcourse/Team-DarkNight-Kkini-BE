@@ -197,7 +197,7 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("data.responses.[].currentMember").type(NUMBER).description("밥 모임 현재 인원"),
 							fieldWithPath("data.responses.[].id").type(NUMBER).description("밥 모임 아이디"),
 							fieldWithPath("data.responses.[].placeName").type(STRING).description("밥 모임 아이디"),
-							fieldWithPath("data.responses.[].crewName").type(STRING).description("밥 모임 이름"),
+							fieldWithPath("data.responses.[].name").type(STRING).description("밥 모임 이름"),
 							fieldWithPath("data.responses.[].capacity").type(NUMBER).description("밥 모임 정원"),
 							fieldWithPath("data.responses.[].promiseTime").type(ARRAY).description("약속 시간"),
 							fieldWithPath("data.responses.[].crewStatus").type(STRING).description("밥 모임 상태"),
@@ -205,7 +205,10 @@ class CrewControllerTest extends ControllerTest {
 							fieldWithPath("data.responses.[].category").type(STRING).description("밥 모임 카테고리"),
 							fieldWithPath("data.responses.[].members.[].id").type(NUMBER).description("모임원 ID"),
 							fieldWithPath("data.responses.[].members.[].profileImgUrl").type(STRING)
-								.description("프로필 이미지")).build()
+								.description("프로필 이미지"),
+							fieldWithPath("data.responses.[].members.[].nickname").type(STRING)
+								.description("사용자 닉네임")).build()
+
 				)
 			));
 	}

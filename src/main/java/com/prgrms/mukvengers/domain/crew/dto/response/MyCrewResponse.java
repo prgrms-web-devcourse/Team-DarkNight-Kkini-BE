@@ -9,7 +9,7 @@ import com.prgrms.mukvengers.domain.crewmember.dto.response.MyCrewMemberResponse
 public record MyCrewResponse(
 	Long id,
 	String placeName,
-	String crewName,
+	String name,
 	Integer currentMember,
 	Integer capacity,
 	CrewStatus crewStatus,

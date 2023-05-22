@@ -24,6 +24,7 @@ public interface CrewMemberMapper {
 
 	@Mapping(target = "id", source = "crewMemberId")
 	@Mapping(target = "profileImgUrl", source = "profileImgUrl")
-	MyCrewMemberResponse toMyCrewMemberResponse(String profileImgUrl, Long crewMemberId);
+	@Mapping(target = "nickname", source = "nickname")
+	MyCrewMemberResponse toMyCrewMemberResponse(String profileImgUrl, Long crewMemberId, String nickname);
 
 }

@@ -101,10 +101,14 @@ public class CrewServiceImpl implements CrewService {
 	private List<MyCrewMemberResponse> getProfileImgUrl(Crew crew) {
 		return crew.getCrewMembers()
 			.stream()
-			.map(crewMember -> crewMemberMapper.toMyCrewMemberResponse(
-				userRepository.findProfileImgUrlByUserId(crewMember.getUserId())
-					.orElseThrow(() -> new UserNotFoundException(crewMember.getUserId())), crewMember.getId()
-			)).toList();
+			.map(crewMember -> {
+				User user = userRepository.findById(crewMember.getUserId())
+					.orElseThrow(() -> new UserNotFoundException(crewMember.getUserId()));
+				return crewMemberMapper.toMyCrewMemberResponse(
+					user.getProfileImgUrl(), crewMember.getId(), user.getNickname()
+				);
+
+			}).toList();
 	}
 
 	@Override
