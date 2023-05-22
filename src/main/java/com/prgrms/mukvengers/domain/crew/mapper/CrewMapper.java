@@ -42,7 +42,7 @@ public interface CrewMapper {
 		List<CrewMemberResponse> members, StoreResponse storeResponse, ProposalStatus proposalStatus);
 
 	@Mapping(target = "promiseTime", source = "crew.promiseTime")
-	@Mapping(target = "crewName", source = "crew.name")
+	@Mapping(target = "name", source = "crew.name")
 	@Mapping(target = "placeName", source = "crew.store.placeName")
 	@Mapping(target = "crewStatus", source = "crew.status")
 	MyCrewResponse toMyCrewResponse(Crew crew, Integer currentMember, List<MyCrewMemberResponse> members);
