@@ -27,7 +27,7 @@ repositories {
 
 ext {
     set('snippetsDir', file("build/generated-snippets"))
-    springCloudVersion = "Hoxton.SR12"
+    springCloudVersion = "2021.0.2"
 }
 
 dependencyManagement {
