@@ -53,7 +53,7 @@ KKINI는 동네에서 밥 친구를 만들고 싶은 사람, 혼자 가기 힘�
 ## :factory: Architecture
 
 ### Service Architecture
-![kkini-service](https://user-images.githubusercontent.com/99165624/226824432-04095421-a7e8-44ad-aebc-2e4f1b4fdf8e.png)
+![kkini-service](https://github.com/prgrms-web-devcourse/Team-DarkNight-Kkini-BE/assets/81108344/c96361b4-79ad-4028-8b90-bd790832571d)
 
 ### CI/CD
 ![kkini-ci/cd](https://user-images.githubusercontent.com/99165624/226824410-419b3fe4-c665-4171-ab77-5590e1aff095.png)
