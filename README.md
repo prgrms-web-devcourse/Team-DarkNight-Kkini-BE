@@ -7,6 +7,8 @@
 KKINI는 동네에서 밥 친구를 만들고 싶은 사람, 혼자 가기 힘든 음식점을 가고 싶은 사람, 나만의 맛집을 공유하고 싶은 사람들이 모임을 결성하고 참여할 수 있는 서비스입니다.
 
 ### 👉 [서비스 바로가기](https://kkini.vercel.app/)
+### 👉 [WIKI 바로가기](https://github.com/prgrms-web-devcourse/Team-DarkNight-Kkini-BE/wiki)
+
 
 ### 기획 배경
 
