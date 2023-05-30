@@ -14,12 +14,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.annotation.Import;
 
 import com.epages.restdocs.apispec.Schema;
 import com.prgrms.mukvengers.base.ControllerTest;
 import com.prgrms.mukvengers.domain.user.dto.request.UpdateUserRequest;
 import com.prgrms.mukvengers.domain.user.model.User;
+import com.prgrms.mukvengers.global.config.EmbeddedRedisConfig;
 
+@Import(EmbeddedRedisConfig.class)
 class UserControllerTest extends ControllerTest {
 
 	private static final Schema userResponseSchema = new Schema("myProfileResponse");
