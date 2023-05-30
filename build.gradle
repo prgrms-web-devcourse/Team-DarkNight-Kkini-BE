@@ -27,7 +27,7 @@ repositories {
 
 ext {
     set('snippetsDir', file("build/generated-snippets"))
-    springCloudVersion = "Hoxton.SR12"
+    springCloudVersion = "2021.0.2"
 }
 
 dependencyManagement {
@@ -115,7 +115,8 @@ dependencies {
     implementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"
     // Embedded Redis
     testImplementation 'it.ozimov:embedded-redis:0.7.2'
-
+    // Cache
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
     //https://velog.io/@saintho/javaxannotationmetawhennotfound
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 }

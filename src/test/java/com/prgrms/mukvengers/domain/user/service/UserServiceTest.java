@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 
 import com.prgrms.mukvengers.base.ServiceTest;
 import com.prgrms.mukvengers.domain.user.dto.request.UpdateUserRequest;
@@ -17,7 +18,9 @@ import com.prgrms.mukvengers.domain.user.dto.response.UserProfileResponse;
 import com.prgrms.mukvengers.domain.user.exception.UserNotFoundException;
 import com.prgrms.mukvengers.domain.user.mapper.UserMapper;
 import com.prgrms.mukvengers.domain.user.model.User;
+import com.prgrms.mukvengers.global.config.EmbeddedRedisConfig;
 
+@Import(EmbeddedRedisConfig.class)
 class UserServiceTest extends ServiceTest {
 
 	@Autowired
