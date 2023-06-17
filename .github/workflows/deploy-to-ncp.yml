@@ -61,7 +61,7 @@ jobs:
           password: ${{ secrets.NCP_PASSWORD }}
           port: 22
           source: "./.docker/docker-compose.yml"
-          target: "/home/ubuntu"
+          target: "/home/ubuntu/"
 
       # deploy.sh 파일 서버로 전달하기(복사 후 붙여넣기)
       - name: Send deploy.sh
@@ -72,7 +72,7 @@ jobs:
           password: ${{ secrets.NCP_PASSWORD }}
           port: 22
           source: "./script/deploy.sh"
-          target: "/home/ubuntu"
+          target: "/home/ubuntu/"
 
       # 도커 컴포즈 실행하기
       # 도커 허브에서 jar파일 및 pull후에 컴포즈 up
@@ -83,6 +83,9 @@ jobs:
           host: ${{ secrets.NCP_HOST }}
           password: ${{ secrets.NCP_PASSWORD }}
           script: |
+            sudo cp /home/ubuntu/.docker/docker-compose.yml /home/ubuntu
+            sudo cp /home/ubuntu/script/deploy.sh /home/ubuntu
+            cd /home/ubuntu
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
             chmod 777 ./deploy.sh
             ./deploy.sh
