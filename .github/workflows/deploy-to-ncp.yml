@@ -1,0 +1,92 @@
+name: CD - Deploy to NCP
+
+on:
+  push:
+    branches:
+      - develop
+      - 'fix/**'
+
+# 권한 설정
+permissions:
+  contents: read
+
+jobs:
+  CI-CD:
+    runs-on: ubuntu-latest
+
+    steps:
+      # JDK 설정
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # 환경 변수 설정
+      - name: Set up Environment
+        run: echo "${{ secrets.ENV_PROPERTIES }}" > ./.env # GitHub SecretKey 에서 설정한 내용으로 .env 파일 생성
+
+      # 환경 변수 파일 서버로 전달하기(복사 후 붙여넣기)
+      - name: Send env file
+        uses: appleboy/scp-action@master
+        with:
+          username: ${{ secrets.USERNAME }}
+          host: ${{ secrets.NCP_HOST }}
+          password: ${{ secrets.NCP_PASSWORD }}
+          source: "./.env"
+          target: "/home/ubuntu"
+
+      # 도커 MYSQL 이미지 실행
+      - name: Create Mysql Docker Container
+        run: sudo docker run -d -p 3305:3306 --env MYSQL_DATABASE="${{ secrets.TEST_DATABASE }}" --env MYSQL_ROOT_PASSWORD="${{ secrets.TEST_DATASOURCE_PASSWORD }}" mysql:8.0.31
+
+      # 빌드
+      - name: Build with Gradle
+        run: ./gradlew clean bootJar
+
+      #빌드 후 도커 허브로 push
+      - name: Docker Build & Push to Hub
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }} -f ./.docker/Dockerfile .
+          docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
+
+      # 도커 컴포즈 설정 파일 서버로 전달하기(복사 후 붙여넣기)
+      - name: Send docker-compose.yml
+        uses: appleboy/scp-action@master
+        with:
+          username: ${{ secrets.USERNAME }}
+          host: ${{ secrets.NCP_HOST }}
+          password: ${{ secrets.NCP_PASSWORD }}
+          port: 22
+          source: "./.docker/docker-compose.yml"
+          target: "/home/ubuntu/"
+
+      # deploy.sh 파일 서버로 전달하기(복사 후 붙여넣기)
+      - name: Send deploy.sh
+        uses: appleboy/scp-action@master
+        with:
+          username: ${{ secrets.USERNAME }}
+          host: ${{ secrets.NCP_HOST }}
+          password: ${{ secrets.NCP_PASSWORD }}
+          port: 22
+          source: "./script/deploy.sh"
+          target: "/home/ubuntu/"
+
+      # 도커 컴포즈 실행하기
+      # 도커 허브에서 jar파일 및 pull후에 컴포즈 up
+      - name: Deploy to Dev
+        uses: appleboy/ssh-action@master
+        with:
+          username: ${{ secrets.USERNAME }}
+          host: ${{ secrets.NCP_HOST }}
+          password: ${{ secrets.NCP_PASSWORD }}
+          script: |
+            sudo cp /home/ubuntu/.docker/docker-compose.yml /home/ubuntu
+            sudo cp /home/ubuntu/script/deploy.sh /home/ubuntu
+            cd /home/ubuntu
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
+            chmod 777 ./deploy.sh
+            ./deploy.sh
+            docker image prune -f
