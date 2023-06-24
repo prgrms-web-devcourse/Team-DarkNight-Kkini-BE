@@ -29,7 +29,7 @@ class AwsS3ServiceTest extends SliceTest {
 	public static final String SLASH = "/";
 
 	private final String dirName = "profile"; // 변경 필요
-	private final String defaultPath = "https://s3.ap-northeast-2.amazonaws.com";
+	private final String defaultPath = "https://kr.object.ncloudstorage.com";
 
 	@Mock
 	private AmazonS3 amazonS3;

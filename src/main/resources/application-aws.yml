@@ -8,6 +8,7 @@ cloud:
   aws:
     s3:
       bucket: kkini-bucket
+      endpoint: "https://kr.object.ncloudstorage.com"
     credentials:
       access-key: ${AWS_ACCESS_KEY}
       secret-key: ${AWS_SECRET_KEY}
