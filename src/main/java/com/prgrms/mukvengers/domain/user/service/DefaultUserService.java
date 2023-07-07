@@ -12,6 +12,7 @@ import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
 import com.prgrms.mukvengers.global.security.oauth.dto.AuthUserInfo;
 import com.prgrms.mukvengers.global.security.oauth.dto.OAuthUserInfo;
+import com.prgrms.mukvengers.global.security.token.service.TokenService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +25,7 @@ public class DefaultUserService implements UserService {
 
 	private final UserMapper userMapper;
 	private final UserRepository userRepository;
+	private final TokenService tokenService;
 
 	/* [회원 인증 정보 조회 및 저장] 등록된 유저 정보 찾아서 제공하고 없으면 등록합니다. */
 	@Override
@@ -64,12 +66,11 @@ public class DefaultUserService implements UserService {
 	/* [회원 탈퇴] 계정을 삭제합니다. soft delete가 적용됩니다.*/
 	@Override
 	@Transactional
-	public void deleteUser(Long userId) {
+	public void deleteUser(Long userId, String refreshToken) {
 		userRepository.findById(userId)
-			.ifPresentOrElse(userRepository::delete,
-				() -> {
-					throw new UserNotFoundException(userId);
-				});
+			.ifPresent(user -> {
+				user.deleteInfo();
+				tokenService.deleteRefreshToken(refreshToken);
+			});
 	}
-
 }

@@ -7,7 +7,6 @@ import com.prgrms.mukvengers.global.security.oauth.dto.OAuthUserInfo;
 
 public interface UserService {
 
-
 	/* 회원 등록 */
 	AuthUserInfo getOrRegisterUser(OAuthUserInfo oauthUserInfo);
 
@@ -18,6 +17,6 @@ public interface UserService {
 	UserProfileResponse updateUserProfile(UpdateUserRequest updateUserRequest, Long userId);
 
 	/* 회원 탈퇴 */
-	void deleteUser(Long userId);
+	void deleteUser(Long userId, String refreshToken);
 
 }
