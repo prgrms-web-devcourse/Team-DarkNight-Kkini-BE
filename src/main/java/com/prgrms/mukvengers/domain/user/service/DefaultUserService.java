@@ -68,9 +68,11 @@ public class DefaultUserService implements UserService {
 	@Transactional
 	public void deleteUser(Long userId, String refreshToken) {
 		userRepository.findById(userId)
-			.ifPresent(user -> {
+			.ifPresentOrElse(user -> {
 				user.deleteInfo();
 				tokenService.deleteRefreshToken(refreshToken);
+			}, () -> {
+				throw new UserNotFoundException(userId);
 			});
 	}
 }
