@@ -7,6 +7,7 @@ import static org.springframework.util.Assert.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
+import java.util.Random;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,6 +37,7 @@ public class User extends BaseEntity {
 	public static final String DEFAULT_INTRODUCE = "자기소개를 작성해주세요";
 	public static final Integer ZERO = 0;
 	public static final BigDecimal CRITERIA = new BigDecimal("0.1");
+	private static final Random RANDOM = new Random();
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -110,6 +112,19 @@ public class User extends BaseEntity {
 		this.nickname = validateNickName(updateUserRequest.nickName());
 		this.profileImgUrl = validateProfileImgUrl(updateUserRequest.profileImgUrl());
 		this.introduction = validateIntroduction(updateUserRequest.introduction());
+		return this;
+	}
+
+	public User deleteInfo() {
+		this.nickname = "탈퇴한 유저";
+		this.profileImgUrl = "None";
+		this.introduction = "탈퇴한 유저입니다.";
+		this.provider = "NONE";
+		this.oauthId = "NONE : " + (this.id * RANDOM.nextInt(1000));
+		this.mannerScore = new BigDecimal("36.5");
+		this.tasteScore = ZERO;
+		this.leaderCount = ZERO;
+		this.crewCount = ZERO;
 		return this;
 	}
 

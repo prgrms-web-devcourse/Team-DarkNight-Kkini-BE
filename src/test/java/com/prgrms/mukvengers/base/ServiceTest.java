@@ -24,6 +24,7 @@ import com.prgrms.mukvengers.domain.store.service.StoreService;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
 import com.prgrms.mukvengers.domain.user.service.UserService;
+import com.prgrms.mukvengers.global.security.token.service.TokenService;
 
 @SpringBootTest
 @Transactional
@@ -67,6 +68,9 @@ public abstract class ServiceTest {
 
 	@Autowired
 	protected ChatService chatService;
+
+	@Autowired
+	protected TokenService tokenService;
 
 	protected GeometryFactory gf = new GeometryFactory();
 

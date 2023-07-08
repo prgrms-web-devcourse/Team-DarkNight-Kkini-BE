@@ -12,6 +12,8 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import javax.servlet.http.Cookie;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
@@ -162,7 +164,9 @@ class UserControllerTest extends ControllerTest {
 
 		// when
 		mockMvc.perform(delete("/api/v1/user/me")
-				.header(AUTHORIZATION, BEARER_TYPE + accessToken))
+				.header(AUTHORIZATION, BEARER_TYPE + accessToken)
+				.cookie(new Cookie("refreshToken", tokenService.createRefreshToken(userId, "USER")))
+			)
 			// then
 			.andExpectAll(
 				handler().methodName("deleteMyProfile"),

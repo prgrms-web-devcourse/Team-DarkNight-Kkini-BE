@@ -71,11 +71,21 @@ class UserServiceTest extends ServiceTest {
 		@DisplayName("[성공] userId를 통해서 사용자 정보를 삭제할 수 있다.")
 		void deleteUser_success() {
 			assertDoesNotThrow(
-				() -> userService.deleteUser(savedUser.getId())
+				() -> userService.deleteUser(savedUser.getId(), "refreshToken")
 			);
 			// 삭제 후 조회
-			assertThatThrownBy(() -> userService.getUserProfile(savedUser.getId()))
-				.isInstanceOf(UserNotFoundException.class);
+			var userProfile = userService.getUserProfile(savedUser.getId());
+
+			assertThat(userProfile)
+				.hasFieldOrPropertyWithValue("id", savedUser.getId())
+				.hasFieldOrPropertyWithValue("nickname", "탈퇴한 유저")
+				.hasFieldOrPropertyWithValue("profileImgUrl", "None")
+				.hasFieldOrPropertyWithValue("introduction", "탈퇴한 유저입니다.")
+				.hasFieldOrPropertyWithValue("leaderCount", 0)
+				.hasFieldOrPropertyWithValue("crewCount", 0)
+				.hasFieldOrPropertyWithValue("tasteScore", 0)
+				.hasFieldOrPropertyWithValue("mannerScore", "36.5")
+			;
 		}
 
 		@Test
@@ -87,7 +97,7 @@ class UserServiceTest extends ServiceTest {
 					.isInstanceOf(UserNotFoundException.class),
 				() -> assertThatThrownBy(() -> userService.updateUserProfile(getUpdateUserRequest(), UNSAVED_USER_ID))
 					.isInstanceOf(UserNotFoundException.class),
-				() -> assertThatThrownBy(() -> userService.deleteUser(UNSAVED_USER_ID))
+				() -> assertThatThrownBy(() -> userService.deleteUser(UNSAVED_USER_ID, "refreshToken"))
 					.isInstanceOf(UserNotFoundException.class)
 			);
 		}
