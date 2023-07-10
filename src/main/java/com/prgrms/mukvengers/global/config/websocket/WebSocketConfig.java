@@ -31,8 +31,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry registry) {
-		registry.setApplicationDestinationPrefixes("/app");
-		registry.enableSimpleBroker("/topic");
+		registry.setApplicationDestinationPrefixes("/pub") // 메세지를 보낼(publish) 경로를 설정
+			.enableStompBrokerRelay("/queue", "/topic", "/exchange"); // 메세지 수신(Subscribe), 경로를 설정해주는 메서드
 	}
 
 	@Override
