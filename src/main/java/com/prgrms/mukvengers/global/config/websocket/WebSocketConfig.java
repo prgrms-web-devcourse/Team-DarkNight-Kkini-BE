@@ -12,9 +12,9 @@ import com.prgrms.mukvengers.domain.chat.handler.StompHandler;
 
 import lombok.RequiredArgsConstructor;
 
+@EnableWebSocketMessageBroker
 @Configuration
 @RequiredArgsConstructor
-@EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 	private final StompHandler stompHandler;
