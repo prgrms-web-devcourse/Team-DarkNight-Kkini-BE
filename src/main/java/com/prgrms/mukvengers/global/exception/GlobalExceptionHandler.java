@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import com.prgrms.mukvengers.global.common.dto.ErrorResponse;
-import com.prgrms.mukvengers.global.slack.annotation.SlackNotification;
+import com.prgrms.mukvengers.global.report.annotation.SlackNotification;
 import com.prgrms.mukvengers.global.utils.MessageUtil;
 
 import lombok.extern.slf4j.Slf4j;

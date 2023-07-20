@@ -1,6 +1,7 @@
 package com.prgrms.mukvengers.global.config.p6spy;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
@@ -29,7 +30,7 @@ public class P6spyConfig implements MessageFormattingStrategy {
 
 		SimpleDateFormat formatter = new SimpleDateFormat("yy.MM.dd HH:mm:ss");
 
-		return formatter.format(currentDate) + " | " + "OperationTime : " + elapsed + "ms" + sql;
+		return category + " | " + "OperationTime : " + elapsed + "ms" + sql;
 	}
 
 	private String formatSql(String category, String sql) {
@@ -39,16 +40,21 @@ public class P6spyConfig implements MessageFormattingStrategy {
 
 		if (Category.STATEMENT.getName().equals(category)) {
 			String tmpsql = sql.trim().toLowerCase(Locale.ROOT);
-			if (tmpsql.startsWith("create") || tmpsql.startsWith("alter") || tmpsql.startsWith(
-				"comment")) {
+			if (tmpsql.startsWith("create") || tmpsql.startsWith("alter")) {
 				sql = FormatStyle.DDL.getFormatter().format(sql);
 			} else {
 				sql = FormatStyle.BASIC.getFormatter().format(sql);
 			}
-			sql = "|\n Hibernate FormatSql(P6Spy sql, Hibernate format): " + sql + "\n";
+			sql = "\n" + stackTrace() + "\n" + sql + "\n";
 		}
 
 		return sql;
+	}
+
+	private String stackTrace() {
+		return Arrays.toString(Arrays.stream(new Throwable().getStackTrace())
+			.filter(t -> t.toString().startsWith("com.prgrms.mukvengers"))
+			.toArray()).replace(", ", "\n");
 	}
 
 }
