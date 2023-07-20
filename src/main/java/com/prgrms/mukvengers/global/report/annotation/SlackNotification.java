@@ -1,4 +1,4 @@
-package com.prgrms.mukvengers.global.slack.annotation;
+package com.prgrms.mukvengers.global.report.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

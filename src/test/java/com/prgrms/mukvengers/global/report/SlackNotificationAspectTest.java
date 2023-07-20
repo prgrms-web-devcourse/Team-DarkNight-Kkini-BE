@@ -1,4 +1,4 @@
-package com.prgrms.mukvengers.global.slack;
+package com.prgrms.mukvengers.global.report;
 
 import static org.mockito.BDDMockito.*;
 
