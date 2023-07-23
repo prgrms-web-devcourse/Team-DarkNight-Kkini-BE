@@ -1,4 +1,4 @@
-package com.prgrms.mukvengers.global.slack.dto;
+package com.prgrms.mukvengers.global.report.dto;
 
 import javax.servlet.http.HttpServletRequest;
 

@@ -15,8 +15,7 @@ spring:
     include:
       - db
       - security
-      - aws
-      - slack
+      - cloud
   # ResourceHandler 설정 (Static Resource Mapping)
   web:
     resources:
@@ -25,6 +24,11 @@ spring:
   messages:
     encoding: UTF-8
     basename: messages/exceptions/exception, messages/notification/messages
+
+  servlet:
+    multipart:
+      max-request-size: 10MB
+      max-file-size: 10MB
 
   slack:
     webhook: ${SLACK_WEBHOOK}

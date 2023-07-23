@@ -1,4 +1,4 @@
-package com.prgrms.mukvengers.global.slack;
+package com.prgrms.mukvengers.global.report;
 
 import static java.util.Collections.*;
 
@@ -23,7 +23,7 @@ import net.gpedro.integrations.slack.SlackAttachment;
 import net.gpedro.integrations.slack.SlackField;
 import net.gpedro.integrations.slack.SlackMessage;
 
-import com.prgrms.mukvengers.global.slack.dto.RequestInfo;
+import com.prgrms.mukvengers.global.report.dto.RequestInfo;
 
 @Aspect
 @Component
@@ -40,7 +40,7 @@ public class SlackNotificationAspect {
 		this.env = env;
 	}
 
-	@Around("@annotation(com.prgrms.mukvengers.global.slack.annotation.SlackNotification) && args(request, e)")
+	@Around("@annotation(com.prgrms.mukvengers.global.report.annotation.SlackNotification) && args(request, e)")
 	public void slackNotificate(ProceedingJoinPoint proceedingJoinPoint, HttpServletRequest request,
 		Exception e) throws Throwable {
 

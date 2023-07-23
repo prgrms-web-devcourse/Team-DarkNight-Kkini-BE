@@ -3,4 +3,4 @@ spring:
     include:
       - test
       - security
-      - aws
+      - cloud
