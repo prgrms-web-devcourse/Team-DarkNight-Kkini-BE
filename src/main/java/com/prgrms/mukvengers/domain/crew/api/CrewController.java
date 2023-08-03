@@ -126,7 +126,7 @@ public class CrewController {
 	(
 		@ModelAttribute @Valid SearchCrewRequest distanceRequest
 	) {
-		CrewLocationResponses responses = crewService.getByLocation(distanceRequest);
+		CrewLocationResponses responses = crewService.getByLocationWithIndex(distanceRequest);
 		return ResponseEntity.ok().body(new ApiResponse<>(responses));
 	}
 

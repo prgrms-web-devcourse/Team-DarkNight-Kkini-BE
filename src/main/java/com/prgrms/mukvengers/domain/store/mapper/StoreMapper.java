@@ -10,6 +10,7 @@ import org.mapstruct.Named;
 import com.prgrms.mukvengers.domain.store.dto.request.CreateStoreRequest;
 import com.prgrms.mukvengers.domain.store.dto.response.StoreResponse;
 import com.prgrms.mukvengers.domain.store.model.Store;
+import com.prgrms.mukvengers.global.utils.GeometryUtils;
 
 @Mapper(componentModel = "spring")
 public interface StoreMapper {
@@ -33,13 +34,10 @@ public interface StoreMapper {
 
 	@Named("pointMethod")
 	default Point mapPoint(CreateStoreRequest request) {
+		GeometryFactory gf = GeometryUtils.getInstance();
+		Coordinate coordinate = new Coordinate(request.longitude(), request.latitude());
 
-		GeometryFactory gf = new GeometryFactory();
-
-		return gf.createPoint(new Coordinate(
-			request.longitude(),
-			request.latitude()));
-
+		return gf.createPoint(coordinate);
 	}
 
 }

@@ -44,6 +44,7 @@ import com.prgrms.mukvengers.domain.user.exception.UserNotFoundException;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
+import com.prgrms.mukvengers.global.utils.GeometryUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -60,6 +61,7 @@ public class CrewServiceImpl implements CrewService {
 	private final CrewMapper crewMapper;
 	private final StoreMapper storeMapper;
 	private final CrewMemberMapper crewMemberMapper;
+	private final GeometryFactory gf = GeometryUtils.getInstance();
 
 	@Override
 	@Transactional
@@ -157,8 +159,6 @@ public class CrewServiceImpl implements CrewService {
 	@Override
 	public CrewLocationResponses getByLocation(SearchCrewRequest distanceRequest) {
 
-		GeometryFactory gf = new GeometryFactory();
-
 		Point location = gf.createPoint(new Coordinate(distanceRequest.longitude(), distanceRequest.latitude()));
 
 		List<CrewLocationResponse> responses = crewRepository.findAllByLocation(location, distanceRequest.distance())
@@ -166,6 +166,23 @@ public class CrewServiceImpl implements CrewService {
 			.map(crew -> crewMapper.toCrewLocationResponse(crew.getLocation(), crew.getStore().getId(),
 				crew.getStore().getPlaceName()))
 			.collect(Collectors.toList());
+
+		return new CrewLocationResponses(responses);
+	}
+
+	@Override
+	public CrewLocationResponses getByLocationWithIndex(SearchCrewRequest distanceRequest) {
+
+		Coordinate coordinate = new Coordinate(distanceRequest.longitude(), distanceRequest.latitude());
+
+		Point location = gf.createPoint(coordinate);
+		Double radius = GeometryUtils.calculateApproximateRadius(distanceRequest.distance());
+
+		List<CrewLocationResponse> responses = crewRepository.findAllByLocation(location, radius)
+			.stream()
+			.map(crew -> crewMapper.toCrewLocationResponse(crew.getLocation(), crew.getStore().getId(),
+				crew.getStore().getPlaceName()))
+			.toList();
 
 		return new CrewLocationResponses(responses);
 	}
@@ -218,4 +235,5 @@ public class CrewServiceImpl implements CrewService {
 
 		return new CrewStatusResponse(crew.getStatus());
 	}
+
 }

@@ -162,7 +162,7 @@ class CrewServiceImplTest extends ServiceTest {
 		SearchCrewRequest distanceRequest = new SearchCrewRequest(longitude, latitude, distance);
 
 		//when
-		CrewLocationResponses crewLocationResponse = crewService.getByLocation(distanceRequest);
+		CrewLocationResponses crewLocationResponse = crewService.getByLocationWithIndex(distanceRequest);
 
 		//then
 		List<CrewLocationResponse> responses = crewLocationResponse.responses();

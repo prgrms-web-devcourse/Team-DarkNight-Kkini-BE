@@ -6,10 +6,11 @@ import org.locationtech.jts.geom.Point;
 
 import com.prgrms.mukvengers.domain.store.dto.request.CreateStoreRequest;
 import com.prgrms.mukvengers.domain.store.model.Store;
+import com.prgrms.mukvengers.global.utils.GeometryUtils;
 
 public class StoreObjectProvider {
 
-	private final static GeometryFactory STORE_GF = new GeometryFactory();
+	private final static GeometryFactory STORE_GF = GeometryUtils.getInstance();
 	private final static double STORE_LONGITUDE = -147.4654321321;
 	private final static double STORE_LATITUDE = 35.75413579;
 	private final static String STORE_PLACE_ID = "16618597";

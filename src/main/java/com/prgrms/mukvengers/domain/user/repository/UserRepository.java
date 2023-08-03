@@ -1,5 +1,6 @@
 package com.prgrms.mukvengers.domain.user.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,4 +21,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 		@Param("provider") String provider,
 		@Param("oauthId") String oauthId);
 
+	@Query(value = "SELECT * FROM users u ORDER BY RAND() LIMIT :count", nativeQuery = true)
+	List<User> findRandom(@Param("count") int count);
 }
