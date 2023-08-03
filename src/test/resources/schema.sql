@@ -30,13 +30,15 @@ CREATE TABLE users
     oauth_id        varchar(255)  NOT NULL,
     created_at      dateTime      NOT NULL DEFAULT now(),
     updated_at      dateTime      NOT NULL DEFAULT now(),
-    deleted         boolean       NOT NULL DEFAULT false
+    deleted         boolean       NOT NULL DEFAULT false,
+
+    UNIQUE index_in_provider_and_oauth_id (oauth_id, provider)
 );
 
 CREATE TABLE store
 (
     id                bigint       NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    location          point        NOT NULL,
+    location          point        NOT NULL SRID 5179,
     place_id          varchar(255) NOT NULL,
     place_name        varchar(255) NULL,
     categories        varchar(255) NULL,
@@ -56,7 +58,7 @@ CREATE TABLE crew
     id           bigint       NOT NULL PRIMARY KEY AUTO_INCREMENT,
     store_id     bigint       NOT NULL,
     name         varchar(20)  NOT NULL,
-    location     point        NOT NULL,
+    location     point        NOT NULL SRID 5179,
     capacity     int          NOT NULL DEFAULT 2,
     status       varchar(255) NOT NULL,
     promise_time dateTime     NOT NULL,
@@ -66,7 +68,9 @@ CREATE TABLE crew
     updated_at   dateTime     NOT NULL DEFAULT now(),
     deleted      boolean      NOT NULL DEFAULT false,
 
-    FOREIGN KEY fk_crew_store_id (store_id) REFERENCES store (id)
+    FOREIGN KEY fk_crew_store_id (store_id) REFERENCES store (id),
+    SPATIAL INDEX spatial_index_in_crew (location),
+    INDEX index_in_status (status)
 );
 
 CREATE TABLE crew_member
@@ -114,7 +118,8 @@ CREATE TABLE proposal
     deleted    boolean      NOT NULL DEFAULT false,
 
     FOREIGN KEY fk_proposal_user_id (user_id) REFERENCES users (id),
-    FOREIGN KEY fk_proposal_crew_id (crew_id) REFERENCES crew (id)
+    FOREIGN KEY fk_proposal_crew_id (crew_id) REFERENCES crew (id),
+    INDEX index_in_leader_id (leader_id)
 );
 
 CREATE TABLE chat
@@ -126,7 +131,9 @@ CREATE TABLE chat
     content    varchar(255) NOT NULL,
     created_at dateTime     NOT NULL DEFAULT now(),
     updated_at dateTime     NOT NULL DEFAULT now(),
-    deleted    boolean      NOT NULL DEFAULT false
+    deleted    boolean      NOT NULL DEFAULT false,
+
+    INDEX idx_crew_id (crew_id)
 );
 
 CREATE TABLE notification
@@ -138,10 +145,8 @@ CREATE TABLE notification
     receiver_id bigint       NOT NULL,
     created_at  dateTime     NOT NULL DEFAULT now(),
     updated_at  dateTime     NOT NULL DEFAULT now(),
-    deleted     boolean      NOT NULL DEFAULT false
-);
+    deleted     boolean      NOT NULL DEFAULT false,
 
-create index idx_crew_id on chat (crew_id);
-# receiver_id 인덱스 추가
-create index idx_receiver_id on notification (receiver_id);
+    INDEX idx_receiver_id (receiver_id)
+);
 
