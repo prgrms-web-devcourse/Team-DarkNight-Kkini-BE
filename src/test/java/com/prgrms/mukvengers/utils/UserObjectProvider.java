@@ -1,5 +1,7 @@
 package com.prgrms.mukvengers.utils;
 
+import java.util.Random;
+
 import com.prgrms.mukvengers.domain.user.dto.request.UpdateUserRequest;
 import com.prgrms.mukvengers.domain.user.model.User;
 
@@ -10,13 +12,17 @@ public class UserObjectProvider {
 	public static final String DEFAULT_PROFILE_IMG_URL = "https://defaultImg.jpg";
 	public static final String PROVIDER_KAKAO = "kakao";
 	public static final String OAUTH_ID = "12345";
+	private static final Random rand = new Random();
 
 	public static User createUser() {
+
+		int num = rand.nextInt(10000) + 1;
+
 		return User.builder()
 			.nickname(DEFAULT_NICKNAME)
 			.profileImgUrl(DEFAULT_PROFILE_IMG_URL)
 			.provider(PROVIDER_KAKAO)
-			.oauthId(OAUTH_ID)
+			.oauthId(String.valueOf(num))
 			.build();
 	}
 
