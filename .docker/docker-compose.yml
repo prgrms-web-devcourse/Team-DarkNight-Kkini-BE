@@ -20,7 +20,12 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - ./data/redis:/data
+      - ./redis/data:/data
+      - ./redis/conf/redis.conf:/usr/local/conf/redis.conf
+    labels:
+      - "mode=standalone"
+    restart: always
+    command: redis-server /usr/local/conf/redis.conf
 
   green:
     container_name: green
