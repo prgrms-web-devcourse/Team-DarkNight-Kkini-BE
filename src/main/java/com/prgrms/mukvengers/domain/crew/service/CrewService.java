@@ -25,5 +25,7 @@ public interface CrewService {
 
 	CrewLocationResponses getByLocation(SearchCrewRequest distanceRequest);
 
+	CrewLocationResponses getByLocationWithIndex(SearchCrewRequest distanceRequest);
+
 	CrewStatusResponse updateStatus(Long crewId, Long userId, CrewStatus crewStatus);
 }

@@ -16,6 +16,7 @@ import org.springframework.data.domain.Slice;
 
 import com.prgrms.mukvengers.base.RepositoryTest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
+import com.prgrms.mukvengers.global.utils.GeometryUtils;
 
 class CrewRepositoryTest extends RepositoryTest {
 
@@ -38,11 +39,12 @@ class CrewRepositoryTest extends RepositoryTest {
 	@DisplayName("[성공] 현재 사용자의 위도와 경도, 그리고 거리를 받아 거리 안에 있는 밥 모임을 조회한다.")
 	void findAllByDistance_success() {
 
-		GeometryFactory gf = new GeometryFactory();
+		GeometryFactory gf = GeometryUtils.getInstance();
 		double longitude = -147.4654321321;
 		double latitude = 35.75413579;
 		Point location = gf.createPoint(new Coordinate(longitude, latitude));
-		List<Crew> savedCrews = crewRepository.findAllByLocation(location, 1000);
+		Double radius = GeometryUtils.calculateApproximateRadius(1000);
+		List<Crew> savedCrews = crewRepository.findAllByLocation(location, radius);
 
 		assertThat(savedCrews).hasSize(crews.size());
 

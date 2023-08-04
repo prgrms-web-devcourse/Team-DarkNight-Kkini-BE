@@ -49,12 +49,6 @@ management:
       exposure:
         include: '*'
 
-# P6spy 설정
-decorator:
-  datasource:
-    p6spy:
-      enable-logging: true
-
 # sentry 설정
 sentry:
   dsn: ${SENTRY_DSN}

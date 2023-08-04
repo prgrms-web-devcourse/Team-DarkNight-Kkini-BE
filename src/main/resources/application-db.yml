@@ -28,8 +28,7 @@ spring:
 
     properties:
       hibernate:
-        dialect: org.hibernate.spatial.dialect.mysql.MySQL8SpatialDialect
-        format_sql: true
+        dialect: org.hibernate.spatial.dialect.mysql.MySQLSpatialDialect
         default_batch_fetch_size: 1000
 
   # flyway 설정
@@ -42,13 +41,8 @@ spring:
     host: ${REDIS_HOST}
     port: ${REDIS_PORT}
 
---- # local
-spring:
-  config:
-    activate.on-profile: local
-
-# SQL 로그 설정
-logging:
-  level:
-    org.hibernate.SQL: debug
-    org.hibernate.type.descriptor.sql: trace
+# P6spy 설정
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true

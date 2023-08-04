@@ -27,8 +27,16 @@ public interface CrewRepository extends JpaRepository<Crew, Long> {
 
 	@Query(nativeQuery = true, value =
 		"SELECT * FROM crew c "
-			+ "WHERE ST_DISTANCE_SPHERE(:location, c.location) < :distance AND c.status = 'RECRUITING'")
+		+ "WHERE ST_DISTANCE_SPHERE(:location, c.location) < :distance AND c.status = 'RECRUITING'")
 	List<Crew> findAllByLocation(@Param("location") Point location, @Param("distance") int distance);
+
+	@Query(nativeQuery = true, value = """
+		SELECT * FROM crew c
+		WHERE ST_Contains(
+		ST_Buffer(:location, :radius), c.location)
+		AND c.status = 'RECRUITING'
+		""")
+	List<Crew> findAllByLocation(@Param("location") Point location, @Param("radius") Double radius);
 
 	@Modifying
 	@Query(value = """
@@ -38,4 +46,6 @@ public interface CrewRepository extends JpaRepository<Crew, Long> {
 		""")
 	int updateAllStatusToFinish(@Param("time") LocalDateTime now);
 
+	@Query(value = "SELECT * FROM crew c ORDER BY RAND() LIMIT :count", nativeQuery = true)
+	List<Crew> findRandom(@Param("count") int count);
 }

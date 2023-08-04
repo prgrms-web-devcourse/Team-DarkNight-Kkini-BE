@@ -16,10 +16,11 @@ import com.prgrms.mukvengers.domain.crew.dto.request.CreateCrewRequest;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.store.model.Store;
+import com.prgrms.mukvengers.global.utils.GeometryUtils;
 
 public class CrewObjectProvider {
 
-	private final static GeometryFactory GF = new GeometryFactory();
+	private final static GeometryFactory GF = GeometryUtils.getInstance();
 	private static final String LATITUDE = "35.75413579";
 	private static final String LONGITUDE = "-147.4654321321";
 	private static final String NAME = "원정대이름";
