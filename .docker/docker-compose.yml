@@ -1,6 +1,6 @@
 version: '3'
 services:
-  db:
+  kkini-db:
     container_name: kkini-db
     image: mysql
     environment:
@@ -14,7 +14,7 @@ services:
       - ./mysqldata:/var/lib/mysql
     restart: always
 
-  redis:
+  kkini-redis:
     container_name: kkini-redis
     image: redis
     ports:
