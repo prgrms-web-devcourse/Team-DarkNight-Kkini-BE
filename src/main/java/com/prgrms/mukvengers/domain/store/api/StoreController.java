@@ -18,8 +18,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.prgrms.mukvengers.domain.store.dto.request.CreateStoreRequest;
 import com.prgrms.mukvengers.domain.store.dto.response.StoreResponse;
-import com.prgrms.mukvengers.global.common.dto.ApiResponse;
-import com.prgrms.mukvengers.global.common.dto.IdResponse;
+import com.prgrms.mukvengers.global.base.dto.ApiResponse;
+import com.prgrms.mukvengers.global.base.dto.IdResponse;
 
 import lombok.RequiredArgsConstructor;
 

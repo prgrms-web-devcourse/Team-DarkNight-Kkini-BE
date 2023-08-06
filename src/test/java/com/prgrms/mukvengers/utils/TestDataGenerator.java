@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
 import com.prgrms.mukvengers.domain.store.repository.StoreRepository;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
-import com.prgrms.mukvengers.global.utils.data.DataLoader;
+import com.prgrms.mukvengers.global.infra.data.DataLoader;
 
 @Disabled
 @SpringBootTest

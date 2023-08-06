@@ -33,7 +33,7 @@ import com.prgrms.mukvengers.domain.user.exception.InvalidUserException;
 import com.prgrms.mukvengers.domain.user.exception.UserNotFoundException;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
-import com.prgrms.mukvengers.global.common.dto.IdResponse;
+import com.prgrms.mukvengers.global.base.dto.IdResponse;
 
 import lombok.RequiredArgsConstructor;
 

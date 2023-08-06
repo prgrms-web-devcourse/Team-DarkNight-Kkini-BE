@@ -18,7 +18,7 @@ import org.hibernate.annotations.Where;
 
 import com.prgrms.mukvengers.domain.notification.model.vo.NotificationContent;
 import com.prgrms.mukvengers.domain.notification.model.vo.NotificationType;
-import com.prgrms.mukvengers.global.common.domain.BaseEntity;
+import com.prgrms.mukvengers.global.base.domain.BaseEntity;
 
 import lombok.AccessLevel;
 import lombok.Builder;

@@ -5,8 +5,6 @@ import static com.prgrms.mukvengers.domain.proposal.model.vo.ProposalStatus.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.prgrms.mukvengers.domain.crew.strategy.CrewStatusUpdater;
-import com.prgrms.mukvengers.domain.store.exception.StoreNotFoundException;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -43,7 +41,6 @@ import com.prgrms.mukvengers.domain.store.repository.StoreRepository;
 import com.prgrms.mukvengers.domain.user.exception.UserNotFoundException;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
-import com.prgrms.mukvengers.global.common.dto.IdResponse;
 import com.prgrms.mukvengers.global.utils.GeometryUtils;
 
 import lombok.RequiredArgsConstructor;

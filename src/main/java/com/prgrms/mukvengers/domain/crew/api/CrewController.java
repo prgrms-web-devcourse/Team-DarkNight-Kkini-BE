@@ -30,9 +30,9 @@ import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponses;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewStatusResponse;
-import com.prgrms.mukvengers.global.common.dto.ApiResponse;
-import com.prgrms.mukvengers.global.common.dto.IdResponse;
-import com.prgrms.mukvengers.global.security.token.dto.jwt.JwtAuthentication;
+import com.prgrms.mukvengers.global.auth.token.dto.jwt.JwtAuthentication;
+import com.prgrms.mukvengers.global.base.dto.ApiResponse;
+import com.prgrms.mukvengers.global.base.dto.IdResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -109,7 +109,6 @@ public class CrewController {
 		@PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-
 		CrewPageResponse responses = crewService.getByPlaceId(user.id(), placeId, pageable);
 		return ResponseEntity.ok().body(new ApiResponse<>(responses));
 	}

@@ -26,9 +26,9 @@ import com.prgrms.mukvengers.domain.review.dto.request.CreateMemberReviewRequest
 import com.prgrms.mukvengers.domain.review.dto.response.ReviewResponse;
 import com.prgrms.mukvengers.domain.review.dto.response.RevieweeListResponse;
 import com.prgrms.mukvengers.domain.review.service.ReviewService;
-import com.prgrms.mukvengers.global.common.dto.ApiResponse;
-import com.prgrms.mukvengers.global.common.dto.IdResponse;
-import com.prgrms.mukvengers.global.security.token.dto.jwt.JwtAuthentication;
+import com.prgrms.mukvengers.global.auth.token.dto.jwt.JwtAuthentication;
+import com.prgrms.mukvengers.global.base.dto.ApiResponse;
+import com.prgrms.mukvengers.global.base.dto.IdResponse;
 
 import lombok.RequiredArgsConstructor;
 

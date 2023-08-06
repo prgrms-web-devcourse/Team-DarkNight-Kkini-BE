@@ -15,7 +15,7 @@ import javax.persistence.Index;
 import javax.persistence.Table;
 
 import com.prgrms.mukvengers.domain.chat.dto.request.MessageType;
-import com.prgrms.mukvengers.global.common.domain.BaseEntity;
+import com.prgrms.mukvengers.global.base.domain.BaseEntity;
 
 import lombok.Builder;
 import lombok.Getter;

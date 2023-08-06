@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 
-import com.prgrms.mukvengers.global.security.token.service.JwtTokenProvider;
+import com.prgrms.mukvengers.global.auth.token.service.JwtTokenProvider;
 
 @TestConfiguration
 public class JwtConfig {

@@ -27,7 +27,7 @@ import com.prgrms.mukvengers.domain.review.dto.response.ReviewResponse;
 import com.prgrms.mukvengers.domain.review.dto.response.RevieweeListResponse;
 import com.prgrms.mukvengers.domain.review.model.Review;
 import com.prgrms.mukvengers.domain.user.model.User;
-import com.prgrms.mukvengers.global.common.dto.IdResponse;
+import com.prgrms.mukvengers.global.base.dto.IdResponse;
 import com.prgrms.mukvengers.utils.CrewMemberObjectProvider;
 
 class ReviewServiceImplTest extends ServiceTest {

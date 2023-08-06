@@ -28,7 +28,7 @@ import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.domain.store.model.Store;
-import com.prgrms.mukvengers.global.common.dto.IdResponse;
+import com.prgrms.mukvengers.global.base.dto.IdResponse;
 import com.prgrms.mukvengers.utils.CrewObjectProvider;
 
 class CrewServiceImplTest extends ServiceTest {

@@ -20,7 +20,7 @@ import org.hibernate.annotations.Where;
 
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
-import com.prgrms.mukvengers.global.common.domain.BaseEntity;
+import com.prgrms.mukvengers.global.base.domain.BaseEntity;
 
 import lombok.Builder;
 import lombok.Getter;
