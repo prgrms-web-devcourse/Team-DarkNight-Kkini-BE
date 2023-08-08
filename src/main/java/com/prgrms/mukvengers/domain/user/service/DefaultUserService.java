@@ -1,6 +1,7 @@
 package com.prgrms.mukvengers.domain.user.service;
 
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,7 +58,7 @@ public class DefaultUserService implements UserService {
 	/* [회원 프로필 수정] UpdateUserRequest DTO를 사용해서 사용자의 프로필(닉네임, 프로필 이미지, 자기소개)를 한번에 수정합니다. */
 	@Override
 	@Transactional
-	@CacheEvict(value = "User", key = "#userId")
+	@CachePut(value = "User", key = "#userId")
 	public UserProfileResponse updateUserProfile(UpdateUserRequest updateUserRequest, Long userId) {
 		return userRepository.findById(userId)
 			.map(user -> user.changeProfile(updateUserRequest))
