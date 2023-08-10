@@ -21,6 +21,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.prgrms.mukvengers.domain.crew.exception.CrewStatusException;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.locationtech.jts.geom.Point;
@@ -151,5 +152,17 @@ public class Crew extends BaseEntity {
 	private LocalDateTime validatePromiseTime(LocalDateTime promiseTime) {
 		notNull(promiseTime, "유효하지 않는 약속시간입니다.");
 		return promiseTime;
+	}
+
+	public void isNotRecruiting() {
+		if(!this.status.equals(CrewStatus.RECRUITING)){
+			throw new CrewStatusException(this.status);
+		}
+	}
+
+	public void isNotClose() {
+		if(!this.status.equals(CrewStatus.CLOSE)){
+			throw new CrewStatusException(this.status);
+		}
 	}
 }

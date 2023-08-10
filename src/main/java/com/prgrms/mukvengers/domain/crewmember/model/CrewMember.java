@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.prgrms.mukvengers.domain.crewmember.exception.NotLeaderException;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -60,6 +61,12 @@ public class CrewMember extends BaseEntity {
 
 	public boolean isLeader() {
 		return this.crewMemberRole == LEADER;
+	}
+
+	public void isNotLeader() {
+		if (!this.getCrewMemberRole().equals(CrewMemberRole.LEADER)) {
+			throw new NotLeaderException(CrewMemberRole.LEADER);
+		}
 	}
 
 	public boolean isMember() {

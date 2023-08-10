@@ -4,7 +4,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3305/mukvengers?serverTimezone=Asia/Seoul
+    url: jdbc:mysql://localhost:3307/mukvengers?serverTimezone=Asia/Seoul
     username: root
     password: team-kkini
 

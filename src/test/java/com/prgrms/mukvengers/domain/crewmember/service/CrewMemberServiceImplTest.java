@@ -37,10 +37,10 @@ class CrewMemberServiceImplTest extends ServiceTest {
 		crewRepository.save(crew);
 
 		//when
-		IdResponse idResponse = crewMemberService.create(crew, savedUser1Id, LEADER);
+		Long crewMemberId = crewMemberService.create(crew, savedUser1Id, LEADER);
 
 		//then
-		Optional<CrewMember> optionalCrewMember = crewMemberRepository.findById(idResponse.id());
+		Optional<CrewMember> optionalCrewMember = crewMemberRepository.findById(crewMemberId);
 
 		assertThat(optionalCrewMember).isPresent();
 

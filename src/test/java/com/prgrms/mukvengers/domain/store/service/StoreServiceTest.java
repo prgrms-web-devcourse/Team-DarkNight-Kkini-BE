@@ -30,10 +30,10 @@ class StoreServiceTest extends ServiceTest {
 		Point location = gf.createPoint(new Coordinate(longitude, latitude));
 
 		//when
-		String mapStoreId = storeService.create(createStoreRequest);
+		Long storeId = storeService.create(createStoreRequest);
 
 		//then
-		Optional<Store> optionalStore = storeRepository.findByPlaceId(mapStoreId);
+		Optional<Store> optionalStore = storeRepository.findById(storeId);
 
 		assertThat(storeRepository.count()).isNotZero();
 		assertThat(optionalStore).isPresent();
@@ -47,7 +47,7 @@ class StoreServiceTest extends ServiceTest {
 	@DisplayName("[성공] 가게 아이디로 Store 조회를 성공한다.")
 	void getByPlaceId_success() {
 
-		StoreResponse storeResponse = storeService.getId(savedStore.getId());
+		StoreResponse storeResponse = storeService.getById(savedStore.getId());
 
 		assertThat(storeResponse)
 			.hasFieldOrPropertyWithValue("id", savedStore.getId())

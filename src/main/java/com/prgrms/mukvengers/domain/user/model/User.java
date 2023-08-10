@@ -15,6 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -143,9 +144,11 @@ public class User extends BaseEntity {
 		this.tasteScore += tasteScore;
 	}
 
-	public void updateLeaderCount() {
-		this.leaderCount++;
-	}
+    public void updateLeaderCount(CrewMember crewMember) {
+        if (crewMember.isLeader()) {
+            this.leaderCount++;
+        }
+    }
 
 	public void updateCrewCount() {
 		this.crewCount++;
