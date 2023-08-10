@@ -6,6 +6,7 @@ import java.net.URI;
 
 import javax.validation.Valid;
 
+import com.prgrms.mukvengers.domain.store.service.StoreService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +18,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.prgrms.mukvengers.domain.store.dto.request.CreateStoreRequest;
 import com.prgrms.mukvengers.domain.store.dto.response.StoreResponse;
-import com.prgrms.mukvengers.domain.store.service.StoreService;
 import com.prgrms.mukvengers.global.common.dto.ApiResponse;
 import com.prgrms.mukvengers.global.common.dto.IdResponse;
 
@@ -41,8 +41,8 @@ public class StoreController {
 	public ResponseEntity<IdResponse> create(
 		@RequestBody @Valid CreateStoreRequest createStoreRequest
 	) {
-		String placeId = storeService.create(createStoreRequest);
-		URI location = UriComponentsBuilder.fromUriString("/api/v1/stores/" + placeId).build().toUri();
+		Long store = storeService.create(createStoreRequest);
+		URI location = UriComponentsBuilder.fromUriString("/api/v1/stores/" + store).build().toUri();
 		return ResponseEntity.created(location).build();
 	}
 
@@ -57,7 +57,7 @@ public class StoreController {
 	public ResponseEntity<ApiResponse<StoreResponse>> getById(
 		@PathVariable Long storeId
 	) {
-		StoreResponse response = storeService.getId(storeId);
+		StoreResponse response = storeService.getById(storeId);
 		return ResponseEntity.ok(new ApiResponse<>(response));
 	}
 }

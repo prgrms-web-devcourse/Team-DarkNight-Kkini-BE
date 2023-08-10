@@ -1,5 +1,6 @@
 package com.prgrms.mukvengers.domain.crewmember.api;
 
+import com.prgrms.mukvengers.domain.crewmember.service.CrewMemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.mukvengers.domain.crewmember.dto.request.UpdateCrewMemberRequest;
-import com.prgrms.mukvengers.domain.crewmember.service.CrewMemberService;
 import com.prgrms.mukvengers.global.security.token.dto.jwt.JwtAuthentication;
 
 import lombok.RequiredArgsConstructor;
