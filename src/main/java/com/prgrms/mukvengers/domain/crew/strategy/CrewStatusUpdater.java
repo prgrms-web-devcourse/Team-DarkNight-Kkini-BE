@@ -7,6 +7,7 @@ import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 @Component
@@ -19,6 +20,7 @@ public class CrewStatusUpdater {
         strategies.put(CrewStatus.FINISH, finishStrategy);
     }
 
+    @Transactional
     public void updateStatus(Crew crew, CrewMember crewMember, CrewStatus crewStatus) {
         CrewStatusStrategy strategy = strategies.get(crewStatus);
         if (strategy == null) {

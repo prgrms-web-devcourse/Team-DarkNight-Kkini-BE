@@ -155,13 +155,13 @@ public class Crew extends BaseEntity {
 	}
 
 	public void isNotRecruiting() {
-		if(!this.status.equals(CrewStatus.RECRUITING)){
+		if (!(this.status == (CrewStatus.RECRUITING))) {
 			throw new CrewStatusException(this.status);
 		}
 	}
 
 	public void isNotClose() {
-		if(!this.status.equals(CrewStatus.CLOSE)){
+		if(!(this.status == CrewStatus.CLOSE)){
 			throw new CrewStatusException(this.status);
 		}
 	}
