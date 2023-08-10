@@ -23,7 +23,7 @@ import com.prgrms.mukvengers.domain.chat.dto.response.ChatResponse;
 import com.prgrms.mukvengers.domain.chat.dto.response.ChatResponses;
 import com.prgrms.mukvengers.domain.chat.dto.response.ChatsInCrew;
 import com.prgrms.mukvengers.domain.chat.service.ChatService;
-import com.prgrms.mukvengers.global.common.dto.ApiResponse;
+import com.prgrms.mukvengers.global.base.dto.ApiResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

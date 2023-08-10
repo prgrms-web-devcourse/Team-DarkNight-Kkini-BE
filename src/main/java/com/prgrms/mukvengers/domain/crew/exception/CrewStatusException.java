@@ -1,8 +1,8 @@
 package com.prgrms.mukvengers.domain.crew.exception;
 
 import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
-import com.prgrms.mukvengers.global.exception.ErrorCode;
-import com.prgrms.mukvengers.global.exception.ServiceException;
+import com.prgrms.mukvengers.global.base.exception.ErrorCode;
+import com.prgrms.mukvengers.global.base.exception.ServiceException;
 
 public class CrewStatusException extends ServiceException {
 

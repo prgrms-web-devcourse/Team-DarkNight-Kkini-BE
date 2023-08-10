@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.prgrms.mukvengers.domain.user.dto.request.UpdateUserRequest;
 import com.prgrms.mukvengers.domain.user.dto.response.UserProfileResponse;
 import com.prgrms.mukvengers.domain.user.service.UserService;
-import com.prgrms.mukvengers.global.common.dto.ApiResponse;
-import com.prgrms.mukvengers.global.security.token.dto.jwt.JwtAuthentication;
+import com.prgrms.mukvengers.global.auth.token.dto.jwt.JwtAuthentication;
+import com.prgrms.mukvengers.global.base.dto.ApiResponse;
 
 import lombok.RequiredArgsConstructor;
 

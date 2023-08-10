@@ -20,7 +20,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import com.prgrms.mukvengers.domain.user.dto.request.UpdateUserRequest;
-import com.prgrms.mukvengers.global.common.domain.BaseEntity;
+import com.prgrms.mukvengers.global.base.domain.BaseEntity;
 import com.prgrms.mukvengers.global.utils.ValidateUtil;
 
 import lombok.Builder;

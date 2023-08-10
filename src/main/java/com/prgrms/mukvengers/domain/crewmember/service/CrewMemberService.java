@@ -11,7 +11,6 @@ import com.prgrms.mukvengers.domain.crewmember.mapper.CrewMemberMapper;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.model.vo.CrewMemberRole;
 import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
-import com.prgrms.mukvengers.global.common.dto.IdResponse;
 
 import lombok.RequiredArgsConstructor;
 

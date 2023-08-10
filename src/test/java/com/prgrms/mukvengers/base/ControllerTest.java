@@ -30,9 +30,9 @@ import com.prgrms.mukvengers.domain.store.model.Store;
 import com.prgrms.mukvengers.domain.store.repository.StoreRepository;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
+import com.prgrms.mukvengers.global.auth.token.service.JwtTokenProvider;
+import com.prgrms.mukvengers.global.auth.token.service.TokenService;
 import com.prgrms.mukvengers.global.config.RestDocsConfig;
-import com.prgrms.mukvengers.global.security.token.service.JwtTokenProvider;
-import com.prgrms.mukvengers.global.security.token.service.TokenService;
 
 @SpringBootTest
 @Transactional

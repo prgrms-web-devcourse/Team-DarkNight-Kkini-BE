@@ -27,9 +27,9 @@ import com.prgrms.mukvengers.domain.proposal.dto.request.UpdateProposalRequest;
 import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalPageResponse;
 import com.prgrms.mukvengers.domain.proposal.dto.response.ProposalResponse;
 import com.prgrms.mukvengers.domain.proposal.service.ProposalService;
-import com.prgrms.mukvengers.global.common.dto.ApiResponse;
-import com.prgrms.mukvengers.global.common.dto.IdResponse;
-import com.prgrms.mukvengers.global.security.token.dto.jwt.JwtAuthentication;
+import com.prgrms.mukvengers.global.auth.token.dto.jwt.JwtAuthentication;
+import com.prgrms.mukvengers.global.base.dto.ApiResponse;
+import com.prgrms.mukvengers.global.base.dto.IdResponse;
 
 import lombok.RequiredArgsConstructor;
 

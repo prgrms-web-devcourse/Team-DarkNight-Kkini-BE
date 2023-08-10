@@ -24,7 +24,7 @@ import com.prgrms.mukvengers.domain.store.model.Store;
 import com.prgrms.mukvengers.domain.store.repository.StoreRepository;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
-import com.prgrms.mukvengers.global.config.jpa.JpaConfig;
+import com.prgrms.mukvengers.global.config.db.JpaConfig;
 
 @DataJpaTest
 @Import(JpaConfig.class)

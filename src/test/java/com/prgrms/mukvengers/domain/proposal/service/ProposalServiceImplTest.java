@@ -30,7 +30,7 @@ import com.prgrms.mukvengers.domain.proposal.exception.InvalidProposalStatusExce
 import com.prgrms.mukvengers.domain.proposal.model.Proposal;
 import com.prgrms.mukvengers.domain.proposal.model.vo.ProposalStatus;
 import com.prgrms.mukvengers.domain.user.model.User;
-import com.prgrms.mukvengers.global.common.dto.IdResponse;
+import com.prgrms.mukvengers.global.base.dto.IdResponse;
 import com.prgrms.mukvengers.utils.CrewMemberObjectProvider;
 import com.prgrms.mukvengers.utils.ProposalObjectProvider;
 

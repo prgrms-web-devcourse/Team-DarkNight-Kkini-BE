@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 
 import com.prgrms.mukvengers.domain.user.dto.response.UserProfileResponse;
 import com.prgrms.mukvengers.domain.user.model.User;
-import com.prgrms.mukvengers.global.security.oauth.dto.OAuthUserInfo;
+import com.prgrms.mukvengers.global.auth.oauth.dto.OAuthUserInfo;
 
 @Mapper(componentModel = "spring", unmappedSourcePolicy = IGNORE)
 public interface UserMapper {

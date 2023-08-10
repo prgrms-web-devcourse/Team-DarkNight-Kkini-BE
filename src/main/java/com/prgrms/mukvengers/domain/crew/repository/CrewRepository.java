@@ -15,7 +15,7 @@ import com.prgrms.mukvengers.domain.crew.model.Crew;
 
 public interface CrewRepository extends JpaRepository<Crew, Long> {
 
-	// N+1 발생
+	// N+1 발생 해결
 	@Query(value = """
 		SELECT c
 		FROM Crew c

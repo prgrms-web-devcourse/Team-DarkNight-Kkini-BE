@@ -22,7 +22,7 @@ import org.hibernate.annotations.Where;
 
 import com.prgrms.mukvengers.domain.proposal.model.vo.ProposalStatus;
 import com.prgrms.mukvengers.domain.user.model.User;
-import com.prgrms.mukvengers.global.common.domain.BaseEntity;
+import com.prgrms.mukvengers.global.base.domain.BaseEntity;
 import com.prgrms.mukvengers.global.utils.ValidateUtil;
 
 import lombok.Builder;

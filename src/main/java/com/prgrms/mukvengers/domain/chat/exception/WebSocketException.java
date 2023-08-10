@@ -1,6 +1,6 @@
 package com.prgrms.mukvengers.domain.chat.exception;
 
-import com.prgrms.mukvengers.global.exception.ErrorCode;
+import com.prgrms.mukvengers.global.base.exception.ErrorCode;
 
 import lombok.Getter;
 

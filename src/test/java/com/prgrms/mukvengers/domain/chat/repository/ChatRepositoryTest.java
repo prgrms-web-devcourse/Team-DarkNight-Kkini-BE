@@ -33,7 +33,7 @@ class ChatRepositoryTest extends RepositoryTest {
 	@BeforeEach
 	void setUpChat() {
 		savedUserForChat = userRepository.save(createUser("testUser"));
-		savedStoreForChat  = storeRepository.save(createStore("121212"));
+		savedStoreForChat = storeRepository.save(createStore("121212"));
 		crewForChat = crewRepository.save(createCrew(savedStore));
 	}
 

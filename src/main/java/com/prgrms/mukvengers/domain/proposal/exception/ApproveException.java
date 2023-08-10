@@ -1,7 +1,7 @@
 package com.prgrms.mukvengers.domain.proposal.exception;
 
-import com.prgrms.mukvengers.global.exception.ErrorCode;
-import com.prgrms.mukvengers.global.exception.ServiceException;
+import com.prgrms.mukvengers.global.base.exception.ErrorCode;
+import com.prgrms.mukvengers.global.base.exception.ServiceException;
 
 public class ApproveException extends ServiceException {
 

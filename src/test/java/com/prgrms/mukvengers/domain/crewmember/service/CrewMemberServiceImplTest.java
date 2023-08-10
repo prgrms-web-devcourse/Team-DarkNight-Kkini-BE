@@ -17,7 +17,7 @@ import com.prgrms.mukvengers.domain.crewmember.exception.NotLeaderException;
 import com.prgrms.mukvengers.domain.crewmember.exception.NotMemberException;
 import com.prgrms.mukvengers.domain.crewmember.model.CrewMember;
 import com.prgrms.mukvengers.domain.crewmember.repository.CrewMemberRepository;
-import com.prgrms.mukvengers.global.common.dto.IdResponse;
+import com.prgrms.mukvengers.global.base.dto.IdResponse;
 
 class CrewMemberServiceImplTest extends ServiceTest {
 

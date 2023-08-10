@@ -15,7 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.prgrms.mukvengers.domain.notification.dto.response.NotificationResponses;
 import com.prgrms.mukvengers.domain.notification.service.NotificationService;
-import com.prgrms.mukvengers.global.security.token.dto.jwt.JwtAuthentication;
+import com.prgrms.mukvengers.global.auth.token.dto.jwt.JwtAuthentication;
 
 import lombok.RequiredArgsConstructor;
 

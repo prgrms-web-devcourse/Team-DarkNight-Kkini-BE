@@ -5,8 +5,6 @@ import static com.prgrms.mukvengers.domain.proposal.model.vo.ProposalStatus.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.prgrms.mukvengers.domain.crew.strategy.CrewStatusUpdater;
-import com.prgrms.mukvengers.domain.store.exception.StoreNotFoundException;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -29,6 +27,7 @@ import com.prgrms.mukvengers.domain.crew.mapper.CrewMapper;
 import com.prgrms.mukvengers.domain.crew.model.Crew;
 import com.prgrms.mukvengers.domain.crew.model.vo.CrewStatus;
 import com.prgrms.mukvengers.domain.crew.repository.CrewRepository;
+import com.prgrms.mukvengers.domain.crew.strategy.CrewStatusUpdater;
 import com.prgrms.mukvengers.domain.crewmember.dto.response.CrewMemberResponse;
 import com.prgrms.mukvengers.domain.crewmember.dto.response.MyCrewMemberResponse;
 import com.prgrms.mukvengers.domain.crewmember.exception.MemberNotFoundException;
@@ -43,7 +42,7 @@ import com.prgrms.mukvengers.domain.store.repository.StoreRepository;
 import com.prgrms.mukvengers.domain.user.exception.UserNotFoundException;
 import com.prgrms.mukvengers.domain.user.model.User;
 import com.prgrms.mukvengers.domain.user.repository.UserRepository;
-import com.prgrms.mukvengers.global.common.dto.IdResponse;
+import com.prgrms.mukvengers.global.base.dto.IdResponse;
 import com.prgrms.mukvengers.global.utils.GeometryUtils;
 
 import lombok.RequiredArgsConstructor;
@@ -70,14 +69,14 @@ public class CrewService {
 		Store store = storeMapper.toStore(createCrewRequest.createStoreRequest());
 
 		Crew crew = storeRepository.findByPlaceId(createCrewRequest.createStoreRequest().placeId())
-				.map(findStore -> {
-					findStore.updateStore(store);
-					return crewMapper.toCrew(createCrewRequest, findStore);
-				})
-				.orElseGet(() -> {
-					storeRepository.save(store);
-					return crewMapper.toCrew(createCrewRequest, store);
-				});
+			.map(findStore -> {
+				findStore.updateStore(store);
+				return crewMapper.toCrew(createCrewRequest, findStore);
+			})
+			.orElseGet(() -> {
+				storeRepository.save(store);
+				return crewMapper.toCrew(createCrewRequest, store);
+			});
 
 		CrewMember crewMember = crewMemberMapper.toCrewMember(crew, userId, CrewMemberRole.LEADER);
 		crew.addCrewMember(crewMember);
@@ -193,7 +192,7 @@ public class CrewService {
 
 		crewMember.isNotLeader();
 
-		crewStatusUpdater.updateStatus(crew,crewMember,crewStatus);
+		crewStatusUpdater.updateStatus(crew, crewMember, crewStatus);
 
 		return new CrewStatusResponse(crew.getStatus());
 	}
