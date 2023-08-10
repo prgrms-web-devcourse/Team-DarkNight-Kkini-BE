@@ -191,7 +191,7 @@ class CrewControllerTest extends ControllerTest {
 						.summary("사용자가 참여한 모든 모임 조회 API")
 						.description(
 							"사용자가 참여한 모든 모임을 조회합니다. "
-								+ "현재 모집 중인 모임과 모집종료된 모임 모두 조회하며 모집중인 데이터가 먼저 정렬되고 그후 모집 종료된 데이터가 옵니다.")
+							+ "현재 모집 중인 모임과 모집종료된 모임 모두 조회하며 모집중인 데이터가 먼저 정렬되고 그후 모집 종료된 데이터가 옵니다.")
 						.responseSchema(CREW_RESPONSE)
 						.responseFields(
 							fieldWithPath("data.responses.[].currentMember").type(NUMBER).description("밥 모임 현재 인원"),

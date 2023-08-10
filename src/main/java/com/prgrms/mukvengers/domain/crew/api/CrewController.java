@@ -6,7 +6,6 @@ import java.net.URI;
 
 import javax.validation.Valid;
 
-import com.prgrms.mukvengers.domain.crew.service.CrewService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -30,6 +29,7 @@ import com.prgrms.mukvengers.domain.crew.dto.response.CrewLocationResponses;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewPageResponse;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewResponses;
 import com.prgrms.mukvengers.domain.crew.dto.response.CrewStatusResponse;
+import com.prgrms.mukvengers.domain.crew.service.CrewService;
 import com.prgrms.mukvengers.global.auth.token.dto.jwt.JwtAuthentication;
 import com.prgrms.mukvengers.global.base.dto.ApiResponse;
 import com.prgrms.mukvengers.global.base.dto.IdResponse;
