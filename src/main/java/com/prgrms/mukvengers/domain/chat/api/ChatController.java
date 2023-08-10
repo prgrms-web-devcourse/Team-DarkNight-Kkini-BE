@@ -5,14 +5,15 @@ import static org.springframework.http.MediaType.*;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ChatController {
 
 	private final ChatService chatService;
+	private final RabbitTemplate template;
 
 	@ResponseBody
 	@GetMapping(value = "/api/v2/crews/{crewId}/chats", produces = APPLICATION_JSON_VALUE)
@@ -58,12 +60,24 @@ public class ChatController {
 		return ResponseEntity.ok(new ApiResponse<>(chatResponses));
 	}
 
-	@MessageMapping("/chat.sendMessage/{crewId}")
-	@SendTo("/topic/public/{crewId}")
-	public ChatResponse sendMessage(@DestinationVariable Long crewId,
+	// @MessageMapping("/chat.sendMsg/{crewId}")
+	// @SendTo("/topic/public/{crewId}")
+	// public ChatResponse sendMessage(@DestinationVariable Long crewId,
+	// 	@Header("simpSessionAttributes") Map<String, Object> simpSessionAttributes,
+	// 	@Payload ChatRequest chatRequest
+	// ) {
+	// 	return chatService.save(chatRequest, crewId, simpSessionAttributes);
+	// }
+
+	@MessageMapping("/chat.sendMsg/{crewId}")
+	public void sendMessageByRabbitMQ(@DestinationVariable Long crewId,
+		MessageHeaders headers,
 		@Header("simpSessionAttributes") Map<String, Object> simpSessionAttributes,
 		@Payload ChatRequest chatRequest
 	) {
-		return chatService.save(chatRequest, crewId, simpSessionAttributes);
+		log.info("sendMessageByRabbitMQ");
+		log.error("headers : {}", headers);
+		ChatResponse chatResponse = chatService.save(chatRequest, crewId, simpSessionAttributes);
+		template.convertAndSend("chat.exchange", "crews." + crewId, chatResponse);
 	}
 }

@@ -16,7 +16,7 @@ public class MukvengersApplication {
 	}
 
 	@PostConstruct
-	void started() {
+	void setTimeAndLocale() {
 		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
 		Locale.setDefault(Locale.KOREA);
 	}

@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
 	private static final String EXCEPTION_REQUEST_URI = "[EXCEPTION] REQUEST_URI       -----> [{}]";
 	private static final String EXCEPTION_HTTP_METHOD_TYPE = "[EXCEPTION] HTTP_METHOD_TYPE  -----> [{}]";
 
-	@ExceptionHandler(ServiceException.class) // custom 에러
+	@ExceptionHandler(ServiceException.class) // custom 에러 통합 처리
 	public ResponseEntity<ErrorResponse> handleServiceException(HttpServletRequest request, ServiceException e) {
 		ErrorCode errorCode = e.getErrorCode();
 		logService(request, e, errorCode);

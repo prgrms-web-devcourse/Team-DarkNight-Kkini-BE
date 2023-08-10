@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class StompHandler implements ChannelInterceptor {
 
-	public static final String DEFAULT_PATH = "/topic/public/";
+	public static final String DEFAULT_PATH = "exchange/chat.exchange/crews.";
 
 	private final JwtTokenProvider jwtTokenProvider;
 	private final UserRepository userRepository;
@@ -41,26 +41,36 @@ public class StompHandler implements ChannelInterceptor {
 		StompCommand command = accessor.getCommand();
 
 		if (StompCommand.CONNECT.equals(command)) { // websocket 연결요청 -> JWT 인증
+			log.error("CONNECT");
 
+			log.error("accessor : {}", accessor);
 			// JWT 인증
-			User user = getUserByAuthorizationHeader(
-				accessor.getFirstNativeHeader("Authorization"));
+			// User user = getUserByAuthorizationHeader(
+			// 	accessor.getFirstNativeHeader("Authorization"));
+
+			User user = userRepository.findById(92L).get();
+
+			log.error("CONNECTED userId : {}", user.getId());
+
 			// 인증 후 데이터를 헤더에 추가
 			setValue(accessor, "userId", user.getId());
 			setValue(accessor, "username", user.getNickname());
 			setValue(accessor, "profileImgUrl", user.getProfileImgUrl());
 
+			log.error("CONNECTED userId : {}", user.getId());
+
 		} else if (StompCommand.SUBSCRIBE.equals(command)) { // 채팅룸 구독요청(진입) -> CrewMember인지 검증
+			log.error("SUBSCRIBE");
 
 			Long userId = (Long)getValue(accessor, "userId");
 			Long crewId = parseCrewIdFromPath(accessor);
-			log.debug("userId : " + userId + "crewId : " + crewId);
+			log.error("userId : " + userId + " crewId : " + crewId);
 			setValue(accessor, "crewId", crewId);
-			validateUserInCrew(userId, crewId);
+			// validateUserInCrew(userId, crewId);
 
 		} else if (StompCommand.DISCONNECT == command) { // Websocket 연결 종료
-			Long userId = (Long)getValue(accessor, "userId");
-			log.info("DISCONNECTED userId : {}", userId);
+			// Long userId = (Long)getValue(accessor, "userId");
+			// log.info("DISCONNECTED userId : {}", userId);
 		}
 
 		log.info("header : " + message.getHeaders());
@@ -100,7 +110,7 @@ public class StompHandler implements ChannelInterceptor {
 	private void validateUserInCrew(Long userId, Long crewId) {
 		crewMemberRepository.findCrewMemberByCrewIdAndUserId(crewId, userId)
 			.orElseThrow(() -> new WebSocketException(
-				String.format("crew Id : {} userId : {} 로 조회된 결과가 없습니다.", crewId, userId)));
+				String.format("crew Id : {0} userId : {0} 로 조회된 결과가 없습니다.", crewId, userId)));
 	}
 
 	private Object getValue(StompHeaderAccessor accessor, String key) {

@@ -27,6 +27,21 @@ services:
     restart: always
     command: redis-server /usr/local/conf/redis.conf
 
+  rabbitmq:
+    image: pcloud/rabbitmq-stomp
+    container_name: kkini-rabbitmq
+    volumes:
+      - ./rabbitmq/etc/:/etc/rabbitmq/
+      - ./rabbitmq/data/:/var/lib/rabbitmq/
+      - ./rabbitmq/logs/:/var/log/rabbitmq/
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "61613:61613"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+
   green:
     container_name: green
     image: kiseo/kkini

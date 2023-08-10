@@ -101,18 +101,26 @@ dependencies {
     //https://mvnrepository.com/artifact/org.locationtech.jts/jts-core
     implementation 'org.locationtech.jts:jts-core:1.19.0'
     // logback - cloudwatch
-    implementation group: 'ca.pjer', name: 'logback-awslogs-appender', version: '1.6.0'
+    implementation 'ca.pjer:logback-awslogs-appender:1.6.0'
     // AWS
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     // Slack Notification
-    implementation "net.gpedro.integrations.slack:slack-webhook:1.4.0"
+    implementation 'net.gpedro.integrations.slack:slack-webhook:1.4.0'
     // Websocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    // RabbitMQ
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+    testImplementation 'org.springframework.amqp:spring-rabbit-test'
+    // 외부 브로커를 사용하기 위해
+    implementation 'org.springframework.boot:spring-boot-starter-reactor-netty:2.4.6'
+    //jackson2json에서 LocalDateTime을 handling 하기 위해
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.4'
+
     // Sentry
     implementation 'io.sentry:sentry-spring-boot-starter:6.17.0'
     implementation 'io.sentry:sentry-logback:6.17.0'
     // WireMock
-    implementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"
+    implementation 'org.springframework.cloud:spring-cloud-starter-contract-stub-runner'
     // Embedded Redis
     testImplementation 'it.ozimov:embedded-redis:0.7.2'
     // Cache
