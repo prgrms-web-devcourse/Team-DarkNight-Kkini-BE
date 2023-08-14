@@ -6,6 +6,7 @@ import java.net.URI;
 
 import javax.validation.Valid;
 
+import com.prgrms.mukvengers.domain.crew.facade.CrewFacade;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -42,7 +43,7 @@ import lombok.RequiredArgsConstructor;
 public class CrewController {
 
 	private final CrewService crewService;
-
+	private final CrewFacade crewFacade;
 	/**
 	 * <pre>
 	 *     밥 모임 생성
@@ -57,7 +58,7 @@ public class CrewController {
 		@RequestBody @Valid CreateCrewRequest createCrewRequest,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		IdResponse idResponse = crewService.create(createCrewRequest, user.id());
+		IdResponse idResponse = crewFacade.create(createCrewRequest, user.id());
 		URI location = UriComponentsBuilder.fromUriString("/api/v1/crews/" + idResponse.id()).build().toUri();
 		return ResponseEntity.created(location).body(idResponse);
 	}

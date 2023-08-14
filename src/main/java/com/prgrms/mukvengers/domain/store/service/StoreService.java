@@ -37,4 +37,13 @@ public class StoreService {
 		return storeMapper.toStoreResponse(store);
 	}
 
+	public Long findByPlaceId(CreateStoreRequest createStoreRequest) {
+
+		Store store = storeRepository.findByPlaceId(createStoreRequest.placeId())
+				.orElseGet(() -> storeRepository.save(storeMapper.toStore(createStoreRequest)));
+
+		return store.getId();
+
+	}
+
 }

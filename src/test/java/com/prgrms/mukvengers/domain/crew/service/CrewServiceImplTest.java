@@ -34,58 +34,6 @@ import com.prgrms.mukvengers.utils.CrewObjectProvider;
 class CrewServiceImplTest extends ServiceTest {
 
 	@Test
-	@DisplayName("[성공] 가게가 DB에 있을 경우 가게를 업데이트하고 Crew 저장에 성공한다.")
-	void create_success_storeIsPresent() {
-
-		//given
-		CreateCrewRequest createCrewRequest = CrewObjectProvider.getCreateCrewRequest(savedStore.getPlaceId());
-
-		//when
-		IdResponse idResponse = crewService.create(createCrewRequest, savedUser1.getId());
-		Optional<Crew> optionalCrew = crewRepository.findById(idResponse.id());
-
-		//then
-		assertThat(crewRepository.count()).isNotZero();
-		assertThat(optionalCrew).isPresent();
-		Crew crew = optionalCrew.get();
-		assertThat(crew)
-			.hasFieldOrPropertyWithValue("store", savedStore)
-			.hasFieldOrPropertyWithValue("name", createCrewRequest.name())
-			.hasFieldOrPropertyWithValue("location", savedStore.getLocation())
-			.hasFieldOrPropertyWithValue("capacity", createCrewRequest.capacity())
-			.hasFieldOrPropertyWithValue("status", RECRUITING)
-			.hasFieldOrPropertyWithValue("content", createCrewRequest.content())
-			.hasFieldOrPropertyWithValue("category", createCrewRequest.category());
-	}
-
-	@Test
-	@DisplayName("[성공] 가게가 DB에 없을 경우 Crew 저장에 성공한다.")
-	void create_success_storeEmpty() {
-
-		//given
-		Store store = createStore("321321");
-		CreateCrewRequest createCrewRequest = CrewObjectProvider.getCreateCrewRequest(
-			store.getPlaceId());
-
-		//when
-		IdResponse idResponse = crewService.create(createCrewRequest, savedUser1.getId());
-		Optional<Crew> optionalCrew = crewRepository.findById(idResponse.id());
-
-		//then
-		assertThat(crewRepository.count()).isNotZero();
-		assertThat(optionalCrew).isPresent();
-		Crew crew = optionalCrew.get();
-		assertThat(crew)
-			.hasFieldOrPropertyWithValue("store.placeId", store.getPlaceId())
-			.hasFieldOrPropertyWithValue("name", createCrewRequest.name())
-			.hasFieldOrPropertyWithValue("location", store.getLocation())
-			.hasFieldOrPropertyWithValue("capacity", createCrewRequest.capacity())
-			.hasFieldOrPropertyWithValue("status", RECRUITING)
-			.hasFieldOrPropertyWithValue("content", createCrewRequest.content())
-			.hasFieldOrPropertyWithValue("category", createCrewRequest.category());
-	}
-
-	@Test
 	@DisplayName("[성공] 유저 아이디로 유저가 참여한 Crew를 조회한다.")
 	void getByUserId_success() {
 
